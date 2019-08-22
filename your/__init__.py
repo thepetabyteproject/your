@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
-import numpy as np
-import sys
 import logging
 logger = logging.getLogger(__name__)
-from psrfits import PsrfitsFile
-from pysigproc import SigprocFile
+from your.psrfits import PsrfitsFile
+from your.pysigproc import SigprocFile
 
 class Your(PsrfitsFile, SigprocFile):
     def __init__(self, file):

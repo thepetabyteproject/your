@@ -8,17 +8,17 @@ Patrick Lazarus, May 11, 2010
 Last Updated: Jul 4, 2016 (Scott Ransom to add 2-bit reading)
 
 """
-import re
+import argparse
 import os
 import os.path
+import re
 import warnings
-import sys
-import argparse
 
 import astropy.io.fits as pyfits
-from astropy import coordinates, units
 import astropy.time as aptime
 import numpy as np
+from astropy import coordinates, units
+
 # import spectra
 
 SECPERDAY   = float('86400.0')
