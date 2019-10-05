@@ -6,7 +6,7 @@ setup(
     packages=['your'],
     url='http://github.com/devanshkv/your',
     author='Devansh Agarwal, Kshitij Aggarwal',
-    install_requires=['numpy', 'h5py', 'scikit-image', 'scipy', 'numba', 'astropy'],
+    install_requires=['numpy', 'h5py', 'scikit-image', 'scipy', 'numba', 'astropy', 'Cython'],
     author_email='da0017@mix.wvu.edu, ka0064@mix.wvu.edu',
     description='A unified reader for sigproc filterbank and psrfits data',
     classifiers=[
