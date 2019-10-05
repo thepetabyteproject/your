@@ -83,6 +83,7 @@ class PsrfitsFile(object):
         self.nbits = self.specinfo.bits_per_sample
         self.nchan = self.specinfo.num_channels
         self.npoln = self.specinfo.num_polns
+        self.nifs = self.npoln
         self.poln_order = self.specinfo.poln_order
         self.nsamp_per_subint = self.specinfo.spectra_per_subint
         self.nsubints = self.specinfo.num_subint[0]
