@@ -21,6 +21,7 @@ from astropy import coordinates, units
 
 # import spectra
 logger = logging.getLogger(__name__)
+
 SECPERDAY = float('86400.0')
 
 # Regular expression for parsing DATE-OBS card's format.
@@ -28,9 +29,6 @@ date_obs_re = re.compile(r"^(?P<year>[0-9]{4})-(?P<month>[0-9]{2})-" \
                          "(?P<day>[0-9]{2})T(?P<hour>[0-9]{2}):" \
                          "(?P<min>[0-9]{2}):(?P<sec>[0-9]{2}" \
                          "(?:\.[0-9]+)?)$")
-
-# Default global debugging mode
-debug = True
 
 
 def unpack_2bit(data):
@@ -233,17 +231,17 @@ class PsrfitsFile(object):
 
         # Read data
         data = []
-        logging.debug(f"Startsub {startsub}, endsub {endsub}")
+        logger.debug(f"Startsub {startsub}, endsub {endsub}")
         for isub in range(startsub, endsub + 1):
-            logging.debug(f"isub is {isub}")
+            logger.debug(f"isub is {isub}")
             if isub > (self.fileid + 1) * self.nsubints:
                 if not self.fits:
                     self.fits.close()
                 self.fileid += 1
-                logging.debug(f"Reading file ID: {self.fileid}")
+                logger.debug(f"Reading file ID: {self.fileid}")
                 self.filename = self.filelist[self.fileid]
-                logging.debug(f"Reading file: {self.filename}")
-                self.fits = pyfits.open(psrfitsfn, mode='readonly', memmap=True)
+                logger.debug(f"Reading file: {self.filename}")
+                self.fits = pyfits.open(self.filename, mode='readonly', memmap=True)
             data.append(self.read_subint(int(isub % self.nsubints)))
         if len(data) > 1:
             data = np.concatenate(data)
@@ -588,23 +586,22 @@ class SpectraInfo:
         result.append("           Spectra per file = %d" % self.num_spec[0])
         result.append("        Time per file (sec) = %-.12g" % (self.num_spec[0] * self.dt))
         result.append("              FITS typecode = %s" % self.FITS_typecode)
-        if debug:
-            result.append("                DATA column = %d" % self.data_col)
-            result.append("            bits per sample = %d" % self.bits_per_sample)
-            if self.bits_per_sample < 8:
-                spectmp = (self.bytes_per_spectra * self.bits_per_sample) / 8
-                subtmp = (self.bytes_per_subint * self.bits_per_sample) / 8
-            else:
-                spectmp = self.bytes_per_spectra
-                subtmp = self.bytes_per_subint
-            result.append("          bytes per spectra = %d" % spectmp)
-            result.append("        samples per spectra = %d" % self.samples_per_spectra)
-            result.append("           bytes per subint = %d" % subtmp)
-            result.append("         samples per subint = %d" % self.samples_per_subint)
-            result.append("              Need scaling? = %s" % self.need_scale)
-            result.append("              Need offsets? = %s" % self.need_offset)
-            result.append("              Need weights? = %s" % self.need_weight)
-            result.append("        Need band inverted? = %s" % self.need_flipband)
+        result.append("                DATA column = %d" % self.data_col)
+        result.append("            bits per sample = %d" % self.bits_per_sample)
+        if self.bits_per_sample < 8:
+            spectmp = (self.bytes_per_spectra * self.bits_per_sample) / 8
+            subtmp = (self.bytes_per_subint * self.bits_per_sample) / 8
+        else:
+            spectmp = self.bytes_per_spectra
+            subtmp = self.bytes_per_subint
+        result.append("          bytes per spectra = %d" % spectmp)
+        result.append("        samples per spectra = %d" % self.samples_per_spectra)
+        result.append("           bytes per subint = %d" % subtmp)
+        result.append("         samples per subint = %d" % self.samples_per_subint)
+        result.append("              Need scaling? = %s" % self.need_scale)
+        result.append("              Need offsets? = %s" % self.need_offset)
+        result.append("              Need weights? = %s" % self.need_weight)
+        result.append("        Need band inverted? = %s" % self.need_flipband)
 
         return '\n'.join(result)
 
@@ -643,25 +640,10 @@ def is_PSRFITS(filename):
     return isPSRFITS
 
 
-def debug_mode(mode=None):
-    """Set debugging mode.
-        If 'mode' is None return current debug mode.
-    """
-    global debug
-    if mode is None:
-        return debug
-    else:
-        debug = bool(mode)
-
-
 def main():
     specinf = SpectraInfo(args.files)
     if args.output is not None:
         print(args.output % specinf)
-    else:
-        if debug:
-            print("Reading '%s'" % args.files[0])
-        print(specinf)
 
 
 if __name__ == '__main__':

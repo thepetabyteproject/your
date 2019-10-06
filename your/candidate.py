@@ -120,11 +120,11 @@ class Candidate(Your):
             nsamp = nchunk
         if nstart < 0:
             self.data = self.get_data(nstart=0, nsamp=nsamp + nstart)[:, 0, :]
-            logging.debug('median padding data as nstart < 0')
+            logger.debug('median padding data as nstart < 0')
             self.data = pad_along_axis(self.data, nsamp, loc='start', axis=0, mode='median')
         elif nstart + nsamp > self.nspectra:
             self.data = self.get_data(nstart=nstart, nsamp=self.nspectra - nstart)[:, 0, :]
-            logging.debug('median padding data as nstop > nspectra')
+            logger.debug('median padding data as nstop > nspectra')
             self.data = pad_along_axis(self.data, nsamp, loc='end', axis=0, mode='median')
         else:
             self.data = self.get_data(nstart=nstart, nsamp=nsamp)[:, 0, :]
@@ -248,15 +248,15 @@ class Candidate(Your):
         :return:
         """
         if key == 'dmt':
-            logging.debug(
+            logger.debug(
                 f'Decimating dmt along axis {axis}, with factor {decimate_factor},  pre-decimation shape: {self.dmt.shape}')
             self.dmt = _decimate(self.dmt, decimate_factor, axis, pad, **kwargs)
-            logging.debug(f'Decimated dmt along axis {axis}, post-decimation shape: {self.dmt.shape}')
+            logger.debug(f'Decimated dmt along axis {axis}, post-decimation shape: {self.dmt.shape}')
         elif key == 'ft':
-            logging.debug(
+            logger.debug(
                 f'Decimating ft along axis {axis}, with factor {decimate_factor}, pre-decimation shape: {self.dedispersed.shape}')
             self.dedispersed = _decimate(self.dedispersed, decimate_factor, axis, pad, **kwargs)
-            logging.debug(f'Decimated ft along axis {axis}, post-decimation shape: {self.dedispersed.shape}')
+            logger.debug(f'Decimated ft along axis {axis}, post-decimation shape: {self.dedispersed.shape}')
         else:
             raise AttributeError('Key can either be "dmt": DM-Time or "ft": Frequency-Time')
         return self

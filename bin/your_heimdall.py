@@ -1,3 +1,4 @@
+
 import argparse
 import logging
 import os
@@ -76,7 +77,7 @@ if __name__ == "__main__":
 
     if args.verbose:
         logging.basicConfig(level=logging.DEBUG, format=logging_format)
-        logging.debug(f"Using Debug mode")
+        logging.debug("Using debug mode")
     else:
         logging.basicConfig(level=logging.INFO, format=logging_format)
 
@@ -90,7 +91,7 @@ if __name__ == "__main__":
     your_dada.setup()
 
     HM = HeimdallManager(dm=args.dm, dada_key=your_dada.dada_key, boxcar_max=int(32e-3 / your_object.tsamp),
-                         verbosity='V', nsamps_gulp=int(2 ** 19))
+                         verbosity='V', nsamps_gulp=int(2 ** 18))
 
     dada_process = Process(name='p1', target=your_dada.to_dada)
     heimdall_process = Process(name='p2', target=HM.run)
@@ -98,7 +99,11 @@ if __name__ == "__main__":
     dada_process.start()
     heimdall_process.start()
 
-    heimdall_process.join()
-    dada_process.join()
+    try:
+        heimdall_process.join()
+        dada_process.join()
+    except KeyboardInterrupt:
+        heimdall_process.terminate()
+        dada_process.terminate()
 
     your_dada.teardown()
