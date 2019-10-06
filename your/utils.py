@@ -1,3 +1,4 @@
+
 import logging
 
 import numpy as np
@@ -103,3 +104,7 @@ def closest_number(big_num, small_num):
     else:
         q = big_num // small_num
         return (q + 1) * small_num - big_num
+
+
+def dispersion_delay(your_object, dms=5_000):
+    return 4148808.0 * dms * (1 / np.min(your_object.chan_freqs) ** 2 - 1 / np.max(your_object.chan_freqs) ** 2) / 1000
