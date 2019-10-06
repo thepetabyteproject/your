@@ -57,6 +57,7 @@ class DadaManager:
     def teardown(self):
         self.writer.disconnect()
         os.system(f"dada_db -d -k {self.key} 2> /dev/null")
+        logging.info(f"Cleanly destroyed the dada buffers")
 
 
 class YourDada:
@@ -99,8 +100,9 @@ class YourDada:
             logging.info(f"Data specs: Shape: {data_input.shape}, dtype: {data_input.dtype}")
             self.DM.dump_header(self.dada_header)
             self.DM.dump_data(data_input.astype('uint8'))
-            if data_read == self.your_object.nspectra:
+            if data_read == self.your_object.nspectra - self.data_step:
+                logging.debug(f"Sent EOD")
                 self.DM.eod()
             else:
                 self.DM.mark_filled()
-        return
+        return 0
