@@ -109,7 +109,7 @@ class PsrfitsFile(object):
 
     @property
     def nspectra(self):
-        return self.nspec
+        return int(self.specinfo.spectra_per_subint * np.sum(self.specinfo.num_subint))
 
     @property
     def tend(self):
