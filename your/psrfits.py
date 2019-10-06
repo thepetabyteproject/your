@@ -235,10 +235,14 @@ class PsrfitsFile(object):
 
         # Read data
         data = []
+        logging.debug(f"Startsub {startsub}, endsub {endsub}")
         for isub in range(startsub, endsub + 1):
-            if isub > self.fileid * self.nsubints:
-                self.fileid += self.fileid
+            logging.debug(f"isub is {isub}")
+            if isub > (self.fileid + 1) * self.nsubints:
+                self.fileid += 1
+                logging.debug(f"Reading file ID: {self.fileid}")
                 self.filename = self.filelist[self.fileid]
+                logging.debug(f"Reading file: {self.filename}")
             data.append(self.read_subint(int(isub % self.nsubints)))
         if len(data) > 1:
             data = np.concatenate(data)
