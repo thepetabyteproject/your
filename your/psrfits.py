@@ -225,9 +225,7 @@ class PsrfitsFile(object):
         trunc = int(((endsub + 1) * self.nsamp_per_subint) - (nstart + nsamp))
 
         startfileid = int(startsub // self.nsubints)
-        endfileid = int(endsub // self.nsubints)
 
-        assert endfileid < len(self.filelist)
         assert startfileid < len(self.filelist)
 
         self.filename = self.filelist[startfileid]
@@ -239,10 +237,13 @@ class PsrfitsFile(object):
         for isub in range(startsub, endsub + 1):
             logging.debug(f"isub is {isub}")
             if isub > (self.fileid + 1) * self.nsubints:
+                if not self.fits:
+                    self.fits.close()
                 self.fileid += 1
                 logging.debug(f"Reading file ID: {self.fileid}")
                 self.filename = self.filelist[self.fileid]
                 logging.debug(f"Reading file: {self.filename}")
+                self.fits = pyfits.open(psrfitsfn, mode='readonly', memmap=True)
             data.append(self.read_subint(int(isub % self.nsubints)))
         if len(data) > 1:
             data = np.concatenate(data)
@@ -263,6 +264,8 @@ class PsrfitsFile(object):
         #             freqs = self.freqs[::-1]
         #         else:
         #             freqs = self.freqs
+        if not self.fits:
+            self.fits.close()
         return np.expand_dims(data.T, axis=1)
 
 
