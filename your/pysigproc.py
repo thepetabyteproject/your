@@ -133,7 +133,6 @@ class SigprocFile(object):
     def bytes_per_spectrum(self):
         return self.nbits * self.nchans * self.nifs / 8
 
-    @property
     def nspectra(self):
         return (self._mmdata.size() - self.hdrbytes) / self.bytes_per_spectrum
 
