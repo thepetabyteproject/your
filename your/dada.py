@@ -1,7 +1,4 @@
 import logging
-
-logger = logging.getLogger(__name__)
-
 import os
 from functools import reduce
 from math import gcd
@@ -10,11 +7,13 @@ import numpy as np
 from astropy.time import Time
 from psrdada import Writer
 from tqdm import tqdm
+from your.utils import closest_divisor
+
+logger = logging.getLogger(__name__)
 
 def find_gcd(list_of_nos):
     x = reduce(gcd, list_of_nos)
     return x
-
 
 class DadaManager:
 
@@ -46,11 +45,9 @@ class DadaManager:
         return self.writer.setHeader(header)
 
     def dump_data(self, data_input):
-        data_input = data_input.flatten()
         page = self.writer.getNextPage()
         data = np.asarray(page)
-        data[:len(data_input)] = data_input
-        return
+        data = data_input.ravel()
 
     def mark_filled(self):
         return self.writer.markFilled()
@@ -61,17 +58,27 @@ class DadaManager:
     def teardown(self):
         self.writer.disconnect()
         os.system(f"dada_db -d -k {self.key} 2> /dev/null")
-        logger.info(f"Cleanly destroyed the dada buffers")
 
 
 class YourDada:
 
     def __init__(self, your_object):
         self.your_object = your_object
-        self.list_of_subints = self.your_object.specinfo.num_subint.astype('int')
-        self.subint_steps = int(find_gcd(self.list_of_subints))
-        self.dada_size = self.subint_steps * self.your_object.nchans * self.your_object.specinfo.spectra_per_subint * self.your_object.nbits / 8  # bytes
-        self.data_step = int(self.subint_steps * self.your_object.specinfo.spectra_per_subint)
+        if self.your_object.isfits:
+            logger.debug(f'Calculating dada size and data step for the fits files')
+            self.list_of_subints = self.your_object.specinfo.num_subint.astype('int')
+            self.subint_steps = int(find_gcd(self.list_of_subints))
+            self.dada_size = self.subint_steps * self.your_object.nchans * self.your_object.specinfo.spectra_per_subint * self.your_object.nbits / 8  # bytes
+            self.data_step = int(self.subint_steps * self.your_object.specinfo.spectra_per_subint)
+        else:
+            nsamp_gulp = 2**18
+            logger.debug(f'Calculating dada size and data step for the filterbank file')
+            if self.your_object.nspectra < nsamp_gulp:
+                self.dada_size = self.your_object.nspectra * self.your_object.nchans * self.your_object.nbits / 8 # bytes
+                self.data_step = int(self.your_object.nspectra)
+            else:
+                self.data_step = int(closest_divisor(self.your_object.nspectra, nsamp_gulp))
+                self.dada_size = self.data_step * self.your_object.nchans * self.your_object.nbits / 8 # bytes
         self.dada_key = hex(np.random.randint(0, 16 ** 4))
 
     def setup(self):
@@ -104,9 +111,8 @@ class YourDada:
             logger.debug(f"Data specs: Shape: {data_input.shape}, dtype: {data_input.dtype}")
             self.DM.dump_header(self.dada_header)
             self.DM.dump_data(data_input.astype('uint8'))
-            if data_read == self.your_object.nspectra - self.data_step:
-                logger.debug(f"Sent EOD")
+            if data_read == self.your_object.nspectra:
                 self.DM.eod()
             else:
                 self.DM.mark_filled()
-        return 0
+        return

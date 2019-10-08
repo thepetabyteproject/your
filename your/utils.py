@@ -105,6 +105,36 @@ def closest_number(big_num, small_num):
         q = big_num // small_num
         return (q + 1) * small_num - big_num
 
+def primes(n):
+    """
+    Returns all the prime factors of a positive number
+    :param n: input positive number
+    """
+    primfac = []
+    d = 2
+    while d*d <= n:
+        while (n % d) == 0:
+            primfac.append(d)
+            n //= d
+        d += 1
+    if n > 1:
+       primfac.append(n)
+    return primfac
+
+def closest_divisor(n, m):
+    """
+    Calculates the divisor of n, which is closest to (i.e bigger than) m
+    :param n: larger number of which divisor is to be found 
+    :param m: divisor closest to this number
+    """
+    pfs = primes(n)
+    div = 1
+    ind = 0
+    while div < m:
+        div*=pfs[ind]
+        ind+=1
+    return div
+
 
 def dispersion_delay(your_object, dms=5_000):
     return 4148808.0 * dms * (1 / np.min(your_object.chan_freqs) ** 2 - 1 / np.max(your_object.chan_freqs) ** 2) / 1000

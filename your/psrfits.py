@@ -105,7 +105,6 @@ class PsrfitsFile(object):
         self.telescope = self.header['TELESCOP'].strip()
         self.backend = self.header['BACKEND'].strip()
 
-    @property
     def nspectra(self):
         return int(self.specinfo.spectra_per_subint * np.sum(self.specinfo.num_subint))
 
