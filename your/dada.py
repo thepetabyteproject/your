@@ -1,19 +1,15 @@
 import logging
 import os
-from functools import reduce
-from math import gcd
 
 import numpy as np
 from astropy.time import Time
 from psrdada import Writer
 from tqdm import tqdm
-from your.utils import closest_divisor
+
+from your.utils import closest_divisor, find_gcd, primes
 
 logger = logging.getLogger(__name__)
 
-def find_gcd(list_of_nos):
-    x = reduce(gcd, list_of_nos)
-    return x
 
 class DadaManager:
 
@@ -67,7 +63,12 @@ class YourDada:
         if self.your_object.isfits:
             logger.debug(f'Calculating dada size and data step for the fits files')
             self.list_of_subints = self.your_object.specinfo.num_subint.astype('int')
-            self.subint_steps = int(find_gcd(self.list_of_subints))
+            if len(self.list_of_subints) > 1:
+                # if there is more than one files see how many subints we need to read so that the data is equally split
+                self.subint_steps = int(find_gcd(self.list_of_subints))
+            else:
+                # if there is just one large file, read it in chunks
+                self.subint_steps = int(np.max(np.prod(np.unique((primes(self.list_of_subints))))))
             self.dada_size = self.subint_steps * self.your_object.nchans * self.your_object.specinfo.spectra_per_subint * self.your_object.nbits / 8  # bytes
             self.data_step = int(self.subint_steps * self.your_object.specinfo.spectra_per_subint)
         else:
