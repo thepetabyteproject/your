@@ -43,7 +43,7 @@ class DadaManager:
     def dump_data(self, data_input):
         page = self.writer.getNextPage()
         data = np.asarray(page)
-        data = data_input.ravel()
+        data[:len(data_input)] = data_input
 
     def mark_filled(self):
         return self.writer.markFilled()
@@ -69,7 +69,7 @@ class YourDada:
             else:
                 # if there is just one large file, read it in chunks
                 self.subint_steps = int(np.max(np.prod(np.unique((primes(self.list_of_subints))))))
-            self.dada_size = self.subint_steps * self.your_object.nchans * self.your_object.specinfo.spectra_per_subint * self.your_object.nbits / 8  # bytes
+            self.dada_size = self.subint_steps * self.your_object.nchans * self.your_object.specinfo.spectra_per_subint  # * self.your_object.nbits / 8  # bytes
             self.data_step = int(self.subint_steps * self.your_object.specinfo.spectra_per_subint)
         else:
             nsamp_gulp = 2**18
@@ -111,7 +111,7 @@ class YourDada:
             data_input = self.your_object.get_data(data_read, self.data_step)
             logger.debug(f"Data specs: Shape: {data_input.shape}, dtype: {data_input.dtype}")
             self.DM.dump_header(self.dada_header)
-            self.DM.dump_data(data_input.astype('uint8'))
+            self.DM.dump_data(data_input.flatten().astype('uint8'))
             if data_read == self.your_object.nspectra:
                 self.DM.eod()
             else:
