@@ -43,6 +43,7 @@ class DadaManager:
     def dump_data(self, data_input):
         page = self.writer.getNextPage()
         data = np.asarray(page)
+        data.fill(0)
         data[:len(data_input)] = data_input
 
     def mark_filled(self):
@@ -89,6 +90,7 @@ class YourDada:
         return self.DM.setup()
 
     def teardown(self):
+        logger.info("Tearing down the dada buffer")
         return self.DM.teardown()
 
     def your_dada_header(self):
@@ -113,6 +115,7 @@ class YourDada:
             self.DM.dump_header(self.dada_header)
             self.DM.dump_data(data_input.flatten().astype('uint8'))
             if data_read == self.your_object.nspectra:
+                logger.info("Marked the End of Data")
                 self.DM.eod()
             else:
                 self.DM.mark_filled()
