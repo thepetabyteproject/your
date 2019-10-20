@@ -233,13 +233,16 @@ class PsrfitsFile(object):
         logger.debug(f"Startsub {startsub}, endsub {endsub}")
         for isub in range(startsub, endsub + 1):
             logger.debug(f"isub is {isub}")
+            logger.debug(f"file id is {self.fileid}")
+            logger.debug(f"Reading file: {self.filename}")
+            logger.debug(f"Using: {self.fits}")
             if isub > (self.fileid + 1) * self.nsubints:
-                if not self.fits:
-                    self.fits.close()
+                self.fits.close()
+                del self.fits['SUBINT']
+                logger.debug("Delted mmap'ed object")
                 self.fileid += 1
                 logger.debug(f"Reading file ID: {self.fileid}")
                 self.filename = self.filelist[self.fileid]
-                logger.debug(f"Reading file: {self.filename}")
                 self.fits = pyfits.open(self.filename, mode='readonly', memmap=True)
             data.append(self.read_subint(int(isub % self.nsubints)))
         if len(data) > 1:
@@ -261,8 +264,6 @@ class PsrfitsFile(object):
         #             freqs = self.freqs[::-1]
         #         else:
         #             freqs = self.freqs
-        if not self.fits:
-            self.fits.close()
         return np.expand_dims(data.T, axis=1)
 
 
@@ -293,209 +294,209 @@ class SpectraInfo:
                 raise ValueError("File '%s' does not appear to be PSRFITS!" % fn)
 
             # Open the PSRFITS file
-            hdus = pyfits.open(fn, mode='readonly', memmap=True)
+            with pyfits.open(fn, mode='readonly', memmap=True) as hdus:
 
-            if ii == 0:
-                self.hdu_names = [hdu.name for hdu in hdus]
-
-            primary = hdus['PRIMARY'].header
-
-            if 'TELESCOP' not in primary.keys():
-                telescope = ""
-            else:
-                telescope = primary['TELESCOP']
-                # Quick fix for MockSpec data...
-                if telescope == "ARECIBO 305m":
-                    telescope = "Arecibo"
-            if ii == 0:
-                self.telescope = telescope
-            else:
-                if telescope != self.telescope[0]:
-                    logger.warning(
-                        f"'TELESCOP' values don't match for files 0 ({self.telescope[0]}) and {ii}({telescope})!")
-
-            self.observer = primary['OBSERVER']
-            self.source = primary['SRC_NAME']
-            self.frontend = primary['FRONTEND']
-            self.backend = primary['BACKEND']
-            self.project_id = primary['PROJID']
-            self.date_obs = primary['DATE-OBS']
-            self.poln_type = primary['FD_POLN']
-            self.ra_str = primary['RA']
-            self.dec_str = primary['DEC']
-            self.fctr = primary['OBSFREQ']
-            self.orig_num_chan = primary['OBSNCHAN']
-            self.orig_df = primary['OBSBW']
-            self.beam_FWHM = primary['BMIN']
-
-            # CHAN_DM card is not in earlier versions of PSRFITS
-            if 'CHAN_DM' not in primary.keys():
-                self.chan_dm = 0.0
-            else:
-                self.chan_dm = primary['CHAN_DM']
-
-            self.start_MJD[ii] = primary['STT_IMJD'] + (primary['STT_SMJD'] + \
-                                                        primary['STT_OFFS']) / SECPERDAY
-
-            # Are we tracking
-            track = (primary['TRK_MODE'] == "TRACK")
-            if ii == 0:
-                self.tracking = track
-            else:
-                if track != self.tracking:
-                    logger.warning("'TRK_MODE' values don't match for files 0 and %d" % ii)
-
-            # Now switch to the subint HDU header
-            subint = hdus['SUBINT'].header
-
-            self.dt = subint['TBIN']
-            self.num_channels = subint['NCHAN']
-            self.num_polns = subint['NPOL']
-
-            # PRESTO's 'psrfits.c' has some settings based on environ variables
-            envval = os.getenv("PSRFITS_POLN")
-            if envval is not None:
-                ival = int(envval)
-                if ((ival > -1) and (ival < self.num_polns)):
-                    print("Using polarisation %d (from 0-%d) from PSRFITS_POLN." % \
-                          (ival, self.num_polns - 1))
-                    self.default_poln = ival
-                    self.user_poln = 1
-
-            self.poln_order = subint['POL_TYPE']
-            if subint['NCHNOFFS'] > 0:
-                logger.warning("first freq channel is not 0 in file %d" % ii)
-            self.spectra_per_subint = subint['NSBLK']
-            self.bits_per_sample = subint['NBITS']
-            self.num_subint[ii] = subint['NAXIS2']
-            self.start_subint[ii] = subint['NSUBOFFS']
-            self.time_per_subint = self.dt * self.spectra_per_subint
-
-            # This is the MJD offset based on the starting subint number
-            MJDf = (self.time_per_subint * self.start_subint[ii]) / SECPERDAY
-            # The start_MJD values should always be correct
-            self.start_MJD[ii] += MJDf
-
-            # Compute the starting spectra from the times
-            MJDf = self.start_MJD[ii] - self.start_MJD[0]
-            if MJDf < 0.0:
-                raise ValueError("File %d seems to be from before file 0!" % ii)
-
-            self.start_spec[ii] = (MJDf * SECPERDAY / self.dt + 0.5)
-
-            # Now pull stuff from the columns
-            subint_hdu = hdus['SUBINT']
-            first_subint = subint_hdu.data[0]
-            # Identify the OFFS_SUB column number
-            if 'OFFS_SUB' not in subint_hdu.columns.names:
-                logger.warning("Can't find the 'OFFS_SUB' column!")
-            else:
-                colnum = subint_hdu.columns.names.index('OFFS_SUB')
                 if ii == 0:
-                    self.offs_sub_col = colnum
-                elif self.offs_sub_col != colnum:
-                    logger.warning("'OFFS_SUB' column changes between files 0 and %d!" % ii)
+                    self.hdu_names = [hdu.name for hdu in hdus]
 
-            # Identify the data column and the data type
-            if 'DATA' not in subint_hdu.columns.names:
-                logger.warning("Can't find the 'DATA' column!")
-            else:
-                colnum = subint_hdu.columns.names.index('DATA')
-                if ii == 0:
-                    self.data_col = colnum
-                    self.FITS_typecode = subint_hdu.columns[self.data_col].format[-1]
-                elif self.data_col != colnum:
-                    logger.warning("'DATA' column changes between files 0 and %d!" % ii)
+                primary = hdus['PRIMARY'].header
 
-            # Telescope azimuth
-            if 'TEL_AZ' not in subint_hdu.columns.names:
-                self.azimuth = 0.0
-            else:
-                colnum = subint_hdu.columns.names.index('TEL_AZ')
-                if ii == 0:
-                    self.tel_az_col = colnum
-                    self.azimuth = first_subint['TEL_AZ']
-
-            # Telescope zenith angle
-            if 'TEL_ZEN' not in subint_hdu.columns.names:
-                self.zenith_ang = 0.0
-            else:
-                colnum = subint_hdu.columns.names.index('TEL_ZEN')
-                if ii == 0:
-                    self.tel_zen_col = colnum
-                    self.zenith_ang = first_subint['TEL_ZEN']
-
-            # Observing frequencies
-            if 'DAT_FREQ' not in subint_hdu.columns.names:
-                logger.warning("Can't find the channel freq column, 'DAT_FREQ'!")
-            else:
-                colnum = subint_hdu.columns.names.index('DAT_FREQ')
-                freqs = first_subint['DAT_FREQ']
-                if ii == 0:
-                    self.freqs_col = colnum
-                    self.df = freqs[1] - freqs[0]
-                    self.lo_freq = freqs[0]
-                    self.hi_freq = freqs[-1]
-                    # Now check that the channel spacing is the same throughout
-                    ftmp = freqs[1:] - freqs[:-1]
-                    if np.any((ftmp - self.df)) > 1e-7:
-                        logger.warning("Channel spacing changes in file %d!" % ii)
+                if 'TELESCOP' not in primary.keys():
+                    telescope = ""
                 else:
-                    ftmp = np.abs(self.df - (freqs[1] - freqs[0]))
-                    if ftmp > 1e-7:
-                        logger.warning("Channel spacing between files 0 and %d!" % ii)
-                    ftmp = np.abs(self.lo_freq - freqs[0])
-                    if ftmp > 1e-7:
-                        logger.warning("Low channel changes between files 0 and %d!" % ii)
-                    ftmp = np.abs(self.hi_freq - freqs[-1])
-                    if ftmp > 1e-7:
-                        logger.warning("High channel changes between files 0 and %d!" % ii)
-
-            # Data weights
-            if 'DAT_WTS' not in subint_hdu.columns.names:
-                logger.warning("Can't find the channel weights column, 'DAT_WTS'!")
-            else:
-                colnum = subint_hdu.columns.names.index('DAT_WTS')
+                    telescope = primary['TELESCOP']
+                    # Quick fix for MockSpec data...
+                    if telescope == "ARECIBO 305m":
+                        telescope = "Arecibo"
                 if ii == 0:
-                    self.dat_wts_col = colnum
-                elif self.dat_wts_col != colnum:
-                    logger.warning("'DAT_WTS column changes between files 0 and %d!" % ii)
-                if np.any(first_subint['DAT_WTS'] != 1.0):
-                    self.need_weight = True
+                    self.telescope = telescope
+                else:
+                    if telescope != self.telescope[0]:
+                        logger.warning(
+                            f"'TELESCOP' values don't match for files 0 ({self.telescope[0]}) and {ii}({telescope})!")
 
-            # Data offsets
-            if 'DAT_OFFS' not in subint_hdu.columns.names:
-                logger.warning("Can't find the channel offsets column, 'DAT_OFFS'!")
-            else:
-                colnum = subint_hdu.columns.names.index('DAT_OFFS')
+                self.observer = primary['OBSERVER']
+                self.source = primary['SRC_NAME']
+                self.frontend = primary['FRONTEND']
+                self.backend = primary['BACKEND']
+                self.project_id = primary['PROJID']
+                self.date_obs = primary['DATE-OBS']
+                self.poln_type = primary['FD_POLN']
+                self.ra_str = primary['RA']
+                self.dec_str = primary['DEC']
+                self.fctr = primary['OBSFREQ']
+                self.orig_num_chan = primary['OBSNCHAN']
+                self.orig_df = primary['OBSBW']
+                self.beam_FWHM = primary['BMIN']
+
+                # CHAN_DM card is not in earlier versions of PSRFITS
+                if 'CHAN_DM' not in primary.keys():
+                    self.chan_dm = 0.0
+                else:
+                    self.chan_dm = primary['CHAN_DM']
+
+                self.start_MJD[ii] = primary['STT_IMJD'] + (primary['STT_SMJD'] + \
+                                                            primary['STT_OFFS']) / SECPERDAY
+
+                # Are we tracking
+                track = (primary['TRK_MODE'] == "TRACK")
                 if ii == 0:
-                    self.dat_offs_col = colnum
-                elif self.dat_offs_col != colnum:
-                    logger.warning("'DAT_OFFS column changes between files 0 and %d!" % ii)
-                if np.any(first_subint['DAT_OFFS'] != 0.0):
-                    self.need_offset = True
+                    self.tracking = track
+                else:
+                    if track != self.tracking:
+                        logger.warning("'TRK_MODE' values don't match for files 0 and %d" % ii)
 
-            # Data scalings
-            if 'DAT_SCL' not in subint_hdu.columns.names:
-                logger.warning("Can't find the channel scalings column, 'DAT_SCL'!")
-            else:
-                colnum = subint_hdu.columns.names.index('DAT_SCL')
-                if ii == 0:
-                    self.dat_scl_col = colnum
-                elif self.dat_scl_col != colnum:
-                    logger.warning("'DAT_SCL' column changes between files 0 and %d!" % ii)
-                if np.any(first_subint['DAT_SCL'] != 1.0):
-                    self.need_scale = True
+                # Now switch to the subint HDU header
+                subint = hdus['SUBINT'].header
 
-            # Comute the samples per file and the amount of padding
-            # that the _previous_ file has
-            self.num_pad[ii] = 0
-            self.num_spec[ii] = self.spectra_per_subint * self.num_subint[ii]
-            if ii > 0:
-                if self.start_spec[ii] > self.N:  # Need padding
-                    self.num_pad[ii - 1] = self.start_spec[ii] - self.N
-                    self.N += self.num_pad[ii - 1]
-            self.N += self.num_spec[ii]
+                self.dt = subint['TBIN']
+                self.num_channels = subint['NCHAN']
+                self.num_polns = subint['NPOL']
+
+                # PRESTO's 'psrfits.c' has some settings based on environ variables
+                envval = os.getenv("PSRFITS_POLN")
+                if envval is not None:
+                    ival = int(envval)
+                    if ((ival > -1) and (ival < self.num_polns)):
+                        print("Using polarisation %d (from 0-%d) from PSRFITS_POLN." % \
+                              (ival, self.num_polns - 1))
+                        self.default_poln = ival
+                        self.user_poln = 1
+
+                self.poln_order = subint['POL_TYPE']
+                if subint['NCHNOFFS'] > 0:
+                    logger.warning("first freq channel is not 0 in file %d" % ii)
+                self.spectra_per_subint = subint['NSBLK']
+                self.bits_per_sample = subint['NBITS']
+                self.num_subint[ii] = subint['NAXIS2']
+                self.start_subint[ii] = subint['NSUBOFFS']
+                self.time_per_subint = self.dt * self.spectra_per_subint
+
+                # This is the MJD offset based on the starting subint number
+                MJDf = (self.time_per_subint * self.start_subint[ii]) / SECPERDAY
+                # The start_MJD values should always be correct
+                self.start_MJD[ii] += MJDf
+
+                # Compute the starting spectra from the times
+                MJDf = self.start_MJD[ii] - self.start_MJD[0]
+                if MJDf < 0.0:
+                    raise ValueError("File %d seems to be from before file 0!" % ii)
+
+                self.start_spec[ii] = (MJDf * SECPERDAY / self.dt + 0.5)
+
+                # Now pull stuff from the columns
+                subint_hdu = hdus['SUBINT']
+                first_subint = subint_hdu.data[0]
+                # Identify the OFFS_SUB column number
+                if 'OFFS_SUB' not in subint_hdu.columns.names:
+                    logger.warning("Can't find the 'OFFS_SUB' column!")
+                else:
+                    colnum = subint_hdu.columns.names.index('OFFS_SUB')
+                    if ii == 0:
+                        self.offs_sub_col = colnum
+                    elif self.offs_sub_col != colnum:
+                        logger.warning("'OFFS_SUB' column changes between files 0 and %d!" % ii)
+
+                # Identify the data column and the data type
+                if 'DATA' not in subint_hdu.columns.names:
+                    logger.warning("Can't find the 'DATA' column!")
+                else:
+                    colnum = subint_hdu.columns.names.index('DATA')
+                    if ii == 0:
+                        self.data_col = colnum
+                        self.FITS_typecode = subint_hdu.columns[self.data_col].format[-1]
+                    elif self.data_col != colnum:
+                        logger.warning("'DATA' column changes between files 0 and %d!" % ii)
+
+                # Telescope azimuth
+                if 'TEL_AZ' not in subint_hdu.columns.names:
+                    self.azimuth = 0.0
+                else:
+                    colnum = subint_hdu.columns.names.index('TEL_AZ')
+                    if ii == 0:
+                        self.tel_az_col = colnum
+                        self.azimuth = first_subint['TEL_AZ']
+
+                # Telescope zenith angle
+                if 'TEL_ZEN' not in subint_hdu.columns.names:
+                    self.zenith_ang = 0.0
+                else:
+                    colnum = subint_hdu.columns.names.index('TEL_ZEN')
+                    if ii == 0:
+                        self.tel_zen_col = colnum
+                        self.zenith_ang = first_subint['TEL_ZEN']
+
+                # Observing frequencies
+                if 'DAT_FREQ' not in subint_hdu.columns.names:
+                    logger.warning("Can't find the channel freq column, 'DAT_FREQ'!")
+                else:
+                    colnum = subint_hdu.columns.names.index('DAT_FREQ')
+                    freqs = first_subint['DAT_FREQ']
+                    if ii == 0:
+                        self.freqs_col = colnum
+                        self.df = freqs[1] - freqs[0]
+                        self.lo_freq = freqs[0]
+                        self.hi_freq = freqs[-1]
+                        # Now check that the channel spacing is the same throughout
+                        ftmp = freqs[1:] - freqs[:-1]
+                        if np.any((ftmp - self.df)) > 1e-7:
+                            logger.warning("Channel spacing changes in file %d!" % ii)
+                    else:
+                        ftmp = np.abs(self.df - (freqs[1] - freqs[0]))
+                        if ftmp > 1e-7:
+                            logger.warning("Channel spacing between files 0 and %d!" % ii)
+                        ftmp = np.abs(self.lo_freq - freqs[0])
+                        if ftmp > 1e-7:
+                            logger.warning("Low channel changes between files 0 and %d!" % ii)
+                        ftmp = np.abs(self.hi_freq - freqs[-1])
+                        if ftmp > 1e-7:
+                            logger.warning("High channel changes between files 0 and %d!" % ii)
+
+                # Data weights
+                if 'DAT_WTS' not in subint_hdu.columns.names:
+                    logger.warning("Can't find the channel weights column, 'DAT_WTS'!")
+                else:
+                    colnum = subint_hdu.columns.names.index('DAT_WTS')
+                    if ii == 0:
+                        self.dat_wts_col = colnum
+                    elif self.dat_wts_col != colnum:
+                        logger.warning("'DAT_WTS column changes between files 0 and %d!" % ii)
+                    if np.any(first_subint['DAT_WTS'] != 1.0):
+                        self.need_weight = True
+
+                # Data offsets
+                if 'DAT_OFFS' not in subint_hdu.columns.names:
+                    logger.warning("Can't find the channel offsets column, 'DAT_OFFS'!")
+                else:
+                    colnum = subint_hdu.columns.names.index('DAT_OFFS')
+                    if ii == 0:
+                        self.dat_offs_col = colnum
+                    elif self.dat_offs_col != colnum:
+                        logger.warning("'DAT_OFFS column changes between files 0 and %d!" % ii)
+                    if np.any(first_subint['DAT_OFFS'] != 0.0):
+                        self.need_offset = True
+
+                # Data scalings
+                if 'DAT_SCL' not in subint_hdu.columns.names:
+                    logger.warning("Can't find the channel scalings column, 'DAT_SCL'!")
+                else:
+                    colnum = subint_hdu.columns.names.index('DAT_SCL')
+                    if ii == 0:
+                        self.dat_scl_col = colnum
+                    elif self.dat_scl_col != colnum:
+                        logger.warning("'DAT_SCL' column changes between files 0 and %d!" % ii)
+                    if np.any(first_subint['DAT_SCL'] != 1.0):
+                        self.need_scale = True
+
+                # Comute the samples per file and the amount of padding
+                # that the _previous_ file has
+                self.num_pad[ii] = 0
+                self.num_spec[ii] = self.spectra_per_subint * self.num_subint[ii]
+                if ii > 0:
+                    if self.start_spec[ii] > self.N:  # Need padding
+                        self.num_pad[ii - 1] = self.start_spec[ii] - self.N
+                        self.N += self.num_pad[ii - 1]
+                self.N += self.num_spec[ii]
 
         # Finished looping through PSRFITS files. Finalise a few things.
         # Convert the position strings into degrees        
@@ -626,16 +627,15 @@ def is_PSRFITS(filename):
     """Return True if filename appears to be PSRFITS format.
         Return False otherwise.
     """
-    hdus = pyfits.open(filename, mode='readonly', memmap=True)
-    primary = hdus['PRIMARY'].header
+    with pyfits.open(filename, mode='readonly', memmap=True) as hdus:
+        primary = hdus['PRIMARY'].header
 
-    try:
-        isPSRFITS = ((primary['FITSTYPE'] == "PSRFITS") and \
-                     (primary['OBS_MODE'] == "SEARCH"))
-    except KeyError:
-        isPSRFITS = False
+        try:
+            isPSRFITS = ((primary['FITSTYPE'] == "PSRFITS") and \
+                         (primary['OBS_MODE'] == "SEARCH"))
+        except KeyError:
+            isPSRFITS = False
 
-    hdus.close()
     return isPSRFITS
 
 
