@@ -50,6 +50,7 @@ class Your(PsrfitsFile, SigprocFile):
             return PsrfitsFile.nspectra(self)
         
     def get_data(self, nstart, nsamp):
+        logger.debug(f'Reading from {nsamp} samples from sample {nstart}')
         if self.isfil:
             return SigprocFile.get_data(self, nstart, nsamp)
         else:

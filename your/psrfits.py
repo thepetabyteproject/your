@@ -222,11 +222,18 @@ class PsrfitsFile(object):
         trunc = int(((endsub + 1) * self.nsamp_per_subint) - (nstart + nsamp))
 
         startfileid = int(startsub // self.nsubints)
-
         assert startfileid < len(self.filelist)
+        
+        if startfileid != self.fileid:
+            self.fileid = startfileid
+            logger.debug(f'Updating fileid to {self.fileid}')
 
-        self.filename = self.filelist[startfileid]
-        self.fileid = startfileid
+            self.fits.close()
+            del self.fits['SUBINT']
+            logger.debug("Delted mmap'ed object")
+            logger.debug(f"Reading file ID: {self.fileid}")
+            self.filename = self.filelist[self.fileid]
+            self.fits = pyfits.open(self.filename, mode='readonly', memmap=True)
 
         # Read data
         data = []

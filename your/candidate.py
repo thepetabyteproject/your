@@ -24,7 +24,7 @@ class Candidate(Your):
         :param device: If using GPUs, device is the GPU id
         :param kill_mask: Boolean mask of channels to kill
         """
-        your.__init__(self, fp)
+        Your.__init__(self, fp)
         self.dm = dm
         self.tcand = tcand
         self.width = width
