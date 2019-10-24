@@ -94,12 +94,12 @@ class PsrfitsFile(object):
         self.npol = self.npoln
         self.bw = self.header['OBSBW']
         self.cfreq = self.header['OBSFREQ']
-        self.fch1 = self.cfreq - self.bw // 2  # Verify
+        self.fch1 = self.cfreq - self.bw / 2.0  # Verify
         self.foff = self.bw / self.nchan
         self.nchans = self.nchan
         self.tstart = self.specinfo.start_MJD[0]
         self.source_name = self.specinfo.source
-        loc = coordinates.SkyCoord(self.header['RA'], self.header['DEC'], unit='deg')
+        loc = coordinates.SkyCoord(self.header['RA'], self.header['DEC'], unit=(units.hourangle, units.deg))
         self.ra_deg = loc.ra.value
         self.dec_deg = loc.dec.value
         self.telescope = self.header['TELESCOP'].strip()
