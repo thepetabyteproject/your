@@ -8,6 +8,10 @@ import numpy as np
 logger = logging.getLogger(__name__)
 from skimage.transform import resize
 
+ARCSECTORAD = float('4.8481368110953599358991410235794797595635330237270e-6')
+RADTODEG = float('57.295779513082320876798154814105170332405472466564')
+
+
 def _decimate(data, decimate_factor, axis, pad=False, **kwargs):
     """
 
@@ -120,7 +124,7 @@ def primes(n):
             n //= d
         d += 1
     if n > 1:
-       primfac.append(n)
+        primfac.append(n)
     return primfac
 
 def closest_divisor(n, m):
@@ -145,3 +149,23 @@ def dispersion_delay(your_object, dms=5_000):
 def find_gcd(list_of_nos):
     x = reduce(gcd, list_of_nos)
     return x
+
+def dec2deg(src_dej):
+    """
+    dec2deg(src_dej):
+       Convert the SIGPROC-style DDMMSS.SSSS declination to degrees
+    """
+    sign = 1.0
+    if (src_dej < 0): sign = -1.0;
+    xx = np.fabs(src_dej)
+    dd = int(np.floor(xx / 10000.0))
+    mm = int(np.floor((xx - dd * 10000.0) / 100.0))
+    ss = xx - dd * 10000.0 - mm * 100.0
+    return sign * ARCSECTORAD * (60.0 * (60.0 * dd + mm) + ss) * RADTODEG
+
+def ra2deg(src_raj):
+    """
+    ra2deg(src_raj):
+       Convert the SIGPROC-style HHMMSS.SSSS right ascension to degrees
+    """
+    return 15.0 * dec2deg(src_raj)

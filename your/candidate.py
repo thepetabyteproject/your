@@ -5,6 +5,7 @@ from scipy.optimize import golden
 
 from your import Your
 from your.utils import *
+from your.utils import _decimate, _resize
 
 logger = logging.getLogger(__name__)
 
@@ -62,12 +63,12 @@ class Candidate(Your):
             f.attrs['width'] = self.width
             f.attrs['label'] = self.label
 
+            f.attrs['filelist'] = self.filelist
+
             # Copy over header information as attributes
-            for key in list(self._type.keys()):
-                if getattr(self, key) is not None:
-                    f.attrs[key] = getattr(self, key)
-                else:
-                    f.attrs[key] = b'None'
+            file_header = vars(self.your_header)    
+            for key in file_header.keys():
+                f.attrs[key] = file_header[key]
 
             freq_time_dset = f.create_dataset('data_freq_time', data=self.dedispersed, dtype=self.dedispersed.dtype,
                                               compression="lzf")

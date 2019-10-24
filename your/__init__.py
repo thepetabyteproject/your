@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import logging
 import os
-
+import json
 from your.psrfits import PsrfitsFile
 from your.pysigproc import SigprocFile
 
@@ -41,6 +41,8 @@ class Your(PsrfitsFile, SigprocFile):
                 logger.debug(f'Reading the following fits files: {self.your_file}')
                 self.isfits = True
                 self.isfil = False
+                
+        self.your_header = Header(self)
     
     @property
     def nspectra(self):
@@ -63,3 +65,46 @@ class Your(PsrfitsFile, SigprocFile):
         else:
             s = self.your_file
         return f"Using Files:\n{s}"
+    
+class Header:
+    def __init__(self, your):
+        if your.isfil:
+            self.filelist = [your.rawdatafile]
+            self.filename = your.rawdatafile
+            logger.debug(f'Generating unified header for file {your.rawdatafile}')    
+            from your.utils import dec2deg, ra2deg
+            ra = ra2deg(your.src_raj)
+            dec = dec2deg(your.src_dej)
+            self.ra_deg = ra
+            self.dec_deg = dec
+            
+            self.bw = your.nchans*your.foff
+        else:
+            logger.debug(f'Generating unified header for file {your.filename}')
+            self.filelist = your.filelist
+            self.filename = your.filename
+            self.ra_deg = your.ra_deg
+            self.dec_deg = your.dec_deg
+            self.bw = your.bw
+        
+        self.source_name = your.source_name
+        self.nbits = your.nbits
+        self.nchans = your.nchans
+        self.tsamp = your.tsamp
+        self.fch1 = your.fch1
+        self.foff = your.foff
+        self.npol = your.nifs
+        self.tstart = your.tstart
+        self.isfits = your.isfits
+        self.isfil = your.isfil
+        
+        from astropy.time import Time
+        ts=Time(your.tstart,format='mjd')
+        self.tstart_utc = ts.utc.isot
+        
+        #TODO: add nbeams, ibeam, data_type?, az_start, za_start,
+        #telescope, backend
+        
+    def __str__(self):
+        hdr = vars(self)
+        return json.dumps(hdr, indent = 2)
