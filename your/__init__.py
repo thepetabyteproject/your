@@ -67,18 +67,26 @@ class Your(PsrfitsFile, SigprocFile):
         return f"Using Files:\n{s}"
     
 class Header:
+    #TODO: add nbeams, ibeam, data_type, az_start, za_start, telescope, backend
     def __init__(self, your):
         if your.isfil:
-            self.filelist = [your.rawdatafile]
-            self.filename = your.rawdatafile
-            logger.debug(f'Generating unified header for file {your.rawdatafile}')    
+            if isinstance(your.your_file, str):
+                self.filelist = [your.your_file]
+                self.filename = your.your_file
+            elif isinstance(your.your_file, list):
+                self.filelist = your.your_file
+                self.filename = your.your_file[0]
+     
+            logger.debug(f'Generating unified header for file {self.filename}')
+            self.source_name = your.source_name.decode("utf-8")
+            
             from your.utils import dec2deg, ra2deg
             ra = ra2deg(your.src_raj)
             dec = dec2deg(your.src_dej)
             self.ra_deg = ra
-            self.dec_deg = dec
-            
+            self.dec_deg = dec            
             self.bw = your.nchans*your.foff
+            self.center_freq = your.fch1 + self.bw/2
         else:
             logger.debug(f'Generating unified header for file {your.filename}')
             self.filelist = your.filelist
@@ -86,8 +94,9 @@ class Header:
             self.ra_deg = your.ra_deg
             self.dec_deg = your.dec_deg
             self.bw = your.bw
+            self.source_name = your.source_name
+            self.center_freq = your.cfreq
         
-        self.source_name = your.source_name
         self.nbits = your.nbits
         self.nchans = your.nchans
         self.tsamp = your.tsamp
@@ -98,12 +107,16 @@ class Header:
         self.isfits = your.isfits
         self.isfil = your.isfil
         
+        from astropy.coordinates import SkyCoord
+        loc = SkyCoord(self.ra_deg, self.dec_deg, unit='deg')
+        self.gl = loc.galactic.l.value - 180
+        self.gb = loc.galactic.b.value
+        
         from astropy.time import Time
         ts=Time(your.tstart,format='mjd')
         self.tstart_utc = ts.utc.isot
         
-        #TODO: add nbeams, ibeam, data_type?, az_start, za_start,
-        #telescope, backend
+        logger.debug(f'Successfully generated unified header for file {self.filename}')
         
     def __str__(self):
         hdr = vars(self)
