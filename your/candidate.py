@@ -157,7 +157,6 @@ class Candidate(Your):
                     self.dedispersed[:, ii] = np.concatenate(
                         [self.data[-delay_bins[ii]:, ii], self.data[:-delay_bins[ii], ii]])
             elif target == 'GPU':
-                from gpu_utils import gpu_dedisperse
                 gpu_dedisperse(self, device=self.device)
         else:
             self.dedispersed = None
@@ -194,7 +193,6 @@ class Candidate(Your):
             for ii, dm in enumerate(dm_list):
                 self.dmt[ii, :] = self.dedispersets(dms=dm)
         elif target == 'GPU':
-            from gpu_utils import gpu_dmt
             gpu_dmt(self, device=self.device)
         return self
 
