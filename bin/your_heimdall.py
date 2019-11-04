@@ -86,12 +86,13 @@ if __name__ == "__main__":
     dispersion_delay_samples = np.ceil(max_delay / your_object.tsamp)
     logging.debug(f"Max Dispersion delay = {max_delay} s")
     logging.debug(f"Max Dispersion delay = {dispersion_delay_samples} samples")
+    nsamps_gulp = int(2 ** np.ceil(np.log2(dispersion_delay_samples)))
 
     your_dada = dada.YourDada(your_object)
     your_dada.setup()
 
     HM = HeimdallManager(dm=args.dm, dada_key=your_dada.dada_key, boxcar_max=int(32e-3 / your_object.tsamp),
-                         verbosity='V', nsamps_gulp=int(2 ** 18))
+                         verbosity='v', nsamps_gulp=nsamps_gulp)
 
     dada_process = Process(name='p1', target=your_dada.to_dada)
     heimdall_process = Process(name='p2', target=HM.run)
@@ -107,3 +108,4 @@ if __name__ == "__main__":
         dada_process.terminate()
 
     your_dada.teardown()
+    logging.info("Destroyed dada buffers")
