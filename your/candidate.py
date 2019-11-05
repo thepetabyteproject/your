@@ -71,12 +71,13 @@ class Candidate(Your):
                 f.attrs[key] = file_header[key]
 
             freq_time_dset = f.create_dataset('data_freq_time', data=self.dedispersed, dtype=self.dedispersed.dtype,
-                                              compression="lzf")
+                                              compression="gzip", compression_opts=9)
             freq_time_dset.dims[0].label = b"time"
             freq_time_dset.dims[1].label = b"frequency"
 
             if self.dmt is not None:
-                dm_time_dset = f.create_dataset('data_dm_time', data=self.dmt, dtype=self.dmt.dtype, compression="lzf")
+                dm_time_dset = f.create_dataset('data_dm_time', data=self.dmt, dtype=self.dmt.dtype, compression="gzip",
+                                                compression_opts=9)
                 dm_time_dset.dims[0].label = b"dm"
                 dm_time_dset.dims[1].label = b"time"
         return fnout
