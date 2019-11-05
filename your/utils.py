@@ -1,7 +1,7 @@
 
 import logging
+import math
 from functools import reduce
-from math import gcd
 
 import numpy as np
 from numba import cuda
@@ -148,7 +148,7 @@ def dispersion_delay(your_object, dms=5_000):
 
 
 def find_gcd(list_of_nos):
-    x = reduce(gcd, list_of_nos)
+    x = reduce(math.gcd, list_of_nos)
     return x
 
 def dec2deg(src_dej):
@@ -249,7 +249,6 @@ def gpu_dedisp_and_dmt_crop(cand, device=0):
     :return:
     """
 
-    cuda.select_device(device)
     if cand.width < 3:
         time_decimation_factor = 1
     else:
@@ -260,7 +259,13 @@ def gpu_dedisp_and_dmt_crop(cand, device=0):
 
     frequency_decimation_factor = math.floor(cand.data.shape[1] // 256)
 
+    logger.debug(f"Freq decimation factor: {frequency_decimation_factor}")
+    logger.debug(f"Time decimation factor: {time_decimation_factor}")
+
+    cuda.select_device(device)
     stream = cuda.stream()
+
+    logger.debug("Created CUDA Stream")
 
     chan_freqs = cuda.to_device(np.array(cand.chan_freqs, dtype=np.float32), stream=stream)
     cand_data_in = cuda.to_device(np.array(cand.data.T, dtype=np.float32), stream=stream)
@@ -273,6 +278,8 @@ def gpu_dedisp_and_dmt_crop(cand, device=0):
                                              dtype=np.float32, stream=stream)
     dmt_return = cuda.device_array(shape=(256, 256), dtype=np.float32, stream=stream)
     dm_list = cuda.to_device(np.linspace(0, 2 * cand.dm, 256, dtype=np.float32), stream=stream)
+
+    logger.debug("Allocated arrays on the GPU")
 
     @cuda.jit
     def crop_time(data_in, data_out, side_stride):
@@ -308,6 +315,8 @@ def gpu_dedisp_and_dmt_crop(cand, device=0):
                                                                 int(int(cand_dedispersed_on_device.shape[1] / 2) - 128))
     cand.dedispersed = cand_dedispersed_out.copy_to_host(stream=stream).T
 
+    logger.debug("cand.dedisersed set!")
+
     disp_time = np.zeros(shape=(cand_data_in.shape[0], 256), dtype=np.int)
     for idx, dms in enumerate(np.linspace(0, 2 * cand.dm, 256)):
         disp_time[:, idx] = np.round(
@@ -336,6 +345,8 @@ def gpu_dedisp_and_dmt_crop(cand, device=0):
                                                                 int(int(cand_dedispersed_on_device.shape[1] / 2) - 128))
 
     cand.dmt = dmt_return.copy_to_host(stream=stream)
+
+    logger.debug("cand.dmt set!")
 
     cuda.close()
     return cand
