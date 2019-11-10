@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
+import json
 import logging
 import os
-import json
+
 from your.psrfits import PsrfitsFile
 from your.pysigproc import SigprocFile
 
@@ -10,7 +11,7 @@ logger = logging.getLogger(__name__)
 class Your(PsrfitsFile, SigprocFile):
     def __init__(self, file):
         self.your_file = file
-        if isinstance(self.your_file, str):
+        if isinstance(self.your_file, str) or os.path.isfile(self.your_file):
             ext = os.path.splitext(self.your_file)[1]
             if ext == ".fits" or ext == ".sf":
                 PsrfitsFile.__init__(self, psrfitslist=[self.your_file])
@@ -64,13 +65,13 @@ class Your(PsrfitsFile, SigprocFile):
             s = "\n".join(map(str, self.your_file))
         else:
             s = self.your_file
-        return f"Using Files:\n{s}"
+        return f"Using {type(s)}:\n{s}"
     
 class Header:
     #TODO: add nbeams, ibeam, data_type, az_start, za_start, telescope, backend
     def __init__(self, your):
         if your.isfil:
-            if isinstance(your.your_file, str):
+            if isinstance(your.your_file, str) or os.path.isfile(your.your_file):
                 self.filelist = [your.your_file]
                 self.filename = your.your_file
             elif isinstance(your.your_file, list):
