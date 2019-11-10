@@ -11,13 +11,15 @@ logger = logging.getLogger(__name__)
 class Your(PsrfitsFile, SigprocFile):
     def __init__(self, file):
         self.your_file = file
-        if isinstance(self.your_file, str) or os.path.isfile(self.your_file):
+        if isinstance(self.your_file, str):
             ext = os.path.splitext(self.your_file)[1]
             if ext == ".fits" or ext == ".sf":
+                logger.debug(f'Reading the fits file: {self.your_file}')
                 PsrfitsFile.__init__(self, psrfitslist=[self.your_file])
                 self.isfits = True
                 self.isfil = False
             elif ext == ".fil":
+                logger.debug(f'Reading filterbank file {self.your_file}')
                 SigprocFile.__init__(self, fp=self.your_file)
                 self.isfits = False
                 self.isfil = True
@@ -26,8 +28,8 @@ class Your(PsrfitsFile, SigprocFile):
         elif isinstance(self.your_file, list):
             if len(self.your_file) == 1 and os.path.splitext(*self.your_file)[1] == ".fil":
                 for filterbank_file in self.your_file:
-                    SigprocFile.__init__(self, fp=filterbank_file)
                     logger.debug(f'Reading filterbank file {filterbank_file}')
+                    SigprocFile.__init__(self, fp=filterbank_file)
                     self.isfits = False
                     self.isfil = True
             else:
@@ -38,11 +40,14 @@ class Your(PsrfitsFile, SigprocFile):
                     else:
                         raise TypeError("Can only work with list of fits file or filterbanks")
                 self.your_file.sort()
-                PsrfitsFile.__init__(self, psrfitslist=self.your_file)
                 logger.debug(f'Reading the following fits files: {self.your_file}')
+                PsrfitsFile.__init__(self, psrfitslist=self.your_file)
                 self.isfits = True
                 self.isfil = False
                 
+        if not self.source_name:
+            logger.info(f'Source name not present in the file. Setting source name to TEMP')
+            self.source_name = 'TEMP'
         self.your_header = Header(self)
     
     @property
@@ -79,7 +84,10 @@ class Header:
                 self.filename = your.your_file[0]
      
             logger.debug(f'Generating unified header for file {self.filename}')
-            self.source_name = your.source_name.decode("utf-8")
+            if isinstance(your.source_name, str):
+                self.source_name = your.source_name
+            else:
+                self.source_name = your.source_name.decode("utf-8")
             
             from your.utils import dec2deg, ra2deg
             ra = ra2deg(your.src_raj)
