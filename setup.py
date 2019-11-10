@@ -4,13 +4,14 @@ from setuptools import setup
 
 setup(
     name='your',
-    version='0.4.0',
+    version='0.4.1',
     packages=['your'],
     url='http://github.com/devanshkv/your',
     author='Devansh Agarwal, Kshitij Aggarwal',
     scripts=glob.glob('bin/*'),
     package_dir={'your': 'your'},
     install_requires=['numpy', 'h5py', 'scikit-image', 'scipy', 'numba', 'astropy', 'Cython'],
+    tests_require=['pytest'],
     author_email='da0017@mix.wvu.edu, ka0064@mix.wvu.edu',
     description='A unified reader for sigproc filterbank and psrfits data',
     classifiers=[
