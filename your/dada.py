@@ -110,9 +110,13 @@ class YourDada:
 
     def to_dada(self):
         for data_read in tqdm(range(0, int(self.your_object.nspectra), self.data_step)):
+            logger.debug(f"Data read is {data_read}, Data step is {self.data_step}")
             data_input = self.your_object.get_data(data_read, self.data_step)
             logger.debug(f"Data specs: Shape: {data_input.shape}, dtype: {data_input.dtype}")
             self.DM.dump_header(self.dada_header)
+            # TODO: This needs to be fixed it only works for uint8 as of now
+            if self.your_object.nbits > 8:
+                raise ValueError(f"Only nbits = 8 is supported for now")
             self.DM.dump_data(data_input.flatten().astype('uint8'))
             if data_read == self.your_object.nspectra:
                 logger.info("Marked the End of Data")
