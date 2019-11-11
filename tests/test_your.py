@@ -1,7 +1,3 @@
-import os
-import tarfile
-from urllib.request import urlretrieve
-
 import numpy as np
 import pytest
 
