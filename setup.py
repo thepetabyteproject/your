@@ -13,6 +13,7 @@ setup(
     install_requires=['numpy', 'h5py', 'scikit-image', 'scipy', 'numba', 'astropy', 'Cython'],
     tests_require=['pytest'],
     author_email='da0017@mix.wvu.edu, ka0064@mix.wvu.edu',
+    zip_safe=False,
     description='A unified reader for sigproc filterbank and psrfits data',
     classifiers=[
         'Natural Language :: English',
