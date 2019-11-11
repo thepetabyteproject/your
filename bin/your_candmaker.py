@@ -28,6 +28,39 @@ def normalise(data):
     return data
 
 
+def cpu_dedisp_dmt(cand):
+    pulse_width = cand.width
+    if pulse_width == 1:
+        time_decimate_factor = 1
+    else:
+        time_decimate_factor = pulse_width // 2
+    logger.debug(f"Time decimation factor {time_decimate_factor}")
+
+    cand.dmtime()
+    logger.info('Made DMT')
+    if args.opt_dm:
+        logger.info('Optimising DM')
+        logger.warning('This feature is experimental!')
+        cand.optimize_dm()
+    else:
+        cand.dm_opt = -1
+        cand.snr_opt = -1
+    cand.dedisperse()
+    logger.info('Made Dedispersed profile')
+
+    # Frequency - Time reshaping
+    cand.decimate(key='ft', axis=0, pad=True, decimate_factor=time_decimate_factor, mode='median')
+    crop_start_sample_ft = cand.dedispersed.shape[0] // 2 - args.time_size // 2
+    cand.dedispersed = crop(cand.dedispersed, crop_start_sample_ft, args.time_size, 0)
+    logger.info(f'Decimated Time axis of FT to tsize: {cand.dedispersed.shape[0]}')
+    # DM-time reshaping
+    cand.decimate(key='dmt', axis=1, pad=True, decimate_factor=time_decimate_factor, mode='median')
+    crop_start_sample_dmt = cand.dmt.shape[1] // 2 - args.time_size // 2
+    cand.dmt = crop(cand.dmt, crop_start_sample_dmt, args.time_size, 1)
+    logger.info(f'Decimated DM-Time to dmsize: {cand.dmt.shape[0]} and tsize: {cand.dmt.shape[1]}')
+    return cand
+
+
 def cand2h5(cand_val):
     """
     TODO: Add option to use cand.resize for reshaping FT and DMT
@@ -68,38 +101,14 @@ def cand2h5(cand_val):
 
     if args.gpu_id >= 0:
         logger.debug(f"Using the GPU {args.gpu_id}")
-        gpu_dedisp_and_dmt_crop(cand, device=args.gpu_id)
-
+        try:
+            cand = gpu_dedisp_and_dmt_crop(cand, device=args.gpu_id)
+        except CudaAPIError:
+            logger.info("Ran into a CudaAPIError, using the CPU version for this candidate")
+            cand = cpu_dedisp_dmt(cand)
     else:
-        pulse_width = cand.width
-        if pulse_width == 1:
-            time_decimate_factor = 1
-        else:
-            time_decimate_factor = pulse_width // 2
-        logger.debug(f"Time decimation factor {time_decimate_factor}")
+        cand = cpu_dedisp_dmt(cand)
 
-        cand.dmtime()
-        logger.info('Made DMT')
-        if args.opt_dm:
-            logger.info('Optimising DM')
-            logger.warning('This feature is experimental!')
-            cand.optimize_dm()
-        else:
-            cand.dm_opt = -1
-            cand.snr_opt = -1
-        cand.dedisperse()
-        logger.info('Made Dedispersed profile')
-
-        # Frequency - Time reshaping
-        cand.decimate(key='ft', axis=0, pad=True, decimate_factor=time_decimate_factor, mode='median')
-        crop_start_sample_ft = cand.dedispersed.shape[0] // 2 - args.time_size // 2
-        cand.dedispersed = crop(cand.dedispersed, crop_start_sample_ft, args.time_size, 0)
-        logger.info(f'Decimated Time axis of FT to tsize: {cand.dedispersed.shape[0]}')
-        # DM-time reshaping
-        cand.decimate(key='dmt', axis=1, pad=True, decimate_factor=time_decimate_factor, mode='median')
-        crop_start_sample_dmt = cand.dmt.shape[1] // 2 - args.time_size // 2
-        cand.dmt = crop(cand.dmt, crop_start_sample_dmt, args.time_size, 1)
-        logger.info(f'Decimated DM-Time to dmsize: {cand.dmt.shape[0]} and tsize: {cand.dmt.shape[1]}')
 
     cand.resize(key='ft', size=args.frequency_size, axis=1, anti_aliasing=True)
     logger.info(f'Resized Frequency axis of FT to fsize: {cand.dedispersed.shape[1]}')
@@ -132,6 +141,7 @@ if __name__ == '__main__':
         logging.basicConfig(level=logging.INFO, format=logging_format)
 
     if values.gpu_id >= 0:
+        from numba.cuda.cudadrv.driver import CudaAPIError
         logger.info(f"Using the GPU {values.gpu_id}")
 
     cand_pars = pd.read_csv(values.cand_param_file)
