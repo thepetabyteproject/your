@@ -1,6 +1,7 @@
 
 import logging
 import math
+import subprocess
 from functools import reduce
 
 import numpy as np
@@ -350,3 +351,11 @@ def gpu_dedisp_and_dmt_crop(cand, device=0):
 
     cuda.close()
     return cand
+
+
+def get_gpu_memory_map(gpu_id):
+    """Get the current gpu free_mem.
+    """
+    cmd_list = ['nvidia-smi', "-i", f"{gpu_id}", '--query-gpu=memory.free', '--format=csv,nounits,noheader']
+    result = subprocess.check_output(cmd_list)
+    return int(result.decode())
