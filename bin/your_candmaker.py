@@ -73,11 +73,12 @@ def cand2h5(cand_val):
     if kill_mask_path == kill_mask_path:
         kill_mask_file = pathlib.Path(kill_mask_path)
         if kill_mask_file.is_file():
-            logger.info(f'Using mask {kill_mask_path}')
-            kill_chans = np.loadtxt(kill_mask_path, dtype=np.int)
-            filobj = SigprocFile(filename)
-            kill_mask = np.zeros(filobj.nchans, dtype=np.bool)
-            kill_mask[kill_chans] = True
+            raise NotImplementedError(f"Kill mask not implemented yet.")
+            # logger.info(f'Using mask {kill_mask_path}')
+            # kill_chans = np.loadtxt(kill_mask_path, dtype=np.int)
+            # filobj = your.SigprocFile(filename)
+            # kill_mask = np.zeros(filobj.nchans, dtype=np.bool)
+            # kill_mask[kill_chans] = True
     else:
         logger.debug('No Kill Mask')
         kill_mask = None
@@ -108,7 +109,6 @@ def cand2h5(cand_val):
             cand = cpu_dedisp_dmt(cand, args)
     else:
         cand = cpu_dedisp_dmt(cand, args)
-
 
     cand.resize(key='ft', size=args.frequency_size, axis=1, anti_aliasing=True)
     logger.info(f'Resized Frequency axis of FT to fsize: {cand.dedispersed.shape[1]}')
