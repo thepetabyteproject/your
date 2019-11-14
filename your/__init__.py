@@ -8,6 +8,7 @@ from your.pysigproc import SigprocFile
 
 logger = logging.getLogger(__name__)
 
+
 class Your(PsrfitsFile, SigprocFile):
     def __init__(self, file):
         self.your_file = file
@@ -44,19 +45,19 @@ class Your(PsrfitsFile, SigprocFile):
                 PsrfitsFile.__init__(self, psrfitslist=self.your_file)
                 self.isfits = True
                 self.isfil = False
-                
+
         if not self.source_name:
             logger.info(f'Source name not present in the file. Setting source name to TEMP')
             self.source_name = 'TEMP'
         self.your_header = Header(self)
-    
+
     @property
     def nspectra(self):
         if self.isfil:
             return SigprocFile.nspectra(self)
         else:
             return PsrfitsFile.nspectra(self)
-        
+
     def get_data(self, nstart, nsamp):
         logger.debug(f'Reading from {nsamp} samples from sample {nstart}')
         if self.isfil:
@@ -64,16 +65,16 @@ class Your(PsrfitsFile, SigprocFile):
         else:
             return PsrfitsFile.get_data(self, nstart, nsamp)
 
-
     def __repr__(self):
         if isinstance(self.your_file, list):
             s = "\n".join(map(str, self.your_file))
         else:
             s = self.your_file
         return f"Using {type(s)}:\n{s}"
-    
+
+
 class Header:
-    #TODO: add nbeams, ibeam, data_type, az_start, za_start, telescope, backend
+    # TODO: add nbeams, ibeam, data_type, az_start, za_start, telescope, backend
     def __init__(self, your):
         if your.isfil:
             if isinstance(your.your_file, str) or os.path.isfile(your.your_file):
@@ -82,20 +83,20 @@ class Header:
             elif isinstance(your.your_file, list):
                 self.filelist = your.your_file
                 self.filename = your.your_file[0]
-     
+
             logger.debug(f'Generating unified header for file {self.filename}')
             if isinstance(your.source_name, str):
                 self.source_name = your.source_name
             else:
                 self.source_name = your.source_name.decode("utf-8")
-            
+
             from your.utils import dec2deg, ra2deg
             ra = ra2deg(your.src_raj)
             dec = dec2deg(your.src_dej)
             self.ra_deg = ra
-            self.dec_deg = dec            
-            self.bw = your.nchans*your.foff
-            self.center_freq = your.fch1 + self.bw/2
+            self.dec_deg = dec
+            self.bw = your.nchans * your.foff
+            self.center_freq = your.fch1 + self.bw / 2
         else:
             logger.debug(f'Generating unified header for file {your.filename}')
             self.filelist = your.filelist
@@ -105,7 +106,7 @@ class Header:
             self.bw = your.bw
             self.source_name = your.source_name
             self.center_freq = your.cfreq
-        
+
         self.nbits = your.nbits
         self.nchans = your.nchans
         self.tsamp = your.tsamp
@@ -115,18 +116,18 @@ class Header:
         self.tstart = your.tstart
         self.isfits = your.isfits
         self.isfil = your.isfil
-        
+
         from astropy.coordinates import SkyCoord
         loc = SkyCoord(self.ra_deg, self.dec_deg, unit='deg')
         self.gl = loc.galactic.l.value - 180
         self.gb = loc.galactic.b.value
-        
+
         from astropy.time import Time
-        ts=Time(your.tstart,format='mjd')
+        ts = Time(your.tstart, format='mjd')
         self.tstart_utc = ts.utc.isot
-        
+
         logger.debug(f'Successfully generated unified header for file {self.filename}')
-        
+
     def __str__(self):
         hdr = vars(self)
-        return json.dumps(hdr, indent = 2)
+        return json.dumps(hdr, indent=2)
