@@ -110,7 +110,7 @@ def cand2h5(cand_val):
     else:
         cand = cpu_dedisp_dmt(cand, args)
 
-    cand.resize(key='ft', size=args.frequency_size, axis=1, anti_aliasing=True)
+    cand.resize(key='ft', size=args.frequency_size, axis=1, anti_aliasing=True, mode='constant')
     logger.info(f'Resized Frequency axis of FT to fsize: {cand.dedispersed.shape[1]}')
     cand.dmt = normalise(cand.dmt)
     cand.dedispersed = normalise(cand.dedispersed)
@@ -156,6 +156,7 @@ if __name__ == '__main__':
         logger.info(f"Using CPUs only")
 
     cand_pars = pd.read_csv(values.cand_param_file)
+    cand_pars.sort_values(by=['dm'], inplace=True, ascending=False)
     process_list = []
     for index, row in cand_pars.iterrows():
         if len(values.gpu_id) > 1:
