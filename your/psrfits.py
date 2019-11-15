@@ -221,8 +221,10 @@ class PsrfitsFile(object):
         endsub = int((nstart + nsamp) / self.nsamp_per_subint)
         trunc = int(((endsub + 1) * self.nsamp_per_subint) - (nstart + nsamp))
 
-        startfileid = int(startsub // self.nsubints)
+        cumsum_num_subint = np.cumsum(self.specinfo.num_subint)
+        startfileid = np.where(startsub < cumsum_num_subint)[0][0]
         assert startfileid < len(self.filelist)
+        
         
         if startfileid != self.fileid:
             self.fileid = startfileid
@@ -230,9 +232,9 @@ class PsrfitsFile(object):
 
             self.fits.close()
             del self.fits['SUBINT']
-            logger.debug("Delted mmap'ed object")
-            logger.debug(f"Reading file ID: {self.fileid}")
+            logger.debug("Deleted mmap'ed object")
             self.filename = self.filelist[self.fileid]
+            logger.debug(f"File id is {self.fileid}, Reading file: {self.filename}")
             self.fits = pyfits.open(self.filename, mode='readonly', memmap=True)
 
         # Read data
@@ -241,17 +243,29 @@ class PsrfitsFile(object):
         for isub in range(startsub, endsub + 1):
             logger.debug(f"isub is {isub}")
             logger.debug(f"file id is {self.fileid}")
-            logger.debug(f"Reading file: {self.filename}")
-            logger.debug(f"Using: {self.fits}")
-            if isub > (self.fileid + 1) * self.nsubints:
+            
+            if isub > cumsum_num_subint[self.fileid] - 1:
+                logger.debug(f'isub lies in a later file')
                 self.fits.close()
                 del self.fits['SUBINT']
                 logger.debug("Delted mmap'ed object")
                 self.fileid += 1
-                logger.debug(f"Reading file ID: {self.fileid}")
+                if self.fileid == len(self.filelist):
+                    logger.warn(f"Not enough subints, returning data till last subint")
+                    logger.debug(f'Setting file ID to that of last file')
+                    self.fileid-=1
+                    break
+                logger.debug(f"Updating file ID to: {self.fileid}")
                 self.filename = self.filelist[self.fileid]
+                logger.debug(f"Reading file: {self.filename}")
                 self.fits = pyfits.open(self.filename, mode='readonly', memmap=True)
-            data.append(self.read_subint(int(isub % self.nsubints)))
+
+            logger.debug(f"Using: {self.fits}")
+            fsub = int((isub - np.concatenate([np.array([0]),cumsum_num_subint]))[self.fileid])
+            logger.debug(f'Reading subint {fsub} in file {self.filename}')
+            data.append(self.read_subint(fsub))
+
+        logging.debug(f'Read all the necessary subints')
         if len(data) > 1:
             data = np.concatenate(data)
         else:
@@ -365,8 +379,7 @@ class SpectraInfo:
                 if envval is not None:
                     ival = int(envval)
                     if ((ival > -1) and (ival < self.num_polns)):
-                        print("Using polarisation %d (from 0-%d) from PSRFITS_POLN." % \
-                              (ival, self.num_polns - 1))
+                        logger.info(f"Using polarisation {ival} (from 0-{self.num_polns - 1}) from PSRFITS_POLN.")
                         self.default_poln = ival
                         self.user_poln = 1
 
