@@ -156,7 +156,7 @@ if __name__ == '__main__':
         logger.info(f"Using CPUs only")
 
     cand_pars = pd.read_csv(values.cand_param_file)
-    cand_pars.sort_values(by=['dm'], inplace=True, ascending=False)
+    cand_pars.sample(frac=1).reset_index(drop=True)
     process_list = []
     for index, row in cand_pars.iterrows():
         if len(values.gpu_id) > 1:
