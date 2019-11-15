@@ -263,7 +263,14 @@ class PsrfitsFile(object):
             logger.debug(f"Using: {self.fits}")
             fsub = int((isub - np.concatenate([np.array([0]),cumsum_num_subint]))[self.fileid])
             logger.debug(f'Reading subint {fsub} in file {self.filename}')
-            data.append(self.read_subint(fsub))
+            try:
+                data.append(self.read_subint(fsub))
+            except KeyError:
+                logger.warn(f"Encountered KeyError, maybe mmap'd object was delected")
+                logger.debug(f"Trying to open file {self.filename}")
+                self.fits = pyfits.open(self.filename, mode='readonly', memmap=True)
+                logger.debug(f'Reading subint {fsub} in file {self.filename}')
+                data.append(self.read_subint(fsub))
 
         logging.debug(f'Read all the necessary subints')
         if len(data) > 1:
