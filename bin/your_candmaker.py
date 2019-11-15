@@ -28,7 +28,7 @@ def normalise(data):
     return data
 
 
-def cpu_dedisp_dmt(cand):
+def cpu_dedisp_dmt(cand, args):
     pulse_width = cand.width
     if pulse_width == 1:
         time_decimate_factor = 1
@@ -69,15 +69,16 @@ def cand2h5(cand_val):
     :type cand_val: Candidate
     :return: None
     """
-    filename, snr, width, dm, label, tcand, kill_mask_path, args = cand_val
+    filename, snr, width, dm, label, tcand, kill_mask_path, args, gpu_id = cand_val
     if kill_mask_path == kill_mask_path:
         kill_mask_file = pathlib.Path(kill_mask_path)
         if kill_mask_file.is_file():
-            logger.info(f'Using mask {kill_mask_path}')
-            kill_chans = np.loadtxt(kill_mask_path, dtype=np.int)
-            filobj = SigprocFile(filename)
-            kill_mask = np.zeros(filobj.nchans, dtype=np.bool)
-            kill_mask[kill_chans] = True
+            raise NotImplementedError(f"Kill mask not implemented yet.")
+            # logger.info(f'Using mask {kill_mask_path}')
+            # kill_chans = np.loadtxt(kill_mask_path, dtype=np.int)
+            # filobj = your.SigprocFile(filename)
+            # kill_mask = np.zeros(filobj.nchans, dtype=np.bool)
+            # kill_mask[kill_chans] = True
     else:
         logger.debug('No Kill Mask')
         kill_mask = None
@@ -92,29 +93,30 @@ def cand2h5(cand_val):
 
     logger.debug(f'Source file list: {files}')
     cand = Candidate(files, snr=snr, width=width, dm=dm, label=label, tcand=tcand, kill_mask=kill_mask,
-                     device=args.gpu_id)
+                     device=gpu_id)
     cand.get_chunk()
     if cand.isfil:
         cand.fp.close()
 
     logger.info('Got Chunk')
 
-    if args.gpu_id >= 0:
-        logger.debug(f"Using the GPU {args.gpu_id}")
+    if gpu_id >= 0:
+        logger.debug(f"Using the GPU {gpu_id}")
         try:
-            cand = gpu_dedisp_and_dmt_crop(cand, device=args.gpu_id)
+            cand = gpu_dedisp_and_dmt_crop(cand, device=gpu_id)
         except CudaAPIError:
             logger.info("Ran into a CudaAPIError, using the CPU version for this candidate")
-            cand = cpu_dedisp_dmt(cand)
+            cand = cpu_dedisp_dmt(cand, args)
     else:
-        cand = cpu_dedisp_dmt(cand)
+        cand = cpu_dedisp_dmt(cand, args)
 
-
-    cand.resize(key='ft', size=args.frequency_size, axis=1, anti_aliasing=True)
+    cand.resize(key='ft', size=args.frequency_size, axis=1, anti_aliasing=True, mode='constant')
     logger.info(f'Resized Frequency axis of FT to fsize: {cand.dedispersed.shape[1]}')
     cand.dmt = normalise(cand.dmt)
     cand.dedispersed = normalise(cand.dedispersed)
     fout = cand.save_h5(out_dir=args.fout)
+    if not os.path.isfile(fout):
+        raise IOError(f"File not written")
     logger.info(fout)
     return None
 
@@ -124,7 +126,8 @@ if __name__ == '__main__':
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-v', '--verbose', help='Be verbose', action='store_true')
     parser.add_argument('-fs', '--frequency_size', type=int, help='Frequency size after rebinning', default=256)
-    parser.add_argument('-g', '--gpu_id', help='GPU ID (use -1 for CPU)', type=int, required=False, default=-1)
+    parser.add_argument('-g', '--gpu_id', help='GPU ID (use -1 for CPU)', nargs='+', required=False, default=[-1],
+                        type=int)
     parser.add_argument('-ts', '--time_size', type=int, help='Time length after rebinning', default=256)
     parser.add_argument('-c', '--cand_param_file', help='csv file with candidate parameters', type=str, required=True)
     parser.add_argument('-n', '--nproc', type=int, help='number of processors to use in parallel (default: 2)',
@@ -140,15 +143,29 @@ if __name__ == '__main__':
     else:
         logging.basicConfig(level=logging.INFO, format=logging_format)
 
-    if values.gpu_id >= 0:
+    if -1 not in values.gpu_id:
         from numba.cuda.cudadrv.driver import CudaAPIError
-        logger.info(f"Using the GPU {values.gpu_id}")
+
+        for gpu_ids in values.gpu_id:
+            logger.info(f"Using the GPU {gpu_ids}")
+        if len(values.gpu_id) > 1:
+            from itertools import cycle
+
+            gpu_id_cycler = cycle(range(len(values.gpu_id)))
+    else:
+        logger.info(f"Using CPUs only")
 
     cand_pars = pd.read_csv(values.cand_param_file)
+    cand_pars.sort_values(by=['dm'], inplace=True, ascending=False)
     process_list = []
     for index, row in cand_pars.iterrows():
+        if len(values.gpu_id) > 1:
+            gpu_id = gpu_id_cycler.__next__()
+        else:
+            gpu_id = values.gpu_id[0]
         process_list.append(
             [row['file'], row['snr'], 2 ** row['width'], row['dm'], row['label'], row['stime'],
-             row['kill_mask_path'], values])
+             row['kill_mask_path'], values, gpu_id])
+
     with Pool(processes=values.nproc) as pool:
         pool.map(cand2h5, process_list, chunksize=1)
