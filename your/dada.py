@@ -118,7 +118,7 @@ class YourDada:
             if self.your_object.nbits > 8:
                 raise ValueError(f"Only nbits = 8 is supported for now")
             self.DM.dump_data(data_input.flatten().astype('uint8'))
-            if data_read == self.your_object.nspectra:
+            if data_read == self.your_object.nspectra - self.data_step:
                 logger.info("Marked the End of Data")
                 self.DM.eod()
             else:
