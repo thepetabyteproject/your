@@ -4,7 +4,6 @@ import argparse
 import glob
 import logging
 import os
-import pathlib
 from multiprocessing import Pool
 
 import numpy as np
@@ -70,18 +69,11 @@ def cand2h5(cand_val):
     :return: None
     """
     filename, snr, width, dm, label, tcand, kill_mask_path, args, gpu_id = cand_val
-    if kill_mask_path == kill_mask_path:
-        kill_mask_file = pathlib.Path(kill_mask_path)
-        if kill_mask_file.is_file():
-            raise NotImplementedError(f"Kill mask not implemented yet.")
-            # logger.info(f'Using mask {kill_mask_path}')
-            # kill_chans = np.loadtxt(kill_mask_path, dtype=np.int)
-            # filobj = your.SigprocFile(filename)
-            # kill_mask = np.zeros(filobj.nchans, dtype=np.bool)
-            # kill_mask[kill_chans] = True
+    if os.path.exists(kill_mask_path):
+        logger.info(f'Using mask {kill_mask_path}')
+        kill_chans = np.loadtxt(kill_mask_path, dtype=np.int)
     else:
         logger.debug('No Kill Mask')
-        kill_mask = None
 
     fname, ext = os.path.splitext(filename)
     if ext == ".fits" or ext == ".sf":
@@ -92,8 +84,11 @@ def cand2h5(cand_val):
         raise TypeError("Can only work with list of fits file or filterbanks")
 
     logger.debug(f'Source file list: {files}')
-    cand = Candidate(files, snr=snr, width=width, dm=dm, label=label, tcand=tcand, kill_mask=kill_mask,
-                     device=gpu_id)
+    cand = Candidate(files, snr=snr, width=width, dm=dm, label=label, tcand=tcand, device=gpu_id)
+    if os.path.exists(kill_mask_path):
+        kill_mask = np.zeros(cand.nchans, dtype=np.bool)
+        kill_mask[kill_chans] = True
+        cand.kill_mask = kill_mask
     cand.get_chunk()
     if cand.isfil:
         cand.fp.close()
@@ -115,8 +110,11 @@ def cand2h5(cand_val):
     cand.dmt = normalise(cand.dmt)
     cand.dedispersed = normalise(cand.dedispersed)
     fout = cand.save_h5(out_dir=args.fout)
+    logger.debug(f"Filesize is {os.path.getsize(fout)}")
     if not os.path.isfile(fout):
-        raise IOError(f"File not written")
+        raise IOError(f"File with {cand.id} not written")
+    if os.path.getsize(fout) < 200 * 1024:
+        raise ValueError(f"File with {cand.id} has issues!")
     logger.info(fout)
     return None
 
