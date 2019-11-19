@@ -77,12 +77,15 @@ class Header:
     # TODO: add nbeams, ibeam, data_type, az_start, za_start, telescope, backend
     def __init__(self, your):
         if your.isfil:
-            if isinstance(your.your_file, str) or os.path.isfile(your.your_file):
+            if isinstance(your.your_file, str):
+                assert os.path.isfile(your.your_file)
                 self.filelist = [your.your_file]
                 self.filename = your.your_file
             elif isinstance(your.your_file, list):
                 self.filelist = your.your_file
                 self.filename = your.your_file[0]
+            else:
+                raise IOError("Unknown type")
 
             logger.debug(f'Generating unified header for file {self.filename}')
             if isinstance(your.source_name, str):
