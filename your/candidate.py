@@ -63,7 +63,7 @@ class Candidate(Your):
             f.attrs['width'] = self.width
             f.attrs['label'] = self.label
 
-            f.attrs['filelist'] = self.filelist
+            f.attrs['filelist'] = self.your_header.filelist
 
             # Copy over header information as attributes
             file_header = vars(self.your_header)    
