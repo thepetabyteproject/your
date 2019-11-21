@@ -3,6 +3,7 @@
 import argparse
 import logging
 import os
+from datetime import datetime
 from multiprocessing import Process
 
 import numpy as np
@@ -15,7 +16,7 @@ from your.utils import dispersion_delay
 class HeimdallManager:
 
     def __init__(self, dada_key=None, filename=None, verbosity=None, nsamps_gulp=None, beam=None, baseline_length=None,
-                 output_dir=None, dm=None, dm_tol=None, zap_chans=None, max_giant_rate=None, dm_nbits=None,
+                 output_dir=None, dm=None, dm_tol=None, zap_chans=None, max_giant_rate=None, dm_nbits=None, gpu_id=None,
                  no_scrunching=None, scrunching_tol=None, rfi_tol=None,
                  rfi_no_narrow=None, rfi_no_broad=None, boxcar_max=None, fswap=None,
                  min_tscrunch_width=None):
@@ -31,6 +32,7 @@ class HeimdallManager:
         self.zap_chans = zap_chans
         self.max_gaint_rate = max_giant_rate
         self.dm_nbits = dm_nbits
+        self.gpu_id = gpu_id
         self.no_scrunching = no_scrunching
         self.scrunching_tol = scrunching_tol
         self.rfi_tol = rfi_tol
@@ -72,31 +74,41 @@ if __name__ == "__main__":
     parser.add_argument('-p', '--probability', help='Detection threshold', default=0.5, type=float)
     parser.add_argument('-f', '--files', help='filterbank or psrfits', nargs='+')
     parser.add_argument('-dm', '--dm', help='DM (eg -dm 10 1000)', type=float, nargs=2, default=[10, 1000])
+    parser.add_argument('-g', '--gpu_id', help='GPU ID to run heimdall on', type=int, required=False, default=0)
+    parser.add_argument('-o', '--output_dir', help='Output dir for heimdall candidates', type=str, required=False,
+                        default=None)
     args = parser.parse_args()
 
+    if args.output_dir is None:
+        args.output_dir = "{0}/{1}".format(os.getcwd(), ('.').join(
+            os.path.basename(args.files[0]).split('.')[:-1]))
+        os.makedirs(args.output_dir, exist_ok=True)
+
     logging_format = '%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s'
+    log_filename = args.output_dir + '/' + datetime.utcnow().strftime('your_heimdall_%Y_%m_%d_%H_%M_%S_%f.log')
 
     if args.verbose:
-        logging.basicConfig(level=logging.DEBUG, format=logging_format)
+        logging.basicConfig(filename=log_filename, level=logging.DEBUG, format=logging_format)
         logging.debug("Using debug mode")
     else:
-        logging.basicConfig(level=logging.INFO, format=logging_format)
+        logging.basicConfig(filename=log_filename, level=logging.INFO, format=logging_format)
 
     your_object = Your(file=args.files)
     max_delay = dispersion_delay(your_object, dms=np.max(args.dm))
     dispersion_delay_samples = np.ceil(max_delay / your_object.tsamp)
-    logging.debug(f"Max Dispersion delay = {max_delay} s")
-    logging.debug(f"Max Dispersion delay = {dispersion_delay_samples} samples")
-    nsamps_gulp = int(2 ** np.ceil(np.log2(dispersion_delay_samples)))
+    logging.info(f"Max Dispersion delay = {max_delay} s")
+    logging.info(f"Max Dispersion delay = {dispersion_delay_samples} samples")
+
+    nsamps_gulp = int(np.max([(2 ** np.ceil(np.log2(dispersion_delay_samples))), 2 ** 18]))
 
     your_dada = dada.YourDada(your_object)
     your_dada.setup()
 
     HM = HeimdallManager(dm=args.dm, dada_key=your_dada.dada_key, boxcar_max=int(32e-3 / your_object.tsamp),
-                         verbosity='v', nsamps_gulp=nsamps_gulp)
+                         verbosity='v', nsamps_gulp=nsamps_gulp, gpu_id=args.gpu_id, output_dir=args.output_dir)
 
-    dada_process = Process(name='p1', target=your_dada.to_dada)
-    heimdall_process = Process(name='p2', target=HM.run)
+    dada_process = Process(name='To dada', target=your_dada.to_dada)
+    heimdall_process = Process(name='Heimdall', target=HM.run)
 
     dada_process.start()
     heimdall_process.start()
