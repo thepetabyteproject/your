@@ -4,7 +4,12 @@ import argparse
 import glob
 import logging
 import os
+
+os.environ['OPENBLAS_NUM_THREADS'] = '1'  # stop numpy multithreading regardless of the backend
+os.environ['MKL_NUM_THREADS'] = '1'
+
 from multiprocessing import Pool
+from datetime import datetime
 
 import numpy as np
 import pandas as pd
@@ -69,7 +74,7 @@ def cand2h5(cand_val):
     :return: None
     """
     filename, snr, width, dm, label, tcand, kill_mask_path, args, gpu_id = cand_val
-    if os.path.exists(kill_mask_path):
+    if os.path.exists(str(kill_mask_path)):
         logger.info(f'Using mask {kill_mask_path}')
         kill_chans = np.loadtxt(kill_mask_path, dtype=np.int)
     else:
@@ -85,7 +90,7 @@ def cand2h5(cand_val):
 
     logger.debug(f'Source file list: {files}')
     cand = Candidate(files, snr=snr, width=width, dm=dm, label=label, tcand=tcand, device=gpu_id)
-    if os.path.exists(kill_mask_path):
+    if os.path.exists(str(kill_mask_path)):
         kill_mask = np.zeros(cand.nchans, dtype=np.bool)
         kill_mask[kill_chans] = True
         cand.kill_mask = kill_mask
@@ -135,11 +140,12 @@ if __name__ == '__main__':
     values = parser.parse_args()
 
     logging_format = '%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s'
+    log_filename = args.fout + '/' + datetime.utcnow().strftime('your_candmaker_%Y_%m_%d_%H_%M_%S_%f.log')
 
     if values.verbose:
-        logging.basicConfig(level=logging.DEBUG, format=logging_format)
+        logging.basicConfig(filename=log_filename, level=logging.DEBUG, format=logging_format)
     else:
-        logging.basicConfig(level=logging.INFO, format=logging_format)
+        logging.basicConfig(filename=log_filename, level=logging.INFO, format=logging_format)
 
     if -1 not in values.gpu_id:
         from numba.cuda.cudadrv.driver import CudaAPIError
@@ -163,7 +169,7 @@ if __name__ == '__main__':
             gpu_id = values.gpu_id[0]
         process_list.append(
             [row['file'], row['snr'], 2 ** row['width'], row['dm'], row['label'], row['stime'],
-             row['kill_mask_path'], values, gpu_id])
+             row['chan_mask_path'], values, gpu_id])
 
     with Pool(processes=values.nproc) as pool:
         pool.map(cand2h5, process_list, chunksize=1)
