@@ -1,9 +1,13 @@
-# pysigproc.py -- P. Demorest, 2016/04
-#
-# Simple functions for generating sigproc filterbank
-# files from python.  Not all possible features are implemented.
-# now works with python3 also!
+#!/usr/bin/env python
 
+'''
+Simple functions for reading sigproc filterbank
+files from python.  
+Not all possible features are implemented.
+
+Original Source: https://github.com/demorest/pysigproc/blob/master/pysigproc.py 
+
+'''
 import mmap
 import struct
 import sys

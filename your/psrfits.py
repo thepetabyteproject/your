@@ -4,9 +4,7 @@
 Collect PSRFITS information, emulating behaviour of PRESTO.
 Read PSRFITS data.
 
-Patrick Lazarus, May 11, 2010
-Last Updated: Jul 4, 2016 (Scott Ransom to add 2-bit reading)
-
+Original Source: https://github.com/scottransom/presto/blob/master/python/presto/psrfits.py 
 """
 import argparse
 import logging
