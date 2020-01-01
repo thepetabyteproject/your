@@ -250,7 +250,7 @@ def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
     low_header = vars(lowband_obj.your_header)
     up_header = vars(upband_obj.your_header)
     for key in low_header.keys():
-        if key is 'filelist' or key is 'filename' or key is 'center_freq' or key is 'fch1': 
+        if key == 'filelist' or key == 'filename' or key == 'center_freq' or key == 'fch1': 
             continue
         if low_header[key] != up_header[key]:
             raise ValueError(f'Values of {key} are different in the two bands')
