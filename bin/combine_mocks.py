@@ -82,7 +82,10 @@ def read_and_combine_subint(lowband_obj, upband_obj, fsub, upchanskip, lowchansk
     # The exact freq in upperband will vary
     data = np.concatenate((lowsub_data[:,:-lowchanskip], upsub_data[:,upchanskip:]), axis=1) 
     
-    return data
+    if lowband_obj.nbits == 16:
+        return data.astype('uint16')
+    else:
+        return data
 
 def make_sigproc_obj(filfile, lowband_obj, nchan, fch1):
     '''
@@ -104,8 +107,8 @@ def make_sigproc_obj(filfile, lowband_obj, nchan, fch1):
     
     # Verify the following parameters
     fil_obj.machine_id = 0 
-    fil_obj.barycentric = True  
-    fil_obj.pulsarcentric = False
+    fil_obj.barycentric = 1  
+    fil_obj.pulsarcentric = 0
     fil_obj.telescope_id = 0 
     fil_obj.data_type = 0 
     
@@ -124,8 +127,8 @@ def make_sigproc_obj(filfile, lowband_obj, nchan, fch1):
     ra_hms = loc.ra.hms
     dec_dms = loc.dec.dms
 
-    fil_obj.src_raj = float(f'{ra_hms[0]:.0f}{ra_hms[1]:.0f}{ra_hms[2]:.4f}')
-    fil_obj.src_dej = float(f'{dec_dms[0]:.0f}{dec_dms[1]:.0f}{dec_dms[2]:.4f}')
+    fil_obj.src_raj = float(f'{int(ra_hms[0]):02d}{int(ra_hms[1]):02d}{ra_hms[2]:07.4f}')
+    fil_obj.src_dej = float(f'{int(dec_dms[0]):02d}{int(dec_dms[1]):02d}{dec_dms[2]:07.4f}')
 
     fil_obj.az_start = -1
     fil_obj.za_start = -1
