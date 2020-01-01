@@ -6,11 +6,20 @@ from the Mock Spectrometer
 Original C code: https://github.com/demorest/psrfits_utils/blob/master/combine_mocks.c
 """
 
-from your import Your
-import numpy as np
-import os, tqdm, logging, argparse, glob
+import argparse
+import glob
+import logging
+import os
+import tqdm
 from datetime import datetime
+
+import astropy.io.fits as pyfits
+import numpy as np
+
+from your import Your
+
 logger = logging.getLogger(__name__)
+
 
 def calc_skipchan(lowband_obj, upband_obj):
     '''
@@ -80,10 +89,24 @@ def read_and_combine_subint(lowband_obj, upband_obj, fsub, upchanskip, lowchansk
     logger.debug(f'Combining data from relevant channels from upper and lower bands')
     # Note freq are not exactly same in the two subbands. Assuming fch1 and foff from lower band. 
     # The exact freq in upperband will vary
-    data = np.concatenate((lowsub_data[:,:-lowchanskip], upsub_data[:,upchanskip:]), axis=1) 
-    
+    data = np.concatenate((lowsub_data[:,:-lowchanskip], upsub_data[:,upchanskip:]), axis=1)
+
     if lowband_obj.nbits == 16:
+        data -= np.mean(data)
+        data /= np.std(data)
+        data *= np.sqrt(2 ** 16)
+        data += 2 ** 15
+        data = np.round(data)
+        data = np.clip(data, 0, 2 ** 16 - 1)
         return data.astype('uint16')
+    elif lowband_obj.nbits == 8:
+        data -= np.mean(data)
+        data /= np.std(data)
+        data *= np.sqrt(2 ** 8)
+        data += 2 ** 7
+        data = np.round(data)
+        data = np.clip(data, 0, 2 ** 8 - 1)
+        return data.astype('uint8')
     else:
         return data
 
