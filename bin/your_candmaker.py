@@ -140,7 +140,7 @@ if __name__ == '__main__':
     values = parser.parse_args()
 
     logging_format = '%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s'
-    log_filename = args.fout + '/' + datetime.utcnow().strftime('your_candmaker_%Y_%m_%d_%H_%M_%S_%f.log')
+    log_filename = values.fout + '/' + datetime.utcnow().strftime('your_candmaker_%Y_%m_%d_%H_%M_%S_%f.log')
 
     if values.verbose:
         logging.basicConfig(filename=log_filename, level=logging.DEBUG, format=logging_format)
