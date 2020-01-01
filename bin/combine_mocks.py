@@ -89,7 +89,7 @@ def read_and_combine_subint(lowband_obj, upband_obj, fsub, upchanskip, lowchansk
     logger.debug(f'Combining data from relevant channels from upper and lower bands')
     # Note freq are not exactly same in the two subbands. Assuming fch1 and foff from lower band. 
     # The exact freq in upperband will vary
-    data = np.concatenate((lowsub_data[:,:-lowchanskip], upsub_data[:,upchanskip:]), axis=1)
+    data = np.flip(np.concatenate((lowsub_data[:,:-lowchanskip], upsub_data[:,upchanskip:]), axis=1), axis=1)
 
     if lowband_obj.nbits == 16:
         data -= np.mean(data)
@@ -110,7 +110,7 @@ def read_and_combine_subint(lowband_obj, upband_obj, fsub, upchanskip, lowchansk
     else:
         return data
 
-def make_sigproc_obj(filfile, lowband_obj, nchan, fch1):
+def make_sigproc_obj(filfile, lowband_obj, nchan, fch1, foff):
     '''
     Use Your class object of the lower band to make Sigproc
     class object with the relevant parameters
@@ -136,7 +136,7 @@ def make_sigproc_obj(filfile, lowband_obj, nchan, fch1):
     fil_obj.data_type = 0
 
     fil_obj.nchans = nchan  # lowband_obj.your_header.nchans * 2 - lowchanskip - upchanskip
-    fil_obj.foff = lowband_obj.your_header.foff
+    fil_obj.foff = foff
     fil_obj.fch1 = fch1
     fil_obj.nbeams = 1
     fil_obj.ibeam = 0
@@ -183,26 +183,28 @@ def write_fil(data, lowband_obj, upband_obj, filename = None, outdir = None):
     try:
         if os.stat(filfile).st_size > 1000: # check and replace with the size of header
             logger.info(f'Writing {data.shape[0]} spectra to file: {filfile}')
-            for spectra in tqdm.tqdm(data, desc=f'Spectra'):
-                append_spectra(spectra, filfile)
+            #for spectra in tqdm.tqdm(data, desc=f'Spectra'):
+            append_spectra(data, filfile)
 
         else:
             nchan = data.shape[1]
-            fch1 = lowband_obj.your_header.fch1 if lowband_obj.your_header.foff > 0 else upband_obj.your_header.fch1 #check logic
-            fil_obj = make_sigproc_obj(filfile, lowband_obj, nchan, fch1)
+            fch1 = upband_obj.chan_freqs.max()
+            foff = lowband_obj.foff if lowband_obj.foff < 0 else -1*lowband_obj.foff
+            fil_obj = make_sigproc_obj(filfile, lowband_obj, nchan, fch1, foff)
             fil_obj = write_header(fil_obj, filfile)
             logger.info(f'Writing {data.shape[0]} spectra to file: {filfile}')
-            for spectra in tqdm.tqdm(data, desc=f'Spectra'):
-                append_spectra(spectra, filfile)
+            #for spectra in tqdm.tqdm(data, desc=f'Spectra'):
+            append_spectra(data, filfile)
                 
     except FileNotFoundError:
         nchan = data.shape[1]
-        fch1 = lowband_obj.your_header.fch1 if lowband_obj.your_header.foff > 0 else upband_obj.your_header.fch1 #check logic
-        fil_obj = make_sigproc_obj(filfile, lowband_obj, nchan, fch1)
+        fch1 = upband_obj.chan_freqs.max()
+        foff = lowband_obj.foff if lowband_obj.foff < 0 else -1*lowband_obj.foff
+        fil_obj = make_sigproc_obj(filfile, lowband_obj, nchan, fch1, foff)
         fil_obj = write_header(fil_obj, filfile)
         logger.info(f'Writing {data.shape[0]} spectra to file: {filfile}')
-        for spectra in tqdm.tqdm(data, desc=f'Spectra'):
-            append_spectra(spectra, filfile)
+        #for spectra in tqdm.tqdm(data, desc=f'Spectra'):
+        append_spectra(data, filfile)
     logger.info(f'Successfully written data to Filterbank file: {filfile}')
     
 def append_spectra(spectra, filename):
@@ -239,6 +241,11 @@ def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
     y1 = Your(f1)
     y2 = Your(f2)
     (lowband_obj, upband_obj) = (y1, y2) if y1.chan_freqs.max() < y2.chan_freqs.max() else (y2, y1)
+    del y1
+    del y2
+
+    if lowband_obj.foff < 0 or upband_obj.foff < 0:
+        raise AttributeError('Negative foff in Mock fits not supported.')
     
     low_header = vars(lowband_obj.your_header)
     up_header = vars(upband_obj.your_header)
@@ -353,7 +360,7 @@ def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
                 raise ValueError("Number of bins to truncate is negative: %d" % trunc)
 
         logger.info(f'Writing data from subint {fsub} to filterbank')
-        write_fil(data, lowband_obj, upband_obj, outdir = outdir)
+        write_fil(data, lowband_obj, upband_obj, outdir = outdir, filename = filfile)
         logger.debug(f'Successfully written data from subint {fsub} to filterbank')
 
     logging.debug(f'Read all the necessary subints')    
