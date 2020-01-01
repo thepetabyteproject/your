@@ -3,6 +3,6 @@
 
 | Format        | Read                     | Write               |
 | ------------- |:-------------:           | -----:              |
-| filterbank    | :white_check_mark:       | :x:                 |
+| filterbank    | :white_check_mark:       | :white_check_mark:  |
 | psrfits       | :white_check_mark:       | :x:                 |
 | psrdada       | :x:                      | :white_check_mark:  |
