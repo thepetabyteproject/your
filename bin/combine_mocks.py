@@ -6,47 +6,37 @@ from the Mock Spectrometer
 Original C code: https://github.com/demorest/psrfits_utils/blob/master/combine_mocks.c
 """
 
-import argparse
-import glob
-import logging
-import os
-import tqdm
-from datetime import datetime
-
-import astropy.io.fits as pyfits
-import numpy as np
-
 from your import Your
-
+import numpy as np
+import os, tqdm, logging, argparse, glob
+from datetime import datetime
 logger = logging.getLogger(__name__)
-
 
 def calc_skipchan(lowband_obj, upband_obj):
     '''
-    Calculate the number of frequency channels to
-    skip from top of lower and bottom of upper
+    Calculate the number of frequency channels to 
+    skip from top of lower and bottom of upper 
     frequency bands
     :param lowband_obj: Your object for the lower frequency band
     :param upband_obj: Your object for the upper frequency band
     '''
-    assert lowband_obj.bw / lowband_obj.nchans == upband_obj.bw / upband_obj.nchans
+    assert lowband_obj.bw/lowband_obj.nchans == upband_obj.bw/upband_obj.nchans
     logger.debug(f'Calculating number of frequency channels to skip in upper and lower band.')
-    df = lowband_obj.bw / lowband_obj.nchans
+    df = lowband_obj.bw/lowband_obj.nchans
     upperfreqoflower = lowband_obj.chan_freqs.max()
     lowerfreqofupper = upband_obj.chan_freqs.min()
     nextfromlower = upperfreqoflower + np.abs(df)
     numchandiff = int(np.round((nextfromlower - lowerfreqofupper) / np.abs(df)))
     chanskip = numchandiff if numchandiff > 0 else 0
-    (upchanskip, lowchanskip) = (chanskip // 2, chanskip // 2 + 1) if chanskip % 2 else (chanskip // 2, chanskip // 2)
+    (upchanskip, lowchanskip) = (chanskip//2, chanskip//2 + 1) if chanskip%2 else (chanskip//2, chanskip//2)
 
-    if upchanskip % 2 == 1:  # Not needed now, but added for historic reasons.
-        upchanskip += 1
-        lowchanskip -= 1
-
+    if upchanskip % 2 == 1: # Not needed now, but added for historic reasons. 
+        upchanskip+=1
+        lowchanskip-=1
+        
     logger.debug(f'Number of frequency channels to skip in upper band are {upchanskip}')
     logger.debug(f'Number of frequency channels to skip in lower band are {lowchanskip}')
     return upchanskip, lowchanskip
-
 
 def read_and_combine_subint(lowband_obj, upband_obj, fsub, upchanskip, lowchanskip):
     '''
@@ -59,7 +49,7 @@ def read_and_combine_subint(lowband_obj, upband_obj, fsub, upchanskip, lowchansk
     :fsub: subint to read
     :upchanskip: Lower channels to skip from the upperband
     :lowchanskip: Upper channels to skip from the lower band
-    :return data: Combined data for the input subint
+    :return data: Combined data for the input subint 
     '''
     lowsub_data = lowband_obj.read_subint(fsub, apply_weights=False, apply_scales=False, apply_offsets=False)
     lowsub_scales = lowband_obj.get_scales(fsub)[:lowband_obj.nchan]
@@ -68,35 +58,34 @@ def read_and_combine_subint(lowband_obj, upband_obj, fsub, upchanskip, lowchansk
     upsub_data = upband_obj.read_subint(fsub, apply_weights=False, apply_scales=False, apply_offsets=False)
     upsub_scales = upband_obj.get_scales(fsub)[:upband_obj.nchan]
     upsub_offsets = upband_obj.get_offsets(fsub)[:upband_obj.nchan]
-
+    
     logger.debug(f'Read data, scales and offset of subint {fsub} from upper and lower band.')
-
+    
     if any(lowsub_offsets[lowchanskip:]) and any(upsub_offsets[:upchanskip]):
-        offsetfactor = np.mean(lowsub_offsets[lowchanskip:]) / np.mean(upsub_offsets[:upchanskip])
+        offsetfactor = np.mean(lowsub_offsets[lowchanskip:])/np.mean(upsub_offsets[:upchanskip])
     else:
         offsetfactor = 1
-    scalefactor = np.mean(lowsub_scales[lowchanskip:]) / np.mean(upsub_scales[:upchanskip])
-
+    scalefactor = np.mean(lowsub_scales[lowchanskip:])/np.mean(upsub_scales[:upchanskip])
+    
     logger.debug(f'Applying scales, offset and weights to lower band data.')
     lowsub_data *= lowsub_scales
     lowsub_data += lowsub_offsets
     lowsub_data *= lowband_obj.get_weights(fsub)[:lowband_obj.nchan]
 
     logger.debug(f'Applying scales, offset and weights to upper band data, and rescaling scales and offsets.')
-    upsub_data *= upsub_scales * scalefactor
-    upsub_data += upsub_offsets * offsetfactor
+    upsub_data *= upsub_scales*scalefactor
+    upsub_data += upsub_offsets*offsetfactor
     upsub_data *= upband_obj.get_weights(fsub)[:upband_obj.nchan]
 
     logger.debug(f'Combining data from relevant channels from upper and lower bands')
-    # Note freq are not exactly same in the two subbands. Assuming fch1 and foff from lower band.
+    # Note freq are not exactly same in the two subbands. Assuming fch1 and foff from lower band. 
     # The exact freq in upperband will vary
-    data = np.concatenate((lowsub_data[:, :-lowchanskip], upsub_data[:, upchanskip:]), axis=1)
-
+    data = np.concatenate((lowsub_data[:,:-lowchanskip], upsub_data[:,upchanskip:]), axis=1) 
+    
     if lowband_obj.nbits == 16:
         return data.astype('uint16')
     else:
         return data
-
 
 def make_sigproc_obj(filfile, lowband_obj, nchan, fch1):
     '''
@@ -115,7 +104,7 @@ def make_sigproc_obj(filfile, lowband_obj, nchan, fch1):
     logger.debug(f'Setting attributes of Sigproc object from Your object.')
     fil_obj.rawdatafile = filfile
     fil_obj.source_name = lowband_obj.your_header.source_name
-
+    
     # Verify the following parameters
     fil_obj.machine_id = 0  # since mock isn't a machine in the standard list, we use fake
     fil_obj.barycentric = 0  # by default the data isn't barycentered
@@ -145,62 +134,59 @@ def make_sigproc_obj(filfile, lowband_obj, nchan, fch1):
     fil_obj.za_start = -1
     return fil_obj
 
-
-def write_fil(data, lowband_obj, upband_obj, filename=None, outdir=None):
+def write_fil(data, lowband_obj, upband_obj, filename = None, outdir = None):
     '''
-    Write Filterbank file given the upper and lower band Your
+    Write Filterbank file given the upper and lower band Your 
     objects and combined data
     :param lowband_obj: Your object for the lower frequency band
     :param upband_obj: Your object for the upper frequency band
     :param upband_obj: Your object for the upper frequency band
-    :param data: Combined data from two bands
+    :param data: Combined data from two bands 
     :param filename: Output name of the Filterbank file
     :param outdir: Output directory for the Filterbank file
     '''
-
+    
     original_dir, orig_lowband_basename = os.path.split(lowband_obj.your_header.filename)
     if not filename:
-        filename = '.'.join(orig_lowband_basename.split('.')[:-3]) + '.fil'
-
+        filename = '.'.join(orig_lowband_basename.split('.')[:-3])+'.fil'
+    
     if not outdir:
         outdir = original_dir
-
-    filfile = outdir + '/' + filename
+     
+    filfile = outdir+'/'+filename
 
     # Add checks for an existing fil file
     logger.info(f'Trying to write data to filterbank file: {filfile}')
     try:
-        if os.stat(filfile).st_size > 1000:  # check and replace with the size of header
+        if os.stat(filfile).st_size > 1000: # check and replace with the size of header
             logger.info(f'Writing {data.shape[0]} spectra to file: {filfile}')
             for spectra in tqdm.tqdm(data, desc=f'Spectra'):
                 append_spectra(spectra, filfile)
 
         else:
             nchan = data.shape[1]
-            fch1 = lowband_obj.your_header.fch1 if lowband_obj.your_header.foff > 0 else upband_obj.your_header.fch1  # check logic
+            fch1 = lowband_obj.your_header.fch1 if lowband_obj.your_header.foff > 0 else upband_obj.your_header.fch1 #check logic
             fil_obj = make_sigproc_obj(filfile, lowband_obj, nchan, fch1)
             fil_obj = write_header(fil_obj, filfile)
             logger.info(f'Writing {data.shape[0]} spectra to file: {filfile}')
             for spectra in tqdm.tqdm(data, desc=f'Spectra'):
                 append_spectra(spectra, filfile)
-
+                
     except FileNotFoundError:
         nchan = data.shape[1]
-        fch1 = lowband_obj.your_header.fch1 if lowband_obj.your_header.foff > 0 else upband_obj.your_header.fch1  # check logic
+        fch1 = lowband_obj.your_header.fch1 if lowband_obj.your_header.foff > 0 else upband_obj.your_header.fch1 #check logic
         fil_obj = make_sigproc_obj(filfile, lowband_obj, nchan, fch1)
         fil_obj = write_header(fil_obj, filfile)
         logger.info(f'Writing {data.shape[0]} spectra to file: {filfile}')
         for spectra in tqdm.tqdm(data, desc=f'Spectra'):
             append_spectra(spectra, filfile)
     logger.info(f'Successfully written data to Filterbank file: {filfile}')
-
-
+    
 def append_spectra(spectra, filename):
     # Move to end of file
-    with open(filename, 'ab') as f:
+    with open(filename,'ab') as f:
         f.seek(0, os.SEEK_END)
         f.write(spectra.flatten().astype(spectra.dtype))
-
 
 def write_header(filobj, filename):
     '''
@@ -209,17 +195,16 @@ def write_header(filobj, filename):
     :param filename: file
     :return : object from pysigproc
     '''
-    with open(filename, 'wb') as f:
-        filobj.send_string('HEADER_START', f)
+    with open(filename,'wb') as f:
+        filobj.send_string('HEADER_START',f)
         for k in list(filobj._type.keys()):
-            filobj.send(k, f)
-        filobj.send_string('HEADER_END', f)
+            filobj.send(k,f)
+        filobj.send_string('HEADER_END',f)
     return filobj
-
 
 def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
     '''
-    combines data from two subbands from Mock spectrometer
+    combines data from two subbands from Mock spectrometer 
     and writes out a Filterbank file.
     :param f1: List of files from one subband
     :param f2: List of files from other subband
@@ -231,23 +216,23 @@ def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
     y1 = Your(f1)
     y2 = Your(f2)
     (lowband_obj, upband_obj) = (y1, y2) if y1.chan_freqs.max() < y2.chan_freqs.max() else (y2, y1)
-
+    
     low_header = vars(lowband_obj.your_header)
     up_header = vars(upband_obj.your_header)
     for key in low_header.keys():
-        if key is 'filelist' or key is 'filename' or key is 'center_freq' or key is 'fch1':
+        if key is 'filelist' or key is 'filename' or key is 'center_freq' or key is 'fch1': 
             continue
         if low_header[key] != up_header[key]:
             raise ValueError(f'Values of {key} are different in the two bands')
-
+    
     if len(low_header['filelist']) != len(up_header['filelist']):
         raise ValueError(f'Number of files are different in the two bands.')
-
+    
     upchanskip, lowchanskip = calc_skipchan(lowband_obj, upband_obj)
 
     if nsamp == -1:
         nsamp = lowband_obj.nspectra
-
+        
     # Calculate starting subint and ending subint
     startsub = int(nstart / lowband_obj.nsamp_per_subint)
     skip = int(nstart - (startsub * lowband_obj.nsamp_per_subint))
@@ -319,9 +304,9 @@ def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
             upband_obj.fits = pyfits.open(upband_obj.filename, mode='readonly', memmap=True)
 
         logger.debug(f"Using: {lowband_obj.fits} and {upband_obj.fits}")
-        fsub = int((isub - np.concatenate([np.array([0]), cumsum_num_subint]))[lowband_obj.fileid])
+        fsub = int((isub - np.concatenate([np.array([0]),cumsum_num_subint]))[lowband_obj.fileid])
         logger.debug(f'Reading subint {fsub} in file {lowband_obj.filename} and {upband_obj.filename}')
-
+        
         try:
             data = read_and_combine_subint(lowband_obj, upband_obj, fsub, upchanskip, lowchanskip)
         except KeyError:
@@ -336,20 +321,19 @@ def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
             data = read_and_combine_subint(lowband_obj, upband_obj, fsub, upchanskip, lowchanskip)
 
         if skip != 0 and isub == startsub:
-            data = data[skip:, :]
+            data = data[skip:,:]
 
         if isub == endsub:
             if trunc > 0:
-                data = data[:-trunc, :]
+                data = data[:-trunc,:]
             else:
                 raise ValueError("Number of bins to truncate is negative: %d" % trunc)
 
         logger.info(f'Writing data from subint {fsub} to filterbank')
-        write_fil(data, lowband_obj, upband_obj, outdir=outdir)
+        write_fil(data, lowband_obj, upband_obj, outdir = outdir)
         logger.debug(f'Successfully written data from subint {fsub} to filterbank')
 
-    logging.debug(f'Read all the necessary subints')
-
+    logging.debug(f'Read all the necessary subints')    
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Combine two bands from mock spectrometer to a filterbank file.",
@@ -358,12 +342,10 @@ if __name__ == '__main__':
     parser.add_argument('-f1', '--first_band', help='Path of files containing one band', required=True, type=str)
     parser.add_argument('-f2', '--second_band', help='Path of files containing second band', required=True, type=str)
     parser.add_argument('-s', '--nstart', type=int, help='Start sample number', default=0)
-    parser.add_argument('-n', '--nsamp', type=int, help='Number of samples to read (-1: whole file)',
+    parser.add_argument('-n', '--nsamp', type=int, help='Number of samples to read (-1: whole file)', 
                         default=-1, required=False)
-    parser.add_argument('-o', '--outdir', type=str, help='Output directory for Filterbank file', default='.',
-                        required=False)
-    parser.add_argument('-fil', '--fil_name', type=str, help='Output name of the Filterbank file', default=None,
-                        required=False)
+    parser.add_argument('-o', '--outdir', type=str, help='Output directory for Filterbank file', default='.', required=False)
+    parser.add_argument('-fil', '--fil_name', type=str, help='Output name of the Filterbank file', default=None, required=False)
     values = parser.parse_args()
 
     logging_format = '%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s'
@@ -373,6 +355,6 @@ if __name__ == '__main__':
         logging.basicConfig(filename=log_filename, level=logging.DEBUG, format=logging_format)
     else:
         logging.basicConfig(filename=log_filename, level=logging.INFO, format=logging_format)
-
-    combine(glob.glob(values.first_band), glob.glob(values.second_band), nstart=values.nstart, nsamp=values.nsamp,
+    
+    combine(glob.glob(values.first_band), glob.glob(values.second_band), nstart=values.nstart, nsamp=values.nsamp, 
             outdir=values.outdir, filfile=values.fil_name)
