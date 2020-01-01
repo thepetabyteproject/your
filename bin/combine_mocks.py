@@ -10,13 +10,14 @@ import argparse
 import glob
 import logging
 import os
-import tqdm
 from datetime import datetime
 
 import astropy.io.fits as pyfits
 import numpy as np
+import tqdm
 
 from your import Your
+from your.pysigproc import SigprocFile
 
 logger = logging.getLogger(__name__)
 
@@ -121,7 +122,6 @@ def make_sigproc_obj(filfile, lowband_obj, nchan, fch1, foff):
     :return fil_obj: Sigproc class object
     '''
     logger.debug(f'Generating Sigproc object')
-    from your.pysigproc import SigprocFile
     fil_obj = SigprocFile()
 
     logger.debug(f'Setting attributes of Sigproc object from Your object.')
@@ -181,52 +181,29 @@ def write_fil(data, lowband_obj, upband_obj, filename = None, outdir = None):
     # Add checks for an existing fil file
     logger.info(f'Trying to write data to filterbank file: {filfile}')
     try:
-        if os.stat(filfile).st_size > 1000: # check and replace with the size of header
+        if os.stat(filfile).st_size > 8192:  # check and replace with the size of header
             logger.info(f'Writing {data.shape[0]} spectra to file: {filfile}')
-            #for spectra in tqdm.tqdm(data, desc=f'Spectra'):
-            append_spectra(data, filfile)
+            SigprocFile.append_spectra(data, filfile)
 
         else:
             nchan = data.shape[1]
             fch1 = upband_obj.chan_freqs.max()
             foff = lowband_obj.foff if lowband_obj.foff < 0 else -1*lowband_obj.foff
             fil_obj = make_sigproc_obj(filfile, lowband_obj, nchan, fch1, foff)
-            fil_obj = write_header(fil_obj, filfile)
+            fil_obj.write_header(filfile)
             logger.info(f'Writing {data.shape[0]} spectra to file: {filfile}')
-            #for spectra in tqdm.tqdm(data, desc=f'Spectra'):
-            append_spectra(data, filfile)
+            fil_obj.append_spectra(data, filfile)
                 
     except FileNotFoundError:
         nchan = data.shape[1]
         fch1 = upband_obj.chan_freqs.max()
         foff = lowband_obj.foff if lowband_obj.foff < 0 else -1*lowband_obj.foff
         fil_obj = make_sigproc_obj(filfile, lowband_obj, nchan, fch1, foff)
-        fil_obj = write_header(fil_obj, filfile)
+        fil_obj.write_header(filfile)
         logger.info(f'Writing {data.shape[0]} spectra to file: {filfile}')
-        #for spectra in tqdm.tqdm(data, desc=f'Spectra'):
-        append_spectra(data, filfile)
+        fil_obj.append_spectra(data, filfile)
     logger.info(f'Successfully written data to Filterbank file: {filfile}')
     
-def append_spectra(spectra, filename):
-    # Move to end of file
-    with open(filename,'ab') as f:
-        f.seek(0, os.SEEK_END)
-        f.write(spectra.flatten().astype(spectra.dtype))
-
-def write_header(filobj, filename):
-    '''
-    write fiterbank header
-    :param filobj: object from pysigproc
-    :param filename: file
-    :return : object from pysigproc
-    '''
-    with open(filename,'wb') as f:
-        filobj.send_string('HEADER_START',f)
-        for k in list(filobj._type.keys()):
-            filobj.send(k,f)
-        filobj.send_string('HEADER_END',f)
-    return filobj
-
 def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
     '''
     combines data from two subbands from Mock spectrometer 
@@ -298,7 +275,7 @@ def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
 
     # Read data
     logger.debug(f"Startsub {startsub}, endsub {endsub}")
-    for isub in tqdm.tqdm(range(startsub, endsub + 1), desc=f'Subint', ascii=True):
+    for isub in tqdm.tqdm(range(startsub, endsub + 1), desc=f'Subint'):
         logger.debug(f"isub is {isub}")
         logger.debug(f"lowband file id is {lowband_obj.fileid}")
         logger.debug(f"upperband file id is {upband_obj.fileid}")
