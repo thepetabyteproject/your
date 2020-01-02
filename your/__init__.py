@@ -3,6 +3,8 @@ import json
 import logging
 import os
 
+import numpy as np
+
 from your.psrfits import PsrfitsFile
 from your.pysigproc import SigprocFile
 
@@ -58,12 +60,36 @@ class Your(PsrfitsFile, SigprocFile):
         else:
             return PsrfitsFile.nspectra(self)
 
-    def get_data(self, nstart, nsamp):
-        logger.debug(f'Reading from {nsamp} samples from sample {nstart}')
+    def get_data(self, nstart: int, nsamp: int, time_decimation_factor: int = 1):
+        """
+
+        :param nstart: start sample
+        :param nsamp: number of samples to read
+        :param time_decimation_factor: decimate time series by this factor
+        .. note:: nsamp % time decimation factor should be 0.
+        :return:
+        """
+        logger.debug(f"Reading from {nsamp} samples from sample {nstart}")
+
+        if nsamp % time_decimation_factor != 0:
+            raise ValueError(f"time_decimation_factor: {time_decimation_factor} should be a divisor of nsamp: {nsamp}")
+
         if self.isfil:
-            return SigprocFile.get_data(self, nstart, nsamp)
+            data = SigprocFile.get_data(self, nstart, nsamp)
         else:
-            return PsrfitsFile.get_data(self, nstart, nsamp)
+            data = PsrfitsFile.get_data(self, nstart, nsamp)
+
+        if time_decimation_factor > 1:
+            nt, nf = data.shape
+            if nf != self.your_header.nchans:
+                raise ValueError(f"We screwed up!")
+            data = data.reshape(time_decimation_factor, nt // time_decimation_factor, nf)
+            data = data.astype(np.float32)
+            data = data.mean(axis=0)
+            if self.nbits != 32:
+                data = np.round(data)
+                data = data.astype(self.your_header.dtype)
+        return data
 
     def __repr__(self):
         if isinstance(self.your_file, list):
@@ -111,6 +137,16 @@ class Header:
             self.center_freq = your.cfreq
 
         self.nbits = your.nbits
+
+        if self.nbits <= 8:
+            self.dtype = np.uint8
+        elif self.nbits == 16:
+            self.dtype = np.uint16
+        elif self.nbits == 32:
+            self.dtype = np.float32
+        else:
+            raise ValueError(f"Unsupported number of bits {self.nbits}")
+
         self.nchans = your.nchans
         self.tsamp = your.tsamp
         self.fch1 = your.fch1
