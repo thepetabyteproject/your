@@ -114,10 +114,7 @@ class YourDada:
             data_input = self.your_object.get_data(data_read, self.data_step)
             logger.debug(f"Data specs: Shape: {data_input.shape}, dtype: {data_input.dtype}")
             self.DM.dump_header(self.dada_header)
-            # TODO: This needs to be fixed it only works for uint8 as of now
-            if self.your_object.nbits > 8:
-                raise ValueError(f"Only nbits = 8 is supported for now")
-            self.DM.dump_data(data_input.flatten().astype('uint8'))
+            self.DM.dump_data(data_input.flatten().astype(self.your_object.your_header.dtype))
             if data_read == self.your_object.nspectra - self.data_step:
                 logger.info("Marked the End of Data")
                 self.DM.eod()
