@@ -337,8 +337,8 @@ def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
                 raise ValueError("Number of bins to truncate is negative: %d" % trunc)
     
         if data.shape[1] == 958:
-            logger.debug(f'Final number of frequency channels is {data.shape[1]}, mean padding the data to make 960 channels.')
-            data = np.pad(data, [(0,0), (0,960-data.shape[1])], 'mean')
+            logger.debug(f'Final number of frequency channels is {data.shape[1]}, padding the data to make 960 channels.')
+            data = np.pad(data, [(0,0), (0,960-data.shape[1])], 'constant', constant_values=np.mean(data[:,-1]))
             
         logger.info(f'Writing data from subint {fsub} to filterbank')
         write_fil(data, lowband_obj, upband_obj, outdir = outdir, filename = filfile)
