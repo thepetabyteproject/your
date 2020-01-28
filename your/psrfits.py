@@ -115,7 +115,7 @@ class PsrfitsFile(object):
         return self.fch1 + np.arange(self.nchans) * self.foff
 
     def read_subint(self, isub, apply_weights=True, apply_scales=True, \
-                    apply_offsets=True):
+                    apply_offsets=True, pol = 0):
         """
         Read a PSRFITS subint from a open pyfits file object.
          Applys scales, weights, and offsets to the data.
@@ -135,6 +135,10 @@ class PsrfitsFile(object):
         """
         sdata = self.fits['SUBINT'].data[isub]['DATA']
         shp = sdata.squeeze().shape
+
+        if pol > 0:
+            assert self.poln_order == "IQUV" , "Polarisation order in the file should be IQUV with pol=1 or pol=2"
+            
         if self.nbits < 8:  # Unpack the bytes data
             if (shp[0] != self.nsamp_per_subint) and \
                     (shp[1] != self.nchan * self.nbits / 8):
@@ -157,10 +161,18 @@ class PsrfitsFile(object):
                 data += sdata[:, 1, :].squeeze()
             elif (len(shp) == 3 and shp[1] == self.npoln and
                   self.poln_order == "IQUV"):
-                logger.warning("Polarization is IQUV, just using Stokes I")
+                logger.warning("Polarization is IQUV")
                 data = np.zeros((self.nsamp_per_subint,
                                  self.nchan), dtype=np.float32)
-                data += sdata[:, 0, :].squeeze()
+                if pol == 0:
+                    logger.warning("Just using Stokes I.")
+                    data += sdata[:, 0, :].squeeze()
+                elif pol == 1:
+                    logger.warning("Calculating right circular polarisation data.")
+                    data = data + ((sdata[:, 0, :] + sdata[:, 3, :])/2).squeeze()
+                else:
+                    logger.warning("Calculating left circular polarisation data.")
+                    data = data + ((sdata[:, 0, :] - sdata[:, 3, :])/2).squeeze()
             else:
                 data = np.asarray(sdata)
         data = data.reshape((self.nsamp_per_subint,
@@ -203,7 +215,7 @@ class PsrfitsFile(object):
         """
         return self.fits['SUBINT'].data[isub]['DAT_OFFS']
 
-    def get_data(self, nstart, nsamp):
+    def get_data(self, nstart, nsamp, pol = 0):
         """Return 2D array of data from PSRFITS file.
  
             Inputs:
@@ -262,13 +274,13 @@ class PsrfitsFile(object):
             fsub = int((isub - np.concatenate([np.array([0]),cumsum_num_subint]))[self.fileid])
             logger.debug(f'Reading subint {fsub} in file {self.filename}')
             try:
-                data.append(self.read_subint(fsub))
+                data.append(self.read_subint(fsub, pol = pol))
             except KeyError:
                 logger.warn(f"Encountered KeyError, maybe mmap'd object was delected")
                 logger.debug(f"Trying to open file {self.filename}")
                 self.fits = pyfits.open(self.filename, mode='readonly', memmap=True)
                 logger.debug(f'Reading subint {fsub} in file {self.filename}')
-                data.append(self.read_subint(fsub))
+                data.append(self.read_subint(fsub, pol = pol))
 
         logging.debug(f'Read all the necessary subints')
         if len(data) > 1:

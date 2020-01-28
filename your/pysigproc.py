@@ -144,14 +144,25 @@ class SigprocFile(object):
     def tend(self):
         return self.tstart + self.nspectra * self.tsamp / 86400.0
 
-    def get_data(self, nstart, nsamp, offset=0):
+    def get_data(self, nstart, nsamp, offset=0, pol=0):
         """Return nsamp time slices starting at nstart."""
         bstart = int(nstart) * self.bytes_per_spectrum
         nbytes = int(nsamp) * self.bytes_per_spectrum
         b0 = self.hdrbytes + bstart + (offset * self.bytes_per_spectrum)
         b1 = b0 + nbytes
-        return numpy.frombuffer(self._mmdata[int(b0):int(b1)],
-                                dtype=self.dtype).reshape((-1, self.nifs, self.nchans))
+
+        data = numpy.frombuffer(self._mmdata[int(b0):int(b1)],
+                                            dtype=self.dtype).reshape((-1, self.nifs, self.nchans))
+        if self.nifs == 1:
+            return data
+        else:
+            if pol == 0:
+                return data[:,0,:]
+            elif pol == 1:
+                return (data[:,0,:] + data[:, 3,:])/2
+            else:
+                return (data[:,0,:] - data[:, 3,:])/2
+
 
     def unpack(self, nstart, nsamp):
         """Unpack nsamp time slices starting at nstart to 32-bit floats."""

@@ -60,7 +60,7 @@ class Your(PsrfitsFile, SigprocFile):
         else:
             return PsrfitsFile.nspectra(self)
 
-    def get_data(self, nstart: int, nsamp: int, time_decimation_factor: int = 1):
+    def get_data(self, nstart: int, nsamp: int, time_decimation_factor: int = 1, pol: int = 0):
         """
 
         :param nstart: start sample
@@ -74,10 +74,20 @@ class Your(PsrfitsFile, SigprocFile):
         if nsamp % time_decimation_factor != 0:
             raise ValueError(f"time_decimation_factor: {time_decimation_factor} should be a divisor of nsamp: {nsamp}")
 
+        if pol not in [0, 1, 2]:
+            raise ValueError(f"pol: {pol} can only be one of 0 (Intensity), 1 (Right Circular), 2 (Left Circular)")
+
         if self.isfil:
-            data = SigprocFile.get_data(self, nstart, nsamp)
+            if pol > 0:
+                logging.warning(f"pol > 0 not tested for Filterbank files.")
+                if self.your_header.npol == 0:
+                    logging.warning(f"Data contains only one polarisation. Setting pol to 0")
+                    pol = 0
+                else:
+                    logging.warning(f'pol: {pol}, Assuming IQUV polarisation data in Filterbank file')
+            data = SigprocFile.get_data(self, nstart, nsamp, pol=pol)
         else:
-            data = PsrfitsFile.get_data(self, nstart, nsamp)
+            data = PsrfitsFile.get_data(self, nstart, nsamp, pol=pol)
 
         if time_decimation_factor > 1:
             nt, nf = data.shape
