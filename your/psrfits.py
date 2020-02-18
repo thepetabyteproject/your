@@ -228,8 +228,20 @@ class PsrfitsFile(object):
         # Calculate starting subint and ending subint
         startsub = int(nstart / self.nsamp_per_subint)
         skip = int(nstart - (startsub * self.nsamp_per_subint))
-        endsub = int((nstart + nsamp) / self.nsamp_per_subint)
+        endsub = int((nstart + nsamp - 1) / self.nsamp_per_subint)
         trunc = int(((endsub + 1) * self.nsamp_per_subint) - (nstart + nsamp))
+
+        totsubints = int(np.sum(self.specinfo.num_subint))
+
+        if endsub > totsubints - 1:
+            logger.warning(f"Not enough subints, returning data till last subint")
+            endsub = totsubints - 1
+            trunc = 0
+        else:
+            trunc = int(((endsub + 1) * self.nsamp_per_subint) - (nstart + nsamp))
+        
+        logger.debug(f'Number of spectra to skip from start: {skip}')
+        logger.debug(f'Number of spectra to truncate from end: {trunc}')
 
         cumsum_num_subint = np.cumsum(self.specinfo.num_subint)
         startfileid = np.where(startsub < cumsum_num_subint)[0][0]
@@ -261,7 +273,7 @@ class PsrfitsFile(object):
                 logger.debug("Delted mmap'ed object")
                 self.fileid += 1
                 if self.fileid == len(self.filelist):
-                    logger.warn(f"Not enough subints, returning data till last subint")
+                    logger.warning(f"Not enough subints, returning data till last subint")
                     logger.debug(f'Setting file ID to that of last file')
                     self.fileid-=1
                     break
@@ -276,7 +288,7 @@ class PsrfitsFile(object):
             try:
                 data.append(self.read_subint(fsub, pol = pol))
             except KeyError:
-                logger.warn(f"Encountered KeyError, maybe mmap'd object was delected")
+                logger.warning(f"Encountered KeyError, maybe mmap'd object was delected")
                 logger.debug(f"Trying to open file {self.filename}")
                 self.fits = pyfits.open(self.filename, mode='readonly', memmap=True)
                 logger.debug(f'Reading subint {fsub} in file {self.filename}')
