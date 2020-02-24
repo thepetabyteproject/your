@@ -151,8 +151,8 @@ def make_sigproc_obj(filfile, lowband_obj, nchan, fch1, foff):
     ra_hms = loc.ra.hms
     dec_dms = loc.dec.dms
 
-    fil_obj.src_raj = float(f'{int(ra_hms[0]):02d}{int(ra_hms[1]):02d}{ra_hms[2]:07.4f}')
-    fil_obj.src_dej = float(f'{int(dec_dms[0]):02d}{int(dec_dms[1]):02d}{dec_dms[2]:07.4f}')
+    fil_obj.src_raj = float(f'{int(ra_hms[0]):02d}{int(np.abs(ra_hms[1])):02d}{np.abs(ra_hms[2]):07.4f}')
+    fil_obj.src_dej = float(f'{int(dec_dms[0]):02d}{int(np.abs(dec_dms[1])):02d}{np.abs(dec_dms[2]):07.4f}')
 
     fil_obj.az_start = -1
     fil_obj.za_start = -1
