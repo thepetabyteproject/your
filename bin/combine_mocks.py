@@ -15,6 +15,7 @@ from datetime import datetime
 import astropy.io.fits as pyfits
 import numpy as np
 import tqdm
+import sys
 
 from your import Your
 from your.pysigproc import SigprocFile
@@ -344,19 +345,49 @@ def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
         write_fil(data, lowband_obj, upband_obj, outdir = outdir, filename = filfile)
         logger.debug(f'Successfully written data from subint {fsub} to filterbank')
 
-    logging.debug(f'Read all the necessary subints')    
+    logging.debug(f'Read all the necessary subints')
+
+def all_files(direct, nstart, nsamp, outdir):
+    names = {}
+    direct = os.path.join(direct,'')
+    outdir = os.path.join(outdir,'')
+    logger.debug('Looking for file pairs.')
+    for af in  glob.glob(direct+"*.fits"):
+        #base_name = os.path.splitext(os.path.basename(af))[0]
+        base_name = os.path.basename(af)
+        split = base_name.split('.')
+        file_one = direct+split[0]+'.'+split[1]+'.'+split[2]+'.'+split[3][0:2]+'s0'+split[3][4:6]+'.'+split[4]+'.fits'
+        if not os.path.exists(file_one):
+            logger.warning(f'File {file_one} does not exist! Cannot combine all file in this folder.')
+            print(f'File {file_one} does not exist! Cannot combine all file in this folder.')
+            sys.exit()
+        file_two = direct+split[0]+'.'+split[1]+'.'+split[2]+'.'+split[3][0:2]+'s1'+split[3][4:6]+'.'+split[4]+'.fits'
+        if not os.path.exists(file_two):
+            logger.warning(f'File {file_two} does not exist! Cannot combine all file in this folder.')
+            print(f'File {file_two} does not exist! Cannot combine all file in this folder.')
+            sys.exit()
+        out_file = split[0]+'.'+split[1]+'.'+split[2]+'.'+split[1]+'.'+split[3][0:2]+split[3][4:6]+'.'+split[4]+'.fil'
+        names[out_file] = [file_one, file_two]
+    logger.info(f'Found {len(names.keys())} file pairs, combing.')
+    for out in names:
+        #print(names[out][0])
+        #print(names[out][1])
+        #print(out)
+        combine(glob.glob(names[out][0]), glob.glob(names[out][1]), nstart=values.nstart, nsamp=values.nsamp, 
+            outdir=outdir, filfile=out)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Combine two bands from mock spectrometer to a filterbank file.",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-v', '--verbose', help='Be verbose', action='store_true')
-    parser.add_argument('-f1', '--first_band', help='Path of files containing one band', required=True, type=str)
-    parser.add_argument('-f2', '--second_band', help='Path of files containing second band', required=True, type=str)
+    parser.add_argument('-f1', '--first_band', help='Path of files containing one band', required=False, type=str)
+    parser.add_argument('-f2', '--second_band', help='Path of files containing second band', required=False, type=str)
     parser.add_argument('-s', '--nstart', type=int, help='Start sample number', default=0)
     parser.add_argument('-n', '--nsamp', type=int, help='Number of samples to read (-1: whole file)', 
                         default=-1, required=False)
     parser.add_argument('-o', '--outdir', type=str, help='Output directory for Filterbank file', default='.', required=False)
     parser.add_argument('-fil', '--fil_name', type=str, help='Output name of the Filterbank file', default=None, required=False)
+    parser.add_argument('-a','--all_files', type=str, help='Process all files in the given directory', default=None, required=False)
     values = parser.parse_args()
 
     logging_format = '%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s'
@@ -366,6 +397,11 @@ if __name__ == '__main__':
         logging.basicConfig(filename=log_filename, level=logging.DEBUG, format=logging_format)
     else:
         logging.basicConfig(filename=log_filename, level=logging.INFO, format=logging_format)
-    
-    combine(glob.glob(values.first_band), glob.glob(values.second_band), nstart=values.nstart, nsamp=values.nsamp, 
-            outdir=values.outdir, filfile=values.fil_name)
+       
+    if values.all_files:
+       all_files(values.all_files, nstart=values.nstart, nsamp=values.nsamp, outdir=values.outdir)
+    elif not ( values.first_band and values.second_band):
+        print('The following arguments are required: -f1/--first_band, -f2/--second_band OR -a/--all_files')
+    else:
+    	combine(glob.glob(values.first_band), glob.glob(values.second_band), nstart=values.nstart, nsamp=values.nsamp, 
+	    outdir=values.outdir, filfile=values.fil_name)
