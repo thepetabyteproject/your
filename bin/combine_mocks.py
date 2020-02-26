@@ -229,6 +229,13 @@ def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
     for key in low_header.keys():
         if key == 'filelist' or key == 'filename' or key == 'center_freq' or key == 'fch1': 
             continue
+        elif key == 'ra_deg' or key == 'dec_deg' or key == 'gl' or key == 'gb':
+            hpbw = 57.3*3*10**8/(low_header['center_freq']*10**6*200) # deg
+            if np.abs(low_header[key] - up_header[key]) > 0.1*hpbw:
+                raise ValueError(f'Value of {key} in the two bands differ by more than 10% FWHM')
+            else:
+                continue
+
         if low_header[key] != up_header[key]:
             raise ValueError(f'Values of {key} are different in the two bands')
     
