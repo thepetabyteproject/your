@@ -165,14 +165,23 @@ class PsrfitsFile(object):
                 data = np.zeros((self.nsamp_per_subint,
                                  self.nchan), dtype=np.float32)
                 if pol == 0:
-                    logger.warning("Just using Stokes I.")
+                    logger.info("Just using Stokes I.")
                     data += sdata[:, 0, :].squeeze()
                 elif pol == 1:
-                    logger.warning("Calculating right circular polarisation data.")
+                    logger.info("Calculating right circular polarisation data.")
                     data = data + ((sdata[:, 0, :] + sdata[:, 3, :])/2).squeeze()
-                else:
-                    logger.warning("Calculating left circular polarisation data.")
+                elif pol == 2:
+                    logger.info("Calculating left circular polarisation data.")
                     data = data + ((sdata[:, 0, :] - sdata[:, 3, :])/2).squeeze()
+                elif pol == 3:
+                    logger.info("Calculating horizontal linear polarisation data.")
+                    data = data + ((sdata[:, 0, :] + sdata[:, 1, :])/2).squeeze()
+                elif pol == 4:
+                    logger.info("Calculating vertical linear polarisation data.")
+                    data = data + ((sdata[:, 0, :] - sdata[:, 1, :])/2).squeeze()
+                else:
+                    raise ValueError(f"pol={pol} value not supported.")
+                    
             else:
                 data = np.asarray(sdata)
         data = data.reshape((self.nsamp_per_subint,

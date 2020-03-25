@@ -74,8 +74,9 @@ class Your(PsrfitsFile, SigprocFile):
         if nsamp % time_decimation_factor != 0:
             raise ValueError(f"time_decimation_factor: {time_decimation_factor} should be a divisor of nsamp: {nsamp}")
 
-        if pol not in [0, 1, 2]:
-            raise ValueError(f"pol: {pol} can only be one of 0 (Intensity), 1 (Right Circular), 2 (Left Circular)")
+        if pol not in [0, 1, 2, 3, 4]:
+            raise ValueError(f"pol: {pol} can only be one of 0 (Intensity), 1 (Right Circular), 2 (Left Circular), "
+                             "3 (Horizontal Linear), 4 (Vertical Linear)")
 
         if self.isfil:
             if pol > 0:
