@@ -7,6 +7,7 @@ import os
 
 os.environ['OPENBLAS_NUM_THREADS'] = '1'  # stop numpy multithreading regardless of the backend
 os.environ['MKL_NUM_THREADS'] = '1'
+os.environ['HDF5_USE_FILE_LOCKING'] = 'FALSE'
 
 from multiprocessing import Pool
 from datetime import datetime
@@ -73,7 +74,7 @@ def cand2h5(cand_val):
     :type cand_val: Candidate
     :return: None
     """
-    filename, snr, width, dm, label, tcand, kill_mask_path, args, gpu_id = cand_val
+    filename, snr, width, dm, label, tcand, kill_mask_path, num_files, args, gpu_id = cand_val
     if os.path.exists(str(kill_mask_path)):
         logger.info(f'Using mask {kill_mask_path}')
         kill_chans = np.loadtxt(kill_mask_path, dtype=np.int)
@@ -82,7 +83,12 @@ def cand2h5(cand_val):
 
     fname, ext = os.path.splitext(filename)
     if ext == ".fits" or ext == ".sf":
-        files = glob.glob(fname[:-5] + '*fits')
+        if num_files == 1:
+            files = [filename]
+        else:
+            files = glob.glob(fname[:-5] + '*fits')
+            if len(files) != num_files:
+                raise ValueError("Number of fits files found was not equal to num_files in cand csv.")
     elif ext == '.fil':
         files = [filename]
     else:
@@ -115,11 +121,11 @@ def cand2h5(cand_val):
     cand.dmt = normalise(cand.dmt)
     cand.dedispersed = normalise(cand.dedispersed)
     fout = cand.save_h5(out_dir=args.fout)
-    logger.debug(f"Filesize is {os.path.getsize(fout)}")
+    logger.debug(f"Filesize of {fout} is {os.path.getsize(fout)}")
     if not os.path.isfile(fout):
         raise IOError(f"File with {cand.id} not written")
-    if os.path.getsize(fout) < 200 * 1024:
-        raise ValueError(f"File with {cand.id} has issues!")
+    if os.path.getsize(fout) < 100 * 1024:
+        raise ValueError(f"File with id: {cand.id} has issues! Its size is too less.")
     logger.info(fout)
     return None
 
@@ -135,7 +141,7 @@ if __name__ == '__main__':
     parser.add_argument('-c', '--cand_param_file', help='csv file with candidate parameters', type=str, required=True)
     parser.add_argument('-n', '--nproc', type=int, help='number of processors to use in parallel (default: 2)',
                         default=2)
-    parser.add_argument('-o', '--fout', help='Output file directory for candidate h5', type=str)
+    parser.add_argument('-o', '--fout', help='Output file directory for candidate h5', type=str, default='.')
     parser.add_argument('-opt', '--opt_dm', dest='opt_dm', help='Optimise DM', action='store_true', default=False)
     values = parser.parse_args()
 
@@ -169,7 +175,7 @@ if __name__ == '__main__':
             gpu_id = values.gpu_id[0]
         process_list.append(
             [row['file'], row['snr'], 2 ** row['width'], row['dm'], row['label'], row['stime'],
-             row['chan_mask_path'], values, gpu_id])
+             row['chan_mask_path'], row['num_files'], values, gpu_id])
 
     with Pool(processes=values.nproc) as pool:
         pool.map(cand2h5, process_list, chunksize=1)
