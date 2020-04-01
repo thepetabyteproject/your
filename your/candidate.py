@@ -52,7 +52,10 @@ class Candidate(Your):
         if fnout is None:
             fnout = cand_id + '.h5'
         if out_dir is not None:
+            if out_dir[-1] != '/':
+                out_dir = out_dir + '/'
             fnout = out_dir + fnout
+        logger.info('Saving h5 file {fnout}.')
         with h5py.File(fnout, 'w') as f:
             f.attrs['cand_id'] = cand_id
             f.attrs['tcand'] = self.tcand
@@ -68,7 +71,10 @@ class Candidate(Your):
             # Copy over header information as attributes
             file_header = vars(self.your_header)    
             for key in file_header.keys():
-                f.attrs[key] = file_header[key]
+                if key == 'dtype':
+                    f.attrs[key] = np.dtype(file_header[key]).name
+                else:
+                    f.attrs[key] = file_header[key]
 
             freq_time_dset = f.create_dataset('data_freq_time', data=self.dedispersed, dtype=self.dedispersed.dtype,
                                               compression="gzip", compression_opts=9)
