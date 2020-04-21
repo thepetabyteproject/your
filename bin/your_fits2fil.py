@@ -158,10 +158,14 @@ if __name__ == '__main__':
         logging.basicConfig(filename=log_filename, level=logging.DEBUG, format=logging_format)
     else:
         logging.basicConfig(filename=log_filename, level=logging.INFO, format=logging_format)
-    
+   
+    logging.info("Input Arguments:-")
+    for arg, value in sorted(vars(values).items()):
+        logging.info("Argument %s: %r", arg, value)
+
     if len(values.files.split(' ')) > 1:
         files = values.files.split(' ')
     else:
-        files = glob(values.files)
+        files = glob.glob(values.files)
 
     convert(files, values.outdir, values.fil_name)
