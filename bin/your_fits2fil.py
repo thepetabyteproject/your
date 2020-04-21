@@ -78,7 +78,7 @@ def write_fil(data, y, filename = None, outdir = None):
 
     original_dir, orig_basename = os.path.split(y.your_header.filename)
     if not filename:
-        filename = '.'.join(orig_basename.split('.')[:-3])+'.fil'
+        filename = '_'.join(orig_basename.split('.')[0].split('_')[:-1])+'.fil'
     
     if not outdir:
         outdir = original_dir
@@ -116,28 +116,25 @@ def convert(f, outdir=None, filfile=None):
     :param filfile: Name of the Filterbank file to write to
     '''
     y = Your(f)
-
     fits_header = vars(y.your_header)
 
     # Calculate loop of spectra
     interval = 4096*24 
-    nloops = 1 + y.nspectra // interval
+    if y.nspectra > interval:
+        nloops = 1 + y.nspectra // interval
+    else:
+        nloops = 1
     nstarts = np.arange(0, interval*nloops, interval, dtype=int)
     nsamps = np.full(nloops, interval)
     if y.nspectra % interval != 0:
         nsamps[-1] = y.nspectra % interval
 
     # Read data
-
-    for nstart,nsamp in zip(nstarts, nsamps):
+    for nstart,nsamp in tqdm.tqdm(zip(nstarts, nsamps), total=len(nstarts)):
         logger.debug(f'Reading spectra {nstart}-{nstart+nsamp} in file {y.filename}')
-
         data = y.get_data(nstart, nsamp)[:,0,:].astype(y.your_header.dtype)
-
         logger.info(f'Writing data from spectra {nstart}-{nstart+nsamp} to filterbank')
-            
         write_fil(data, y, outdir = outdir, filename = filfile)
-            
         logger.debug(f'Successfully written data from spectra {nstart}-{nstart+nsamp} to filterbank')
 
     logging.debug(f'Read all the necessary spectra')
