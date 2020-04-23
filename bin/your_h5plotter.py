@@ -65,10 +65,6 @@ def plot_h5(h5_file, save=True, detrend_ft=True, publication=False):
     :return:
     """
     with h5py.File(h5_file, 'r') as f:
-        to_print = []
-        for key in f.attrs.keys():
-            to_print.append(f'{key} : {f.attrs[key]}\n')
-        str_print = ''.join(to_print)
         dm_time = np.array(f['data_dm_time'])
         if detrend_ft:
             freq_time = detrend(np.array(f['data_freq_time'])[:, ::-1].T)
@@ -103,7 +99,13 @@ def plot_h5(h5_file, save=True, detrend_ft=True, publication=False):
             ax4 = plt.subplot(gs[:, 1])
             to_print = []
             for key in f.attrs.keys():
-                to_print.append(f'{key} : {f.attrs[key]}\n')
+                if 'filelist' in key:
+                    pass
+                elif 'filename' in key:
+                    to_print.append(f'filename : {os.path.basename(f.attrs[key])}\n')
+                    to_print.append(f'filepath : {os.path.dirname(f.attrs[key])}\n')
+                else:
+                    to_print.append(f'{key} : {f.attrs[key]}\n')
             str_print = ''.join(to_print)
             ax4.text(0.2, 0, str_print, fontsize=14, ha='left', va='bottom', wrap=True)
             ax4.axis('off')
