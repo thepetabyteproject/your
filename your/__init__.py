@@ -60,6 +60,14 @@ class Your(PsrfitsFile, SigprocFile):
         else:
             return PsrfitsFile.nspectra(self)
 
+    @property
+    def bandpass(self):
+        """
+        Create the bandpass of all the data
+        :return: bandpass of the data
+        """
+        return self.get_data(nstart=0, nsamp=int(self.nspectra))[:, 0, :].mean(0)
+
     def get_data(self, nstart: int, nsamp: int, time_decimation_factor: int = 1, pol: int = 0):
         """
 

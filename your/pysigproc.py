@@ -192,14 +192,7 @@ class SigprocFile(object):
         """
         return self.fch1 + numpy.arange(self.nchans) * self.foff
 
-    @property
-    def bandpass(self):
-        """
-        Create the bandpass of all the data
-        :return: bandpass of the data
-        """
-        return self.get_data(nstart=0, nsamp=int(self.nspectra))[:, 0, :].mean(0)
-
+    
     def write_header(self, filename):
         '''
         write fiterbank header
