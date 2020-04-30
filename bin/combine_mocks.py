@@ -360,26 +360,20 @@ def all_files(direct, nstart, nsamp, outdir):
     outdir = os.path.join(outdir,'')
     logger.debug('Looking for file pairs.')
     for af in  glob.glob(direct+"*.fits"):
-        #base_name = os.path.splitext(os.path.basename(af))[0]
         base_name = os.path.basename(af)
         split = base_name.split('.')
         file_one = direct+split[0]+'.'+split[1]+'.'+split[2]+'.'+split[3][0:2]+'s0'+split[3][4:6]+'.*.fits'
-        #if not os.path.exists(file_one):
-        #    logger.warning(f'File {file_one} does not exist! Cannot combine all file in this folder.')
-        #    print(f'File {file_one} does not exist! Cannot combine all file in this folder.')
-        #    sys.exit()
+        if not os.path.exists(file_one):
+            logger.warning(f'File {file_one} does not exist! Cannot combine all file in this folder.')
+            sys.exit()
         file_two = direct+split[0]+'.'+split[1]+'.'+split[2]+'.'+split[3][0:2]+'s1'+split[3][4:6]+'.*.fits'
-        #if not os.path.exists(file_two):
-        #    logger.warning(f'File {file_two} does not exist! Cannot combine all file in this folder.')
-        #    print(f'File {file_two} does not exist! Cannot combine all file in this folder.')
-        #    sys.exit()
+        if not os.path.exists(file_two):
+            logger.warning(f'File {file_two} does not exist! Cannot combine all file in this folder.')
+            sys.exit()
         out_file = split[0]+'.'+split[1]+'.'+split[2]+'.'+split[1]+'.'+split[3][0:2]+split[3][4:6]+'.fil'
         names[out_file] = [file_one, file_two]
     logger.info(f'Found {len(names.keys())} file pairs, combing.')
     for out in names:
-        print(names[out][0])
-        print(names[out][1])
-        print(out)
         combine(glob.glob(names[out][0]), glob.glob(names[out][1]), nstart=values.nstart, nsamp=values.nsamp, 
             outdir=outdir, filfile=out)
 
