@@ -60,13 +60,25 @@ class Your(PsrfitsFile, SigprocFile):
         else:
             return PsrfitsFile.nspectra(self)
 
-    @property
-    def bandpass(self):
+        
+    def bandpass(self, nspectra=None):
         """
-        Create the bandpass of all the data
+        Create the bandpass of the data
         :return: bandpass of the data
         """
-        return self.get_data(nstart=0, nsamp=int(self.nspectra))[:, 0, :].mean(0)
+        if nspectra: 
+            if nspectra < self.nspectra:
+                ns = nspectra
+            else:
+                logger.info(f'nspectra > number of spectra in file, generating bandpass using all available spectra.')
+                ns = self.nspectra
+        else:
+            logger.warning(f'This will read all the data in the RAM. Might be slow as well.')
+            ns = self.nspectra
+
+        logger.debug(f'Generating bandpass using {ns} spectra.')
+        return self.get_data(nstart=0, nsamp=int(ns))[:, 0, :].mean(0)
+
 
     def get_data(self, nstart: int, nsamp: int, time_decimation_factor: int = 1, pol: int = 0):
         """
@@ -131,8 +143,9 @@ class Header:
                 self.filename = your.your_file[0]
             else:
                 raise IOError("Unknown type")
-
-            logger.debug(f'Generating unified header for file {self.filename}')
+                
+            self.basename = os.path.basename(os.path.splitext(self.filename)[0])
+            logger.debug(f'Generating unified header for file {self.basename}')
             if isinstance(your.source_name, str):
                 self.source_name = your.source_name
             else:
@@ -146,9 +159,10 @@ class Header:
             self.bw = your.nchans * your.foff
             self.center_freq = your.fch1 + self.bw / 2
         else:
-            logger.debug(f'Generating unified header for file {your.filename}')
             self.filelist = your.filelist
             self.filename = your.filename
+            self.basename = os.path.basename(os.path.splitext(self.filename)[0])[:-5]
+            logger.debug(f'Generating unified header for file {self.basename}')
             self.ra_deg = your.ra_deg
             self.dec_deg = your.dec_deg
             self.bw = your.bw
