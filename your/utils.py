@@ -1,17 +1,58 @@
 
 import logging
 import math
+import json
 import subprocess
 from functools import reduce
 
 import numpy as np
 from numba import cuda
+from scipy.signal import savgol_filter
 
 logger = logging.getLogger(__name__)
 from skimage.transform import resize
 
 ARCSECTORAD = float('4.8481368110953599358991410235794797595635330237270e-6')
 RADTODEG = float('57.295779513082320876798154814105170332405472466564')
+
+
+class MyEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.integer):
+            return int(obj)
+        elif isinstance(obj, np.floating):
+            return float(obj)
+        elif isinstance(obj, np.ndarray):
+            return obj.tolist()
+        else:
+            return super(MyEncoder, self).default(obj)
+        
+
+def get_sg_window(foff, fw = 15):
+    """
+    Calculates window size (number of channels) 
+    for savgol filter
+
+    :param foff: channel width
+    :param fw: window size in MHz
+    :return: window size for savgol filter
+    """
+    window = fw/np.abs(foff)
+    return int(np.ceil(window) // 2 * 2 + 1)
+
+def mask_finder(data, window, sig):
+    """
+
+    :param data: bandpass
+    :param window: window (number of channels) for savgol filter
+    :param sig: sigma for mask generation
+    :return: boolean mask with bad channel locations 
+    """
+    y = savgol_filter(data, window, 2)
+    sub = data-y
+    sigma = sig*np.std(sub)
+    mask = (sub > sigma) | (sub < -sigma)
+    return mask
 
 
 def _decimate(data, decimate_factor, axis, pad=False, **kwargs):
