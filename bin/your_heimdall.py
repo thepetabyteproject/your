@@ -11,7 +11,7 @@ import json
 
 from your import Your
 from your import dada
-from your.utils import dispersion_delay, get_sg_window, mask_finder, MyEncoder
+from your.utils import dispersion_delay, get_sg_window, mask_finder, MyEncoder, save_bandpass
 
 
 class HeimdallManager:
@@ -119,6 +119,9 @@ if __name__ == "__main__":
         mask = mask_finder(bandpass, window, 6)
         chan_nos=np.arange(0,bandpass.shape[0], dtype=np.int)
         bad_chans=list(chan_nos[mask])
+        
+        save_bandpass(your_object, bandpass, chan_nos=chan_nos, mask=mask, outdir=args.output_dir + '/')
+        
         kill_mask_file = args.output_dir + '/' + your_object.your_header.basename + '.bad_chans'
         with open(kill_mask_file,'w') as f:
             np.savetxt(f,chan_nos[mask],fmt='%d',delimiter=' ', newline=' ')
@@ -129,8 +132,8 @@ if __name__ == "__main__":
                          verbosity='v', nsamps_gulp=nsamps_gulp, gpu_id=args.gpu_id, output_dir=args.output_dir, 
                          zap_chans=bad_chans)
     
-    with open(args.output_dir + '/' + your_object.your_header.basename + '_heimdall_manager_inputs.json', 'w') as fp:
-        json.dump(HM.__dict__, fp, cls=MyEncoder)
+    with open(args.output_dir + '/' + your_object.your_header.basename + '_heimdall_inputs.json', 'w') as fp:
+        json.dump(HM.__dict__, fp, cls=MyEncoder, indent=4)
 
     dada_process = Process(name='To dada', target=your_dada.to_dada)
     heimdall_process = Process(name='Heimdall', target=HM.run)
