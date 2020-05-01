@@ -27,6 +27,50 @@ class MyEncoder(json.JSONEncoder):
         else:
             return super(MyEncoder, self).default(obj)
         
+def save_bandpass(your_object, bandpass, chan_nos=None, mask=[], outdir=None):
+    """
+    Plots and saves the bandpass
+    :param your_object: Your object
+    :param bandpass: Bandpass of data
+    :param chan_nos: array of channel numbers
+    :param mask: boolean array of channel mask 
+    :param outdir: output directory to save the plot
+    :return: 
+
+    """
+    
+    freqs = your_object.chan_freqs
+    foff = your_object.your_header.foff
+        
+    if not outdir:
+        outdir = './'
+
+    if chan_nos is None:
+        chan_nos=np.arange(0,bandpass.shape[0])
+        
+    bp_plot=outdir+ your_object.your_header.basename + '_bandpass.png'
+
+    import matplotlib.pyplot as plt
+    fig = plt.figure()
+    ax11 = fig.add_subplot(111)
+    if foff < 0:
+        ax11.invert_xaxis()
+
+    ax11.plot(freqs, bandpass,'k-',label="Bandpass")
+    if mask is not None:
+        if mask.sum():
+            logging.info('Flagged %d channels',mask.sum())
+            ax11.plot(freqs[mask],bandpass[mask],'ro',label="Flagged Channels")
+    ax11.set_xlabel("Frequency (MHz)")
+    ax11.set_ylabel("Arb. Units")
+    ax11.legend()
+
+    ax21 = ax11.twiny()
+    ax21.plot(chan_nos, bandpass,alpha=0)
+    ax21.set_xlabel("Channel Numbers")
+    
+    return plt.savefig(bp_plot,bbox_inches='tight')
+
 
 def get_sg_window(foff, fw = 15):
     """
