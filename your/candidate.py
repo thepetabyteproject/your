@@ -55,7 +55,7 @@ class Candidate(Your):
             if out_dir[-1] != '/':
                 out_dir = out_dir + '/'
             fnout = out_dir + fnout
-        logger.info('Saving h5 file {fnout}.')
+        logger.info(f'Saving h5 file {fnout}.')
         with h5py.File(fnout, 'w') as f:
             f.attrs['cand_id'] = cand_id
             f.attrs['tcand'] = self.tcand
