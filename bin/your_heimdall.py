@@ -7,10 +7,11 @@ from datetime import datetime
 from multiprocessing import Process
 
 import numpy as np
+import json
 
 from your import Your
 from your import dada
-from your.utils import dispersion_delay
+from your.utils import dispersion_delay, get_sg_window, mask_finder, MyEncoder
 
 
 class HeimdallManager:
@@ -50,8 +51,14 @@ class HeimdallManager:
         for attribute, value in self.__dict__.items():
             if value is not None:
                 if isinstance(value, list):
-                    cmd += str(f' -{attribute} ')
-                    cmd += ' '.join(map(str, value))
+                    if attribute == 'zap_chans':
+                        for chans in value:
+                            cmd += ' -zap_chans '
+                            cmd += str(chans) + ' '
+                            cmd += str(chans + 1)
+                    else:
+                        cmd += str(f' -{attribute} ')
+                        cmd += ' '.join(map(str, value))
                 elif attribute == 'verbosity':
                     if value in ['V', 'v', 'g', 'G']:
                         cmd += str(f' -{value} ')
@@ -59,7 +66,6 @@ class HeimdallManager:
                         logging.warning(f"Allowed verbosity is v,V,g,G")
                         logging.warning(f"Using v for now!")
                         cmd += f" -v "
-
                 else:
                     cmd += str(f' -{attribute} {value}')
 
@@ -75,8 +81,11 @@ if __name__ == "__main__":
     parser.add_argument('-f', '--files', help='filterbank or psrfits', nargs='+')
     parser.add_argument('-dm', '--dm', help='DM (eg -dm 10 1000)', type=float, nargs=2, default=[10, 1000])
     parser.add_argument('-g', '--gpu_id', help='GPU ID to run heimdall on', type=int, required=False, default=0)
+    parser.add_argument('-sg', '--apply_savgol', help='Apply savgol filter to zap bad channels', action='store_true')
+    parser.add_argument('-fw', '--filter_window', help='Window size (MHz) for savgol filter', required=False, 
+                        default=15, type=float)    
     parser.add_argument('-o', '--output_dir', help='Output dir for heimdall candidates', type=str, required=False,
-                        default=None)
+                        default=None)    
     args = parser.parse_args()
 
     if args.output_dir is None:
@@ -103,9 +112,25 @@ if __name__ == "__main__":
 
     your_dada = dada.YourDada(your_object)
     your_dada.setup()
-
+    
+    if args.apply_savgol:
+        bandpass = your_object.bandpass(nspectra=8192)
+        window = get_sg_window(your_object.your_header.foff, args.filter_window)
+        mask = mask_finder(bandpass, window, 6)
+        chan_nos=np.arange(0,bandpass.shape[0], dtype=np.int)
+        bad_chans=list(chan_nos[mask])
+        kill_mask_file = args.output_dir + '/' + your_object.your_header.basename + '.bad_chans'
+        with open(kill_mask_file,'w') as f:
+            np.savetxt(f,chan_nos[mask],fmt='%d',delimiter=' ', newline=' ')
+    else:
+        bad_chans = None
+        
     HM = HeimdallManager(dm=args.dm, dada_key=your_dada.dada_key, boxcar_max=int(32e-3 / your_object.tsamp),
-                         verbosity='v', nsamps_gulp=nsamps_gulp, gpu_id=args.gpu_id, output_dir=args.output_dir)
+                         verbosity='v', nsamps_gulp=nsamps_gulp, gpu_id=args.gpu_id, output_dir=args.output_dir, 
+                         zap_chans=bad_chans)
+    
+    with open(args.output_dir + '/' + your_object.your_header.basename + '_heimdall_manager_inputs.json', 'w') as fp:
+        json.dump(HM.__dict__, fp, cls=MyEncoder)
 
     dada_process = Process(name='To dada', target=your_dada.to_dada)
     heimdall_process = Process(name='Heimdall', target=HM.run)
