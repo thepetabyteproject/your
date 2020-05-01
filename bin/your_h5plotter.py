@@ -12,10 +12,10 @@ import pylab as plt
 from matplotlib import gridspec
 from scipy.signal import detrend
 from tqdm import tqdm
+from multiprocessing import Pool
 
 os.environ['HDF5_USE_FILE_LOCKING'] = 'FALSE'
 matplotlib.use('Agg')
-
 
 def figsize(scale):
     fig_width_pt = 513.17 #469.755                  # Get this from LaTeX using \the\textwidth
@@ -132,22 +132,26 @@ if __name__ == '__main__':
     parser.add_argument('-f', '--files', help='h5 files to be plotted', nargs='+', required=False)
     parser.add_argument('-c', '--results_csv', help='Plot positives in results.csv', required=False)
     parser.add_argument('--publish', help='Make publication quality plots', action='store_true')
+    parser.add_argument('-n', '--nproc', help='Number of processors to use in parallel (default: 4)', 
+                type=int, default=4, required=False)
+
     values = parser.parse_args()
-
     logging_format = '%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s'
-
     if values.verbose:
         logging.basicConfig(level=logging.DEBUG, format=logging_format)
     else:
         logging.basicConfig(level=logging.INFO, format=logging_format)
 
     if values.files:
-        for files in tqdm(values.files):
-            plot_h5(files, save=True, detrend_ft=True, publication=values.publish)
+        h5_files = values.files
     elif values.results_csv:
         df = pd.read_csv(values.results_csv)
         h5_files = list(df['candidate'][df['label'] == 1])
-        for files in tqdm(h5_files):
-            plot_h5(files, save=True, detrend_ft=True, publication=values.publish)
     else:
         raise ValueError(f"Need either --files or --results_csv argument.")
+
+    with Pool(processes=values.nproc) as p:
+        max_ = len(h5_files)
+        with tqdm(total=max_) as pbar:
+            for i, _ in tqdm(enumerate(p.imap_unordered(plot_h5, h5_files, chunksize=2))):
+                pbar.update()
