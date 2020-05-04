@@ -55,7 +55,7 @@ class HeimdallManager:
                         for chans in value:
                             cmd += ' -zap_chans '
                             cmd += str(chans) + ' '
-                            cmd += str(chans + 1)
+                            cmd += str(chans)
                     else:
                         cmd += str(f' -{attribute} ')
                         cmd += ' '.join(map(str, value))
