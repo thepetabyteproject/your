@@ -12,6 +12,9 @@ from scipy.signal import savgol_filter
 logger = logging.getLogger(__name__)
 from skimage.transform import resize
 
+import matplotlib
+matplotlib.use('Agg')
+
 ARCSECTORAD = float('4.8481368110953599358991410235794797595635330237270e-6')
 RADTODEG = float('57.295779513082320876798154814105170332405472466564')
 
