@@ -16,10 +16,9 @@ from your.utils import dispersion_delay, get_sg_window, mask_finder, MyEncoder, 
 
 class HeimdallManager:
 
-    def __init__(self, dada_key=None, filename=None, verbosity=None, nsamps_gulp=None, beam=None, baseline_length=None,
-                 output_dir=None, dm=None, dm_tol=None, zap_chans=None, max_giant_rate=None, dm_nbits=None, gpu_id=None,
-                 no_scrunching=None, scrunching_tol=None, rfi_tol=None,
-                 rfi_no_narrow=None, rfi_no_broad=None, boxcar_max=None, fswap=None,
+    def __init__(self, dada_key=None, filename=None, verbosity=None, nsamps_gulp=262144, beam=None, baseline_length=2,
+                 output_dir=None, dm=None, dm_tol=1.25, zap_chans=None, max_giant_rate=None, dm_nbits=32, gpu_id=None,
+                 no_scrunching=False, rfi_tol=5, rfi_no_narrow=False, rfi_no_broad=False, boxcar_max=4096, fswap=None,
                  min_tscrunch_width=None):
         self.k = dada_key
         self.f = filename
@@ -35,7 +34,6 @@ class HeimdallManager:
         self.dm_nbits = dm_nbits
         self.gpu_id = gpu_id
         self.no_scrunching = no_scrunching
-        self.scrunching_tol = scrunching_tol
         self.rfi_tol = rfi_tol
         self.rfi_no_narrow = rfi_no_narrow
         self.rfi_no_broad = rfi_no_broad
@@ -66,6 +64,9 @@ class HeimdallManager:
                         logging.warning(f"Allowed verbosity is v,V,g,G")
                         logging.warning(f"Using v for now!")
                         cmd += f" -v "
+                elif attribute == 'no_scrunching' or attribute == 'rfi_no_narrow' or attribute == 'rfi_no_broad':
+                    if value:
+                        cmd += str(f' -{attribute}')
                 else:
                     cmd += str(f' -{attribute} {value}')
 
