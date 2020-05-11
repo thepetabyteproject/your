@@ -102,6 +102,10 @@ if __name__ == "__main__":
     else:
         logging.basicConfig(filename=log_filename, level=logging.INFO, format=logging_format)
 
+    logging.info("Input Arguments:-")
+    for arg, value in sorted(vars(args).items()):
+        logging.info("%s: %r", arg, value)
+    
     your_object = Your(file=args.files)
     max_delay = dispersion_delay(your_object, dms=np.max(args.dm))
     dispersion_delay_samples = np.ceil(max_delay / your_object.tsamp)
