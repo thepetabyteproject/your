@@ -85,6 +85,7 @@ if __name__ == "__main__":
     parser.add_argument('-sg', '--apply_savgol', help='Apply savgol filter to zap bad channels', action='store_true')
     parser.add_argument('-fw', '--filter_window', help='Window size (MHz) for savgol filter', required=False, 
                         default=15, type=float)    
+    parser.add_argument('-rfi_no_broad', '--rfi_no_broad', help='disable 0-DM RFI excision', required=False, action='store_true', default=False)
     parser.add_argument('-o', '--output_dir', help='Output dir for heimdall candidates', type=str, required=False,
                         default=None)    
     args = parser.parse_args()
@@ -135,7 +136,7 @@ if __name__ == "__main__":
         
     HM = HeimdallManager(dm=args.dm, dada_key=your_dada.dada_key, boxcar_max=int(32e-3 / your_object.tsamp),
                          verbosity='v', nsamps_gulp=nsamps_gulp, gpu_id=args.gpu_id, output_dir=args.output_dir, 
-                         zap_chans=bad_chans)
+                         zap_chans=bad_chans, rfi_no_broad=args.rfi_no_broad)
     
     with open(args.output_dir + '/' + your_object.your_header.basename + '_heimdall_inputs.json', 'w') as fp:
         json.dump(HM.__dict__, fp, cls=MyEncoder, indent=4)
