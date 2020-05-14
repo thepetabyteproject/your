@@ -8,13 +8,13 @@ Not all possible features are implemented.
 Original Source: https://github.com/demorest/pysigproc/blob/master/pysigproc.py
 
 """
-import os
-import struct
 import sys
 from collections import OrderedDict
 
 import mmap
 import numpy
+import os
+import struct
 
 
 class SigprocFile(object):
@@ -185,14 +185,17 @@ class SigprocFile(object):
         return unpacked
 
     @property
-    def chan_freqs(self):
-        """
-        Numpy array of all channel frequencies.
-        :return: channel frequencies
-        """
-        return self.fch1 + numpy.arange(self.nchans) * self.foff
+    def native_tsamp(self):
+        return self.tsamp
 
-    
+    @property
+    def native_foff(self):
+        return self.foff
+
+    @property
+    def native_nchans(self):
+        return self.nchans
+
     def write_header(self, filename):
         '''
         write fiterbank header

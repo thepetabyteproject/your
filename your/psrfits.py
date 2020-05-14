@@ -8,13 +8,13 @@ Original Source: https://github.com/scottransom/presto/blob/master/python/presto
 """
 import argparse
 import logging
-import os
-import os.path
 import re
 
 import astropy.io.fits as pyfits
 import astropy.time as aptime
 import numpy as np
+import os
+import os.path
 from astropy import coordinates, units
 
 # import spectra
@@ -107,15 +107,19 @@ class PsrfitsFile(object):
         return int(self.specinfo.spectra_per_subint * np.sum(self.specinfo.num_subint))
 
     @property
-    def tend(self):
-        return self.tstart + self.nspectra * self.tsamp / 86400.0
+    def native_tsamp(self):
+        return self.tsamp
 
     @property
-    def chan_freqs(self):
-        return self.fch1 + np.arange(self.nchans) * self.foff
+    def native_foff(self):
+        return self.foff
+
+    @property
+    def native_nchans(self):
+        return self.nchans
 
     def read_subint(self, isub, apply_weights=True, apply_scales=True, \
-                    apply_offsets=True, pol = 0):
+                    apply_offsets=True, pol=0):
         """
         Read a PSRFITS subint from a open pyfits file object.
          Applys scales, weights, and offsets to the data.

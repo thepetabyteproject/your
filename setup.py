@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name='your',
-    version='0.4.2',
+    version='0.4.9',
     packages=['your'],
     url='http://github.com/devanshkv/your',
     author='Devansh Agarwal, Kshitij Aggarwal',

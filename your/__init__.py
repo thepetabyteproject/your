@@ -14,6 +14,8 @@ logger = logging.getLogger(__name__)
 class Your(PsrfitsFile, SigprocFile):
     def __init__(self, file):
         self.your_file = file
+        self.time_decimation_factor = 1
+        self.frequency_decimation_factor = 1
         if isinstance(self.your_file, str):
             ext = os.path.splitext(self.your_file)[1]
             if ext == ".fits" or ext == ".sf":
@@ -60,13 +62,16 @@ class Your(PsrfitsFile, SigprocFile):
         else:
             return PsrfitsFile.nspectra(self)
 
-        
+    @property
+    def chan_freqs(self):
+        return self.fch1 + np.arange(self.nchans) * self.foff
+
     def bandpass(self, nspectra=None):
         """
         Create the bandpass of the data
         :return: bandpass of the data
         """
-        if nspectra: 
+        if nspectra:
             if nspectra < self.nspectra:
                 ns = nspectra
             else:
@@ -79,7 +84,7 @@ class Your(PsrfitsFile, SigprocFile):
         logger.debug(f'Generating bandpass using {ns} spectra.')
         return self.get_data(nstart=0, nsamp=int(ns))[:, 0, :].mean(0)
 
-    def get_data(self, nstart: int, nsamp: int, time_decimation_factor: int = 1, freq_decimation_factor: int = 1,
+    def get_data(self, nstart: int, nsamp: int, time_decimation_factor: int = 1, frequency_decimation_factor: int = 1,
                  pol: int = 0):
         """
 
@@ -142,6 +147,18 @@ class Your(PsrfitsFile, SigprocFile):
             s = self.your_file
         return f"Using {type(s)}:\n{s}"
 
+    @property
+    def tsamp(self):
+        return self.time_decimation_factor * self.native_tsamp
+
+    @property
+    def nchans(self):
+        return self.native_nchans // self.frequency_decimation_factor
+
+    @property
+    def foff(self):
+        return self.native_foff * self.frequency_decimation_factor
+
     def dispersion_delay(your_object, dms=5_000):
         return 4148808.0 * dms * (
                 1 / np.min(self.chan_freqs) ** 2 - 1 / np.max(self.chan_freqs) ** 2) / 1000
@@ -202,7 +219,7 @@ class Header:
         self.native_tsamp = your.tsamp
         self.native_nchans = your.nchans
         self.time_decimation_factor = your.time_decimation_factor
-        self.freq_decimation_factor = your.frequency_decimation_factor
+        self.frequency_decimation_factor = your.frequency_decimation_factor
         self.fch1 = your.fch1
         self.foff = your.foff
         self.npol = your.nifs
@@ -211,13 +228,7 @@ class Header:
         self.isfil = your.isfil
         self.nspectra = your.nspectra
 
-        @property
-        def tsamp(self):
-            return self.time_decimation_factor * self.native_tsamp
 
-        @property
-        def nchans(self):
-            return self.native_nchans // self.freq_decimation_factor
 
         from astropy.coordinates import SkyCoord
         loc = SkyCoord(self.ra_deg, self.dec_deg, unit='deg')

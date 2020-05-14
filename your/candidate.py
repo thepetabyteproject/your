@@ -111,15 +111,15 @@ class Candidate(Your):
         :return:
         """
         if tstart is None:
-            tstart = self.tcand - self.dispersion_delay() - self.width * self.tsamp
+            tstart = self.tcand - self.dispersion_delay() - self.width * self.native_tsamp
             if tstart < 0:
                 tstart = 0
         if tstop is None:
-            tstop = self.tcand + self.dispersion_delay() + self.width * self.tsamp
+            tstop = self.tcand + self.dispersion_delay() + self.width * self.native_tsamp
             if tstop > self.tend:
                 tstop = self.tend
-        nstart = int(tstart / self.tsamp)
-        nsamp = int((tstop - tstart) / self.tsamp)
+        nstart = int(tstart / self.native_tsamp)
+        nsamp = int((tstop - tstart) / self.native_tsamp)
         if self.width < 2:
             nchunk = self.min_samp
         else:
