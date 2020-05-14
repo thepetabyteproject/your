@@ -30,7 +30,7 @@ class MyEncoder(json.JSONEncoder):
         else:
             return super(MyEncoder, self).default(obj)
         
-def save_bandpass(your_object, bandpass, chan_nos=None, mask=[], outdir=None):
+def save_bandpass(your_object, bandpass, chan_nos=None, mask=[], outdir=None, outname=None):
     """
     Plots and saves the bandpass
     :param your_object: Your object
@@ -51,7 +51,10 @@ def save_bandpass(your_object, bandpass, chan_nos=None, mask=[], outdir=None):
     if chan_nos is None:
         chan_nos=np.arange(0,bandpass.shape[0])
         
-    bp_plot=outdir+ your_object.your_header.basename + '_bandpass.png'
+    if not outname:
+        bp_plot=outdir+ your_object.your_header.basename + '_bandpass.png'
+    else:
+        bp_plot = outname
 
     import matplotlib.pyplot as plt
     fig = plt.figure()
