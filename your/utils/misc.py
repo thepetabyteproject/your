@@ -7,6 +7,7 @@ from your.utils.math import closest_number
 logger = logging.getLogger(__name__)
 from skimage.transform import resize
 
+import json
 import matplotlib
 
 matplotlib.use('Agg')

@@ -1,15 +1,14 @@
 import glob
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='your',
     version='0.4.9',
-    packages=['your'],
+    packages=find_packages(),
     url='http://github.com/devanshkv/your',
     author='Devansh Agarwal, Kshitij Aggarwal',
     scripts=glob.glob('bin/*'),
-    package_dir={'your': 'your'},
     setup_requires=['numpy'],
     install_requires=['h5py', 'scikit-image', 'scipy', 'numba', 'astropy', 'Cython'],
     tests_require=['pytest'],

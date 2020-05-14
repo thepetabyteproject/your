@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-import logging
-
 import json
-import numpy as np
+import logging
 import os
+
+import numpy as np
 
 from your.psrfits import PsrfitsFile
 from your.pysigproc import SigprocFile
@@ -84,8 +84,8 @@ class Your(PsrfitsFile, SigprocFile):
         logger.debug(f'Generating bandpass using {ns} spectra.')
         return self.get_data(nstart=0, nsamp=int(ns))[:, 0, :].mean(0)
 
-    def get_data(self, nstart: int, nsamp: int, time_decimation_factor: int = self.time_decimation_factor,
-                 frequency_decimation_factor: int = self.frequency_decimation_factor, pol: int = 0):
+    def get_data(self, nstart: int, nsamp: int, time_decimation_factor: int = None,
+                 frequency_decimation_factor: int = None, pol: int = 0):
         """
 
         :param nstart: start sample

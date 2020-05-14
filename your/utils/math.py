@@ -1,6 +1,8 @@
 import math
 from functools import reduce
 
+import numpy as np
+
 
 def closest_number(big_num, small_num):
     """

@@ -1,3 +1,7 @@
+import numpy as np
+from scipy.signal import savgol_filter
+
+
 def get_sg_window(foff, fw=15):
     """
     Calculates window size (number of channels)

@@ -1,7 +1,11 @@
+import logging
 import math
 import subprocess
 
-from your.utils.misc import logger
+import numpy as np
+from numba import cuda
+
+logger = logging.getLogger(__name__)
 
 
 def gpu_dedisperse(cand, device=0):
