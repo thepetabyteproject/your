@@ -11,8 +11,8 @@ import os
 
 from your import Your
 from your import dada
+from your.utils.misc import save_bandpass, MyEncoder
 from your.utils.rfi import get_sg_window, mask_finder
-from your.utils.utils import dispersion_delay, MyEncoder, save_bandpass
 
 
 class HeimdallManager:
@@ -109,9 +109,9 @@ if __name__ == "__main__":
     logging.info("Input Arguments:-")
     for arg, value in sorted(vars(args).items()):
         logging.info("%s: %r", arg, value)
-    
+
     your_object = Your(file=args.files)
-    max_delay = dispersion_delay(your_object, dms=np.max(args.dm))
+    max_delay = your_object.dispersion_delay(dms=np.max(args.dm))
     dispersion_delay_samples = np.ceil(max_delay / your_object.tsamp)
     logging.info(f"Max Dispersion delay = {max_delay} s")
     logging.info(f"Max Dispersion delay = {dispersion_delay_samples} samples")

@@ -1,32 +1,17 @@
-
 import logging
-import math
-from functools import reduce
 
-import json
 import numpy as np
+
+from your.utils.math import closest_number
 
 logger = logging.getLogger(__name__)
 from skimage.transform import resize
 
 import matplotlib
+
 matplotlib.use('Agg')
 
-ARCSECTORAD = float('4.8481368110953599358991410235794797595635330237270e-6')
-RADTODEG = float('57.295779513082320876798154814105170332405472466564')
 
-
-class MyEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, np.integer):
-            return int(obj)
-        elif isinstance(obj, np.floating):
-            return float(obj)
-        elif isinstance(obj, np.ndarray):
-            return obj.tolist()
-        else:
-            return super(MyEncoder, self).default(obj)
-        
 def save_bandpass(your_object, bandpass, chan_nos=None, mask=[], outdir=None, outname=None):
     """
     Plots and saves the bandpass
@@ -161,76 +146,13 @@ def pad_along_axis(array: np.ndarray, target_length, loc='end', axis=0, **kwargs
     return np.pad(array, pad_width=npad, **kwargs)
 
 
-def closest_number(big_num, small_num):
-    """
-    Finds the difference between the closest multiple of a smaller number with respect to a bigger number
-    :param big_num: The bigger number to find the closest of
-    :param small_num: Number whose multiple is to be found and subtracted
-    :return:
-    """
-    if big_num % small_num == 0:
-        return 0
-    else:
-        q = big_num // small_num
-        return (q + 1) * small_num - big_num
-
-def primes(n):
-    """
-    Returns all the prime factors of a positive number
-    :param n: input positive number
-    """
-    primfac = []
-    d = 2
-    while d*d <= n:
-        while (n % d) == 0:
-            primfac.append(d)
-            n //= d
-        d += 1
-    if n > 1:
-        primfac.append(n)
-    return primfac
-
-def closest_divisor(n, m):
-    """
-    Calculates the divisor of n, which is closest to (i.e bigger than) m
-    :param n: larger number of which divisor is to be found 
-    :param m: divisor closest to this number
-    """
-    pfs = primes(n)
-    div = 1
-    ind = 0
-    while div < m:
-        div*=pfs[ind]
-        ind+=1
-    return div
-
-
-def dispersion_delay(your_object, dms=5_000):
-    return 4148808.0 * dms * (1 / np.min(your_object.chan_freqs) ** 2 - 1 / np.max(your_object.chan_freqs) ** 2) / 1000
-
-
-def find_gcd(list_of_nos):
-    x = reduce(math.gcd, list_of_nos)
-    return x
-
-def dec2deg(src_dej):
-    """
-    dec2deg(src_dej):
-       Convert the SIGPROC-style DDMMSS.SSSS declination to degrees
-    """
-    sign = 1.0
-    if (src_dej < 0): sign = -1.0;
-    xx = np.fabs(src_dej)
-    dd = int(np.floor(xx / 10000.0))
-    mm = int(np.floor((xx - dd * 10000.0) / 100.0))
-    ss = xx - dd * 10000.0 - mm * 100.0
-    return sign * ARCSECTORAD * (60.0 * (60.0 * dd + mm) + ss) * RADTODEG
-
-def ra2deg(src_raj):
-    """
-    ra2deg(src_raj):
-       Convert the SIGPROC-style HHMMSS.SSSS right ascension to degrees
-    """
-    return 15.0 * dec2deg(src_raj)
-
-
+class MyEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.integer):
+            return int(obj)
+        elif isinstance(obj, np.floating):
+            return float(obj)
+        elif isinstance(obj, np.ndarray):
+            return obj.tolist()
+        else:
+            return super(MyEncoder, self).default(obj)

@@ -6,7 +6,7 @@ from astropy.time import Time
 from psrdada import Writer
 from tqdm import tqdm
 
-from your.utils.utils import closest_divisor, find_gcd, primes
+from your.utils.math import primes, closest_divisor, find_gcd
 
 logger = logging.getLogger(__name__)
 

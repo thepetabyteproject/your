@@ -142,6 +142,10 @@ class Your(PsrfitsFile, SigprocFile):
             s = self.your_file
         return f"Using {type(s)}:\n{s}"
 
+    def dispersion_delay(your_object, dms=5_000):
+        return 4148808.0 * dms * (
+                1 / np.min(self.chan_freqs) ** 2 - 1 / np.max(self.chan_freqs) ** 2) / 1000
+
 
 class Header:
     # TODO: add nbeams, ibeam, data_type, az_start, za_start, telescope, backend
@@ -156,7 +160,7 @@ class Header:
                 self.filename = your.your_file[0]
             else:
                 raise IOError("Unknown type")
-                
+
             self.basename = os.path.basename(os.path.splitext(self.filename)[0])
             logger.debug(f'Generating unified header for file {self.basename}')
             if isinstance(your.source_name, str):
@@ -164,7 +168,8 @@ class Header:
             else:
                 self.source_name = your.source_name.decode("utf-8")
 
-            from your.utils.utils import dec2deg, ra2deg
+            from your.utils.astro import ra2deg
+            from your.utils.astro import dec2deg
             ra = ra2deg(your.src_raj)
             dec = dec2deg(your.src_dej)
             self.ra_deg = ra
@@ -212,7 +217,7 @@ class Header:
 
         @property
         def nchans(self):
-            return self.native_nchans * self.freq_decimation_factor
+            return self.native_nchans // self.freq_decimation_factor
 
         from astropy.coordinates import SkyCoord
         loc = SkyCoord(self.ra_deg, self.dec_deg, unit='deg')

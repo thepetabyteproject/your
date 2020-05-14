@@ -6,6 +6,8 @@ import logging
 import glob
 import os
 
+from your.utils.math import normalise
+
 os.environ['OPENBLAS_NUM_THREADS'] = '1'  # stop numpy multithreading regardless of the backend
 os.environ['MKL_NUM_THREADS'] = '1'
 os.environ['HDF5_USE_FILE_LOCKING'] = 'FALSE'
@@ -20,18 +22,6 @@ from your.candidate import Candidate, crop
 from your.utils.gpu import gpu_dedisp_and_dmt_crop
 
 logger = logging.getLogger()
-
-
-def normalise(data):
-    """
-    Noramlise the data by unit standard deviation and zero median
-    :param data: data
-    :return:
-    """
-    data = np.array(data, dtype=np.float32)
-    data -= np.median(data)
-    data /= np.std(data)
-    return data
 
 
 def cpu_dedisp_dmt(cand, args):

@@ -1,7 +1,7 @@
 import math
 import subprocess
 
-from your.utils.utils import logger
+from your.utils.misc import logger
 
 
 def gpu_dedisperse(cand, device=0):

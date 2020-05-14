@@ -6,8 +6,8 @@ import logging
 import numpy as np
 
 from your import Your
+from your.utils.misc import save_bandpass
 from your.utils.rfi import get_sg_window, mask_finder
-from your.utils.utils import save_bandpass
 
 logging_format = '%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s'
 logging.basicConfig(level=logging.INFO, format=logging_format)

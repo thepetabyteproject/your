@@ -5,8 +5,8 @@ from scipy.optimize import golden
 
 from your import Your
 from your.utils.gpu import gpu_dedisperse, gpu_dmt
-from your.utils.utils import *
-from your.utils.utils import _decimate, _resize
+from your.utils.misc import *
+from your.utils.misc import _decimate, _resize
 
 logger = logging.getLogger(__name__)
 
