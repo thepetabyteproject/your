@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-import json
 import logging
-import os
 
+import json
 import numpy as np
+import os
 
 from your.psrfits import PsrfitsFile
 from your.pysigproc import SigprocFile
@@ -79,8 +79,8 @@ class Your(PsrfitsFile, SigprocFile):
         logger.debug(f'Generating bandpass using {ns} spectra.')
         return self.get_data(nstart=0, nsamp=int(ns))[:, 0, :].mean(0)
 
-
-    def get_data(self, nstart: int, nsamp: int, time_decimation_factor: int = 1, pol: int = 0):
+    def get_data(self, nstart: int, nsamp: int, time_decimation_factor: int = 1, freq_decimation_factor: int = 1,
+                 pol: int = 0):
         """
 
         :param nstart: start sample
@@ -91,8 +91,19 @@ class Your(PsrfitsFile, SigprocFile):
         """
         logger.debug(f"Reading from {nsamp} samples from sample {nstart}")
 
-        if nsamp % time_decimation_factor != 0:
-            raise ValueError(f"time_decimation_factor: {time_decimation_factor} should be a divisor of nsamp: {nsamp}")
+        self.time_decimation_factor = time_decimation_factor
+        self.frequency_decimation_factor = frequency_decimation_factor
+
+        logger.debug(f"time_decimation_factor: {self.time_decimation_factor}")
+        logger.debug(f"frequency_decimation_factor: {self.frequency_decimation_factor}")
+
+        if nsamp % self.time_decimation_factor != 0:
+            raise ValueError(
+                f"time_decimation_factor: {self.time_decimation_factor} should be a divisor of nsamp: {nsamp}")
+
+        if self.nchans % self.frequency_decimation_factor != 0:
+            raise ValueError(
+                f"frequency_decimation_factor: {self.frequency_decimation_factor} should be a divisor or nchans:{self.nchans}")
 
         if pol not in [0, 1, 2, 3, 4]:
             raise ValueError(f"pol: {pol} can only be one of 0 (Intensity), 1 (Right Circular), 2 (Left Circular), "
@@ -110,13 +121,15 @@ class Your(PsrfitsFile, SigprocFile):
         else:
             data = PsrfitsFile.get_data(self, nstart, nsamp, pol=pol)
 
-        if time_decimation_factor > 1:
+        if (self.time_decimation_factor > 1) or (self.frequency_decimation_factor > 1):
             nt, nf = data.shape
             if nf != self.your_header.nchans:
                 raise ValueError(f"We screwed up!")
-            data = data.reshape(time_decimation_factor, nt // time_decimation_factor, nf)
+            data = data.reshape(self.time_decimation_factor, nt // self.time_decimation_factor,
+                                nf // self.frequency_decimation_factor, self.frequency_decimation_factor)
             data = data.astype(np.float32)
             data = data.mean(axis=0)
+            data = data.mean(axis=-1)
             if self.nbits != 32:
                 data = np.round(data)
                 data = data.astype(self.your_header.dtype)
@@ -181,13 +194,25 @@ class Header:
             raise ValueError(f"Unsupported number of bits {self.nbits}")
 
         self.nchans = your.nchans
-        self.tsamp = your.tsamp
+        self.native_tsamp = your.tsamp
+        self.native_nchans = your.nchans
+        self.time_decimation_factor = your.time_decimation_factor
+        self.freq_decimation_factor = your.frequency_decimation_factor
         self.fch1 = your.fch1
         self.foff = your.foff
         self.npol = your.nifs
         self.tstart = your.tstart
         self.isfits = your.isfits
         self.isfil = your.isfil
+        self.nspectra = your.nspectra
+
+        @property
+        def tsamp(self):
+            return self.time_decimation_factor * self.native_tsamp
+
+        @property
+        def nchans(self):
+            return self.native_nchans * self.freq_decimation_factor
 
         from astropy.coordinates import SkyCoord
         loc = SkyCoord(self.ra_deg, self.dec_deg, unit='deg')
