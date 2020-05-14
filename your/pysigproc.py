@@ -56,7 +56,6 @@ class SigprocFile(object):
             self.read_header(self.fp)
             self._mmdata = mmap.mmap(self.fp.fileno(), 0, mmap.MAP_PRIVATE,
                                      mmap.PROT_READ)
-
     ## See sigproc send_stuff.c
 
     @staticmethod
@@ -122,6 +121,10 @@ class SigprocFile(object):
                 setattr(self, s, val)
                 self.hdrbytes += datasize
 
+        self._tsamp = self.tsamp
+        self._foff = self.foff
+        self._nchans = self.nchans
+
     @property
     def dtype(self):
         if self.nbits == 8:
@@ -186,15 +189,15 @@ class SigprocFile(object):
 
     @property
     def native_tsamp(self):
-        return self.tsamp
+        return self._tsamp
 
     @property
     def native_foff(self):
-        return self.foff
+        return self._foff
 
     @property
     def native_nchans(self):
-        return self.nchans
+        return self._nchans
 
     def write_header(self, filename):
         '''

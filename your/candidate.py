@@ -160,7 +160,7 @@ class Candidate(Your):
                 nt, nf = self.data.shape
                 assert nf == len(self.chan_freqs)
                 delay_time = 4148808.0 * dms * (1 / (self.chan_freqs[0]) ** 2 - 1 / (self.chan_freqs) ** 2) / 1000
-                delay_bins = np.round(delay_time / self.tsamp).astype('int64')
+                delay_bins = np.round(delay_time / self.native_tsamp).astype('int64')
                 self.dedispersed = np.zeros(self.data.shape, dtype=np.float32)
                 for ii in range(nf):
                     self.dedispersed[:, ii] = np.concatenate(
@@ -183,7 +183,7 @@ class Candidate(Your):
             nt, nf = self.data.shape
             assert nf == len(self.chan_freqs)
             delay_time = 4148808.0 * dms * (1 / (self.chan_freqs[0]) ** 2 - 1 / (self.chan_freqs) ** 2) / 1000
-            delay_bins = np.round(delay_time / self.tsamp).astype('int64')
+            delay_bins = np.round(delay_time / self.naive_tsamp).astype('int64')
             ts = np.zeros(nt, dtype=np.float32)
             for ii in range(nf):
                 ts += np.concatenate([self.data[-delay_bins[ii]:, ii], self.data[:-delay_bins[ii], ii]])

@@ -84,8 +84,8 @@ class Your(PsrfitsFile, SigprocFile):
         logger.debug(f'Generating bandpass using {ns} spectra.')
         return self.get_data(nstart=0, nsamp=int(ns))[:, 0, :].mean(0)
 
-    def get_data(self, nstart: int, nsamp: int, time_decimation_factor: int = 1, frequency_decimation_factor: int = 1,
-                 pol: int = 0):
+    def get_data(self, nstart: int, nsamp: int, time_decimation_factor: int = self.time_decimation_factor,
+                 frequency_decimation_factor: int = self.frequency_decimation_factor, pol: int = 0):
         """
 
         :param nstart: start sample
@@ -98,6 +98,14 @@ class Your(PsrfitsFile, SigprocFile):
 
         self.time_decimation_factor = time_decimation_factor
         self.frequency_decimation_factor = frequency_decimation_factor
+
+        if self.time_decimation_factor != 1:
+            logger.warning(f"Setting Time decimation factor to {self.time_decimation_factor},"
+                           f"this will change the properties of the class")
+
+        if self.frequency_decimation_factor != 1:
+            logger.warning(f"Setting frequency decimation factor to {self.frequency_decimation_factor},"
+                           f"this will change the properties of the class")
 
         logger.debug(f"time_decimation_factor: {self.time_decimation_factor}")
         logger.debug(f"frequency_decimation_factor: {self.frequency_decimation_factor}")

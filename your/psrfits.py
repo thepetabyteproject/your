@@ -108,15 +108,15 @@ class PsrfitsFile(object):
 
     @property
     def native_tsamp(self):
-        return self.tsamp
+        return self.specinfo.dt
 
     @property
     def native_foff(self):
-        return self.foff
+        return self.bw / self.nchan
 
     @property
     def native_nchans(self):
-        return self.nchans
+        return self.nchan
 
     def read_subint(self, isub, apply_weights=True, apply_scales=True, \
                     apply_offsets=True, pol=0):
