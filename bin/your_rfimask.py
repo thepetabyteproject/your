@@ -2,14 +2,16 @@
 
 import argparse
 import logging
+
 import numpy as np
 
 from your import Your
-from your.utils import get_sg_window, mask_finder, save_bandpass
+from your.utils.rfi import get_sg_window, mask_finder
+from your.utils.utils import save_bandpass
 
 logging_format = '%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s'
 logging.basicConfig(level=logging.INFO, format=logging_format)
-    
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Make Bad channel mask",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)

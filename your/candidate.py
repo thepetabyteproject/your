@@ -4,10 +4,12 @@ import h5py
 from scipy.optimize import golden
 
 from your import Your
-from your.utils import *
-from your.utils import _decimate, _resize
+from your.utils.gpu import gpu_dedisperse, gpu_dmt
+from your.utils.utils import *
+from your.utils.utils import _decimate, _resize
 
 logger = logging.getLogger(__name__)
+
 
 class Candidate(Your):
     def __init__(self, fp=None, copy_hdr=None, dm=None, tcand=0, width=0, label=-1, snr=0, min_samp=256, device=0,

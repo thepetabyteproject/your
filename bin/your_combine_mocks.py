@@ -7,13 +7,13 @@ Original C code: https://github.com/demorest/psrfits_utils/blob/master/combine_m
 """
 
 import argparse
-import glob
 import logging
-import os
 from datetime import datetime
 
 import astropy.io.fits as pyfits
+import glob
 import numpy as np
+import os
 import tqdm
 
 from your import Your

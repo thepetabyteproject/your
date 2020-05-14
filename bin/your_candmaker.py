@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
 import argparse
-import glob
 import logging
+
+import glob
 import os
 
 os.environ['OPENBLAS_NUM_THREADS'] = '1'  # stop numpy multithreading regardless of the backend
@@ -16,7 +17,7 @@ import numpy as np
 import pandas as pd
 
 from your.candidate import Candidate, crop
-from your.utils import gpu_dedisp_and_dmt_crop
+from your.utils.gpu import gpu_dedisp_and_dmt_crop
 
 logger = logging.getLogger()
 

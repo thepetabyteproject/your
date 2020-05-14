@@ -164,7 +164,7 @@ class Header:
             else:
                 self.source_name = your.source_name.decode("utf-8")
 
-            from your.utils import dec2deg, ra2deg
+            from your.utils.utils import dec2deg, ra2deg
             ra = ra2deg(your.src_raj)
             dec = dec2deg(your.src_dej)
             self.ra_deg = ra

@@ -1,12 +1,12 @@
 import logging
-import os
 
 import numpy as np
+import os
 from astropy.time import Time
 from psrdada import Writer
 from tqdm import tqdm
 
-from your.utils import closest_divisor, find_gcd, primes
+from your.utils.utils import closest_divisor, find_gcd, primes
 
 logger = logging.getLogger(__name__)
 

@@ -2,16 +2,17 @@
 
 import argparse
 import logging
-import os
 from datetime import datetime
 from multiprocessing import Process
 
-import numpy as np
 import json
+import numpy as np
+import os
 
 from your import Your
 from your import dada
-from your.utils import dispersion_delay, get_sg_window, mask_finder, MyEncoder, save_bandpass
+from your.utils.rfi import get_sg_window, mask_finder
+from your.utils.utils import dispersion_delay, MyEncoder, save_bandpass
 
 
 class HeimdallManager:
