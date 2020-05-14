@@ -4,12 +4,15 @@ from scipy.signal import savgol_filter
 
 def get_sg_window(foff, fw=15):
     """
-    Calculates window size (number of channels)
-    for savgol filter
+    Find window length from channel bandwidth and window size in MHz
 
-    :param foff: channel width
-    :param fw: window size in MHz
-    :return: window size for savgol filter
+    Args:
+        foff: channel bandwidth (MHz)
+
+        fw: frequency window (MHz)
+
+    Returns: window length in samples
+
     """
     window = fw / np.abs(foff)
     return int(np.ceil(window) // 2 * 2 + 1)
@@ -17,11 +20,18 @@ def get_sg_window(foff, fw=15):
 
 def mask_finder(data, window, sig):
     """
+    Run savgol filter
 
-    :param data: bandpass
-    :param window: window (number of channels) for savgol filter
-    :param sig: sigma for mask generation
-    :return: boolean mask with bad channel locations
+    Args:
+        data: bandpass of the data
+
+        window: number of samples in the window (should be odd)
+
+        sig: sigma value to apply cutoff on
+
+
+    Returns: mask for channels
+
     """
     y = savgol_filter(data, window, 2)
     sub = data - y
@@ -32,11 +42,18 @@ def mask_finder(data, window, sig):
 
 def spectral_kurtosis(data, N=1, d=None):
     """
-    Spectral Kurtosis of the data
-    :param data: 2D array of the data
-    :param N: Accumulation length
-    :param d: shape factor
-    :return: Spectral Kurtosis of along the frequencies
+    Compute spectral kurtosis
+
+    Args:
+        data: 2D frequency time data
+
+        N: Number of accumulations on the FPGA
+
+        d: shape factor
+
+
+    Returns: Spectral Kurtosis along frequency axis
+
     """
     S1 = data.sum(0)
     S2 = (data ** 2).sum(0)

@@ -12,6 +12,10 @@ logger = logging.getLogger(__name__)
 
 
 class Your(PsrfitsFile, SigprocFile):
+    """
+    Your class!
+    """
+
     def __init__(self, file):
         self.your_file = file
         self.time_decimation_factor = 1
@@ -68,8 +72,12 @@ class Your(PsrfitsFile, SigprocFile):
 
     def bandpass(self, nspectra=None):
         """
-        Create the bandpass of the data
-        :return: bandpass of the data
+        Create the bandpass of the file
+        Args:
+            nspectra: Number of spectra to create bandpass of.
+
+        Returns: numpy bandpass array
+
         """
         if nspectra:
             if nspectra < self.nspectra:
@@ -84,20 +92,26 @@ class Your(PsrfitsFile, SigprocFile):
         logger.debug(f'Generating bandpass using {ns} spectra.')
         return self.get_data(nstart=0, nsamp=int(ns))[:, 0, :].mean(0)
 
-    def get_data(self, nstart: int, nsamp: int, time_decimation_factor: int = None,
-                 frequency_decimation_factor: int = None, pol: int = 0):
+    def get_data(self, nstart: int, nsamp: int, time_decimation_factor=None,
+                 frequency_decimation_factor=None, pol: int = 0):
         """
+        Read data from files
+        Args:
+            nstart: start sample
+            nsamp: number of samples to read
+            time_decimation_factor: decimate in time with this factor
+            frequency_decimation_factor: decimate in frequency with this factor
+            pol: which polarization to chose
 
-        :param nstart: start sample
-        :param nsamp: number of samples to read
-        :param time_decimation_factor: decimate time series by this factor
-        .. note:: nsamp % time decimation factor should be 0.
-        :return:
+        Returns: 2D numpy array of data
+
         """
         logger.debug(f"Reading from {nsamp} samples from sample {nstart}")
 
-        self.time_decimation_factor = time_decimation_factor
-        self.frequency_decimation_factor = frequency_decimation_factor
+        if time_decimation_factor is not None:
+            self.time_decimation_factor = time_decimation_factor
+        if frequency_decimation_factor is not None:
+            self.frequency_decimation_factor = frequency_decimation_factor
 
         if self.time_decimation_factor != 1:
             logger.warning(f"Setting Time decimation factor to {self.time_decimation_factor},"
