@@ -28,3 +28,19 @@ def mask_finder(data, window, sig):
     sigma = sig * np.std(sub)
     mask = (sub > sigma) | (sub < -sigma)
     return mask
+
+
+def spectral_kurtosis(data, N=1, d=None):
+    """
+    Spectral Kurtosis of the data
+    :param data: 2D array of the data
+    :param N: Accumulation length
+    :param d: shape factor
+    :return: Spectral Kurtosis of along the frequencies
+    """
+    S1 = data.sum(0)
+    S2 = (data ** 2).sum(0)
+    M = data.shape[0]
+    if d is None:
+        d = (np.nanmean(data.ravel()) / np.nanstd(data)) ** 2
+    return ((M * d * N) + 1) * ((M * S2 / (S1 ** 2)) - 1) / (M - 1)
