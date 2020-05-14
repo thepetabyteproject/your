@@ -7,11 +7,12 @@ def get_sg_window(foff, fw=15):
     Find window length from channel bandwidth and window size in MHz
 
     Args:
-        foff: channel bandwidth (MHz)
 
-        fw: frequency window (MHz)
+        foff (float): channel bandwidth (MHz)
 
-    Returns: window length in samples
+        fw (float): frequency window (MHz)
+
+    Returns (int): window length in samples
 
     """
     window = fw / np.abs(foff)
@@ -23,14 +24,15 @@ def mask_finder(data, window, sig):
     Run savgol filter
 
     Args:
-        data: bandpass of the data
 
-        window: number of samples in the window (should be odd)
+        data (numpy.ndarray): bandpass of the data
 
-        sig: sigma value to apply cutoff on
+        window (int): number of samples in the window (should be odd)
+
+        sig (float): sigma value to apply cutoff on
 
 
-    Returns: mask for channels
+    Returns (numpy.ndarray): mask for channels
 
     """
     y = savgol_filter(data, window, 2)
@@ -45,14 +47,15 @@ def spectral_kurtosis(data, N=1, d=None):
     Compute spectral kurtosis
 
     Args:
-        data: 2D frequency time data
 
-        N: Number of accumulations on the FPGA
+        data (numpy.ndarray): 2D frequency time data
 
-        d: shape factor
+        N (int): Number of accumulations on the FPGA
+
+        d (float): shape factor
 
 
-    Returns: Spectral Kurtosis along frequency axis
+    Returns (numpy.ndarray): Spectral Kurtosis along frequency axis
 
     """
     S1 = data.sum(0)
