@@ -6,3 +6,6 @@
 | filterbank    | :white_check_mark:       | :white_check_mark:  |
 | psrfits       | :white_check_mark:       | :x:                 |
 | psrdada       | :x:                      | :white_check_mark:  |
+
+The inspiration for the name comes for the Daily Dose of Internet [videos](https://www.youtube.com/channel/UCdC0An4ZPNr_YiFiYoVbwaw).
+
