@@ -139,7 +139,6 @@ class SigprocFile(object):
     def nspectra(self):
         return (self._mmdata.size() - self.hdrbytes) / self.bytes_per_spectrum
 
-    @property
     def native_nspectra(self):
         return (self._mmdata.size() - self.hdrbytes) / self.bytes_per_spectrum
 
@@ -187,15 +186,12 @@ class SigprocFile(object):
             unpacked[..., i::fac] = (d & mask) / 2 ** (i * self.nbits)
         return unpacked
 
-    @property
     def native_tsamp(self):
         return self.tsamp
 
-    @property
     def native_foff(self):
         return self.foff
 
-    @property
     def native_nchans(self):
         return self.nchans
 

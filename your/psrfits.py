@@ -105,19 +105,15 @@ class PsrfitsFile(object):
     def nspectra(self):
         return int(self.specinfo.spectra_per_subint * np.sum(self.specinfo.num_subint))
 
-    @property
     def native_nspectra(self):
         return int(self.specinfo.spectra_per_subint * np.sum(self.specinfo.num_subint))
 
-    @property
     def native_tsamp(self):
         return self.specinfo.dt
 
-    @property
     def native_foff(self):
         return self.bw / self.nchan
 
-    @property
     def native_nchans(self):
         return self.nchan
 

@@ -74,13 +74,13 @@ class Your(PsrfitsFile, SigprocFile):
             return SigprocFile.native_foff(self)
         else:
             return PsrfitsFile.native_foff(self)
-
-     @property                                          
-     def native_nchans(self):
-         if self.isfil:
-             return SigprocFile.native_nchans(self)
-         else:
-             return PsrfitsFile.native_nchans(self)
+     
+    @property
+    def native_nchans(self):
+        if self.isfil:
+            return SigprocFile.native_nchans(self)
+        else:
+            return PsrfitsFile.native_nchans(self)
 
     @property
     def native_nspectra(self):
@@ -259,7 +259,7 @@ class Header:
         self.native_tsamp = your.native_tsamp
         self.native_foff = your.native_foff
         self.native_nchans = your.native_nchans
-        self.native_nspecta = your.native_nspectra
+        self.native_nspectra = your.native_nspectra
         self.fch1 = your.fch1
         self.npol = your.nifs
         self.tstart = your.tstart
@@ -290,8 +290,8 @@ class Header:
         return self.native_foff * self.frequency_decimation_factor
 
     @property
-    def nspectra(selfs):
-        return self.native_nspecta // self.time_decimation_factor
+    def nspectra(self):
+        return self.native_nspectra // self.time_decimation_factor
 
     def __str__(self):
         hdr = vars(self)
