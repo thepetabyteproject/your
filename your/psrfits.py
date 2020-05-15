@@ -85,7 +85,6 @@ class PsrfitsFile(object):
         self.nsubints = self.specinfo.num_subint[0]
         self.freqs = self.fits['SUBINT'].data[0]['DAT_FREQ']
         self.frequencies = self.freqs  # Alias
-        self._tsamp = self.specinfo.dt
         self.nspec = self.specinfo.N
 
         # Unifying properties with pysigproc
@@ -93,12 +92,8 @@ class PsrfitsFile(object):
         self.bw = self.header['OBSBW']
         self.cfreq = self.header['OBSFREQ']
         self.fch1 = self.cfreq - self.bw / 2.0  # Verify
-        self._foff = self.bw / self.nchan
-        self._nchans = self.nchan
-        # now you have nchan, nchans and _nchans and you must be thinking why?
-        # nchan comes from the fits file, it is used in get data
-        # nchans is for consistency with pysigproc
-        # _nchans is for consistency with your
+        self.foff = self.bw / self.nchan
+        self.nchans = self.nchan
         self.tstart = self.specinfo.start_MJD[0]
         self.source_name = self.specinfo.source
         loc = coordinates.SkyCoord(self.header['RA'], self.header['DEC'], unit=(units.hourangle, units.deg))
@@ -108,6 +103,10 @@ class PsrfitsFile(object):
         self.backend = self.header['BACKEND'].strip()
 
     def nspectra(self):
+        return int(self.specinfo.spectra_per_subint * np.sum(self.specinfo.num_subint))
+
+    @property
+    def native_nspectra(self):
         return int(self.specinfo.spectra_per_subint * np.sum(self.specinfo.num_subint))
 
     @property

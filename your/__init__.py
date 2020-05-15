@@ -18,8 +18,6 @@ class Your(PsrfitsFile, SigprocFile):
 
     def __init__(self, file):
         self.your_file = file
-        self.time_decimation_factor = 1
-        self.frequency_decimation_factor = 1
         if isinstance(self.your_file, str):
             ext = os.path.splitext(self.your_file)[1]
             if ext == ".fits" or ext == ".sf":
@@ -96,41 +94,49 @@ class Your(PsrfitsFile, SigprocFile):
                  frequency_decimation_factor=None, pol: int = 0):
         """
         Read data from files
-        Args:
-            nstart: start sample
-            nsamp: number of samples to read
-            time_decimation_factor: decimate in time with this factor
-            frequency_decimation_factor: decimate in frequency with this factor
-            pol: which polarization to chose
 
-        Returns: 2D numpy array of data
+        Args:
+
+            nstart (int): start sample
+
+            nsamp (int): number of samples to read
+
+            time_decimation_factor (int): decimate in time with this factor
+
+            frequency_decimation_factor (int): decimate in frequency with this factor
+
+            pol (int): which polarization to chose
+
+        __NOTE__: Both decimation factors should exactly device the nsamp or nchans
+        Returns (numpy.ndarray) : 2D numpy array of data
+
 
         """
         logger.debug(f"Reading from {nsamp} samples from sample {nstart}")
 
+        if self.your_header.time_decimation_factor != 1:
+            logger.warning(f"Setting Time decimation factor to {self.your_header.time_decimation_factor},"
+                           f"this will change the properties of the class")
+
+        if self.your_header.frequency_decimation_factor != 1:
+            logger.warning(f"Setting frequency decimation factor to {self.your_header.frequency_decimation_factor},"
+                           f"this will change the properties of the class")
+
         if time_decimation_factor is not None:
-            self.time_decimation_factor = time_decimation_factor
+            self.your_header.time_decimation_factor = time_decimation_factor
         if frequency_decimation_factor is not None:
-            self.frequency_decimation_factor = frequency_decimation_factor
+            self.your_header.frequency_decimation_factor = frequency_decimation_factor
 
-        if self.time_decimation_factor != 1:
-            logger.warning(f"Setting Time decimation factor to {self.time_decimation_factor},"
-                           f"this will change the properties of the class")
+        logger.debug(f"time_decimation_factor: {self.your_header.time_decimation_factor}")
+        logger.debug(f"frequency_decimation_factor: {self.your_header.frequency_decimation_factor}")
 
-        if self.frequency_decimation_factor != 1:
-            logger.warning(f"Setting frequency decimation factor to {self.frequency_decimation_factor},"
-                           f"this will change the properties of the class")
-
-        logger.debug(f"time_decimation_factor: {self.time_decimation_factor}")
-        logger.debug(f"frequency_decimation_factor: {self.frequency_decimation_factor}")
-
-        if nsamp % self.time_decimation_factor != 0:
+        if nsamp % self.your_header.time_decimation_factor != 0:
             raise ValueError(
-                f"time_decimation_factor: {self.time_decimation_factor} should be a divisor of nsamp: {nsamp}")
+                f"time_decimation_factor: {self.your_header.time_decimation_factor} should be a divisor of nsamp: {nsamp}")
 
-        if self.nchans % self.frequency_decimation_factor != 0:
+        if self.nchans % self.your_header.frequency_decimation_factor != 0:
             raise ValueError(
-                f"frequency_decimation_factor: {self.frequency_decimation_factor} should be a divisor or nchans:{self.nchans}")
+                f"frequency_decimation_factor: {self.your_header.frequency_decimation_factor} should be a divisor or nchans:{self.nchans}")
 
         if pol not in [0, 1, 2, 3, 4]:
             raise ValueError(f"pol: {pol} can only be one of 0 (Intensity), 1 (Right Circular), 2 (Left Circular), "
@@ -148,13 +154,14 @@ class Your(PsrfitsFile, SigprocFile):
         else:
             data = PsrfitsFile.get_data(self, nstart, nsamp, pol=pol)
 
-        if (self.time_decimation_factor > 1) or (self.frequency_decimation_factor > 1):
+        if (self.your_header.time_decimation_factor > 1) or (self.your_header.frequency_decimation_factor > 1):
             data = data[:, 0, :]
             nt, nf = data.shape
-            if nf != self.your_header.nchans:
-                raise ValueError(f"We screwed up!")
-            data = data.reshape(self.time_decimation_factor, nt // self.time_decimation_factor,
-                                nf // self.frequency_decimation_factor, self.frequency_decimation_factor)
+            # if nf != self.your_header.nchans:
+            #    raise ValueError(f"We screwed up!")
+            data = data.reshape(self.your_header.time_decimation_factor, nt // self.your_header.time_decimation_factor,
+                                nf // self.your_header.frequency_decimation_factor,
+                                self.your_header.frequency_decimation_factor)
             data = data.astype(np.float32)
             data = data.mean(axis=0)
             data = data.mean(axis=-1)
@@ -169,18 +176,6 @@ class Your(PsrfitsFile, SigprocFile):
         else:
             s = self.your_file
         return f"Using {type(s)}:\n{s}"
-
-    @property
-    def tsamp(self):
-        return self.time_decimation_factor * self.native_tsamp
-
-    @property
-    def nchans(self):
-        return self.native_nchans // self.frequency_decimation_factor
-
-    @property
-    def foff(self):
-        return self.native_foff * self.frequency_decimation_factor
 
     def dispersion_delay(your_object, dms=5_000):
         return 4148808.0 * dms * (
@@ -238,20 +233,18 @@ class Header:
         else:
             raise ValueError(f"Unsupported number of bits {self.nbits}")
 
-        self.nchans = your.nchans
-        self.native_tsamp = your.tsamp
-        self.native_nchans = your.nchans
-        self.time_decimation_factor = your.time_decimation_factor
-        self.frequency_decimation_factor = your.frequency_decimation_factor
+        self.time_decimation_factor = 1
+        self.frequency_decimation_factor = 1
+        self.native_tsamp = your.native_tsamp
+        self.native_foff = your.native_foff
+        self.native_nchans = your.native_nchans
+        self.native_nspecta = your.native_nspectra
         self.fch1 = your.fch1
-        self.foff = your.foff
         self.npol = your.nifs
         self.tstart = your.tstart
         self.isfits = your.isfits
         self.isfil = your.isfil
         self.nspectra = your.nspectra
-
-
 
         from astropy.coordinates import SkyCoord
         loc = SkyCoord(self.ra_deg, self.dec_deg, unit='deg')
@@ -263,6 +256,22 @@ class Header:
         self.tstart_utc = ts.utc.isot
 
         logger.debug(f'Successfully generated unified header for file {self.filename}')
+
+    @property
+    def tsamp(self):
+        return self.time_decimation_factor * self.native_tsamp
+
+    @property
+    def nchans(self):
+        return self.native_nchans // self.frequency_decimation_factor
+
+    @property
+    def foff(self):
+        return self.native_foff * self.frequency_decimation_factor
+
+    @property
+    def nspectra(selfs):
+        return self.native_nspecta // self.time_decimation_factor
 
     def __str__(self):
         hdr = vars(self)
