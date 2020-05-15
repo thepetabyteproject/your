@@ -8,13 +8,13 @@ Original Source: https://github.com/scottransom/presto/blob/master/python/presto
 """
 import argparse
 import logging
+import os
+import os.path
 import re
 
 import astropy.io.fits as pyfits
 import astropy.time as aptime
 import numpy as np
-import os
-import os.path
 from astropy import coordinates, units
 
 # import spectra
@@ -86,7 +86,6 @@ class PsrfitsFile(object):
         self.freqs = self.fits['SUBINT'].data[0]['DAT_FREQ']
         self.frequencies = self.freqs  # Alias
         self._tsamp = self.specinfo.dt
-        self.tsamp = self.specinfo.dt
         self.nspec = self.specinfo.N
 
         # Unifying properties with pysigproc
@@ -96,8 +95,6 @@ class PsrfitsFile(object):
         self.fch1 = self.cfreq - self.bw / 2.0  # Verify
         self._foff = self.bw / self.nchan
         self._nchans = self.nchan
-        self.foff = self.bw / self.nchan
-        self.nchans = self.nchan
         # now you have nchan, nchans and _nchans and you must be thinking why?
         # nchan comes from the fits file, it is used in get data
         # nchans is for consistency with pysigproc
