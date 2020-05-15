@@ -58,15 +58,36 @@ class Your(PsrfitsFile, SigprocFile):
         self.your_header = Header(self)
 
     @property
-    def nspectra(self):
-        if self.isfil:
-            return SigprocFile.nspectra(self)
-        else:
-            return PsrfitsFile.nspectra(self)
-
-    @property
     def chan_freqs(self):
         return self.fch1 + np.arange(self.nchans) * self.foff
+
+    @property
+    def native_tsamp(self):
+        if self.isfil:
+            return SigprocFile.native_tsamp(self)
+        else:
+            return PsrfitsFile.native_tsamp(self)
+
+    @property
+    def native_foff(self):
+        if self.isfil:
+            return SigprocFile.native_foff(self)
+        else:
+            return PsrfitsFile.native_foff(self)
+
+     @property                                          
+     def native_nchans(self):
+         if self.isfil:
+             return SigprocFile.native_nchans(self)
+         else:
+             return PsrfitsFile.native_nchans(self)
+
+    @property
+    def native_nspectra(self):
+        if self.isfil:
+            return SigprocFile.native_nspectra(self)
+        else:
+            return PsrfitsFile.native_nspectra(self)
 
     def bandpass(self, nspectra=None):
         """
@@ -244,7 +265,6 @@ class Header:
         self.tstart = your.tstart
         self.isfits = your.isfits
         self.isfil = your.isfil
-        self.native_nspectra = your.native_nspectra
 
         from astropy.coordinates import SkyCoord
         loc = SkyCoord(self.ra_deg, self.dec_deg, unit='deg')
