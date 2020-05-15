@@ -149,6 +149,7 @@ class Your(PsrfitsFile, SigprocFile):
             data = PsrfitsFile.get_data(self, nstart, nsamp, pol=pol)
 
         if (self.time_decimation_factor > 1) or (self.frequency_decimation_factor > 1):
+            data = data[:, 0, :]
             nt, nf = data.shape
             if nf != self.your_header.nchans:
                 raise ValueError(f"We screwed up!")

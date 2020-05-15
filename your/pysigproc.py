@@ -8,13 +8,13 @@ Not all possible features are implemented.
 Original Source: https://github.com/demorest/pysigproc/blob/master/pysigproc.py
 
 """
+import mmap
+import os
+import struct
 import sys
 from collections import OrderedDict
 
-import mmap
 import numpy
-import os
-import struct
 
 
 class SigprocFile(object):
@@ -145,7 +145,7 @@ class SigprocFile(object):
 
     @property
     def tend(self):
-        return self.tstart + self.nspectra * self.tsamp / 86400.0
+        return self.tstart + self.nspectra * self._tsamp / 86400.0
 
     def get_data(self, nstart, nsamp, offset=0, pol=0):
         """Return nsamp time slices starting at nstart."""
