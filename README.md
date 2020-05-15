@@ -9,3 +9,10 @@
 
 The inspiration for the name comes for the Daily Dose of Internet [videos](https://www.youtube.com/channel/UCdC0An4ZPNr_YiFiYoVbwaw).
 
+# Installation
+First you need to install [psrdada-python](https://github.com/AA-ALERT/psrdada-python).
+Once psrdada is installed, git clone the repo and use `setup.py` to install `your`.
+
+    git clone https://github.com/devanshkv/your.git
+    cd your
+    python setup.py install
