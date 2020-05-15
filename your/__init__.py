@@ -244,7 +244,7 @@ class Header:
         self.tstart = your.tstart
         self.isfits = your.isfits
         self.isfil = your.isfil
-        self.nspectra = your.nspectra
+        self.native_nspectra = your.native_nspectra
 
         from astropy.coordinates import SkyCoord
         loc = SkyCoord(self.ra_deg, self.dec_deg, unit='deg')
