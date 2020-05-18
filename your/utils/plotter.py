@@ -8,6 +8,18 @@ from scipy.signal import detrend
 
 
 def figsize(scale, width_by_height_ratio):
+    """
+    Create figure size either a full page or a half page figure
+
+    Args:
+
+        scale (float): 0.5 for half page figure, 1 for full page
+
+        width_by_height_ratio (float): ratio of width to height for the figure
+
+    Returns: list of width and height
+
+    """
     fig_width_pt = 513.17  # 469.755                  # Get this from LaTeX using \the\textwidth
     inches_per_pt = 1.0 / 72.27  # Convert pt to inch
     golden_mean = (np.sqrt(5.0) - 1.0) / 2.0  # Aesthetic ratio (you could change this)
@@ -18,6 +30,18 @@ def figsize(scale, width_by_height_ratio):
 
 
 def get_params(scale=0.5, width_by_height_ratio=1):
+    """
+    Create a dictionary for pretty plotting
+
+    Args:
+
+        scale (float): 0.5 for half page figure, 1 for full page
+
+        width_by_height_ratio (float): ratio of width to height for the figure
+
+    Returns: dictionary of parameters
+
+    """
     params = {'backend': 'pdf',
               'axes.labelsize': 10,
               'lines.markersize': 4,
@@ -47,12 +71,20 @@ def get_params(scale=0.5, width_by_height_ratio=1):
 
 def plot_h5(h5_file, save=True, detrend_ft=True, publication=False):
     """
-    Plot the h5 candidate file
-    :param h5_file: Address of the candidate h5 file
-    :param save: Argument to save the plot
-    :param detrend_ft: Optional argument to detrend the frequency-time array
-    :param publication: Make publication quality plots
-    :return:
+    Plot the h5 candidates
+
+    Args:
+
+        h5_file (str): Name of the h5 file
+
+        save (bool): Save the file as a png
+
+        detrend_ft (bool): detrend the frequency time plot
+
+        publication (bool): make publication quality plot
+
+    Returns: None
+
     """
     with h5py.File(h5_file, 'r') as f:
         dm_time = np.array(f['data_dm_time'])
@@ -113,3 +145,5 @@ def plot_h5(h5_file, save=True, detrend_ft=True, publication=False):
             plt.savefig(h5_file[:-3] + '.png', bbox_inches='tight')
         else:
             plt.close()
+
+        return None

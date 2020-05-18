@@ -6,3 +6,5 @@ nav:
         - Core: sources/your.md
         - Utils:
                   - RFI: sources/utils/rfi.md
+                  - Astro: sources/utils/astro.md
+                  - Plotter: sources/utils/plotter.md
