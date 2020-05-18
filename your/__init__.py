@@ -195,7 +195,7 @@ class Your(PsrfitsFile, SigprocFile):
             s = self.your_file
         return f"Using {type(s)}:\n{s}"
 
-    def dispersion_delay(your_object, dms=5_000):
+    def dispersion_delay(self, dms=5_000):
         return 4148808.0 * dms * (
                 1 / np.min(self.chan_freqs) ** 2 - 1 / np.max(self.chan_freqs) ** 2) / 1000
 
