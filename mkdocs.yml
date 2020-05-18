@@ -2,7 +2,19 @@ site_name: your
 docs_dir: docs
 site_description: 'Your Documentation'
 
+theme:
+  name: material
+  features:
+    - instant
+
 nav:
-        - Core: sources/your.md
-        - Utils:
-                  - RFI: sources/utils/rfi.md
+  - Core: sources/your.md
+  - Utils:
+      - RFI: sources/utils/rfi.md
+      - Astro: sources/utils/astro.md
+      - Plotter: sources/utils/plotter.md
+
+markdown_extensions:
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg

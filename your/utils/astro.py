@@ -6,8 +6,13 @@ RADTODEG = float('57.295779513082320876798154814105170332405472466564')
 
 def dec2deg(src_dej):
     """
-    dec2deg(src_dej):
-       Convert the SIGPROC-style DDMMSS.SSSS declination to degrees
+    Convert the SIGPROC-style DDMMSS.SSSS declination to degrees
+
+    Args:
+        src_dej (float): Source dec
+
+    Returns:
+
     """
     sign = 1.0
     if (src_dej < 0): sign = -1.0;
@@ -20,7 +25,12 @@ def dec2deg(src_dej):
 
 def ra2deg(src_raj):
     """
-    ra2deg(src_raj):
-       Convert the SIGPROC-style HHMMSS.SSSS right ascension to degrees
+    Convert the SIGPROC-style HHMMSS.SSSS right ascension to degrees
+
+    Args:
+        src_raj (float): Source RA
+
+    Returns:
+
     """
     return 15.0 * dec2deg(src_raj)

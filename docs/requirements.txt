@@ -1,2 +1,3 @@
 keras-autodoc
 mkdocs
+mkdocs-material
