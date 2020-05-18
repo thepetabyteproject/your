@@ -89,6 +89,10 @@ class Your(PsrfitsFile, SigprocFile):
         else:
             return PsrfitsFile.native_nspectra(self)
 
+    @property
+    def tend(self):
+        return self.your_header.tstart + self.your_header.nspectra * self.your_header.tsamp / 86400.0
+
     def bandpass(self, nspectra=None):
         """
         Create the bandpass of the file
@@ -99,14 +103,14 @@ class Your(PsrfitsFile, SigprocFile):
 
         """
         if nspectra:
-            if nspectra < self.your_header.nspectra:
+            if nspectra < self.your_header.native_nspectra:
                 ns = nspectra
             else:
                 logger.info(f'nspectra > number of spectra in file, generating bandpass using all available spectra.')
-                ns = self.your_header.nspectra
+                ns = self.your_header.native_nspectra
         else:
             logger.warning(f'This will read all the data in the RAM. Might be slow as well.')
-            ns = self.your_header.nspectra
+            ns = self.your_header.native_nspectra
 
         logger.debug(f'Generating bandpass using {ns} spectra.')
         return self.get_data(nstart=0, nsamp=int(ns)).mean(0)
