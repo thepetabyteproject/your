@@ -7,7 +7,7 @@
 | psrfits       | :white_check_mark:       | :x:                 |
 | psrdada       | :x:                      | :white_check_mark:  |
 
-The inspiration for the name comes for the Daily Dose of Internet [videos](https://www.youtube.com/channel/UCdC0An4ZPNr_YiFiYoVbwaw).
+The inspiration for the name comes from the Daily Dose of Internet [videos](https://www.youtube.com/channel/UCdC0An4ZPNr_YiFiYoVbwaw).
 
 # Installation
 First you need to install [psrdada-python](https://github.com/AA-ALERT/psrdada-python).
