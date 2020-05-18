@@ -142,10 +142,6 @@ class SigprocFile(object):
     def native_nspectra(self):
         return (self._mmdata.size() - self.hdrbytes) / self.bytes_per_spectrum
 
-    @property
-    def tend(self):
-        return self.tstart + self.nspectra * self.tsamp / 86400.0
-
     def get_data(self, nstart, nsamp, offset=0, pol=0):
         """Return nsamp time slices starting at nstart."""
         bstart = int(nstart) * self.bytes_per_spectrum

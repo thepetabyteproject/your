@@ -78,6 +78,11 @@ class Candidate(Your):
                 else:
                     f.attrs[key] = file_header[key]
 
+            f.attrs['tsamp'] = self.your_header.tsamp
+            f.attrs['nchans'] = self.your_header.nchans
+            f.attrs['foff'] = self.your_header.foff
+            f.attrs['nspectra'] = self.your_header.nspectra
+
             freq_time_dset = f.create_dataset('data_freq_time', data=self.dedispersed, dtype=self.dedispersed.dtype,
                                               compression="gzip", compression_opts=9)
             freq_time_dset.dims[0].label = b"time"
@@ -129,15 +134,15 @@ class Candidate(Your):
             nstart -= (nchunk - nsamp) // 2
             nsamp = nchunk
         if nstart < 0:
-            self.data = self.get_data(nstart=0, nsamp=nsamp + nstart)[:, 0, :]
+            self.data = self.get_data(nstart=0, nsamp=nsamp + nstart)
             logger.debug('median padding data as nstart < 0')
             self.data = pad_along_axis(self.data, nsamp, loc='start', axis=0, mode='median')
-        elif nstart + nsamp > self.nspectra:
-            self.data = self.get_data(nstart=nstart, nsamp=self.nspectra - nstart)[:, 0, :]
+        elif nstart + nsamp > self.your_header.nspectra:
+            self.data = self.get_data(nstart=nstart, nsamp=self.your_header.nspectra - nstart)
             logger.debug('median padding data as nstop > nspectra')
             self.data = pad_along_axis(self.data, nsamp, loc='end', axis=0, mode='median')
         else:
-            self.data = self.get_data(nstart=nstart, nsamp=nsamp)[:, 0, :]
+            self.data = self.get_data(nstart=nstart, nsamp=nsamp)
 
         if self.kill_mask is not None:
             assert len(self.kill_mask) == self.data.shape[1]
