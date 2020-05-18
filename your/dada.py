@@ -70,17 +70,17 @@ class YourDada:
             else:
                 # if there is just one large file, read it in chunks
                 self.subint_steps = int(np.max(np.prod(np.unique((primes(self.list_of_subints))))))
-            self.dada_size = self.subint_steps * self.your_object.nchans * self.your_object.specinfo.spectra_per_subint  # * self.your_object.nbits / 8  # bytes
+            self.dada_size = self.subint_steps * self.your_object.your_header.nchans * self.your_object.specinfo.spectra_per_subint  # * self.your_object.nbits / 8  # bytes
             self.data_step = int(self.subint_steps * self.your_object.specinfo.spectra_per_subint)
         else:
             nsamp_gulp = 2**18
             logger.debug(f'Calculating dada size and data step for the filterbank file')
-            if self.your_object.nspectra < nsamp_gulp:
-                self.dada_size = self.your_object.nspectra * self.your_object.nchans * self.your_object.nbits / 8 # bytes
-                self.data_step = int(self.your_object.nspectra)
+            if self.your_object.your_header.nspectra < nsamp_gulp:
+                self.dada_size = self.your_object.your_header.nspectra * self.your_object.your_header.nchans * self.your_object.your_header.nbits / 8 # bytes
+                self.data_step = int(self.your_object.your_header.nspectra)
             else:
-                self.data_step = int(closest_divisor(self.your_object.nspectra, nsamp_gulp))
-                self.dada_size = self.data_step * self.your_object.nchans * self.your_object.nbits / 8 # bytes
+                self.data_step = int(closest_divisor(self.your_object.your_header.nspectra, nsamp_gulp))
+                self.dada_size = self.data_step * self.your_object.your_header.nchans * self.your_object.your_header.nbits / 8 # bytes
         self.dada_key = hex(np.random.randint(0, 16 ** 4))
 
     def setup(self):
@@ -95,27 +95,27 @@ class YourDada:
 
     def your_dada_header(self):
         header = {}
-        header["BW"] = str(self.your_object.nchans * self.your_object.foff)
-        header["FREQ"] = str(self.your_object.fch1 + (self.your_object.nchans * self.your_object.foff / 2))
-        header["MJD_START"] = str(self.your_object.tstart)
-        header["NBIT"] = str(self.your_object.nbits)
-        header["TSAMP"] = str(self.your_object.tsamp * 1e6)
+        header["BW"] = str(self.your_object.your_header.nchans * self.your_object.your_header.foff)
+        header["FREQ"] = str(self.your_object.your_header.fch1 + (self.your_object.your_header.nchans * self.your_object.your_header.foff / 2))
+        header["MJD_START"] = str(self.your_object.your_header.tstart)
+        header["NBIT"] = str(self.your_object.your_header.nbits)
+        header["TSAMP"] = str(self.your_object.your_header.tsamp * 1e6)
         header["HDR_SIZE"] = "4096"
-        header["NCHAN"] = str(self.your_object.nchans)
+        header["NCHAN"] = str(self.your_object.your_header.nchans)
         header["OBS_OFFSET"] = str(0)
-        header["NPOL"] = str(self.your_object.nifs)
-        tstart = Time(self.your_object.tstart, format='mjd')
+        header["NPOL"] = str(self.your_object.your_header.npol)
+        tstart = Time(self.your_object.your_header.tstart, format='mjd')
         header["UTC_START"] = str(tstart.utc.iso.replace(' ', '-'))
         return header
 
     def to_dada(self):
-        for data_read in tqdm(range(0, int(self.your_object.nspectra), self.data_step)):
+        for data_read in tqdm(range(0, int(self.your_object.your_header.native_nspectra), self.data_step)):
             logger.debug(f"Data read is {data_read}, Data step is {self.data_step}")
             data_input = self.your_object.get_data(data_read, self.data_step)
             logger.debug(f"Data specs: Shape: {data_input.shape}, dtype: {data_input.dtype}")
             self.DM.dump_header(self.dada_header)
             self.DM.dump_data(data_input.flatten().astype(self.your_object.your_header.dtype))
-            if data_read == self.your_object.nspectra - self.data_step:
+            if data_read == self.your_object.your_header.nspectra - self.data_step:
                 logger.info("Marked the End of Data")
                 self.DM.eod()
             else:

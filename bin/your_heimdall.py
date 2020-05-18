@@ -135,7 +135,7 @@ if __name__ == "__main__":
     else:
         bad_chans = None
         
-    HM = HeimdallManager(dm=args.dm, dada_key=your_dada.dada_key, boxcar_max=int(32e-3 / your_object.tsamp),
+    HM = HeimdallManager(dm=args.dm, dada_key=your_dada.dada_key, boxcar_max=int(32e-3 / your_object.your_header.tsamp),
                          verbosity='v', nsamps_gulp=nsamps_gulp, gpu_id=args.gpu_id, output_dir=args.output_dir, 
                          zap_chans=bad_chans, rfi_no_broad=args.rfi_no_broad)
     
