@@ -33,7 +33,7 @@ def gpu_dedisperse(cand, device=0):
     blockspergrid = (blockspergrid_x, blockspergrid_y)
 
     gpu_dedisp[blockspergrid, threadsperblock](cand_data_in, chan_freqs, float(cand.dm), cand_data_out,
-                                               float(cand.tsamp))
+                                               float(cand.your_header.tsamp))
 
     cand.dedispersed = cand_data_out.copy_to_host().T
 
@@ -69,7 +69,7 @@ def gpu_dmt(cand, device=0):
 
     blockspergrid = (blockspergrid_x, blockspergrid_y, blockspergrid_z)
 
-    gpu_dmt[blockspergrid, threadsperblock](cand_data_in, chan_freqs, dm_list, dmt_return, float(cand.tsamp))
+    gpu_dmt[blockspergrid, threadsperblock](cand_data_in, chan_freqs, dm_list, dmt_return, float(cand.your_header.tsamp))
 
     cand.dmt = dmt_return.copy_to_host()
 
@@ -140,7 +140,7 @@ def gpu_dedisp_and_dmt_crop(cand, device=0):
 
     gpu_dedisp[blockspergrid_2d_in, threadsperblock_2d, stream](cand_data_in, chan_freqs, float(cand.dm),
                                                                 cand_dedispersed_on_device,
-                                                                float(cand.tsamp), int(time_decimation_factor),
+                                                                float(cand.your_header.tsamp), int(time_decimation_factor),
                                                                 int(frequency_decimation_factor))
 
     blockspergrid_x_2d_out = math.ceil(cand_dedispersed_on_device.shape[0] / threadsperblock_2d[0])
@@ -156,7 +156,7 @@ def gpu_dedisp_and_dmt_crop(cand, device=0):
     disp_time = np.zeros(shape=(cand_data_in.shape[0], 256), dtype=np.int)
     for idx, dms in enumerate(np.linspace(0, 2 * cand.dm, 256)):
         disp_time[:, idx] = np.round(
-            -1 * 4148808.0 * dms * (1 / (cand.chan_freqs[0]) ** 2 - 1 / (cand.chan_freqs) ** 2) / 1000 / cand.tsamp)
+            -1 * 4148808.0 * dms * (1 / (cand.chan_freqs[0]) ** 2 - 1 / (cand.chan_freqs) ** 2) / 1000 / cand.your_header.tsamp)
 
     all_delays = cuda.to_device(disp_time, stream=stream)
 
