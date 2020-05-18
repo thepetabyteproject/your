@@ -99,17 +99,17 @@ class Your(PsrfitsFile, SigprocFile):
 
         """
         if nspectra:
-            if nspectra < self.nspectra:
+            if nspectra < self.your_header.nspectra:
                 ns = nspectra
             else:
                 logger.info(f'nspectra > number of spectra in file, generating bandpass using all available spectra.')
-                ns = self.nspectra
+                ns = self.your_header.nspectra
         else:
             logger.warning(f'This will read all the data in the RAM. Might be slow as well.')
-            ns = self.nspectra
+            ns = self.your_header.nspectra
 
         logger.debug(f'Generating bandpass using {ns} spectra.')
-        return self.get_data(nstart=0, nsamp=int(ns))[:, 0, :].mean(0)
+        return self.get_data(nstart=0, nsamp=int(ns)).mean(0)
 
     def get_data(self, nstart: int, nsamp: int, time_decimation_factor=None,
                  frequency_decimation_factor=None, pol: int = 0):
@@ -171,22 +171,19 @@ class Your(PsrfitsFile, SigprocFile):
                     pol = 0
                 else:
                     logging.warning(f'pol: {pol}, Assuming IQUV polarisation data in Filterbank file')
-            data = SigprocFile.get_data(self, nstart, nsamp, pol=pol)
+            data = SigprocFile.get_data(self, nstart, nsamp, pol=pol)[:, 0, :]
         else:
-            data = PsrfitsFile.get_data(self, nstart, nsamp, pol=pol)
+            data = PsrfitsFile.get_data(self, nstart, nsamp, pol=pol)[:, 0, :]
 
         if (self.your_header.time_decimation_factor > 1) or (self.your_header.frequency_decimation_factor > 1):
-            data = data[:, 0, :]
             nt, nf = data.shape
-            # if nf != self.your_header.nchans:
-            #    raise ValueError(f"We screwed up!")
             data = data.reshape(self.your_header.time_decimation_factor, nt // self.your_header.time_decimation_factor,
                                 nf // self.your_header.frequency_decimation_factor,
                                 self.your_header.frequency_decimation_factor)
             data = data.astype(np.float32)
             data = data.mean(axis=0)
             data = data.mean(axis=-1)
-            if self.nbits != 32:
+            if self.your_header.nbits != 32:
                 data = np.round(data)
                 data = data.astype(self.your_header.dtype)
         return data
