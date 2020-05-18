@@ -34,14 +34,22 @@
                         <!-- Main navigation -->
                         <ul class="nav navbar-nav">
                             <li class="navitem">
-                                <a href="sources/your.md" class="nav-link">Core</a>
+                                <a href="sources/your/" class="nav-link">Core</a>
                             </li>
                             <li class="dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Utils <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     
 <li>
-    <a href="sources/utils/rfi.md" class="dropdown-item">RFI</a>
+    <a href="sources/utils/rfi/" class="dropdown-item">RFI</a>
+</li>
+                                    
+<li>
+    <a href="sources/utils/astro/" class="dropdown-item">Astro</a>
+</li>
+                                    
+<li>
+    <a href="sources/utils/plotter/" class="dropdown-item">Plotter</a>
 </li>
                                 </ul>
                             </li>
@@ -71,12 +79,13 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-level="1"><a href="#your-documentation" class="nav-link">Your Documentation</a>
-              <ul class="nav flex-column">
-            <li class="nav-item" data-level="2"><a href="#building-the-documentation" class="nav-link">Building the documentation</a>
+            <li class="nav-item" data-level="1"><a href="#your" class="nav-link">your</a>
               <ul class="nav flex-column">
               </ul>
             </li>
+            
+            <li class="nav-item" data-level="1"><a href="#installation" class="nav-link">Installation</a>
+              <ul class="nav flex-column">
               </ul>
             </li>
         </ul>
@@ -84,19 +93,42 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="your-documentation">Your Documentation</h1>
-<p>The source for your documentation is in this directory.
-Our documentation uses extended Markdown, as implemented by <a href="http://mkdocs.org">MkDocs</a>.</p>
-<h2 id="building-the-documentation">Building the documentation</h2>
-<ul>
-<li>Install keras-autodoc: <code>pip install keras-autodoc</code></li>
-<li>From the root directory, <code>cd</code> into the <code>docs/</code> folder and run:<ul>
-<li><code>python autogen.py</code></li>
-<li><code>mkdocs serve</code>    # Starts a local webserver:  <a href="http://localhost:8000">localhost:8000</a></li>
-<li><code>mkdocs build</code>    # Builds a static site in <code>site/</code> directory</li>
-</ul>
-</li>
-</ul></div>
+<h1 id="your">your</h1>
+<p><code>your</code> stands for Your Unified Reader. This library reads sigproc filterbanks, psrfits, and psrdada formats and can go from one format to another.</p>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th align="center">Read</th>
+<th align="right">Write</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>filterbank</td>
+<td align="center">:white_check_mark:</td>
+<td align="right">:white_check_mark:</td>
+</tr>
+<tr>
+<td>psrfits</td>
+<td align="center">:white_check_mark:</td>
+<td align="right">:x:</td>
+</tr>
+<tr>
+<td>psrdada</td>
+<td align="center">:x:</td>
+<td align="right">:white_check_mark:</td>
+</tr>
+</tbody>
+</table>
+<p>The inspiration for the name comes for the Daily Dose of Internet <a href="https://www.youtube.com/channel/UCdC0An4ZPNr_YiFiYoVbwaw">videos</a>.</p>
+<h1 id="installation">Installation</h1>
+<p>First you need to install <a href="https://github.com/AA-ALERT/psrdada-python">psrdada-python</a>.
+Once psrdada is installed, git clone the repo and use <code>setup.py</code> to install <code>your</code>.</p>
+<pre><code>git clone https://github.com/devanshkv/your.git
+cd your
+python setup.py install
+</code></pre></div>
             </div>
         </div>
 
@@ -180,5 +212,5 @@ Our documentation uses extended Markdown, as implemented by <a href="http://mkdo
 
 <!--
 MkDocs version : 1.1.2
-Build Date UTC : 2020-05-14 21:53:42.593437+00:00
+Build Date UTC : 2020-05-18 19:26:57.410450+00:00
 -->
