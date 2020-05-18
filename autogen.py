@@ -14,7 +14,7 @@ pages = {
     'utils/astro.md': ["your.utils.astro.dec2deg",
                        "your.utils.astro.ra2deg"]
 
-         }
+}
 
 doc_generator = DocumentationGenerator(pages)
 doc_generator.generate('./sources')
