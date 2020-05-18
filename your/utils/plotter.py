@@ -113,7 +113,7 @@ def plot_h5(h5_file, save=True, detrend_ft=True, publication=False):
             fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(5, 7), sharex='col')
 
         else:
-            fig = plt.figure(figsize=(15, 8))
+            fig = plt.figure(figsize=(15, 10))
             gs = gridspec.GridSpec(3, 2, width_ratios=[4, 1], height_ratios=[1, 1, 1])
             ax1 = plt.subplot(gs[0, 0])
             ax2 = plt.subplot(gs[1, 0])
