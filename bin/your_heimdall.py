@@ -12,7 +12,7 @@ import os
 from your import Your
 from your import dada
 from your.utils.misc import save_bandpass, MyEncoder
-from your.utils.rfi import get_sg_window, mask_finder
+from your.utils.rfi import savgol_filter
 
 
 class HeimdallManager:
@@ -112,7 +112,7 @@ if __name__ == "__main__":
 
     your_object = Your(file=args.files)
     max_delay = your_object.dispersion_delay(dms=np.max(args.dm))
-    dispersion_delay_samples = np.ceil(max_delay / your_object.tsamp)
+    dispersion_delay_samples = np.ceil(max_delay / your_object.your_header.tsamp)
     logging.info(f"Max Dispersion delay = {max_delay} s")
     logging.info(f"Max Dispersion delay = {dispersion_delay_samples} samples")
 
@@ -123,8 +123,7 @@ if __name__ == "__main__":
     
     if args.apply_savgol:
         bandpass = your_object.bandpass(nspectra=8192)
-        window = get_sg_window(your_object.your_header.foff, args.filter_window)
-        mask = mask_finder(bandpass, window, args.sigma)
+        mask = savgol_filter(bandpass, your_object.your_header.foff, fw=args.filter_window, sig=args.sigma) 
         chan_nos=np.arange(0,bandpass.shape[0], dtype=np.int)
         bad_chans=list(chan_nos[mask])
         

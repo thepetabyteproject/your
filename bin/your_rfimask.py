@@ -7,7 +7,7 @@ import numpy as np
 
 from your import Your
 from your.utils.misc import save_bandpass
-from your.utils.rfi import get_sg_window, mask_finder
+from your.utils.rfi import savgol_filter
 
 logging_format = '%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s'
 logging.basicConfig(level=logging.INFO, format=logging_format)
@@ -28,13 +28,8 @@ if __name__ == "__main__":
     your_object = Your(file=args.files)
     
     if args.apply_savgol:
-        if your_object.nspectra > 8192:
-            ns = 8192
-        else:
-            ns = your_object.nspectra
-        bandpass = your_object.bandpass(nspectra=ns)
-        window = get_sg_window(your_object.your_header.foff, args.filter_window)
-        mask = mask_finder(bandpass, window, args.sigma)
+        bandpass = your_object.bandpass(nspectra=8192)
+        mask = savgol_filter(bandpass, your_object.your_header.foff, fw=args.filter_window, sig=args.sigma)
         chan_nos=np.arange(0,bandpass.shape[0], dtype=np.int)
         bad_chans=list(chan_nos[mask])
     else:
