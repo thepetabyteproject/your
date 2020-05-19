@@ -117,19 +117,19 @@ def convert(f, outdir=None, filfile=None):
 
     # Calculate loop of spectra
     interval = 4096 * 24
-    if y.nspectra > interval:
-        nloops = 1 + y.nspectra // interval
+    if y.your_header.native_nspectra > interval:
+        nloops = 1 + y.your_header.native_nspectra // interval
     else:
         nloops = 1
     nstarts = np.arange(0, interval * nloops, interval, dtype=int)
     nsamps = np.full(nloops, interval)
-    if y.nspectra % interval != 0:
-        nsamps[-1] = y.nspectra % interval
+    if y.your_header.native_nspectra % interval != 0:
+        nsamps[-1] = y.your_header.native_nspectra % interval
 
     # Read data
     for nstart, nsamp in tqdm.tqdm(zip(nstarts, nsamps), total=len(nstarts)):
         logger.debug(f'Reading spectra {nstart}-{nstart + nsamp} in file {y.filename}')
-        data = y.get_data(nstart, nsamp)[:, 0, :].astype(y.your_header.dtype)
+        data = y.get_data(nstart, nsamp).astype(y.your_header.dtype)
         logger.info(f'Writing data from spectra {nstart}-{nstart + nsamp} to filterbank')
         write_fil(data, y, outdir=outdir, filename=filfile)
         logger.debug(f'Successfully written data from spectra {nstart}-{nstart + nsamp} to filterbank')
