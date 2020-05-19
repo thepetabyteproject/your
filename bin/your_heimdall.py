@@ -27,6 +27,8 @@ if __name__ == "__main__":
     parser.add_argument('-fw', '--filter_window', help='Window size (MHz) for savgol filter', required=False, 
                         default=15, type=float)
     parser.add_argument('-sig', '--sigma', help='Sigma for the savgol filter', required=False, default=6, type=float)
+    parser.add_argument('-m', '--mask', help='Input RFI mask (could be 1-D bad channel mask or 2-D FT mask)', required=False, type=str, 
+                        default=None)
     parser.add_argument('-rfi_no_broad', '--rfi_no_broad', help='disable 0-DM RFI excision', required=False, action='store_true', default=False)
     parser.add_argument('-o', '--output_dir', help='Output dir for heimdall candidates', type=str, required=False,
                         default=None)    
@@ -72,7 +74,19 @@ if __name__ == "__main__":
         kill_mask_file = args.output_dir + '/' + your_object.your_header.basename + '.bad_chans'
         with open(kill_mask_file,'w') as f:
             np.savetxt(f,chan_nos[mask],fmt='%d',delimiter=' ', newline=' ')
+    elif args.mask:
+        logging.info(f'Reading RFI mask from {args.mask}')
+        mask = np.loadtxt(args.mask)
+        if len(mask.shape) == 1:
+            bad_chans = list(mask)
+        elif len(mask.shape) == 2:
+            sk_mask = mask
+            bad_chans = None
+        else:
+            logging.warn('RFI mask not understood, can only be 1D or 2D. Not using RFI flagging.')
+            bad_chans = None
     else:
+        logging.info('No RFI flagging done.')
         bad_chans = None
         
     HM = HeimdallManager(dm=args.dm, dada_key=your_dada.dada_key, boxcar_max=int(32e-3 / your_object.your_header.tsamp),
