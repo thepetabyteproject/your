@@ -13,6 +13,8 @@ from matplotlib import gridspec
 from scipy.signal import detrend
 from tqdm import tqdm
 from multiprocessing import Pool
+from functools import partial
+from scipy import stats
 
 os.environ['HDF5_USE_FILE_LOCKING'] = 'FALSE'
 matplotlib.use('Agg')
@@ -25,6 +27,17 @@ def figsize(scale):
     fig_height = fig_width*golden_mean              # height in inches
     fig_size = [fig_width,fig_height]
     return fig_size
+
+def smad(freq_time, sigma, clip=True):
+    mads = stats.median_absolute_deviation(freq_time, axis=0)
+    threshold=1.4826*sigma
+
+    for j,k in enumerate(mads):
+        cut = threshold*k
+        if clip:
+            freq_time[freq_time[:, j]>=cut, j]=cut
+            freq_time[freq_time[:, j]<=-cut, j]=-cut
+    return freq_time
 
 #plt.rcParams.update(plt.rcParamsDefault)
 params = {'backend': 'pdf',
@@ -55,7 +68,7 @@ params = {'backend': 'pdf',
 plt.rcParams.update(params)
 
 
-def plot_h5(h5_file, save=True, detrend_ft=True, publication=False):
+def plot_h5(mad_filter, h5_file, save=True, detrend_ft=True, publication=False):
     """
     Plot the h5 candidate file
     :param h5_file: Address of the candidate h5 file
@@ -84,6 +97,9 @@ def plot_h5(h5_file, save=True, detrend_ft=True, publication=False):
             ts = np.linspace(-128, 128, 256) * tsamp * width * 1000 / 2
         else:
             ts = np.linspace(-128, 128, 256) * tsamp * 1000
+
+        if mad_filter:
+            freq_time = smad(freq_time, float(mad_filter))
 
         plt.clf()
 
@@ -132,6 +148,7 @@ if __name__ == '__main__':
     parser.add_argument('-f', '--files', help='h5 files to be plotted', nargs='+', required=False)
     parser.add_argument('-c', '--results_csv', help='Plot positives in results.csv', required=False)
     parser.add_argument('--publish', help='Make publication quality plots', action='store_true')
+    parser.add_argument('-mad','--mad_filter', help='Median Absolute Deviation spectal clipper, default 3 sigma', nargs='?', const=3.0, default=False)
     parser.add_argument('-n', '--nproc', help='Number of processors to use in parallel (default: 4)', 
                 type=int, default=4, required=False)
 
@@ -152,6 +169,7 @@ if __name__ == '__main__':
 
     with Pool(processes=values.nproc) as p:
         max_ = len(h5_files)
+        func = partial(plot_h5, values.mad_filter)
         with tqdm(total=max_) as pbar:
-            for i, _ in tqdm(enumerate(p.imap_unordered(plot_h5, h5_files, chunksize=2))):
+            for i, _ in tqdm(enumerate(p.imap_unordered(func, h5_files, chunksize=2))):
                 pbar.update()
