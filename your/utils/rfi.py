@@ -4,7 +4,7 @@ from scipy.signal import savgol_filter as sg
 
 def savgol_filter(data, foff, fw=15, sig=6):
     """
-    Apply savgol filter to the data
+    Apply savgol filter to the data. See [Agarwal el al. 2020](https://arxiv.org/abs/2003.14272) for details.
 
     Args:
     
@@ -16,7 +16,9 @@ def savgol_filter(data, foff, fw=15, sig=6):
         
         sig (float): sigma value to apply cutoff on
 
-    Returns (numpy.ndarray): mask for channels
+    Returns:
+
+        numpy.ndarray: mask for channels
 
     """
     window = int(np.ceil(fw / np.abs(foff)) // 2 * 2 + 1)
@@ -30,7 +32,7 @@ def savgol_filter(data, foff, fw=15, sig=6):
 
 def spectral_kurtosis(data, N=1, d=None):
     """
-    Compute spectral kurtosis
+    Compute spectral kurtosis. See [Nita et al. (2016)](https://doi.org/10.1109/RFINT.2016.7833535) for details.
 
     Args:
 
@@ -41,9 +43,12 @@ def spectral_kurtosis(data, N=1, d=None):
         d (float): shape factor
 
 
-    Returns (numpy.ndarray): Spectral Kurtosis along frequency axis
+    Returns:
+
+         numpy.ndarray: Spectral Kurtosis along frequency axis
 
     """
+    data = data.astype('float32')
     S1 = data.sum(0)
     S2 = (data ** 2).sum(0)
     M = data.shape[0]
