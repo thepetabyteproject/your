@@ -16,3 +16,5 @@ Once psrdada is installed, git clone the repo and use `setup.py` to install `you
     git clone https://github.com/devanshkv/your.git
     cd your
     python setup.py install
+
+Have a look at our [docs](https://devanshkv.github.io/your/) for the basic documentation. We will add detail shortly. 
