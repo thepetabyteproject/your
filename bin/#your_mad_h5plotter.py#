@@ -183,7 +183,7 @@ if __name__ == '__main__':
 
     with Pool(processes=values.nproc) as p:
         max_ = len(h5_files)
-        func = partial(plot_h5, values.mad_filter)
+        
         with tqdm(total=max_) as pbar:
 <<<<<<< HEAD
             for i, _ in tqdm(enumerate(p.imap_unordered(func, h5_files, chunksize=2))):
