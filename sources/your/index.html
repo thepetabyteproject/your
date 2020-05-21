@@ -461,6 +461,15 @@ your_object = your.Your([&quot;puppi_58763_B1919+21_0292_0001.fits&quot;,&quot;p
 </code></pre></div>
 
 
+<p>Attributes:</p>
+<div class="codehilite"><pre><span></span><code>isfits (bool): your object made from fits files
+
+isfil (bool) : your object makde from filterbank file
+
+your_header : instance of the Header class
+</code></pre></div>
+
+
 <hr />
 <h3 id="bandpass-method">bandpass method</h3>
 <div class="codehilite"><pre><span></span><code><span class="n">Your</span><span class="o">.</span><span class="n">bandpass</span><span class="p">(</span><span class="n">nspectra</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
@@ -534,6 +543,47 @@ pol (int): which polarization to chose
 <p>Your Header class, it contains all the relevant metadata.</p>
 <p>Args:</p>
 <div class="codehilite"><pre><span></span><code>Your object
+</code></pre></div>
+
+
+<p>Attributes:</p>
+<div class="codehilite"><pre><span></span><code>filelist: List of files used to make the your object
+
+filename (str) : Name of the first file used to make the object
+
+basename (str): Base name of file
+
+source_name (str): Source Name
+
+ra_deg (float): RA of the source in degrees
+
+dec_deg (float): Dec of the source in degrees
+
+bw (float): bandwidth of the data
+
+center_freq (float): Center frequency of the data.
+
+time_decimation_factor (int): Number of time samples to average
+
+frequency_decimation_factor (int): Number of frequency channels to average
+
+native_tsamp (float): Sampling time of the data pre decimation (seconds)
+
+native_foff (float): Channel bandwidth of the data pre decimation (MHz)
+
+native_nchans : Number of channels in the data pre decimation
+
+native_nspectra: Number of spectra in the data pre decimation
+
+dtype: dtype of the (read) data
+
+nbits (int): Number of bits in the data
+
+tstart (float): Start MJD of the data
+
+fch1 (float): Frequency of the first channel (MHz)
+
+npol (int) : Number of polarisations in the data
 </code></pre></div>
 
 
