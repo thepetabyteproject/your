@@ -24,6 +24,15 @@ class Your(PsrfitsFile, SigprocFile):
         your_object = your.Your("/path/to/filterbank.fil")
 
         your_object = your.Your(["puppi_58763_B1919+21_0292_0001.fits","puppi_58763_B1919+21_0292_0002.fits"]
+
+    Attributes:
+
+        isfits (bool): your object made from fits files
+
+        isfil (bool) : your object makde from filterbank file
+
+        your_header : instance of the Header class
+
     """
 
     def __init__(self, file):
@@ -183,7 +192,7 @@ class Your(PsrfitsFile, SigprocFile):
             Both decimation factors should exactly device the nsamp or nchans
 
         Returns:
-            
+
             numpy.ndarray: 2D numpy array of data
 
 
@@ -275,6 +284,47 @@ class Header:
     Args:
 
         Your object
+
+    Attributes:
+
+        filelist: List of files used to make the your object
+
+        filename (str) : Name of the first file used to make the object
+
+        basename (str): Base name of file
+
+        source_name (str): Source Name
+
+        ra_deg (float): RA of the source in degrees
+
+        dec_deg (float): Dec of the source in degrees
+
+        bw (float): bandwidth of the data
+
+        center_freq (float): Center frequency of the data.
+
+        time_decimation_factor (int): Number of time samples to average
+
+        frequency_decimation_factor (int): Number of frequency channels to average
+
+        native_tsamp (float): Sampling time of the data pre decimation (seconds)
+
+        native_foff (float): Channel bandwidth of the data pre decimation (MHz)
+
+        native_nchans : Number of channels in the data pre decimation
+
+        native_nspectra: Number of spectra in the data pre decimation
+
+        dtype: dtype of the (read) data
+
+        nbits (int): Number of bits in the data
+
+        tstart (float): Start MJD of the data
+
+        fch1 (float): Frequency of the first channel (MHz)
+
+        npol (int) : Number of polarisations in the data
+
 
     """
 
