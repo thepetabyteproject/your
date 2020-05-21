@@ -14,7 +14,9 @@ def closest_number(big_num, small_num):
 
         small_num: Number whose multiple is to be found and subtracted
 
-    Returns: the difference between the closest multiple of a smaller number with respect to a bigger number
+    Returns:
+
+        The difference between the closest multiple of a smaller number with respect to a bigger number
 
     """
     if big_num % small_num == 0:
@@ -59,7 +61,9 @@ def closest_divisor(n, m):
         m: divisor closest to this number
 
 
-    Returns: the divisor of n, which is closest to (i.e bigger than) m
+    Returns:
+
+        The divisor of n, which is closest to (i.e bigger than) m
 
     """
     pfs = primes(n)
@@ -79,7 +83,9 @@ def find_gcd(list_of_nos):
 
         list_of_nos: list of numbers
 
-    Returns: GCD
+    Returns:
+
+        GCD
 
     """
     x = reduce(math.gcd, list_of_nos)
@@ -92,9 +98,11 @@ def normalise(data):
 
     Args:
 
-        data: data
+        data (numpy.ndarray): data
 
-    Returns: normalised data
+    Returns:
+
+        numpy.ndarray: normalised data
 
     """
     data = np.array(data, dtype=np.float32)
