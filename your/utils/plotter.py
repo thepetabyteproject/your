@@ -6,26 +6,7 @@ import pylab as plt
 from matplotlib import gridspec
 from scipy.signal import detrend
 from scipy import stats
-
-def smad(freq_time, sigma, clip=True):
-    """
-    spectal Median Absolute Deviation clipper
-   
-    Args:
-        
-        freq_time: the frequency time data
-
-        sigma (float): sigma at which to cut data 
-    """
-    mads = stats.median_absolute_deviation(freq_time, axis=0)
-    threshold=1.4826*sigma
-
-    for j,k in enumerate(mads):
-        cut = threshold*k
-        if clip:
-            freq_time[freq_time[:, j]>=cut, j]=cut
-            freq_time[freq_time[:, j]<=-cut, j]=-cut
-    return freq_time
+from your.utils.math import smad_cpu
 
 def figsize(scale, width_by_height_ratio):
     """
@@ -130,7 +111,7 @@ def plot_h5(mad_filter, h5_file, save=True, detrend_ft=True, publication=False):
             ts = np.linspace(-128, 128, 256) * tsamp * 1000
 
         if mad_filter:
-            freq_time = smad(freq_time, float(mad_filter))
+            freq_time = smad_cpu(freq_time, float(mad_filter))
 
         plt.clf()
 

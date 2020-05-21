@@ -2,7 +2,7 @@ import math
 from functools import reduce
 
 import numpy as np
-
+from scipy import stats
 
 def closest_number(big_num, small_num):
     """
@@ -101,3 +101,23 @@ def normalise(data):
     data -= np.median(data)
     data /= np.std(data)
     return data
+
+def smad_cpu(freq_time, sigma, clip=True):
+    """
+    spectal Median Absolute Deviation clipper
+   
+    Args:
+        
+        freq_time: the frequency time data
+
+        sigma (float): sigma at which to cut data 
+    """
+    mads = stats.median_absolute_deviation(freq_time, axis=0)
+    threshold=1.4826*sigma
+
+    for j,k in enumerate(mads):
+        cut = threshold*k
+        if clip:
+            freq_time[freq_time[:, j]>=cut, j]=cut
+            freq_time[freq_time[:, j]<=-cut, j]=-cut
+    return freq_time
