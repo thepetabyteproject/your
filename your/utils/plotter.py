@@ -5,6 +5,7 @@ import numpy as np
 import pylab as plt
 from matplotlib import gridspec
 from scipy.signal import detrend
+from scipy import stats
 
 def smad(freq_time, sigma, clip=True):
     """
