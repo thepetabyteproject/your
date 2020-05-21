@@ -44,4 +44,4 @@ pages = {
 doc_generator = DocumentationGenerator(pages)
 doc_generator.generate('./sources')
 
-shutil.copyfile('../README.md', 'index.md')
+shutil.copyfile('../README.md', 'sources/index.md')

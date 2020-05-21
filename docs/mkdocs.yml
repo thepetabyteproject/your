@@ -1,6 +1,6 @@
 site_name: Your Documentation
 site_author: Devansh Agarwal, Kshitij Agarwal
-docs_dir: docs
+docs_dir: sources
 site_description: 'Your Documentation'
 
 theme:
@@ -13,14 +13,14 @@ repo_name: your
 repo_url: https://github.com/devanshkv/your
 
 nav:
-        - Core: sources/your.md
-        - Candidate: sources/candidate.md
-        - Utils:
-                  - RFI: sources/utils/rfi.md
-                  - Astro: sources/utils/astro.md
-                  - Plotter: sources/utils/plotter.md
-                  - Heimdall: sources/utils/heimdall.md
-                  - Math: sources/utils/math.md
+  - Core: your.md
+  - Candidate: candidate.md
+  - Utils:
+      - RFI: utils/rfi.md
+      - Astro: utils/astro.md
+      - Plotter: utils/plotter.md
+      - Heimdall: utils/heimdall.md
+      - Math: utils/math.md
 
 markdown_extensions:
         - pymdownx.emoji:
