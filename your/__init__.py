@@ -13,7 +13,17 @@ logger = logging.getLogger(__name__)
 
 class Your(PsrfitsFile, SigprocFile):
     """
-    Your class!
+    Your class.
+
+    Args:
+
+        file : String or a list of files. It can either filterbank or psrfits files.
+
+    Examples:
+
+        your_object = your.Your("/path/to/filterbank.fil")
+
+        your_object = your.Your(["puppi_58763_B1919+21_0292_0001.fits","puppi_58763_B1919+21_0292_0002.fits"]
     """
 
     def __init__(self, file):
@@ -59,10 +69,20 @@ class Your(PsrfitsFile, SigprocFile):
 
     @property
     def chan_freqs(self):
+        """
+
+        Returns: numpy array of channel frequencies
+
+        """
         return self.fch1 + np.arange(self.nchans) * self.foff
 
     @property
     def native_tsamp(self):
+        """
+
+        Returns: Native sampling time of the data in seconds
+
+        """
         if self.isfil:
             return SigprocFile.native_tsamp(self)
         else:
@@ -70,13 +90,23 @@ class Your(PsrfitsFile, SigprocFile):
 
     @property
     def native_foff(self):
+        """
+
+        Returns: Native channel bandwidth of the data in MHz
+
+        """
         if self.isfil:
             return SigprocFile.native_foff(self)
         else:
             return PsrfitsFile.native_foff(self)
-     
+
     @property
     def native_nchans(self):
+        """
+
+        Returns: Native number of channels in the data
+
+        """
         if self.isfil:
             return SigprocFile.native_nchans(self)
         else:
@@ -84,6 +114,11 @@ class Your(PsrfitsFile, SigprocFile):
 
     @property
     def native_nspectra(self):
+        """
+
+        Returns: Native number of spectra in the data.
+
+        """
         if self.isfil:
             return SigprocFile.native_nspectra(self)
         else:
@@ -91,15 +126,26 @@ class Your(PsrfitsFile, SigprocFile):
 
     @property
     def tend(self):
+        """
+
+        Returns:
+            end MJD of the data
+
+        """
         return self.your_header.tstart + self.your_header.nspectra * self.your_header.tsamp / 86400.0
 
     def bandpass(self, nspectra=None):
         """
         Create the bandpass of the file
-        Args:
-            nspectra: Number of spectra to create bandpass of.
 
-        Returns: numpy bandpass array
+        Args:
+
+            nspectra (int): Number of spectra to create bandpass from.
+
+
+        Returns:
+
+            numpy.ndarray: bandpass array
 
         """
         if nspectra:
@@ -132,8 +178,13 @@ class Your(PsrfitsFile, SigprocFile):
 
             pol (int): which polarization to chose
 
-        __NOTE__: Both decimation factors should exactly device the nsamp or nchans
-        Returns (numpy.ndarray) : 2D numpy array of data
+        Note:
+
+            Both decimation factors should exactly device the nsamp or nchans
+
+        Returns:
+            
+            numpy.ndarray: 2D numpy array of data
 
 
         """
@@ -200,12 +251,33 @@ class Your(PsrfitsFile, SigprocFile):
         return f"Using {type(s)}:\n{s}"
 
     def dispersion_delay(self, dms=5_000):
+        """
+        Calculate the dispersion delay in seconds for the given configuration
+
+        Args:
+
+            dms: DM or a list of DM values
+
+        Returns:
+
+            Dispersion delay in seconds.
+
+        """
         return 4148808.0 * dms * (
                 1 / np.min(self.chan_freqs) ** 2 - 1 / np.max(self.chan_freqs) ** 2) / 1000
 
 
 class Header:
     # TODO: add nbeams, ibeam, data_type, az_start, za_start, telescope, backend
+    """
+    Your Header class, it contains all the relevant metadata.
+
+    Args:
+
+        Your object
+
+    """
+
     def __init__(self, your):
         if your.isfil:
             if isinstance(your.your_file, str):

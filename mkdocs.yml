@@ -9,6 +9,7 @@ theme:
 
 nav:
   - Core: sources/your.md
+  - Candidate: sources/candidate.md
   - Utils:
       - RFI: sources/utils/rfi.md
       - Astro: sources/utils/astro.md
