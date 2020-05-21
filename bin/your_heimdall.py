@@ -1,79 +1,19 @@
 #!/usr/bin/env python3
 
 import argparse
+import json
 import logging
+import os
 from datetime import datetime
 from multiprocessing import Process
 
-import json
 import numpy as np
-import os
 
 from your import Your
 from your import dada
+from your.utils.heimdall import HeimdallManager
 from your.utils.misc import save_bandpass, MyEncoder
-from your.utils.rfi import get_sg_window, mask_finder
-
-
-class HeimdallManager:
-
-    def __init__(self, dada_key=None, filename=None, verbosity=None, nsamps_gulp=262144, beam=None, baseline_length=2,
-                 output_dir=None, dm=None, dm_tol=1.25, zap_chans=None, max_giant_rate=None, dm_nbits=32, gpu_id=None,
-                 no_scrunching=False, rfi_tol=5, rfi_no_narrow=False, rfi_no_broad=False, boxcar_max=4096, fswap=None,
-                 min_tscrunch_width=None):
-        self.k = dada_key
-        self.f = filename
-        self.verbosity = verbosity
-        self.nsamps_gulp = nsamps_gulp
-        self.beam = beam
-        self.baseline_length = baseline_length
-        self.output_dir = output_dir
-        self.dm = dm
-        self.dm_tol = dm_tol
-        self.zap_chans = zap_chans
-        self.max_gaint_rate = max_giant_rate
-        self.dm_nbits = dm_nbits
-        self.gpu_id = gpu_id
-        self.no_scrunching = no_scrunching
-        self.rfi_tol = rfi_tol
-        self.rfi_no_narrow = rfi_no_narrow
-        self.rfi_no_broad = rfi_no_broad
-        self.boxcar_max = boxcar_max
-        self.fswap = fswap
-        self.min_tscrunch_width = min_tscrunch_width
-
-        if (self.k is None) and (self.f is None):
-            raise IOError(f"Need either a dada key or a filterbank file to run")
-
-    def run(self):
-        cmd = 'heimdall '
-        for attribute, value in self.__dict__.items():
-            if value is not None:
-                if isinstance(value, list):
-                    if attribute == 'zap_chans':
-                        for chans in value:
-                            cmd += ' -zap_chans '
-                            cmd += str(chans) + ' '
-                            cmd += str(chans)
-                    else:
-                        cmd += str(f' -{attribute} ')
-                        cmd += ' '.join(map(str, value))
-                elif attribute == 'verbosity':
-                    if value in ['V', 'v', 'g', 'G']:
-                        cmd += str(f' -{value} ')
-                    else:
-                        logging.warning(f"Allowed verbosity is v,V,g,G")
-                        logging.warning(f"Using v for now!")
-                        cmd += f" -v "
-                elif attribute == 'no_scrunching' or attribute == 'rfi_no_narrow' or attribute == 'rfi_no_broad':
-                    if value:
-                        cmd += str(f' -{attribute}')
-                else:
-                    cmd += str(f' -{attribute} {value}')
-
-        logging.info(f"Using cmd: \n{cmd}")
-        os.system(cmd)
-
+from your.utils.rfi import savgol_filter
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Your Heimdall Fetch FRB",
@@ -87,6 +27,8 @@ if __name__ == "__main__":
     parser.add_argument('-fw', '--filter_window', help='Window size (MHz) for savgol filter', required=False, 
                         default=15, type=float)
     parser.add_argument('-sig', '--sigma', help='Sigma for the savgol filter', required=False, default=6, type=float)
+    parser.add_argument('-m', '--mask', help='Input RFI mask (could be 1-D bad channel mask or 2-D FT mask)', required=False, type=str, 
+                        default=None)
     parser.add_argument('-rfi_no_broad', '--rfi_no_broad', help='disable 0-DM RFI excision', required=False, action='store_true', default=False)
     parser.add_argument('-o', '--output_dir', help='Output dir for heimdall candidates', type=str, required=False,
                         default=None)    
@@ -112,7 +54,7 @@ if __name__ == "__main__":
 
     your_object = Your(file=args.files)
     max_delay = your_object.dispersion_delay(dms=np.max(args.dm))
-    dispersion_delay_samples = np.ceil(max_delay / your_object.tsamp)
+    dispersion_delay_samples = np.ceil(max_delay / your_object.your_header.tsamp)
     logging.info(f"Max Dispersion delay = {max_delay} s")
     logging.info(f"Max Dispersion delay = {dispersion_delay_samples} samples")
 
@@ -123,8 +65,7 @@ if __name__ == "__main__":
     
     if args.apply_savgol:
         bandpass = your_object.bandpass(nspectra=8192)
-        window = get_sg_window(your_object.your_header.foff, args.filter_window)
-        mask = mask_finder(bandpass, window, args.sigma)
+        mask = savgol_filter(bandpass, your_object.your_header.foff, fw=args.filter_window, sig=args.sigma) 
         chan_nos=np.arange(0,bandpass.shape[0], dtype=np.int)
         bad_chans=list(chan_nos[mask])
         
@@ -133,11 +74,23 @@ if __name__ == "__main__":
         kill_mask_file = args.output_dir + '/' + your_object.your_header.basename + '.bad_chans'
         with open(kill_mask_file,'w') as f:
             np.savetxt(f,chan_nos[mask],fmt='%d',delimiter=' ', newline=' ')
+    elif args.mask:
+        logging.info(f'Reading RFI mask from {args.mask}')
+        mask = np.loadtxt(args.mask)
+        if len(mask.shape) == 1:
+            bad_chans = list(mask)
+        elif len(mask.shape) == 2:
+            sk_mask = mask
+            bad_chans = None
+        else:
+            logging.warn('RFI mask not understood, can only be 1D or 2D. Not using RFI flagging.')
+            bad_chans = None
     else:
+        logging.info('No RFI flagging done.')
         bad_chans = None
         
-    HM = HeimdallManager(dm=args.dm, dada_key=your_dada.dada_key, boxcar_max=int(32e-3 / your_object.tsamp),
-                         verbosity='v', nsamps_gulp=nsamps_gulp, gpu_id=args.gpu_id, output_dir=args.output_dir, 
+    HM = HeimdallManager(dm=args.dm, dada_key=your_dada.dada_key, boxcar_max=int(32e-3 / your_object.your_header.tsamp),
+                         verbosity='v', nsamps_gulp=nsamps_gulp, gpu_id=args.gpu_id, output_dir=args.output_dir,
                          zap_chans=bad_chans, rfi_no_broad=args.rfi_no_broad)
     
     with open(args.output_dir + '/' + your_object.your_header.basename + '_heimdall_inputs.json', 'w') as fp:

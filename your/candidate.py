@@ -12,21 +12,32 @@ logger = logging.getLogger(__name__)
 
 
 class Candidate(Your):
-    def __init__(self, fp=None, copy_hdr=None, dm=None, tcand=0, width=0, label=-1, snr=0, min_samp=256, device=0,
-                 kill_mask=None):
-        """
+    """
+    Candidate Class
 
-        :param fp: Filepath of the filterbank
-        :param copy_hdr: Custom header to the filterbank file
-        :param dm: DM of the candidate
-        :param tcand: Time of the candidate in filterbank file (seconds)
-        :param width: Width of the candidate (number of samples)
-        :param label: Label of the candidate (1: for FRB, 0: for RFI)
-        :param snr: SNR of the candidate
-        :param min_samp: Minimum number of time samples to read
-        :param device: If using GPUs, device is the GPU id
-        :param kill_mask: Boolean mask of channels to kill
-        """
+    Args:
+
+        fp : String or a list of files. It can either filterbank or psrfits files.
+
+        dm (float): Dispersion Measure of the candidate
+
+        tcand (float): start time of the candidate in seconds
+
+        width (int): pulse width of the candidate in samples
+
+        label (int): 1 for pulsars/FRBs, 0 for RFI
+
+        snr (float): Signal to Noise Ratio
+
+        min_samp (int): Minimum number of time samples
+
+        device (int): GPU ID if using GPUs
+
+        kill_mask (numpy.ndarray): Boolean mask of channels to kill
+    """
+
+    def __init__(self, fp=None, dm=None, tcand=0, width=0, label=-1, snr=0, min_samp=256, device=0,
+                 kill_mask=None):
         Your.__init__(self, fp)
         self.dm = dm
         self.tcand = tcand
@@ -45,10 +56,18 @@ class Candidate(Your):
 
     def save_h5(self, out_dir=None, fnout=None):
         """
-        Generates an h5 file of the candidate object
-        :param out_dir: Output directory to save the h5 file
-        :param fnout: Output name of the candidate file
-        :return:
+        Save the candidate to a hdf5 file
+
+        Args:
+
+            out_dir (str): path to the output directory
+
+            fnout (str): output name of the file
+
+        Returns:
+
+            str: output name of the file
+
         """
         cand_id = self.id
         if fnout is None:
@@ -78,6 +97,11 @@ class Candidate(Your):
                 else:
                     f.attrs[key] = file_header[key]
 
+            f.attrs['tsamp'] = self.your_header.tsamp
+            f.attrs['nchans'] = self.your_header.nchans
+            f.attrs['foff'] = self.your_header.foff
+            f.attrs['nspectra'] = self.your_header.nspectra
+
             freq_time_dset = f.create_dataset('data_freq_time', data=self.dedispersed, dtype=self.dedispersed.dtype,
                                               compression="gzip", compression_opts=9)
             freq_time_dset.dims[0].label = b"time"
@@ -92,9 +116,16 @@ class Candidate(Your):
 
     def dispersion_delay(self, dms=None):
         """
-        Calculates the dispersion delay at a specified DM
-        :param dms: DM value to get dispersion delay
-        :return:
+        Caluclaute the dispersion delay for the candidate DM or at given dispersion DM
+
+        Args:
+
+            dms (Union[float,np.ndarray]) : DM or a list of DMs
+
+        Returns:
+
+            Union[float, np.ndarray]: dispersion delay in seconds
+
         """
         if dms is None:
             dms = self.dm
@@ -105,10 +136,14 @@ class Candidate(Your):
 
     def get_chunk(self, tstart=None, tstop=None):
         """
-        Read the data around the candidate from the filterbank
-        :param tstart: Start time in the fiterbank, to read from
-        :param tstop: End time in the filterbank, to read till
-        :return:
+        Get a chunk of data. The data is saved in `self.data`.
+
+        Args:
+
+            tstart (float): start time of the chunk in seconds
+
+            tstop (float): stop time of the chunk in secons
+
         """
         if tstart is None:
             tstart = self.tcand - self.dispersion_delay() - self.width * self.native_tsamp
@@ -129,15 +164,15 @@ class Candidate(Your):
             nstart -= (nchunk - nsamp) // 2
             nsamp = nchunk
         if nstart < 0:
-            self.data = self.get_data(nstart=0, nsamp=nsamp + nstart)[:, 0, :]
+            self.data = self.get_data(nstart=0, nsamp=nsamp + nstart)
             logger.debug('median padding data as nstart < 0')
             self.data = pad_along_axis(self.data, nsamp, loc='start', axis=0, mode='median')
-        elif nstart + nsamp > self.nspectra:
-            self.data = self.get_data(nstart=nstart, nsamp=self.nspectra - nstart)[:, 0, :]
+        elif nstart + nsamp > self.your_header.nspectra:
+            self.data = self.get_data(nstart=nstart, nsamp=self.your_header.nspectra - nstart)
             logger.debug('median padding data as nstop > nspectra')
             self.data = pad_along_axis(self.data, nsamp, loc='end', axis=0, mode='median')
         else:
-            self.data = self.get_data(nstart=nstart, nsamp=nsamp)[:, 0, :]
+            self.data = self.get_data(nstart=nstart, nsamp=nsamp)
 
         if self.kill_mask is not None:
             assert len(self.kill_mask) == self.data.shape[1]
@@ -149,10 +184,16 @@ class Candidate(Your):
 
     def dedisperse(self, dms=None, target='CPU'):
         """
-        Dedisperse Frequency time data at a specified DM
-        :param dms: DM to dedisperse at
-        :return:
+        Dedisperse a chunk of data. Saves the dedispersed chunk in `self.dedispersed`.
+
+        Args:
+
+            dms (float): The DM to dedisperse the data at.
+
+            target (str): 'CPU' to run the code on the CPU or 'GPU' to run it on a GPU.
+
         """
+
         if dms is None:
             dms = self.dm
         if self.data is not None:
@@ -168,14 +209,21 @@ class Candidate(Your):
             elif target == 'GPU':
                 gpu_dedisperse(self, device=self.device)
         else:
+            logger.warning(f"No data in self.data, run self.get_chunk() first")
             self.dedispersed = None
         return self
 
     def dedispersets(self, dms=None):
         """
-        Dedisperse Frequency time data at a specified DM and return a time series
-        :param dms: DM to dedisperse at
-        :return: time series
+        Create a dedispersed time series
+
+        Args:
+
+            dms (float): The DM to dedisperse the data at.
+
+        Returns:
+            numpy.ndarray: Dedispersed time series.
+
         """
         if dms is None:
             dms = self.dm
@@ -183,7 +231,7 @@ class Candidate(Your):
             nt, nf = self.data.shape
             assert nf == len(self.chan_freqs)
             delay_time = 4148808.0 * dms * (1 / (self.chan_freqs[0]) ** 2 - 1 / (self.chan_freqs) ** 2) / 1000
-            delay_bins = np.round(delay_time / self.naive_tsamp).astype('int64')
+            delay_bins = np.round(delay_time / self.native_tsamp).astype('int64')
             ts = np.zeros(nt, dtype=np.float32)
             for ii in range(nf):
                 ts += np.concatenate([self.data[-delay_bins[ii]:, ii], self.data[:-delay_bins[ii], ii]])
@@ -191,9 +239,14 @@ class Candidate(Your):
 
     def dmtime(self, dmsteps=256, target='CPU'):
         """
-        Generates DM-time array of the candidate by dedispersing at adjacent DM values
-        dmsteps: Number of DMs to dedisperse at
-        :return:
+        Generates DM-time array of the candidate by dedispersing at adjacent DM values. Saves the data in `self.dmt`.
+
+        Args:
+
+            dmsteps (int) : Number of DMs to dedisperse at.
+
+            target (str): 'CPU' to run the code on the CPU or 'GPU' to run it on a GPU.
+
         """
         if target == 'CPU':
             range_dm = self.dm
@@ -208,8 +261,14 @@ class Candidate(Your):
     def get_snr(self, time_series=None):
         """
         Calculates the SNR of the candidate
-        :param time_series: time series array to calculate the SNR of
-        :return:
+
+        Args:
+
+            time_series: time series array to calculate the SNR of
+
+        Returns:
+
+            float: SNR
         """
         if time_series is None and self.dedispersed is None:
             return None
@@ -227,8 +286,14 @@ class Candidate(Your):
     def optimize_dm(self):
         """
         Calculate more precise value of the DM by interpolating between DM values to maximise the SNR
-        This function has not been fully tested.
-        :return: optimnised DM, optimised SNR
+
+        Note:
+
+            This function has not been fully tested.
+
+        Returns:
+
+            optimnised DM, optimised SNR
         """
         if self.data is None:
             return None
@@ -247,13 +312,23 @@ class Candidate(Your):
 
     def decimate(self, key, decimate_factor, axis, pad=False, **kwargs):
         """
-        TODO: Update candidate parameters as per decimation factor
-        :param key: Keywords to chose which data to decimate
-        :param decimate_factor: Number of samples to average
-        :param axis: Axis to decimate along
-        :param pad: Optional argument if padding is to be done
-        :args: arguments for numpy pad
-        :return:
+        Decimate FT or DMT data.
+
+        Todo:
+
+            * Update candidate parameters as per decimation factor
+
+        Args:
+
+            key (str): Keywords to chose which data to decimate ('dmt' or 'ft')
+
+            decimate_factor (int): Number of samples to average
+
+            axis (int): Axis to decimate along
+
+            pad (bool): Optional argument if padding is to be done
+
+            **kwargs: kwargs for numpy.pad
         """
         if key == 'dmt':
             logger.debug(
@@ -271,12 +346,22 @@ class Candidate(Your):
 
     def resize(self, key, size, axis, **kwargs):
         """
-        TODO: Update candidate parameters as per final size
-        :param key: Keywords to chose which data to decimate
-        :param size: Final size of the data array required
-        :param axis: Axis to resize alone
-        :param args: Arguments for skimage.transform resize function
-        :return:
+        Resize FT or DMT data
+
+        Todo:
+
+            * Update candidate parameters as per final size
+
+        Args:
+
+            key (str): Keywords to chose which data to resize ('dmt' or 'ft')
+
+            size: Final size of the data array required
+
+            axis (int) : Axis to resize alone
+
+            **kwargs: Arguments for skimage.transform resize function
+
         """
         if key == 'dmt':
             self.dmt = _resize(self.dmt, size, axis, **kwargs)

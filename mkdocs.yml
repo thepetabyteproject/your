@@ -1,8 +1,0 @@
-site_name: your
-docs_dir: docs
-site_description: 'Your Documentation'
-
-nav:
-        - Core: sources/your.md
-        - Utils:
-                  - RFI: sources/utils/rfi.md

@@ -8,13 +8,13 @@ Not all possible features are implemented.
 Original Source: https://github.com/demorest/pysigproc/blob/master/pysigproc.py
 
 """
+import mmap
+import os
+import struct
 import sys
 from collections import OrderedDict
 
-import mmap
 import numpy
-import os
-import struct
 
 
 class SigprocFile(object):
@@ -121,10 +121,6 @@ class SigprocFile(object):
                 setattr(self, s, val)
                 self.hdrbytes += datasize
 
-        self._tsamp = self.tsamp
-        self._foff = self.foff
-        self._nchans = self.nchans
-
     @property
     def dtype(self):
         if self.nbits == 8:
@@ -143,9 +139,8 @@ class SigprocFile(object):
     def nspectra(self):
         return (self._mmdata.size() - self.hdrbytes) / self.bytes_per_spectrum
 
-    @property
-    def tend(self):
-        return self.tstart + self.nspectra * self.tsamp / 86400.0
+    def native_nspectra(self):
+        return (self._mmdata.size() - self.hdrbytes) / self.bytes_per_spectrum
 
     def get_data(self, nstart, nsamp, offset=0, pol=0):
         """Return nsamp time slices starting at nstart."""
@@ -187,17 +182,14 @@ class SigprocFile(object):
             unpacked[..., i::fac] = (d & mask) / 2 ** (i * self.nbits)
         return unpacked
 
-    @property
     def native_tsamp(self):
-        return self._tsamp
+        return self.tsamp
 
-    @property
     def native_foff(self):
-        return self._foff
+        return self.foff
 
-    @property
     def native_nchans(self):
-        return self._nchans
+        return self.nchans
 
     def write_header(self, filename):
         '''

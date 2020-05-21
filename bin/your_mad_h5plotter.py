@@ -3,22 +3,25 @@
 import argparse
 import logging
 import os
+from multiprocessing import Pool
 
-import h5py
 import matplotlib
-import numpy as np
 import pandas as pd
 import pylab as plt
-from matplotlib import gridspec
-from scipy.signal import detrend
 from tqdm import tqdm
+<<<<<<< HEAD
 from multiprocessing import Pool
 from functools import partial
 from scipy import stats
+=======
+
+from your.utils.plotter import get_params, plot_h5
+>>>>>>> 07ec8071abbeb8b59dd7eb3b0693aabe09e2f115
 
 os.environ['HDF5_USE_FILE_LOCKING'] = 'FALSE'
 matplotlib.use('Agg')
 
+<<<<<<< HEAD
 def figsize(scale):
     fig_width_pt = 513.17 #469.755                  # Get this from LaTeX using \the\textwidth
     inches_per_pt = 1.0/72.27                       # Convert pt to inch
@@ -141,6 +144,8 @@ def plot_h5(mad_filter, h5_file, save=True, detrend_ft=True, publication=False):
             plt.close()
 
 
+=======
+>>>>>>> 07ec8071abbeb8b59dd7eb3b0693aabe09e2f115
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Plot candidate h5 files",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -148,9 +153,14 @@ if __name__ == '__main__':
     parser.add_argument('-f', '--files', help='h5 files to be plotted', nargs='+', required=False)
     parser.add_argument('-c', '--results_csv', help='Plot positives in results.csv', required=False)
     parser.add_argument('--publish', help='Make publication quality plots', action='store_true')
+<<<<<<< HEAD
     parser.add_argument('-mad','--mad_filter', help='Median Absolute Deviation spectal clipper, default 3 sigma', nargs='?', const=3.0, default=False)
     parser.add_argument('-n', '--nproc', help='Number of processors to use in parallel (default: 4)', 
                 type=int, default=4, required=False)
+=======
+    parser.add_argument('-n', '--nproc', help='Number of processors to use in parallel (default: 4)',
+                        type=int, default=4, required=False)
+>>>>>>> 07ec8071abbeb8b59dd7eb3b0693aabe09e2f115
 
     values = parser.parse_args()
     logging_format = '%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s'
@@ -167,9 +177,17 @@ if __name__ == '__main__':
     else:
         raise ValueError(f"Need either --files or --results_csv argument.")
 
+    params = get_params()
+
+    plt.rcParams.update(params)
+
     with Pool(processes=values.nproc) as p:
         max_ = len(h5_files)
         func = partial(plot_h5, values.mad_filter)
         with tqdm(total=max_) as pbar:
+<<<<<<< HEAD
             for i, _ in tqdm(enumerate(p.imap_unordered(func, h5_files, chunksize=2))):
+=======
+            for i, _ in tqdm(enumerate(p.imap_unordered(plot_h5, h5_files, chunksize=2))):
+>>>>>>> 07ec8071abbeb8b59dd7eb3b0693aabe09e2f115
                 pbar.update()
