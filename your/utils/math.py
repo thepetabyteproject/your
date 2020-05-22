@@ -102,7 +102,7 @@ def normalise(data):
     data /= np.std(data)
     return data
 
-def smad_cpu(freq_time, sigma, clip=True):
+def smad_plotter(freq_time, sigma=3.0, clip=True):
     """
     spectal Median Absolute Deviation clipper
    
@@ -110,14 +110,9 @@ def smad_cpu(freq_time, sigma, clip=True):
         
         freq_time: the frequency time data
 
-        sigma (float): sigma at which to cut data 
+        sigma (float): sigma at which to clip data 
     """
-    mads = stats.median_absolute_deviation(freq_time, axis=0)
-    threshold=1.4826*sigma
-
-    for j,k in enumerate(mads):
-        cut = threshold*k
-        if clip:
-            freq_time[freq_time[:, j]>=cut, j]=cut
-            freq_time[freq_time[:, j]<=-cut, j]=-cut
-    return freq_time
+    sigs = 1.4826*stats.median_absolute_deviation(freq_time, axis=0)
+    if clip:
+        return np.transpose([np.clip(freq_time[:,j], a_min=-sigma, a_max=sigma) \
+                                 for j, sigma in enumerate(sigs)])

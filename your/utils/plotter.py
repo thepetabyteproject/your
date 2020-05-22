@@ -6,7 +6,7 @@ import pylab as plt
 from matplotlib import gridspec
 from scipy.signal import detrend
 from scipy import stats
-from your.utils.math import smad_cpu
+from your.utils.math import smad_plotter
 
 def figsize(scale, width_by_height_ratio):
     """
@@ -70,7 +70,7 @@ def get_params(scale=0.5, width_by_height_ratio=1):
     return params
 
 
-def plot_h5(mad_filter, h5_file, save=True, detrend_ft=True, publication=False):
+def plot_h5(h5_file, save=True, detrend_ft=True, publication=False, mad_filter=False):
     """
     Plot the h5 candidates
 
@@ -111,7 +111,7 @@ def plot_h5(mad_filter, h5_file, save=True, detrend_ft=True, publication=False):
             ts = np.linspace(-128, 128, 256) * tsamp * 1000
 
         if mad_filter:
-            freq_time = smad_cpu(freq_time, float(mad_filter))
+            freq_time = smad_plotter(freq_time, float(mad_filter))
 
         plt.clf()
 
