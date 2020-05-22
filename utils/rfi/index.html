@@ -321,6 +321,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../gpu/" title="GPU" class="md-nav__link">
+      GPU
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../heimdall/" title="Heimdall" class="md-nav__link">
       Heimdall
     </a>
@@ -335,6 +347,18 @@
   <li class="md-nav__item">
     <a href="../math/" title="Math" class="md-nav__link">
       Math
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../misc/" title="Misc" class="md-nav__link">
+      Misc
     </a>
   </li>
 
@@ -408,7 +432,7 @@
 </code></pre></div>
 
 
-<p>Apply savgol filter to the data</p>
+<p>Apply savgol filter to the data. See <a href="https://arxiv.org/abs/2003.14272">Agarwal el al. 2020</a> for details.</p>
 <p>Args:</p>
 <div class="codehilite"><pre><span></span><code>data (numpy.ndarray): bandpass of the data
 
@@ -420,14 +444,18 @@ sig (float): sigma value to apply cutoff on
 </code></pre></div>
 
 
-<p>Returns (numpy.ndarray): mask for channels</p>
+<p>Returns:</p>
+<div class="codehilite"><pre><span></span><code>numpy.ndarray: mask for channels
+</code></pre></div>
+
+
 <hr />
 <h3 id="spectral_kurtosis-function">spectral_kurtosis function</h3>
 <div class="codehilite"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">rfi</span><span class="o">.</span><span class="n">spectral_kurtosis</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 
 
-<p>Compute spectral kurtosis</p>
+<p>Compute spectral kurtosis. See <a href="https://doi.org/10.1109/RFINT.2016.7833535">Nita et al. (2016)</a> for details.</p>
 <p>Args:</p>
 <div class="codehilite"><pre><span></span><code>data (numpy.ndarray): 2D frequency time data
 
@@ -437,7 +465,11 @@ d (float): shape factor
 </code></pre></div>
 
 
-<p>Returns (numpy.ndarray): Spectral Kurtosis along frequency axis</p>
+<p>Returns:</p>
+<div class="codehilite"><pre><span></span><code> numpy.ndarray: Spectral Kurtosis along frequency axis
+</code></pre></div>
+
+
 <hr />
                 
               
