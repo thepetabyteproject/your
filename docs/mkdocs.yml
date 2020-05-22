@@ -19,8 +19,10 @@ nav:
       - RFI: utils/rfi.md
       - Astro: utils/astro.md
       - Plotter: utils/plotter.md
+      - GPU: utils/gpu.md
       - Heimdall: utils/heimdall.md
       - Math: utils/math.md
+      - Misc: utils/misc.md
 
 markdown_extensions:
         - pymdownx.emoji:

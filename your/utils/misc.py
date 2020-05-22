@@ -148,6 +148,10 @@ def pad_along_axis(array: np.ndarray, target_length, loc='end', axis=0, **kwargs
 
 
 class MyEncoder(json.JSONEncoder):
+    """
+    Custom Encoder Class to convert any class to a JSON serializable object
+    """
+
     def default(self, obj):
         if isinstance(obj, np.integer):
             return int(obj)
