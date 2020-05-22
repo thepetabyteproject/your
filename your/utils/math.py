@@ -2,7 +2,7 @@ import math
 from functools import reduce
 
 import numpy as np
-
+from scipy import stats
 
 def closest_number(big_num, small_num):
     """
@@ -109,3 +109,18 @@ def normalise(data):
     data -= np.median(data)
     data /= np.std(data)
     return data
+
+def smad_plotter(freq_time, sigma=3.0, clip=True):
+    """
+    spectal Median Absolute Deviation clipper
+   
+    Args:
+        
+        freq_time: the frequency time data
+
+        sigma (float): sigma at which to clip data 
+    """
+    sigs = 1.4826*stats.median_absolute_deviation(freq_time, axis=0)
+    if clip:
+        return np.transpose([np.clip(freq_time[:,j], a_min=-sigma, a_max=sigma) \
+                                 for j, sigma in enumerate(sigs)])
