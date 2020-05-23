@@ -112,7 +112,7 @@ def smad_plotter(freq_time, sigma=3.0, clip=True):
 
         sigma (float): sigma at which to clip data 
     """
-    sigs = 1.4826*stats.median_absolute_deviation(freq_time, axis=0)
+    medians = np.median(freq_time)
+    sigs = 1.4826*sigma*stats.median_absolute_deviation(freq_time, axis=0)
     if clip:
-        return np.transpose([np.clip(freq_time[:,j], a_min=-sigma, a_max=sigma) \
-                                 for j, sigma in enumerate(sigs)])
+        return np.clip(freq_time, a_min=medians-sigs, a_max=medians+sigs)
