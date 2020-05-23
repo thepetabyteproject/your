@@ -38,7 +38,14 @@ pages = {
                       "your.utils.math.primes",
                       "your.utils.math.closest_divisor",
                       "your.utils.math.find_gcd",
-                      "your.utils.math.normalise"]
+                      "your.utils.math.normalise"],
+
+    'utils/gpu.md': ["your.utils.gpu.gpu_dedisperse",
+                     "your.utils.gpu.gpu_dmt",
+                     "your.utils.gpu.gpu_dedisp_and_dmt_crop",
+                     "your.utils.gpu.get_gpu_memory_map"],
+
+    'utils/misc.md': ["your.utils.misc.MyEncoder"]
 }
 
 doc_generator = DocumentationGenerator(pages)

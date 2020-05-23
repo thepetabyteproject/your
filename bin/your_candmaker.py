@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 
 import argparse
-import logging
-
 import glob
+import logging
 import os
 
 from your.utils.math import normalise

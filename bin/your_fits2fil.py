@@ -143,7 +143,8 @@ if __name__ == '__main__':
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-v', '--verbose', help='Be verbose', action='store_true')
     parser.add_argument('-f', '--files',
-                        help='Paths of PSRFITS files to be converted to a single file in Filterbank format. Surround with quotes, and either use wildcards or separate with spaces',
+                        help='Paths of PSRFITS files to be converted to a single file in Filterbank format. Surround '
+                             'with quotes, and either use wildcards or separate with spaces',
                         required=True, type=str)
     parser.add_argument('-o', '--outdir', type=str, help='Output directory for Filterbank file', default='.',
                         required=False)

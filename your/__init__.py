@@ -247,9 +247,9 @@ class Your(PsrfitsFile, SigprocFile):
             data = data.astype(np.float32)
             data = data.mean(axis=0)
             data = data.mean(axis=-1)
-            if self.your_header.nbits != 32:
-                data = np.round(data)
-                data = data.astype(self.your_header.dtype)
+        if self.your_header.nbits != 32:
+            data = np.round(data)
+            data = data.astype(self.your_header.dtype)
         return data
 
     def __repr__(self):

@@ -18,7 +18,9 @@ def figsize(scale, width_by_height_ratio):
 
         width_by_height_ratio (float): ratio of width to height for the figure
 
-    Returns: list of width and height
+    Returns:
+
+        list: list of width and height
 
     """
     fig_width_pt = 513.17  # 469.755                  # Get this from LaTeX using \the\textwidth
@@ -40,7 +42,9 @@ def get_params(scale=0.5, width_by_height_ratio=1):
 
         width_by_height_ratio (float): ratio of width to height for the figure
 
-    Returns: dictionary of parameters
+    Returns:
+
+        dict: dictionary of parameters
 
     """
     params = {'backend': 'pdf',
@@ -86,7 +90,9 @@ def plot_h5(h5_file, save=True, detrend_ft=True, publication=False, mad_filter=F
 
         publication (bool): make publication quality plot
 
-    Returns: None
+    Returns:
+
+        None
 
     """
     with h5py.File(h5_file, 'r') as f:

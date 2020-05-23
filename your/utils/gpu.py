@@ -10,14 +10,24 @@ logger = logging.getLogger(__name__)
 
 def gpu_dedisperse(cand, device=0):
     """
-    :param cand: Candidate object
-    :param device: GPU id
-    :return:
+
+    GPU dedispersion (by rolling the array)
+
+    Args:
+
+        cand: Candidate instance
+
+        device (int): GPU ID
+
+    Returns:
+
+        candidate object
+
     """
     cuda.select_device(device)
     chan_freqs = cuda.to_device(np.array(cand.chan_freqs, dtype=np.float32))
-    cand_data_in = cuda.to_device(np.array(cand.data.T, dtype=np.uint8))
-    cand_data_out = cuda.to_device(np.zeros_like(cand.data.T, dtype=np.uint8))
+    cand_data_in = cuda.to_device(np.array(cand.data.T, dtype=cand.your_header.dtype))
+    cand_data_out = cuda.to_device(np.zeros_like(cand.data.T, dtype=cand.your_header.dtype))
 
     @cuda.jit
     def gpu_dedisp(cand_data_in, chan_freqs, dm, cand_data_out, tsamp):
@@ -44,15 +54,25 @@ def gpu_dedisperse(cand, device=0):
 
 def gpu_dmt(cand, device=0):
     """
-    :param cand: Candidate object
-    :param device: GPU id
-    :return:
+
+    GPU DM-Time bow-tie (by rolling the array)
+
+    Args:
+
+        cand: Candidate instance
+
+        device (int): GPU ID
+
+    Returns:
+
+        candidate object
+
     """
     cuda.select_device(device)
     chan_freqs = cuda.to_device(np.array(cand.chan_freqs, dtype=np.float32))
     dm_list = cuda.to_device(np.linspace(0, 2 * cand.dm, 256, dtype=np.float32))
     dmt_return = cuda.to_device(np.zeros((256, cand.data.shape[0]), dtype=np.float32))
-    cand_data_in = cuda.to_device(np.array(cand.data.T, dtype=np.uint8))
+    cand_data_in = cuda.to_device(np.array(cand.data.T, dtype=cand.data.dtype))
 
     @cuda.jit
     def gpu_dmt(cand_data_in, chan_freqs, dms, cand_data_out, tsamp):
@@ -69,7 +89,8 @@ def gpu_dmt(cand, device=0):
 
     blockspergrid = (blockspergrid_x, blockspergrid_y, blockspergrid_z)
 
-    gpu_dmt[blockspergrid, threadsperblock](cand_data_in, chan_freqs, dm_list, dmt_return, float(cand.your_header.tsamp))
+    gpu_dmt[blockspergrid, threadsperblock](cand_data_in, chan_freqs, dm_list, dmt_return,
+                                            float(cand.your_header.tsamp))
 
     cand.dmt = dmt_return.copy_to_host()
 
@@ -80,9 +101,19 @@ def gpu_dmt(cand, device=0):
 
 def gpu_dedisp_and_dmt_crop(cand, device=0):
     """
-    :param cand: Candidate object
-    :param device: GPU id
-    :return:
+
+    GPU based dedispersion, DM time bow-time plot and crop it to 256x256 shaped arrays (by rolling the array)
+
+    Args:
+
+        cand: Candidate instance
+
+        device (int): GPU ID
+
+    Returns:
+
+        candidate object
+
     """
 
     if cand.width < 3:
@@ -104,7 +135,7 @@ def gpu_dedisp_and_dmt_crop(cand, device=0):
     logger.debug("Created CUDA Stream")
 
     chan_freqs = cuda.to_device(np.array(cand.chan_freqs, dtype=np.float32), stream=stream)
-    cand_data_in = cuda.to_device(np.array(cand.data.T, dtype=np.float32), stream=stream)
+    cand_data_in = cuda.to_device(np.array(cand.data.T, dtype=cand.your_header.dtype), stream=stream)
     dmt_on_device = cuda.device_array((256, int(cand.data.shape[0] // time_decimation_factor)), dtype=np.float32,
                                       stream=stream)
     cand_dedispersed_on_device = cuda.device_array(
@@ -140,7 +171,8 @@ def gpu_dedisp_and_dmt_crop(cand, device=0):
 
     gpu_dedisp[blockspergrid_2d_in, threadsperblock_2d, stream](cand_data_in, chan_freqs, float(cand.dm),
                                                                 cand_dedispersed_on_device,
-                                                                float(cand.your_header.tsamp), int(time_decimation_factor),
+                                                                float(cand.your_header.tsamp),
+                                                                int(time_decimation_factor),
                                                                 int(frequency_decimation_factor))
 
     blockspergrid_x_2d_out = math.ceil(cand_dedispersed_on_device.shape[0] / threadsperblock_2d[0])
@@ -156,7 +188,8 @@ def gpu_dedisp_and_dmt_crop(cand, device=0):
     disp_time = np.zeros(shape=(cand_data_in.shape[0], 256), dtype=np.int)
     for idx, dms in enumerate(np.linspace(0, 2 * cand.dm, 256)):
         disp_time[:, idx] = np.round(
-            -1 * 4148808.0 * dms * (1 / (cand.chan_freqs[0]) ** 2 - 1 / (cand.chan_freqs) ** 2) / 1000 / cand.your_header.tsamp)
+            -1 * 4148808.0 * dms * (
+                    1 / (cand.chan_freqs[0]) ** 2 - 1 / (cand.chan_freqs) ** 2) / 1000 / cand.your_header.tsamp)
 
     all_delays = cuda.to_device(disp_time, stream=stream)
 
@@ -189,7 +222,16 @@ def gpu_dedisp_and_dmt_crop(cand, device=0):
 
 
 def get_gpu_memory_map(gpu_id):
-    """Get the current gpu free_mem.
+    """
+    Get the current gpu free memory
+
+    Args:
+
+        gpu_id (int): GPU id
+
+    Returns:
+
+        int: amount of free GPU RAM
     """
     cmd_list = ['nvidia-smi', "-i", f"{gpu_id}", '--query-gpu=memory.free', '--format=csv,nounits,noheader']
     result = subprocess.check_output(cmd_list)

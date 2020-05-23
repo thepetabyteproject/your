@@ -2,6 +2,9 @@ import glob
 
 from setuptools import setup, find_packages
 
+with open('requirements.txt') as f:
+    required = f.read().splitlines()
+
 setup(
     name='your',
     version='0.4.9',
@@ -9,8 +12,7 @@ setup(
     url='http://github.com/devanshkv/your',
     author='Devansh Agarwal, Kshitij Aggarwal',
     scripts=glob.glob('bin/*'),
-    setup_requires=['numpy'],
-    install_requires=['h5py', 'scikit-image', 'scipy', 'numba', 'astropy', 'Cython'],
+    install_requires=required,
     tests_require=['pytest'],
     author_email='da0017@mix.wvu.edu, ka0064@mix.wvu.edu',
     zip_safe=False,
