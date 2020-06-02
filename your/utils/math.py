@@ -124,3 +124,6 @@ def smad_plotter(freq_time, sigma=3.0, clip=True):
     sigs = 1.4826*sigma*stats.median_absolute_deviation(freq_time, axis=0)
     if clip:
         return np.clip(freq_time, a_min=medians-sigs, a_max=medians+sigs)
+    else:
+        return [freq_time[np.absolute(freq_time[freq_time[:,j] - medians[j])] \
+                              >= sig] = 0 for j, sig in enumerate(sigs)]
