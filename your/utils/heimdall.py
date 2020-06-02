@@ -1,5 +1,49 @@
 import logging
+import math
 import os
+
+
+def generate_dm_list(dm_start: float, dm_end: float, dt: float, ti: float, f0: float, df: float, nchans: int,
+                     tol: float) -> list:
+    """
+    Code to generate Heimdall's DM list. Taken from [dedisp](https://github.com/ajameson/dedisp/blob/master/src/kernels.cuh#L56)
+
+    Args:
+
+        dm_start (float): Start DM
+
+        dm_end (float): End DM
+
+        dt (float): Sampling interval (in seconds)
+
+        ti (float): ??
+
+        f0 (float): Frequency of first channel (MHz)
+
+        df (float): Channel Bandwidth (MHz)
+
+        nchans (int): Number of channels
+
+        tol (float): Tolerance level
+
+    Returns:
+
+        list : List of DMs for which Heimdall will do the search
+
+    """
+    dt *= 1e6
+    center_freq = (f0 + (nchans / 2) * df) * 1e-3
+    a = 8.3 * df / (center_freq ** 3)
+    b = a ** 2 * nchans ** 2 / 16
+    c = (dt ** 2 + ti ** 2) * (tol ** 2 - 1)
+
+    dm_list = []
+    dm_list.append(dm_start)
+    while dm_list[-1] < dm_end:
+        k = c + tol ** 2 * a ** 2 * dm_list[-1] ** 2
+        dm = (b * dm_list[-1] + math.sqrt(-a ** 2 * b * dm_list[-1] ** 2 + (a ** 2 + b) * k)) / (a ** 2 + b)
+        dm_list.append(dm)
+    return dm_list
 
 
 class HeimdallManager:
