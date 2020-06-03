@@ -25,9 +25,13 @@ nav:
       - Misc: utils/misc.md
 
 markdown_extensions:
-        - pymdownx.emoji:
-                  emoji_index: !!python/name:materialx.emoji.twemoji
-                  emoji_generator: !!python/name:materialx.emoji.to_svg
-        - codehilite:
-                  guess_lang: False
-                  use_pygments: True
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - codehilite:
+      guess_lang: False
+      use_pygments: True
+
+google_analytics:
+  - UA-167281386-1
+  - auto

@@ -4,6 +4,7 @@ from functools import reduce
 import numpy as np
 from scipy import stats
 
+
 def closest_number(big_num, small_num):
     """
     Finds the difference between the closest multiple of a smaller number with respect to a bigger number
@@ -118,7 +119,13 @@ def smad_plotter(freq_time, sigma=5.0, clip=True):
         
         freq_time: the frequency time data
 
-        sigma (float): sigma at which to clip data 
+        sigma (float): sigma at which to clip data
+
+        clip (bool): if true replaces clips the data else replaces it with zeroes
+
+    Returns:
+
+        np.ndarray: clipped/flagged data
     """
     medians = np.median(freq_time, axis=0)
     sigs = 1.4826*sigma*stats.median_absolute_deviation(freq_time, axis=0)

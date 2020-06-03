@@ -38,7 +38,8 @@ pages = {
                       "your.utils.math.primes",
                       "your.utils.math.closest_divisor",
                       "your.utils.math.find_gcd",
-                      "your.utils.math.normalise"],
+                      "your.utils.math.normalise",
+                      "your.utils.math.smad_plotter"],
 
     'utils/gpu.md': ["your.utils.gpu.gpu_dedisperse",
                      "your.utils.gpu.gpu_dmt",
