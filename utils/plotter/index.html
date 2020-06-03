@@ -485,13 +485,15 @@ width_by_height_ratio (float): ratio of width to height for the figure
 
 <hr />
 <h3 id="plot_h5-function">plot_h5 function</h3>
-<div class="codehilite"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">plotter</span><span class="o">.</span><span class="n">plot_h5</span><span class="p">(</span><span class="n">h5_file</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">detrend_ft</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">publication</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">plotter</span><span class="o">.</span><span class="n">plot_h5</span><span class="p">(</span><span class="n">h5_file</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">detrend_ft</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">publication</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mad_filter</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </code></pre></div>
 
 
 <p>Plot the h5 candidates</p>
 <p>Args:</p>
-<div class="codehilite"><pre><span></span><code>h5_file (str): Name of the h5 file
+<div class="codehilite"><pre><span></span><code>mad_filter (int): use MAD filter to clip data
+
+h5_file (str): Name of the h5 file
 
 save (bool): Save the file as a png
 

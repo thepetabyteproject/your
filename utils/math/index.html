@@ -370,6 +370,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#smad_plotter-function" class="md-nav__link">
+    smad_plotter function
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -448,6 +455,13 @@
         <li class="md-nav__item">
   <a href="#normalise-function" class="md-nav__link">
     normalise function
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#smad_plotter-function" class="md-nav__link">
+    smad_plotter function
   </a>
   
 </li>
@@ -555,6 +569,27 @@ m: divisor closest to this number
 
 <p>Returns:</p>
 <div class="codehilite"><pre><span></span><code>numpy.ndarray: normalised data
+</code></pre></div>
+
+
+<hr />
+<h3 id="smad_plotter-function">smad_plotter function</h3>
+<div class="codehilite"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">smad_plotter</span><span class="p">(</span><span class="n">freq_time</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p>spectal Median Absolute Deviation clipper</p>
+<p>Args:</p>
+<div class="codehilite"><pre><span></span><code>freq_time: the frequency time data
+
+sigma (float): sigma at which to clip data
+
+clip (bool): if true replaces clips the data else replaces it with zeroes
+</code></pre></div>
+
+
+<p>Returns:</p>
+<div class="codehilite"><pre><span></span><code>np.ndarray: clipped/flagged data
 </code></pre></div>
 
 
