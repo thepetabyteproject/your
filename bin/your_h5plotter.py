@@ -3,13 +3,13 @@
 import argparse
 import logging
 import os
+from functools import partial
 from multiprocessing import Pool
 
 import matplotlib
 import pandas as pd
 import pylab as plt
 from tqdm import tqdm
-from functools import partial
 
 from your.utils.plotter import get_params, plot_h5
 
@@ -32,6 +32,7 @@ if __name__ == '__main__':
     parser.add_argument('-mad','--mad_filter', help='Median Absolute Deviation spectal clipper, default 3 sigma', nargs='?', const=3.0, default=False)
     parser.add_argument('-n', '--nproc', help='Number of processors to use in parallel (default: 4)',
                         type=int, default=4, required=False)
+    parser.add_argument('--no_progress', help='Do not show the tqdm bar', action='store_true', default=None)
 
     values = parser.parse_args()
     logging_format = '%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s'
@@ -55,6 +56,6 @@ if __name__ == '__main__':
     with Pool(processes=values.nproc) as p:
         max_ = len(h5_files)
         func = partial(mapper, values.no_save, values.no_detrend_ft, values.publish, values.mad_filter)
-        with tqdm(total=max_) as pbar:
+        with tqdm(total=max_, disable=values.no_progress) as pbar:
             for i, _ in tqdm(enumerate(p.imap_unordered(func, h5_files, chunksize=2))):
                 pbar.update()

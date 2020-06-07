@@ -125,7 +125,9 @@ if __name__ == '__main__':
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-v', '--verbose', help='Be verbose', action='store_true')
     parser.add_argument('-fs', '--frequency_size', type=int, help='Frequency size after rebinning', default=256)
-    parser.add_argument('-g', '--gpu_id', help='GPU ID (use -1 for CPU)', nargs='+', required=False, default=[-1],
+    parser.add_argument('-g', '--gpu_id',
+                        help='GPU ID (use -1 for CPU). To use multiple GPUs (say with id 2 and 3 use -g 2 3', nargs='+',
+                        required=False, default=[-1],
                         type=int)
     parser.add_argument('-ts', '--time_size', type=int, help='Time length after rebinning', default=256)
     parser.add_argument('-c', '--cand_param_file', help='csv file with candidate parameters', type=str, required=True)
@@ -156,10 +158,13 @@ if __name__ == '__main__':
         logger.info(f"Using CPUs only")
 
     cand_pars = pd.read_csv(values.cand_param_file)
+    # Randomly shuffle the candidates, this is so that the high DM candidates are spread through out
+    # Else they will clog the GPU memory at once
     cand_pars.sample(frac=1).reset_index(drop=True)
     process_list = []
     for index, row in cand_pars.iterrows():
         if len(values.gpu_id) > 1:
+            # If there are more than one GPUs cycle the candidates between them.
             gpu_id = gpu_id_cycler.__next__()
         else:
             gpu_id = values.gpu_id[0]

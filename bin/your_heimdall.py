@@ -34,6 +34,7 @@ if __name__ == "__main__":
                         action='store_true', default=False)
     parser.add_argument('-o', '--output_dir', help='Output dir for heimdall candidates', type=str, required=False,
                         default=None)
+    parser.add_argument('--no_progress', help='Do not show the tqdm bar', action='store_true', default=None)
     args = parser.parse_args()
 
     if args.output_dir is None:
@@ -85,7 +86,7 @@ if __name__ == "__main__":
             sk_mask = mask
             bad_chans = None
         else:
-            logging.warn('RFI mask not understood, can only be 1D or 2D. Not using RFI flagging.')
+            logging.warning('RFI mask not understood, can only be 1D or 2D. Not using RFI flagging.')
             bad_chans = None
     else:
         logging.info('No RFI flagging done.')
@@ -98,7 +99,7 @@ if __name__ == "__main__":
     with open(args.output_dir + '/' + your_object.your_header.basename + '_heimdall_inputs.json', 'w') as fp:
         json.dump(HM.__dict__, fp, cls=MyEncoder, indent=4)
 
-    dada_process = Process(name='To dada', target=your_dada.to_dada)
+    dada_process = Process(name='To dada', target=your_dada.to_dada, args=(args.no_progress,))
     heimdall_process = Process(name='Heimdall', target=HM.run)
 
     dada_process.start()

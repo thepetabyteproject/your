@@ -104,7 +104,7 @@ def write_fil(data, y, filename=None, outdir=None):
     logger.info(f'Successfully written data to Filterbank file: {filfile}')
 
 
-def convert(f, outdir=None, filfile=None):
+def convert(f, outdir=None, filfile=None, progress=None):
     '''
     reads data from one or more PSRFITS files
     and writes out a Filterbank File.
@@ -127,7 +127,7 @@ def convert(f, outdir=None, filfile=None):
         nsamps[-1] = y.your_header.native_nspectra % interval
 
     # Read data
-    for nstart, nsamp in tqdm.tqdm(zip(nstarts, nsamps), total=len(nstarts)):
+    for nstart, nsamp in tqdm.tqdm(zip(nstarts, nsamps), total=len(nstarts), disable=progress):
         logger.debug(f'Reading spectra {nstart}-{nstart + nsamp} in file {y.filename}')
         data = y.get_data(nstart, nsamp).astype(y.your_header.dtype)
         logger.info(f'Writing data from spectra {nstart}-{nstart + nsamp} to filterbank')
@@ -150,6 +150,7 @@ if __name__ == '__main__':
                         required=False)
     parser.add_argument('-fil', '--fil_name', type=str, help='Output name of the Filterbank file', default=None,
                         required=False)
+    parser.add_argument('--no_progress', help='Do not show the tqdm bar', action='store_true', default=None)
     values = parser.parse_args()
 
     logging_format = '%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s'
@@ -169,4 +170,4 @@ if __name__ == '__main__':
     else:
         files = glob.glob(values.files)
 
-    convert(files, values.outdir, values.fil_name)
+    convert(files, values.outdir, values.fil_name, values.no_progress)
