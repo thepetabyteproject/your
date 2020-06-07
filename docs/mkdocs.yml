@@ -15,6 +15,7 @@ repo_url: https://github.com/devanshkv/your
 nav:
   - Core: your.md
   - Candidate: candidate.md
+  - psrdada: psrdada.md
   - Utils:
       - RFI: utils/rfi.md
       - Astro: utils/astro.md

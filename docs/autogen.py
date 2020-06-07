@@ -21,6 +21,19 @@ pages = {
                      "your.candidate.Candidate.decimate",
                      "your.candidate.Candidate.resize"],
 
+    'psrdada.md': ['your.dada.DadaManager',
+                   'your.dada.DadaManager.setup',
+                   'your.dada.DadaManager.dump_header',
+                   'your.dada.DadaManager.dump_data',
+                   'your.dada.DadaManager.mark_filled',
+                   'your.dada.DadaManager.eod',
+                   'your.dada.DadaManager.teardown',
+                   'your.dada.YourDada',
+                   'your.dada.YourDada.setup',
+                   'your.dada.YourDada.teardown',
+                   'your.dada.YourDada.your_dada_header',
+                   'your.dada.YourDada.to_dada'],
+
     'utils/rfi.md': ["your.utils.rfi.savgol_filter",
                      "your.utils.rfi.spectral_kurtosis"],
 
