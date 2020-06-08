@@ -160,7 +160,6 @@ def convert(f,c=None, outdir=None, filfile=None):
         logger.debug(f'Reading spectra {nstart}-{nstart + nsamp} in file {y.filename}')
         data = y.get_data(nstart, nsamp).astype(y.your_header.dtype)
         data = data[:,min_c:max_c]
-       
         logger.info(f'Writing data from spectra {nstart}-{nstart + nsamp}in the frequency channel range {min_c}-{max_c} to filterbank')
         write_fil(data, y, nchans = nchans, chan_freq = chan_freq, outdir=outdir, filename=filfile)
         logger.debug(f'Successfully written data from spectra {nstart}-{nstart + nsamp} in the frequency channel range {min_c}-{max_c} to filterbank')
