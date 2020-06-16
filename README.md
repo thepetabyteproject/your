@@ -1,9 +1,9 @@
 # your
 
-[![Issues](https://img.shields.io/github/issues/devanshkv/your?style=flat-square)]()
-[![Forks](https://img.shields.io/github/forks/devanshkv/your?style=flat-square)]()
-[![Stars](https://img.shields.io/github/stars/devanshkv/your?style=flat-square)]()
-[![License](https://img.shields.io/github/license/devanshkv/your?style=flat-square)]()
+[![Issues](https://img.shields.io/github/issues/devanshkv/your?style=flat-square)](https://github.com/devanshkv/your/issues)
+[![Forks](https://img.shields.io/github/forks/devanshkv/your?style=flat-square)](https://github.com/devanshkv/your/network/members)
+[![Stars](https://img.shields.io/github/stars/devanshkv/your?style=flat-square)](https://github.com/devanshkv/your/stargazers)
+[![License](https://img.shields.io/github/license/devanshkv/your?style=flat-square)](https://github.com/devanshkv/your/blob/master/LICENSE)
 [![Tweet](https://img.shields.io/twitter/url?url=https%3A%2F%2Fgithub.com%2Fdevanshkv%2Fyour)]()
 [![HitCount](http://hits.dwyl.com/devanshkv/your.svg)](http://hits.dwyl.com/devanshkv/your)
 
