@@ -1,4 +1,11 @@
 # your
+
+[![Issues](https://img.shields.io/github/issues/devanshkv/your)]()
+[![Forks](https://img.shields.io/github/forks/devanshkv/your)]()
+[![Stars](https://img.shields.io/github/stars/devanshkv/your)]()
+[![License](https://img.shields.io/github/license/devanshkv/your)]()
+[![Tweet](https://img.shields.io/twitter/url?url=https%3A%2F%2Fgithub.com%2Fdevanshkv%2Fyour)]()
+
 `your` stands for Your Unified Reader. This library reads sigproc filterbanks, psrfits, and psrdada formats and can go from one format to another.
 
 | Format        | Read                     | Write               |
