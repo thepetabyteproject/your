@@ -12,8 +12,13 @@ def nice_print(dic):
 
 def read_header(f):
     if os.path.isfile(f):
-        y = Your(f)	
-        nice_print(vars(y.your_header))
+        y = Your(f)
+        dic = vars(y.your_header)
+        dic['tsamp'] = y.your_header.tsamp
+        dic['nchans'] = y.your_header.nchans
+        dic['foff'] = y.your_header.foff
+        dic['nspectra'] = y.your_header.nspectra
+        nice_print(dic)
     else:
         print(f"File: {f} does not exist!")
 
