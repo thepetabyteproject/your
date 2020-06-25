@@ -8,7 +8,7 @@ from your import Your
 
 def nice_print(dic):
     for key, item in dic.items():
-        print(f"{key : >20}:\t{item}")
+        print(f"{key : >27}:\t{item}")
 
 def read_header(f):
     if os.path.isfile(f):
