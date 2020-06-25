@@ -19,11 +19,10 @@ def read_header(f):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
-        description="Read header from file and print the your header",
+        description="Read header from fits/fil and print the your header",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-f', '--files',
-                        help='Paths of PSRFITS files to be converted to a single file in Filterbank format. Surround '
-                             'with quotes, and either use wildcards or separate with spaces',
+                        help='Fits or filterbank file to read header.',
                         required=True, type=str)
     values = parser.parse_args()
     read_header(values.files)
