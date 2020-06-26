@@ -2,6 +2,7 @@ import math
 from functools import reduce
 
 import numpy as np
+from scipy import stats
 
 
 def closest_number(big_num, small_num):
@@ -14,7 +15,9 @@ def closest_number(big_num, small_num):
 
         small_num: Number whose multiple is to be found and subtracted
 
-    Returns: the difference between the closest multiple of a smaller number with respect to a bigger number
+    Returns:
+
+        The difference between the closest multiple of a smaller number with respect to a bigger number
 
     """
     if big_num % small_num == 0:
@@ -59,7 +62,9 @@ def closest_divisor(n, m):
         m: divisor closest to this number
 
 
-    Returns: the divisor of n, which is closest to (i.e bigger than) m
+    Returns:
+
+        The divisor of n, which is closest to (i.e bigger than) m
 
     """
     pfs = primes(n)
@@ -79,7 +84,9 @@ def find_gcd(list_of_nos):
 
         list_of_nos: list of numbers
 
-    Returns: GCD
+    Returns:
+
+        GCD
 
     """
     x = reduce(math.gcd, list_of_nos)
@@ -92,12 +99,40 @@ def normalise(data):
 
     Args:
 
-        data: data
+        data (numpy.ndarray): data
 
-    Returns: normalised data
+    Returns:
+
+        numpy.ndarray: normalised data
 
     """
     data = np.array(data, dtype=np.float32)
     data -= np.median(data)
     data /= np.std(data)
     return data
+
+def smad_plotter(freq_time, sigma=5.0, clip=True):
+    """
+    spectal Median Absolute Deviation clipper
+   
+    Args:
+        
+        freq_time: the frequency time data
+
+        sigma (float): sigma at which to clip data
+
+        clip (bool): if true replaces clips the data else replaces it with zeroes
+
+    Returns:
+
+        np.ndarray: clipped/flagged data
+    """
+    medians = np.median(freq_time, axis=0)
+    sigs = 1.4826*sigma*stats.median_absolute_deviation(freq_time, axis=0)
+    if clip:
+        return np.clip(freq_time, a_min=medians-sigs, a_max=medians+sigs)
+    else:
+        for j, sig in enumerate(sigs):   
+            freq_time[np.absolute(freq_time[:, j] - medians[j]) >= sig, j] = 0.0
+        return freq_time
+        

@@ -6,6 +6,8 @@ import pylab as plt
 from matplotlib import gridspec
 from scipy.signal import detrend
 
+from your.utils.math import smad_plotter
+
 
 def figsize(scale, width_by_height_ratio):
     """
@@ -17,7 +19,9 @@ def figsize(scale, width_by_height_ratio):
 
         width_by_height_ratio (float): ratio of width to height for the figure
 
-    Returns: list of width and height
+    Returns:
+
+        list: list of width and height
 
     """
     fig_width_pt = 513.17  # 469.755                  # Get this from LaTeX using \the\textwidth
@@ -39,7 +43,9 @@ def get_params(scale=0.5, width_by_height_ratio=1):
 
         width_by_height_ratio (float): ratio of width to height for the figure
 
-    Returns: dictionary of parameters
+    Returns:
+
+        dict: dictionary of parameters
 
     """
     params = {'backend': 'pdf',
@@ -69,11 +75,13 @@ def get_params(scale=0.5, width_by_height_ratio=1):
     return params
 
 
-def plot_h5(h5_file, save=True, detrend_ft=True, publication=False):
+def plot_h5(h5_file, save=True, detrend_ft=True, publication=False, mad_filter=False):
     """
     Plot the h5 candidates
 
     Args:
+
+        mad_filter (int): use MAD filter to clip data
 
         h5_file (str): Name of the h5 file
 
@@ -83,7 +91,9 @@ def plot_h5(h5_file, save=True, detrend_ft=True, publication=False):
 
         publication (bool): make publication quality plot
 
-    Returns: None
+    Returns:
+
+        None
 
     """
     with h5py.File(h5_file, 'r') as f:
@@ -106,6 +116,9 @@ def plot_h5(h5_file, save=True, detrend_ft=True, publication=False):
             ts = np.linspace(-128, 128, 256) * tsamp * width * 1000 / 2
         else:
             ts = np.linspace(-128, 128, 256) * tsamp * 1000
+
+        if mad_filter:
+            freq_time = smad_plotter(freq_time, float(mad_filter))
 
         plt.clf()
 

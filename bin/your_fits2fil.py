@@ -17,6 +17,7 @@ import tqdm
 
 from your import Your
 from your.pysigproc import SigprocFile
+from your.utils.rfi import sk_filter, savgol_filter
 
 logger = logging.getLogger(__name__)
 
@@ -107,7 +108,7 @@ def write_fil(data, y, nchans =None, chan_freq=None, filename=None, outdir=None)
     logger.info(f'Successfully written data to Filterbank file: {filfile}')
 
 
-def convert(f,c=None, outdir=None, filfile=None):
+def convert(f, c=None, outdir=None, filfile=None, progress=None, flag_rfi=False, sk_sig=4, sg_fw=15, sg_sig=4):
     '''
     reads data from one or more PSRFITS files
     and writes out a Filterbank File.
@@ -115,6 +116,11 @@ def convert(f,c=None, outdir=None, filfile=None):
     :param c: Required frequency channel range
     :param outdir: Output directory for Filterbank file
     :param filfile: Name of the Filterbank file to write to
+    :param progress: turn on/off progress bar
+    :param flag_rfi: To turn on RFI flagging 
+    :param sk_sig: sigma for spectral kurtosis filter
+    :param sg_fw: filter window for savgol filter
+    :param sg_sig: sigma for savgol filter
     '''
     y = Your(f)
     fits_header = vars(y.your_header)
@@ -140,13 +146,23 @@ def convert(f,c=None, outdir=None, filfile=None):
         nsamps[-1] = y.your_header.native_nspectra % interval
 
     # Read data
-    for nstart, nsamp in tqdm.tqdm(zip(nstarts, nsamps), total=len(nstarts)):
+    for nstart, nsamp in tqdm.tqdm(zip(nstarts, nsamps), total=len(nstarts), disable=progress):
         logger.debug(f'Reading spectra {nstart}-{nstart + nsamp} in file {y.filename}')
         data = y.get_data(nstart, nsamp).astype(y.your_header.dtype)
         data = data[:,min_c:max_c]
-        logger.info(f'Writing data from spectra {nstart}-{nstart + nsamp}in the frequency channel range {min_c}-{max_c} to filterbank')
+        if flag_rfi:
+            logger.info(f'Applying spectral kurtosis filter with sigma={sk_sig}')
+            sk_mask = sk_filter(data, foff=y.your_header.foff, nchans=nchans, tsamp=y.your_header.tsamp, sig=sk_sig)
+            bp = data.sum(0)[~sk_mask]
+            logger.info(f'Applying savgol filter with fw={sg_fw} and sig={sg_sig}')
+            sg_mask = savgol_filter(bp, y.your_header.foff, fw=sg_fw,  sig=sg_sig)
+            mask = np.zeros(data.shape[1], dtype=np.bool)
+            mask[sk_mask] = True
+            mask[np.where(mask == False)[0][sg_mask]] = True
+            data[:, mask] = 0
+        logger.info(f'Writing data from spectra {nstart}-{nstart + nsamp} in the frequency channel range {min_c}-{max_c} to filterbank')
         write_fil(data, y, nchans = nchans, chan_freq = chan_freq, outdir=outdir, filename=filfile)
-        logger.debug(f'Successfully written data from spectra {nstart}-{nstart + nsamp} in the frequency channel range {min_c}-{max_c} to filterbank')
+        logger.debug(f'Successfully written data from spectra {nstart}-{nstart + nsamp} to filterbank')
 
     logging.debug(f'Read all the necessary spectra')
 
@@ -155,13 +171,19 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Convert files from PSRFITS format to a single file in Filterbank format.",formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-v', '--verbose', help='Be verbose', action='store_true')
     parser.add_argument('-f', '--files',
-                        help='Paths of PSRFITS files to be converted to a single file in Filterbank format. Surround with quotes, and either use wildcards or separate with spaces',
+                        help='Paths of PSRFITS files to be converted to a single file in Filterbank format. Surround '
+                             'with quotes, and either use wildcards or separate with spaces',
                         required=True, type=str)
     parser.add_argument('-c', '--chans', help='Required channels (eg -c 0 4096)', required=False, type=int, nargs=2, default=None)
     parser.add_argument('-o', '--outdir', type=str, help='Output directory for Filterbank file', default='.',
                         required=False)
     parser.add_argument('-fil', '--fil_name', type=str, help='Output name of the Filterbank file', default=None,
                         required=False)
+    parser.add_argument('--no_progress', help='Do not show the tqdm bar', action='store_true', default=None)
+    parser.add_argument('-r', '--flag_rfi', help='Turn on RFI flagging', action='store_true', default=False)
+    parser.add_argument('-sksig', '--sk_sig', help='Sigma for spectral kurtosis filter', type=float, default=4, required=False)
+    parser.add_argument('-sgsig', '--sg_sig', help='Sigma for savgol filter', type=float, default=4, required=False)
+    parser.add_argument('-sgfw', '--sg_fw', help='Filter window for savgol filter (MHz)', type=float, default=15, required=False)
     values = parser.parse_args()
 
     logging_format = '%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s'
@@ -181,7 +203,5 @@ if __name__ == '__main__':
     else:
         files = glob.glob(values.files)
         
-    convert(files, values.chans, values.outdir, values.fil_name)
-
-
-
+    convert(f=files,c=values.chans, outdir=values.outdir, filfile=values.fil_name, progress=values.no_progress, flag_rfi=values.flag_rfi, sk_sig=values.sk_sig, 
+            sg_fw=values.sg_fw, sg_sig=values.sg_sig)

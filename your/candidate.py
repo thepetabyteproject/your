@@ -315,9 +315,11 @@ class Candidate(Your):
         Decimate FT or DMT data.
 
         Todo:
+
             * Update candidate parameters as per decimation factor
 
         Args:
+
             key (str): Keywords to chose which data to decimate ('dmt' or 'ft')
 
             decimate_factor (int): Number of samples to average
@@ -347,9 +349,11 @@ class Candidate(Your):
         Resize FT or DMT data
 
         Todo:
+
             * Update candidate parameters as per final size
 
         Args:
+
             key (str): Keywords to chose which data to resize ('dmt' or 'ft')
 
             size: Final size of the data array required

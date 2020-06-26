@@ -21,6 +21,25 @@ pages = {
                      "your.candidate.Candidate.decimate",
                      "your.candidate.Candidate.resize"],
 
+    'psrdada.md': ['your.dada.DadaManager',
+                   'your.dada.DadaManager.setup',
+                   'your.dada.DadaManager.dump_header',
+                   'your.dada.DadaManager.dump_data',
+                   'your.dada.DadaManager.mark_filled',
+                   'your.dada.DadaManager.eod',
+                   'your.dada.DadaManager.teardown',
+                   'your.dada.YourDada',
+                   'your.dada.YourDada.setup',
+                   'your.dada.YourDada.teardown',
+                   'your.dada.YourDada.your_dada_header',
+                   'your.dada.YourDada.to_dada'],
+
+    'pysigproc.md': ['your.pysigproc.SigprocFile',
+                     'your.pysigproc.SigprocFile.get_data',
+                     'your.pysigproc.SigprocFile.unpack',
+                     'your.pysigproc.SigprocFile.write_header',
+                     'your.pysigproc.SigprocFile.append_spectra'],
+
     'utils/rfi.md': ["your.utils.rfi.savgol_filter",
                      "your.utils.rfi.spectral_kurtosis"],
 
@@ -38,10 +57,18 @@ pages = {
                       "your.utils.math.primes",
                       "your.utils.math.closest_divisor",
                       "your.utils.math.find_gcd",
-                      "your.utils.math.normalise"]
+                      "your.utils.math.normalise",
+                      "your.utils.math.smad_plotter"],
+
+    'utils/gpu.md': ["your.utils.gpu.gpu_dedisperse",
+                     "your.utils.gpu.gpu_dmt",
+                     "your.utils.gpu.gpu_dedisp_and_dmt_crop",
+                     "your.utils.gpu.get_gpu_memory_map"],
+
+    'utils/misc.md': ["your.utils.misc.MyEncoder"]
 }
 
 doc_generator = DocumentationGenerator(pages)
 doc_generator.generate('./sources')
 
-shutil.copyfile('../README.md', 'index.md')
+shutil.copyfile('../README.md', 'sources/index.md')

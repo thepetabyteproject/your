@@ -24,14 +24,17 @@ if __name__ == "__main__":
     parser.add_argument('-dm', '--dm', help='DM (eg -dm 10 1000)', type=float, nargs=2, default=[10, 1000])
     parser.add_argument('-g', '--gpu_id', help='GPU ID to run heimdall on', type=int, required=False, default=0)
     parser.add_argument('-sg', '--apply_savgol', help='Apply savgol filter to zap bad channels', action='store_true')
-    parser.add_argument('-fw', '--filter_window', help='Window size (MHz) for savgol filter', required=False, 
+    parser.add_argument('-fw', '--filter_window', help='Window size (MHz) for savgol filter', required=False,
                         default=15, type=float)
     parser.add_argument('-sig', '--sigma', help='Sigma for the savgol filter', required=False, default=6, type=float)
-    parser.add_argument('-m', '--mask', help='Input RFI mask (could be 1-D bad channel mask or 2-D FT mask)', required=False, type=str, 
+    parser.add_argument('-m', '--mask', help='Input RFI mask (could be 1-D bad channel mask or 2-D FT mask)',
+                        required=False, type=str,
                         default=None)
-    parser.add_argument('-rfi_no_broad', '--rfi_no_broad', help='disable 0-DM RFI excision', required=False, action='store_true', default=False)
+    parser.add_argument('-rfi_no_broad', '--rfi_no_broad', help='disable 0-DM RFI excision', required=False,
+                        action='store_true', default=False)
     parser.add_argument('-o', '--output_dir', help='Output dir for heimdall candidates', type=str, required=False,
-                        default=None)    
+                        default=None)
+    parser.add_argument('--no_progress', help='Do not show the tqdm bar', action='store_true', default=None)
     args = parser.parse_args()
 
     if args.output_dir is None:
@@ -62,18 +65,18 @@ if __name__ == "__main__":
 
     your_dada = dada.YourDada(your_object)
     your_dada.setup()
-    
+
     if args.apply_savgol:
         bandpass = your_object.bandpass(nspectra=8192)
-        mask = savgol_filter(bandpass, your_object.your_header.foff, fw=args.filter_window, sig=args.sigma) 
-        chan_nos=np.arange(0,bandpass.shape[0], dtype=np.int)
-        bad_chans=list(chan_nos[mask])
-        
+        mask = savgol_filter(bandpass, your_object.your_header.foff, fw=args.filter_window, sig=args.sigma)
+        chan_nos = np.arange(0, bandpass.shape[0], dtype=np.int)
+        bad_chans = list(chan_nos[mask])
+
         save_bandpass(your_object, bandpass, chan_nos=chan_nos, mask=mask, outdir=args.output_dir + '/')
-        
+
         kill_mask_file = args.output_dir + '/' + your_object.your_header.basename + '.bad_chans'
-        with open(kill_mask_file,'w') as f:
-            np.savetxt(f,chan_nos[mask],fmt='%d',delimiter=' ', newline=' ')
+        with open(kill_mask_file, 'w') as f:
+            np.savetxt(f, chan_nos[mask], fmt='%d', delimiter=' ', newline=' ')
     elif args.mask:
         logging.info(f'Reading RFI mask from {args.mask}')
         mask = np.loadtxt(args.mask)
@@ -83,20 +86,20 @@ if __name__ == "__main__":
             sk_mask = mask
             bad_chans = None
         else:
-            logging.warn('RFI mask not understood, can only be 1D or 2D. Not using RFI flagging.')
+            logging.warning('RFI mask not understood, can only be 1D or 2D. Not using RFI flagging.')
             bad_chans = None
     else:
         logging.info('No RFI flagging done.')
         bad_chans = None
-        
+
     HM = HeimdallManager(dm=args.dm, dada_key=your_dada.dada_key, boxcar_max=int(32e-3 / your_object.your_header.tsamp),
                          verbosity='v', nsamps_gulp=nsamps_gulp, gpu_id=args.gpu_id, output_dir=args.output_dir,
                          zap_chans=bad_chans, rfi_no_broad=args.rfi_no_broad)
-    
+
     with open(args.output_dir + '/' + your_object.your_header.basename + '_heimdall_inputs.json', 'w') as fp:
         json.dump(HM.__dict__, fp, cls=MyEncoder, indent=4)
 
-    dada_process = Process(name='To dada', target=your_dada.to_dada)
+    dada_process = Process(name='To dada', target=your_dada.to_dada, args=(args.no_progress,))
     heimdall_process = Process(name='Heimdall', target=HM.run)
 
     dada_process.start()
