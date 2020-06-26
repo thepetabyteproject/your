@@ -5,8 +5,9 @@ import numpy as np
 import pylab as plt
 from matplotlib import gridspec
 from scipy.signal import detrend
-from scipy import stats
+
 from your.utils.math import smad_plotter
+
 
 def figsize(scale, width_by_height_ratio):
     """
