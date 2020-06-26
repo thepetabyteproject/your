@@ -1,3 +1,5 @@
+from pytest import approx
+
 from your.utils.math import *
 
 
@@ -20,5 +22,5 @@ def test_gcd():
 def test_normalise():
     data = np.random.randint(0, 255, size=(256, 256, 1), dtype=np.uint8)
     data = normalise(data)
-    assert np.std(data) == 1
-    assert np.median(data) == 0
+    assert approx(np.std(data), rel=1e-3) == 1
+    assert approx(np.median(data), rel=1e-3) == 0
