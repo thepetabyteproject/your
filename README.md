@@ -6,6 +6,8 @@
 [![License](https://img.shields.io/github/license/devanshkv/your?style=flat-square)](https://github.com/devanshkv/your/blob/master/LICENSE)
 [![Tweet](https://img.shields.io/twitter/url?url=https%3A%2F%2Fgithub.com%2Fdevanshkv%2Fyour)]()
 [![HitCount](http://hits.dwyl.com/devanshkv/your.svg)](http://hits.dwyl.com/devanshkv/your)
+[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fdevanshkv%2Fyour%2Fbadge&style=flat-square)](https://github.com/devanshkv/your/actions)
+[![codecov](https://codecov.io/gh/devanshkv/your/branch/master/graph/badge.svg?style=flat-square)](https://codecov.io/gh/devanshkv/your)
 
 
 `your` stands for Your Unified Reader. This library reads sigproc filterbanks, psrfits, and psrdada formats and can go from one format to another.
