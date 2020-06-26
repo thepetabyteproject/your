@@ -17,6 +17,7 @@ import tqdm
 
 from your import Your
 from your.pysigproc import SigprocFile
+from your.utils.rfi import sk_filter, savgol_filter
 
 logger = logging.getLogger(__name__)
 
@@ -104,13 +105,18 @@ def write_fil(data, y, filename=None, outdir=None):
     logger.info(f'Successfully written data to Filterbank file: {filfile}')
 
 
-def convert(f, outdir=None, filfile=None, progress=None):
+def convert(f, outdir=None, filfile=None, progress=None, flag_rfi=False, sk_sig=4, sg_fw=15, sg_sig=4):
     '''
     reads data from one or more PSRFITS files
     and writes out a Filterbank File.
     :param f: List of PSRFITS files
     :param outdir: Output directory for Filterbank file
     :param filfile: Name of the Filterbank file to write to
+    :param progress: turn on/off progress bar
+    :param flag_rfi: To turn on RFI flagging 
+    :param sk_sig: sigma for spectral kurtosis filter
+    :param sg_fw: filter window for savgol filter
+    :param sg_sig: sigma for savgol filter
     '''
     y = Your(f)
     fits_header = vars(y.your_header)
@@ -130,6 +136,16 @@ def convert(f, outdir=None, filfile=None, progress=None):
     for nstart, nsamp in tqdm.tqdm(zip(nstarts, nsamps), total=len(nstarts), disable=progress):
         logger.debug(f'Reading spectra {nstart}-{nstart + nsamp} in file {y.filename}')
         data = y.get_data(nstart, nsamp).astype(y.your_header.dtype)
+        if flag_rfi:
+            logger.info(f'Applying spectral kurtosis filter with sigma={sk_sig}')
+            sk_mask = sk_filter(data, foff=y.your_header.foff, nchans=y.your_header.nchans, tsamp=y.your_header.tsamp, sig=sk_sig)
+            bp = data.sum(0)[~sk_mask]
+            logger.info(f'Applying savgol filter with fw={sg_fw} and sig={sg_sig}')
+            sg_mask = savgol_filter(bp, y.your_header.foff, fw=sg_fw,  sig=sg_sig)
+            mask = np.zeros(data.shape[1], dtype=np.bool)
+            mask[sk_mask] = True
+            mask[np.where(mask == False)[0][sg_mask]] = True
+            data[:, mask] = 0
         logger.info(f'Writing data from spectra {nstart}-{nstart + nsamp} to filterbank')
         write_fil(data, y, outdir=outdir, filename=filfile)
         logger.debug(f'Successfully written data from spectra {nstart}-{nstart + nsamp} to filterbank')
@@ -151,6 +167,10 @@ if __name__ == '__main__':
     parser.add_argument('-fil', '--fil_name', type=str, help='Output name of the Filterbank file', default=None,
                         required=False)
     parser.add_argument('--no_progress', help='Do not show the tqdm bar', action='store_true', default=None)
+    parser.add_argument('-r', '--flag_rfi', help='Turn on RFI flagging', action='store_true', default=False)
+    parser.add_argument('-sksig', '--sk_sig', help='Sigma for spectral kurtosis filter', type=float, default=4, required=False)
+    parser.add_argument('-sgsig', '--sg_sig', help='Sigma for savgol filter', type=float, default=4, required=False)
+    parser.add_argument('-sgfw', '--sg_fw', help='Filter window for savgol filter (MHz)', type=float, default=15, required=False)
     values = parser.parse_args()
 
     logging_format = '%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s'
@@ -170,4 +190,5 @@ if __name__ == '__main__':
     else:
         files = glob.glob(values.files)
 
-    convert(files, values.outdir, values.fil_name, values.no_progress)
+    convert(files, values.outdir, values.fil_name, values.no_progress, flag_rfi=values.flag_rfi, sk_sig=values.sk_sig, 
+            sg_fw=values.sg_fw, sg_sig=values.sg_sig)

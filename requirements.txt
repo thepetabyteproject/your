@@ -6,3 +6,4 @@ numba
 astropy
 Cython
 tqdm
+pandas
