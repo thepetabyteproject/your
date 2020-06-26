@@ -1,8 +1,10 @@
 #!/usr/bin/env python
-# coding: utf-8
+"""
+Converts files in PSRFITS format
+to Filterbank format and combines
+them into a single file.
 
-# In[1]:
-
+"""
 
 import argparse
 import glob
@@ -10,29 +12,13 @@ import logging
 import os
 from datetime import datetime
 
-
-# In[2]:
-
-
 import numpy as np
 import tqdm
-import glob
-
-
-# In[3]:
-
 
 from your import Your
 from your.pysigproc import SigprocFile
 
-
-# In[4]:
-
-
 logger = logging.getLogger(__name__)
-
-
-# In[5]:
 
 
 def make_sigproc_obj(filfile, y, nchans, chan_freq):
@@ -79,9 +65,6 @@ def make_sigproc_obj(filfile, y, nchans, chan_freq):
     return fil_obj
 
 
-# In[6]:
-
-
 def write_fil(data, y, nchans =None, chan_freq=None, filename=None, outdir=None):
     '''
     Write Filterbank file given the Your object
@@ -121,14 +104,12 @@ def write_fil(data, y, nchans =None, chan_freq=None, filename=None, outdir=None)
     logger.info(f'Successfully written data to Filterbank file: {filfile}')
 
 
-# In[7]:
-
-
 def convert(f,c=None, outdir=None, filfile=None):
     '''
     reads data from one or more PSRFITS files
     and writes out a Filterbank File.
     :param f: List of PSRFITS files
+    :param c: Required frequency channel range
     :param outdir: Output directory for Filterbank file
     :param filfile: Name of the Filterbank file to write to
     '''
@@ -167,9 +148,6 @@ def convert(f,c=None, outdir=None, filfile=None):
     logging.debug(f'Read all the necessary spectra')
 
 
-# In[8]:
-
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Convert files from PSRFITS format to a single file in Filterbank format.",formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-v', '--verbose', help='Be verbose', action='store_true')
@@ -200,12 +178,7 @@ if __name__ == '__main__':
     else:
         files = glob.glob(values.files)
         
-
     convert(files, values.chans, values.outdir, values.fil_name)
-
-
-# In[ ]:
-
 
 
 
