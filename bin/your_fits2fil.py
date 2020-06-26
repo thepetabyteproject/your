@@ -27,6 +27,8 @@ def make_sigproc_obj(filfile, y, nchans, chan_freq):
     class object with the relevant parameters
     :param filfile: Name of the Filterbank file
     :param y: Your object for the PSRFITS files
+    :param nchans: No:of channels in the frequency range
+    :param chan_freq: Required frequency channel range
     '''
     logger.debug(f'Generating Sigproc object')
     fil_obj = SigprocFile()
@@ -44,7 +46,7 @@ def make_sigproc_obj(filfile, y, nchans, chan_freq):
 
     fil_obj.nchans = nchans
     fil_obj.foff = y.your_header.foff
-    fil_obj.fch1 = chan_freq[1]
+    fil_obj.fch1 = chan_freq[0]
     fil_obj.nbeams = 1
     fil_obj.ibeam = 0
     fil_obj.nbits = y.your_header.nbits
@@ -69,7 +71,8 @@ def write_fil(data, y, nchans =None, chan_freq=None, filename=None, outdir=None)
     '''
     Write Filterbank file given the Your object
     :param y: Your object for the PSRFITS files
-    :param nonzerodata: Non-Zero Data from the PSRFITS files
+    :param nchans: No:of channels in the frequency range
+    :param chan_freq: Required frequency channel range
     :param filename: Output name of the Filterbank file
     :param outdir: Output directory for the Filterbank file
     '''
