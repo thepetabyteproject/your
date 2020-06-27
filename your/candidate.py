@@ -90,7 +90,7 @@ class Candidate(Your):
             f.attrs['filelist'] = self.your_header.filelist
 
             # Copy over header information as attributes
-            file_header = vars(self.your_header)    
+            file_header = vars(self.your_header)
             for key in file_header.keys():
                 if key == 'dtype':
                     f.attrs[key] = np.dtype(file_header[key]).name

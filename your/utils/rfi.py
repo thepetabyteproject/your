@@ -89,9 +89,9 @@ def sk_filter(data, foff, nchans, tsamp, N=None, d=1, sig=5):
     nan_mask = np.isnan(sk)
     sk[nan_mask] = np.nan
     sk_c = sk[~nan_mask]
-    std = 1.4826*stats.median_absolute_deviation(sk_c)
-    h = np.median(sk_c) + sig*std
-    l = np.median(sk_c) - sig*std
+    std = 1.4826 * stats.median_absolute_deviation(sk_c)
+    h = np.median(sk_c) + sig * std
+    l = np.median(sk_c) - sig * std
     mask = (sk < h) & (sk > l)
     return ~mask
 
@@ -116,6 +116,5 @@ def calc_N(foff, nchans, tsamp):
 
     """
 
-    tn = nchans*np.abs(1/(2*foff*nchans*10**6))
-    return np.round(tsamp/tn)
-
+    tn = nchans * np.abs(1 / (2 * foff * nchans * 10 ** 6))
+    return np.round(tsamp / tn)
