@@ -344,6 +344,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#save_bandpass-function" class="md-nav__link">
+    save_bandpass function
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -448,6 +455,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#save_bandpass-function" class="md-nav__link">
+    save_bandpass function
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -529,6 +543,30 @@ publication (bool): make publication quality plot
 
 <p>Returns:</p>
 <div class="codehilite"><pre><span></span><code>None
+</code></pre></div>
+
+
+<hr />
+<h3 id="save_bandpass-function">save_bandpass function</h3>
+<div class="codehilite"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">plotter</span><span class="o">.</span><span class="n">save_bandpass</span><span class="p">(</span>
+    <span class="n">your_object</span><span class="p">,</span> <span class="n">bandpass</span><span class="p">,</span> <span class="n">chan_nos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="p">[],</span> <span class="n">outdir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outname</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">)</span>
+</code></pre></div>
+
+
+<p>Plots and saves the bandpass</p>
+<p>Args:</p>
+<div class="codehilite"><pre><span></span><code>your_object: Your object
+
+bandpass (np.ndarray): Bandpass of the data
+
+chan_nos (np.ndarray): Array of channel numbers
+
+mask (np.ndarray): Boolean Array of channel mask
+
+outdir (str) : Output directory to save the plot
+
+outname (str): Name of the bandpass file
 </code></pre></div>
 
 
