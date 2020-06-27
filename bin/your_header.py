@@ -3,7 +3,6 @@
 Print your header
 """
 import argparse
-import glob
 
 from your import Your
 
@@ -29,12 +28,7 @@ if __name__ == '__main__':
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-f', '--files',
                         help='Fits or filterbank files to read header.',
-                        required=True, type=str)
+                        required=True, nargs='+')
     values = parser.parse_args()
 
-    if len(values.files.split(' ')) > 1:
-        files = values.files.split(' ')
-    else:
-        files = glob.glob(values.files)
-
-    read_header(files)
+    read_header(values.files)
