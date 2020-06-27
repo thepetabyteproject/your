@@ -30,6 +30,10 @@ if __name__ == "__main__":
     parser.add_argument('-m', '--mask', help='Input RFI mask (could be 1-D bad channel mask or 2-D FT mask)',
                         required=False, type=str,
                         default=None)
+    parser.add_argument('-dm_tol', '--dm_tol', help='SNR loss tolerance between DM trials', required=False, 
+                         type=float, default=1.25)
+    parser.add_argument('-rfi_no_narrow', '--rfi_no_narrow', help='disable narrow band RFI excision', required=False,
+                         action='store_true', default=False)
     parser.add_argument('-rfi_no_broad', '--rfi_no_broad', help='disable 0-DM RFI excision', required=False,
                         action='store_true', default=False)
     parser.add_argument('-o', '--output_dir', help='Output dir for heimdall candidates', type=str, required=False,
@@ -94,7 +98,8 @@ if __name__ == "__main__":
 
     HM = HeimdallManager(dm=args.dm, dada_key=your_dada.dada_key, boxcar_max=int(32e-3 / your_object.your_header.tsamp),
                          verbosity='v', nsamps_gulp=nsamps_gulp, gpu_id=args.gpu_id, output_dir=args.output_dir,
-                         zap_chans=bad_chans, rfi_no_broad=args.rfi_no_broad)
+                         zap_chans=bad_chans, rfi_no_broad=args.rfi_no_broad, rfi_no_narrow=args.rfi_no_narrow, 
+                         dm_tol=args.dm_tol)
 
     with open(args.output_dir + '/' + your_object.your_header.basename + '_heimdall_inputs.json', 'w') as fp:
         json.dump(HM.__dict__, fp, cls=MyEncoder, indent=4)
