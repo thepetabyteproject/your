@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Converts files in PSRFITS format
 to Filterbank format and combines
@@ -71,6 +71,7 @@ def make_sigproc_obj(filfile, y, nchans, chan_freq):
 def write_fil(data, y, nchans =None, chan_freq=None, filename=None, outdir=None):
     '''
     Write Filterbank file given the Your object
+    :param data: data to write to the filterbank file
     :param y: Your object for the PSRFITS files
     :param nchans: No:of channels in the frequency range
     :param chan_freq: Required frequency channel range
@@ -168,7 +169,8 @@ def convert(f, c=None, outdir=None, filfile=None, progress=None, flag_rfi=False,
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Convert files from PSRFITS format to a single file in Filterbank format.",formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser = argparse.ArgumentParser(description="Convert files from PSRFITS format to a single file in Filterbank" 
+                                                   "format.",formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-v', '--verbose', help='Be verbose', action='store_true')
     parser.add_argument('-f', '--files',
                         help='Paths of PSRFITS files to be converted to a single file in Filterbank format. Surround '
@@ -203,5 +205,5 @@ if __name__ == '__main__':
     else:
         files = glob.glob(values.files)
         
-    convert(f=files,c=values.chans, outdir=values.outdir, filfile=values.fil_name, progress=values.no_progress, flag_rfi=values.flag_rfi, sk_sig=values.sk_sig, 
-            sg_fw=values.sg_fw, sg_sig=values.sg_sig)
+    convert(f=files,c=values.chans, outdir=values.outdir, filfile=values.fil_name, progress=values.no_progress, 
+            flag_rfi=values.flag_rfi, sk_sig=values.sk_sig, sg_fw=values.sg_fw, sg_sig=values.sg_sig)
