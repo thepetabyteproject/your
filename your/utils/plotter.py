@@ -75,7 +75,7 @@ def get_params(scale=0.5, width_by_height_ratio=1):
     return params
 
 
-def plot_h5(h5_file, save=True, detrend_ft=True, publication=False, mad_filter=False):
+def plot_h5(h5_file, save=True, detrend_ft=True, publication=False, mad_filter=False, outdir=None):
     """
     Plot the h5 candidates
 
@@ -155,7 +155,11 @@ def plot_h5(h5_file, save=True, detrend_ft=True, publication=False, mad_filter=F
 
         plt.tight_layout()
         if save:
-            plt.savefig(h5_file[:-3] + '.png', bbox_inches='tight')
+            if outdir:
+                filename = outdir + os.path.basename(h5_file)[:-3] + '.png'
+            else:
+                filename = h5_file[:-3] + '.png'
+            plt.savefig(filename, bbox_inches='tight')
         else:
             plt.close()
 
