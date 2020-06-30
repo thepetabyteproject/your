@@ -6,7 +6,7 @@ import logging
 import numpy as np
 
 from your import Your
-from your.utils.misc import save_bandpass
+from your.utils.plotter import save_bandpass
 from your.utils.rfi import savgol_filter
 
 logging_format = '%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s'

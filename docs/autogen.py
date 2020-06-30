@@ -45,7 +45,8 @@ pages = {
 
     'utils/plotter.md': ["your.utils.plotter.figsize",
                          "your.utils.plotter.get_params",
-                         "your.utils.plotter.plot_h5"],
+                         "your.utils.plotter.plot_h5",
+                         "your.utils.plotter.save_bandpass"],
 
     'utils/astro.md': ["your.utils.astro.dec2deg",
                        "your.utils.astro.ra2deg"],
