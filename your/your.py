@@ -416,6 +416,10 @@ class Header:
     def nspectra(self):
         return self.native_nspectra // self.time_decimation_factor
 
-    def __str__(self):
-        hdr = vars(self)
-        return json.dumps(hdr, indent=2)
+    def __repr__(self):
+        property_names = [p for p in dir(self) if not p.startswith('__')]
+        d = {}
+        for prop in property_names:
+            d[prop] = getattr(self, prop)
+        d['dtype'] = d['dtype'].__name__
+        return 'Unified Header:' + json.dumps(d, indent=2)[1:-1].replace(",", "")
