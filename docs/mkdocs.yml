@@ -4,16 +4,24 @@ docs_dir: sources
 site_description: 'Your Documentation'
 
 theme:
-        name: material
-        palette:
-                scheme: slate
-                primary: indigo
+  name: material
+  palette:
+    scheme: slate
+    primary: indigo
 
 repo_name: your
 repo_url: https://github.com/devanshkv/your
 
 nav:
   - Core: your.md
+  - CLI:
+      - your_candmaker.py: bin/your_candmaker.md
+      - your_combine_mocks.py: bin/your_combine_mocks.md
+      - your_fits2fil.py: bin/your_fits2fil.md
+      - your_h5plotter.py: bin/your_h5plotter.md
+      - your_header.py: bin/your_header.md
+      - your_heimdall.py: bin/your_heimdall.md
+      - your_rfimask.py: bin/your_rfimask.md
   - psrdada: psrdada.md
   - filterbank: pysigproc.md
   - Candidate: candidate.md

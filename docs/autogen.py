@@ -1,3 +1,5 @@
+import glob
+import os
 import shutil
 
 from keras_autodoc import DocumentationGenerator
@@ -73,3 +75,9 @@ doc_generator = DocumentationGenerator(pages)
 doc_generator.generate('./sources')
 
 shutil.copyfile('../README.md', 'sources/index.md')
+
+os.system("mkdir -p sources/bin")
+
+for bin_files in glob.glob("../bin/*py"):
+    output_file = "sources/bin/" + os.path.basename(bin_files)[:-2] + 'md'
+    os.system(f"argdown --tiny -o {output_file} {bin_files}")
