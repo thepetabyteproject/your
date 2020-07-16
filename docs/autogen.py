@@ -81,3 +81,26 @@ os.system("mkdir -p sources/bin")
 for bin_files in glob.glob("../bin/*py"):
     output_file = "sources/bin/" + os.path.basename(bin_files)[:-2] + 'md'
     os.system(f"argdown --tiny -o {output_file} {bin_files}")
+
+github_repo_dir = 'devanshkv/your/blob/master/docs/'
+
+for ipynb_files in glob.glob("ipynb/*ipynb"):
+    os.system(f"jupyter-nbconvert {ipynb_files} --to markdown --output-dir=sources/ipynb/")
+    file_name_no_ext = os.path.splitext(ipynb_files)[0]
+    md_path = f"sources/{file_name_no_ext}.md"
+    with open(md_path, 'r') as md_file:
+        button_lines = [
+            ':material-link: '
+            "[**View in Colab**](https://colab.research.google.com/github/"
+            + github_repo_dir
+            + file_name_no_ext + ".ipynb"
+            + ")   &nbsp; &nbsp;"
+            # + '<span class="k-dot">•</span>'
+            + ':octicons-octoface: '
+              "[**GitHub source**](https://github.com/" + github_repo_dir + file_name_no_ext + ".ipynb)",
+            "\n",
+        ]
+        md_content = ''.join(button_lines) + '\n' + md_file.read()
+
+    with open(md_path, 'w') as md_file:
+        md_file.write(md_content)
