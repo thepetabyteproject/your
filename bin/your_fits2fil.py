@@ -169,7 +169,8 @@ def convert(f, c=None, outdir=None, filfile=None, progress=None, flag_rfi=False,
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Convert files from PSRFITS format to a single file in Filterbank"
+    parser = argparse.ArgumentParser(prog='your_fits2fil.py',
+                                     description="Convert files from PSRFITS format to a single file in Filterbank"
                                                  "format.", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-v', '--verbose', help='Be verbose', action='store_true')
     parser.add_argument('-f', '--files',

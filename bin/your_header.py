@@ -23,9 +23,9 @@ def read_header(f):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
-        description="Read header from fits/fil files and print the your header",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser = argparse.ArgumentParser(prog='your_header.py',
+                                     description="Read header from fits/fil files and print the your header",
+                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-f', '--files',
                         help='Fits or filterbank files to read header.',
                         required=True, nargs='+')

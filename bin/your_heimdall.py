@@ -17,7 +17,7 @@ from your.utils.plotter import save_bandpass
 from your.utils.rfi import savgol_filter
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Your Heimdall Fetch FRB",
+    parser = argparse.ArgumentParser(prog='your_heimdall.py', description="Your Heimdall Fetch FRB",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-v', '--verbose', help='Be verbose', action='store_true')
     parser.add_argument('-p', '--probability', help='Detection threshold', default=0.5, type=float)

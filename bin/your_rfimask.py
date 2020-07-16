@@ -13,7 +13,7 @@ logging_format = '%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(messa
 logging.basicConfig(level=logging.INFO, format=logging_format)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Make Bad channel mask",
+    parser = argparse.ArgumentParser(prog='your_rfimask.py', description="Make Bad channel mask",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-f', '--files', help='filterbank or psrfits', nargs='+')
     parser.add_argument('-sg', '--apply_savgol', help='Apply savgol filter to zap bad channels', action='store_true')
