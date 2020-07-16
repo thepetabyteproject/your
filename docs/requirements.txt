@@ -1,3 +1,4 @@
 keras-autodoc
 mkdocs
 mkdocs-material
+git+https://github.com/devanshkv/argdown.git

@@ -121,7 +121,8 @@ def cand2h5(cand_val):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Your candmaker! Make h5 candidates from the candidate csv files",
+    parser = argparse.ArgumentParser(prog='your_candmaker.py',
+                                     description="Your candmaker! Make h5 candidates from the candidate csv files",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-v', '--verbose', help='Be verbose', action='store_true')
     parser.add_argument('-fs', '--frequency_size', type=int, help='Frequency size after rebinning', default=256)
