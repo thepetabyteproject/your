@@ -96,6 +96,8 @@ def plot_h5(h5_file, save=True, detrend_ft=True, publication=False, mad_filter=F
 
         publication (bool): make publication quality plot
 
+        outdir (str): Path to the save the files into.
+
     Returns:
 
         None
@@ -171,7 +173,7 @@ def plot_h5(h5_file, save=True, detrend_ft=True, publication=False, mad_filter=F
         return None
 
 
-def save_bandpass(your_object, bandpass, chan_nos=None, mask=[], outdir=None, outname=None):
+def save_bandpass(your_object, bandpass, chan_nos=None, mask=None, outdir=None, outname=None):
     """
     Plots and saves the bandpass
 
@@ -188,16 +190,6 @@ def save_bandpass(your_object, bandpass, chan_nos=None, mask=[], outdir=None, ou
         outdir (str) : Output directory to save the plot
 
         outname (str): Name of the bandpass file
-
-    """
-    """
-    
-    :param your_object: Your object
-    :param bandpass: Bandpass of data
-    :param chan_nos: array of channel numbers
-    :param mask: boolean array of channel mask 
-    :param outdir: output directory to save the plot
-    :return: 
 
     """
 
