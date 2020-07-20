@@ -85,7 +85,6 @@ class PsrfitsFile(object):
         self.nsubints = self.specinfo.num_subint[0]
         self.freqs = self.fits['SUBINT'].data[0]['DAT_FREQ']
         self.frequencies = self.freqs  # Alias
-        self.tsamp = self.specinfo.dt
         self.nspec = self.specinfo.N
 
         # Unifying properties with pysigproc
@@ -106,16 +105,20 @@ class PsrfitsFile(object):
     def nspectra(self):
         return int(self.specinfo.spectra_per_subint * np.sum(self.specinfo.num_subint))
 
-    @property
-    def tend(self):
-        return self.tstart + self.nspectra * self.tsamp / 86400.0
+    def native_nspectra(self):
+        return int(self.specinfo.spectra_per_subint * np.sum(self.specinfo.num_subint))
 
-    @property
-    def chan_freqs(self):
-        return self.fch1 + np.arange(self.nchans) * self.foff
+    def native_tsamp(self):
+        return self.specinfo.dt
+
+    def native_foff(self):
+        return self.bw / self.nchan
+
+    def native_nchans(self):
+        return self.nchan
 
     def read_subint(self, isub, apply_weights=True, apply_scales=True, \
-                    apply_offsets=True, pol = 0):
+                    apply_offsets=True, pol=0):
         """
         Read a PSRFITS subint from a open pyfits file object.
          Applys scales, weights, and offsets to the data.
@@ -137,8 +140,8 @@ class PsrfitsFile(object):
         shp = sdata.squeeze().shape
 
         if pol > 0:
-            assert self.poln_order == "IQUV" , "Polarisation order in the file should be IQUV with pol=1 or pol=2"
-            
+            assert self.poln_order == "IQUV", "Polarisation order in the file should be IQUV with pol=1 or pol=2"
+
         if self.nbits < 8:  # Unpack the bytes data
             if (shp[0] != self.nsamp_per_subint) and \
                     (shp[1] != self.nchan * self.nbits / 8):
@@ -169,19 +172,19 @@ class PsrfitsFile(object):
                     data += sdata[:, 0, :].squeeze()
                 elif pol == 1:
                     logger.info("Calculating right circular polarisation data.")
-                    data = data + ((sdata[:, 0, :] + sdata[:, 3, :])/2).squeeze()
+                    data = data + ((sdata[:, 0, :] + sdata[:, 3, :]) / 2).squeeze()
                 elif pol == 2:
                     logger.info("Calculating left circular polarisation data.")
-                    data = data + ((sdata[:, 0, :] - sdata[:, 3, :])/2).squeeze()
+                    data = data + ((sdata[:, 0, :] - sdata[:, 3, :]) / 2).squeeze()
                 elif pol == 3:
                     logger.info("Calculating horizontal linear polarisation data.")
-                    data = data + ((sdata[:, 0, :] + sdata[:, 1, :])/2).squeeze()
+                    data = data + ((sdata[:, 0, :] + sdata[:, 1, :]) / 2).squeeze()
                 elif pol == 4:
                     logger.info("Calculating vertical linear polarisation data.")
-                    data = data + ((sdata[:, 0, :] - sdata[:, 1, :])/2).squeeze()
+                    data = data + ((sdata[:, 0, :] - sdata[:, 1, :]) / 2).squeeze()
                 else:
                     raise ValueError(f"pol={pol} value not supported.")
-                    
+
             else:
                 data = np.asarray(sdata)
         data = data.reshape((self.nsamp_per_subint,
@@ -224,7 +227,7 @@ class PsrfitsFile(object):
         """
         return self.fits['SUBINT'].data[isub]['DAT_OFFS']
 
-    def get_data(self, nstart, nsamp, pol = 0):
+    def get_data(self, nstart, nsamp, pol=0):
         """Return 2D array of data from PSRFITS file.
  
             Inputs:
@@ -248,15 +251,14 @@ class PsrfitsFile(object):
             trunc = 0
         else:
             trunc = int(((endsub + 1) * self.nsamp_per_subint) - (nstart + nsamp))
-        
+
         logger.debug(f'Number of spectra to skip from start: {skip}')
         logger.debug(f'Number of spectra to truncate from end: {trunc}')
 
         cumsum_num_subint = np.cumsum(self.specinfo.num_subint)
         startfileid = np.where(startsub < cumsum_num_subint)[0][0]
         assert startfileid < len(self.filelist)
-        
-        
+
         if startfileid != self.fileid:
             self.fileid = startfileid
             logger.debug(f'Updating fileid to {self.fileid}')
@@ -274,7 +276,7 @@ class PsrfitsFile(object):
         for isub in range(startsub, endsub + 1):
             logger.debug(f"isub is {isub}")
             logger.debug(f"file id is {self.fileid}")
-            
+
             if isub > cumsum_num_subint[self.fileid] - 1:
                 logger.debug(f'isub lies in a later file')
                 self.fits.close()
@@ -284,7 +286,7 @@ class PsrfitsFile(object):
                 if self.fileid == len(self.filelist):
                     logger.warning(f"Not enough subints, returning data till last subint")
                     logger.debug(f'Setting file ID to that of last file')
-                    self.fileid-=1
+                    self.fileid -= 1
                     break
                 logger.debug(f"Updating file ID to: {self.fileid}")
                 self.filename = self.filelist[self.fileid]
@@ -292,16 +294,16 @@ class PsrfitsFile(object):
                 self.fits = pyfits.open(self.filename, mode='readonly', memmap=True)
 
             logger.debug(f"Using: {self.fits}")
-            fsub = int((isub - np.concatenate([np.array([0]),cumsum_num_subint]))[self.fileid])
+            fsub = int((isub - np.concatenate([np.array([0]), cumsum_num_subint]))[self.fileid])
             logger.debug(f'Reading subint {fsub} in file {self.filename}')
             try:
-                data.append(self.read_subint(fsub, pol = pol))
+                data.append(self.read_subint(fsub, pol=pol))
             except KeyError:
                 logger.warning(f"Encountered KeyError, maybe mmap'd object was delected")
                 logger.debug(f"Trying to open file {self.filename}")
                 self.fits = pyfits.open(self.filename, mode='readonly', memmap=True)
                 logger.debug(f'Reading subint {fsub} in file {self.filename}')
-                data.append(self.read_subint(fsub, pol = pol))
+                data.append(self.read_subint(fsub, pol=pol))
 
         logging.debug(f'Read all the necessary subints')
         if len(data) > 1:

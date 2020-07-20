@@ -1,0 +1,48 @@
+site_name: Your Documentation
+site_author: Devansh Agarwal, Kshitij Agarwal
+docs_dir: sources
+site_description: 'Your Documentation'
+
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: indigo
+
+repo_name: your
+repo_url: https://github.com/devanshkv/your
+
+nav:
+  - Core: your.md
+  - Getting Started: ipynb/Getting_started.md
+  - CLI:
+      - your_candmaker.py: bin/your_candmaker.md
+      - your_combine_mocks.py: bin/your_combine_mocks.md
+      - your_fits2fil.py: bin/your_fits2fil.md
+      - your_h5plotter.py: bin/your_h5plotter.md
+      - your_header.py: bin/your_header.md
+      - your_heimdall.py: bin/your_heimdall.md
+      - your_rfimask.py: bin/your_rfimask.md
+  - psrdada: psrdada.md
+  - filterbank: pysigproc.md
+  - Candidate: candidate.md
+  - Utils:
+      - RFI: utils/rfi.md
+      - Astro: utils/astro.md
+      - Plotter: utils/plotter.md
+      - GPU: utils/gpu.md
+      - Heimdall: utils/heimdall.md
+      - Math: utils/math.md
+      - Misc: utils/misc.md
+
+markdown_extensions:
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - codehilite:
+      guess_lang: False
+      use_pygments: True
+
+google_analytics:
+  - UA-167281386-1
+  - auto

@@ -1,18 +1,15 @@
 import glob
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='your',
-    version='0.4.2',
-    packages=['your'],
+    version='0.4.9',
+    packages=find_packages(),
     url='http://github.com/devanshkv/your',
     author='Devansh Agarwal, Kshitij Aggarwal',
     scripts=glob.glob('bin/*'),
-    package_dir={'your': 'your'},
-    setup_requires=['numpy'],
-    install_requires=['h5py', 'scikit-image', 'scipy', 'numba', 'astropy', 'Cython'],
-    tests_require=['pytest'],
+    tests_require=['pytest', 'pytest-cov'],
     author_email='da0017@mix.wvu.edu, ka0064@mix.wvu.edu',
     zip_safe=False,
     description='A unified reader for sigproc filterbank and psrfits data',

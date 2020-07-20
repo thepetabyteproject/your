@@ -5,6 +5,8 @@ import glob
 import logging
 import os
 
+from your.utils.math import normalise
+
 os.environ['OPENBLAS_NUM_THREADS'] = '1'  # stop numpy multithreading regardless of the backend
 os.environ['MKL_NUM_THREADS'] = '1'
 os.environ['HDF5_USE_FILE_LOCKING'] = 'FALSE'
@@ -16,21 +18,9 @@ import numpy as np
 import pandas as pd
 
 from your.candidate import Candidate, crop
-from your.utils import gpu_dedisp_and_dmt_crop
+from your.utils.gpu import gpu_dedisp_and_dmt_crop
 
 logger = logging.getLogger()
-
-
-def normalise(data):
-    """
-    Noramlise the data by unit standard deviation and zero median
-    :param data: data
-    :return:
-    """
-    data = np.array(data, dtype=np.float32)
-    data -= np.median(data)
-    data /= np.std(data)
-    return data
 
 
 def cpu_dedisp_dmt(cand, args):
@@ -131,11 +121,14 @@ def cand2h5(cand_val):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Your candmaker! Make h5 candidates from the candidate csv files",
+    parser = argparse.ArgumentParser(prog='your_candmaker.py',
+                                     description="Your candmaker! Make h5 candidates from the candidate csv files",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-v', '--verbose', help='Be verbose', action='store_true')
     parser.add_argument('-fs', '--frequency_size', type=int, help='Frequency size after rebinning', default=256)
-    parser.add_argument('-g', '--gpu_id', help='GPU ID (use -1 for CPU)', nargs='+', required=False, default=[-1],
+    parser.add_argument('-g', '--gpu_id',
+                        help='GPU ID (use -1 for CPU). To use multiple GPUs (say with id 2 and 3 use -g 2 3', nargs='+',
+                        required=False, default=[-1],
                         type=int)
     parser.add_argument('-ts', '--time_size', type=int, help='Time length after rebinning', default=256)
     parser.add_argument('-c', '--cand_param_file', help='csv file with candidate parameters', type=str, required=True)
@@ -166,10 +159,13 @@ if __name__ == '__main__':
         logger.info(f"Using CPUs only")
 
     cand_pars = pd.read_csv(values.cand_param_file)
+    # Randomly shuffle the candidates, this is so that the high DM candidates are spread through out
+    # Else they will clog the GPU memory at once
     cand_pars.sample(frac=1).reset_index(drop=True)
     process_list = []
     for index, row in cand_pars.iterrows():
         if len(values.gpu_id) > 1:
+            # If there are more than one GPUs cycle the candidates between them.
             gpu_id = gpu_id_cycler.__next__()
         else:
             gpu_id = values.gpu_id[0]
