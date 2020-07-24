@@ -161,10 +161,16 @@ def convert(f, c=None, outdir=None, filfile=None, progress=None, flag_rfi=False,
             mask = np.zeros(data.shape[1], dtype=np.bool)
             mask[sk_mask] = True
             mask[np.where(mask == False)[0][sg_mask]] = True
-            data[:, mask] = 0
-        if zero_dm_subt:
-            logger.debug('Subtracting 0-DM time series from the data')
-            data = data - data.mean(1)[:,None]
+            
+            if y.your_header.dtype == np.uint8:
+                data[:,mask]= np.around(np.mean(data[:,~mask]))
+            else:
+                data[:,mask]= np.mean(data[:,~mask])
+            
+            if zero_dm_subt:
+                logger.debug('Subtracting 0-DM time series from the data')
+                data = data - data.mean(1)[:,None]
+
         logger.info(
             f'Writing data from spectra {nstart}-{nstart + nsamp} in the frequency channel range {min_c}-{max_c} to filterbank')
         write_fil(data, y, nchans=nchans, chan_freq=chan_freq, outdir=outdir, filename=filfile)
