@@ -1,3 +1,5 @@
+import glob
+import os
 import shutil
 
 from keras_autodoc import DocumentationGenerator
@@ -45,7 +47,8 @@ pages = {
 
     'utils/plotter.md': ["your.utils.plotter.figsize",
                          "your.utils.plotter.get_params",
-                         "your.utils.plotter.plot_h5"],
+                         "your.utils.plotter.plot_h5",
+                         "your.utils.plotter.save_bandpass"],
 
     'utils/astro.md': ["your.utils.astro.dec2deg",
                        "your.utils.astro.ra2deg"],
@@ -72,3 +75,32 @@ doc_generator = DocumentationGenerator(pages)
 doc_generator.generate('./sources')
 
 shutil.copyfile('../README.md', 'sources/index.md')
+
+os.system("mkdir -p sources/bin")
+
+for bin_files in glob.glob("../bin/*py"):
+    output_file = "sources/bin/" + os.path.basename(bin_files)[:-2] + 'md'
+    os.system(f"argdown --tiny -o {output_file} {bin_files}")
+
+github_repo_dir = 'devanshkv/your/blob/master/examples/'
+
+for ipynb_files in glob.glob("../examples/*ipynb"):
+    os.system(f"jupyter-nbconvert {ipynb_files} --to markdown --output-dir=sources/ipynb/")
+    file_name_no_ext = ipynb_files.split("/")[-1][:-6]
+    md_path = f"sources/ipynb/{file_name_no_ext}.md"
+    with open(md_path, 'r') as md_file:
+        button_lines = [
+            ':material-link: '
+            "[**View in Colab**](https://colab.research.google.com/github/"
+            + github_repo_dir
+            + file_name_no_ext + ".ipynb"
+            + ")   &nbsp; &nbsp;"
+            # + '<span class="k-dot">•</span>'
+            + ':octicons-octoface: '
+              "[**GitHub source**](https://github.com/" + github_repo_dir + file_name_no_ext + ".ipynb)",
+            "\n",
+        ]
+        md_content = ''.join(button_lines) + '\n' + md_file.read()
+
+    with open(md_path, 'w') as md_file:
+        md_file.write(md_content)

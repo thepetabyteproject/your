@@ -111,6 +111,7 @@ def normalise(data):
     data /= np.std(data)
     return data
 
+
 def smad_plotter(freq_time, sigma=5.0, clip=True):
     """
     spectal Median Absolute Deviation clipper
@@ -128,11 +129,10 @@ def smad_plotter(freq_time, sigma=5.0, clip=True):
         np.ndarray: clipped/flagged data
     """
     medians = np.median(freq_time, axis=0)
-    sigs = 1.4826*sigma*stats.median_absolute_deviation(freq_time, axis=0)
+    sigs = 1.4826 * sigma * stats.median_absolute_deviation(freq_time, axis=0)
     if clip:
-        return np.clip(freq_time, a_min=medians-sigs, a_max=medians+sigs)
+        return np.clip(freq_time, a_min=medians - sigs, a_max=medians + sigs)
     else:
-        for j, sig in enumerate(sigs):   
+        for j, sig in enumerate(sigs):
             freq_time[np.absolute(freq_time[:, j] - medians[j]) >= sig, j] = 0.0
         return freq_time
-        

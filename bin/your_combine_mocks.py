@@ -381,7 +381,8 @@ def all_files(direct, nstart, nsamp, outdir):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Combine two bands from mock spectrometer to a filterbank file.",
+    parser = argparse.ArgumentParser(prog='your_combine_mocks.py',
+                                     description="Combine two bands from mock spectrometer to a filterbank file.",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-v', '--verbose', help='Be verbose', action='store_true')
     parser.add_argument('-f1', '--first_band', help='Path of files containing one band', required=False, type=str)

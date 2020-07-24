@@ -1,4 +1,9 @@
+import logging
 import os
+
+import matplotlib
+
+matplotlib.use('Agg')
 
 import h5py
 import numpy as np
@@ -75,7 +80,7 @@ def get_params(scale=0.5, width_by_height_ratio=1):
     return params
 
 
-def plot_h5(h5_file, save=True, detrend_ft=True, publication=False, mad_filter=False):
+def plot_h5(h5_file, save=True, detrend_ft=True, publication=False, mad_filter=False, outdir=None):
     """
     Plot the h5 candidates
 
@@ -90,6 +95,8 @@ def plot_h5(h5_file, save=True, detrend_ft=True, publication=False, mad_filter=F
         detrend_ft (bool): detrend the frequency time plot
 
         publication (bool): make publication quality plot
+
+        outdir (str): Path to the save the files into.
 
     Returns:
 
@@ -155,8 +162,71 @@ def plot_h5(h5_file, save=True, detrend_ft=True, publication=False, mad_filter=F
 
         plt.tight_layout()
         if save:
-            plt.savefig(h5_file[:-3] + '.png', bbox_inches='tight')
+            if outdir:
+                filename = outdir + os.path.basename(h5_file)[:-3] + '.png'
+            else:
+                filename = h5_file[:-3] + '.png'
+            plt.savefig(filename, bbox_inches='tight')
         else:
             plt.close()
 
         return None
+
+
+def save_bandpass(your_object, bandpass, chan_nos=None, mask=None, outdir=None, outname=None):
+    """
+    Plots and saves the bandpass
+
+    Args:
+
+        your_object: Your object
+
+        bandpass (np.ndarray): Bandpass of the data
+
+        chan_nos (np.ndarray): Array of channel numbers
+
+        mask (np.ndarray): Boolean Array of channel mask
+
+        outdir (str) : Output directory to save the plot
+
+        outname (str): Name of the bandpass file
+
+    """
+
+    freqs = your_object.chan_freqs
+    foff = your_object.your_header.foff
+
+    params = get_params()
+
+    plt.rcParams.update(params)
+
+    if not outdir:
+        outdir = './'
+
+    if chan_nos is None:
+        chan_nos = np.arange(0, bandpass.shape[0])
+
+    if not outname:
+        bp_plot = outdir + your_object.your_header.basename + '_bandpass.png'
+    else:
+        bp_plot = outname
+
+    fig = plt.figure()
+    ax11 = fig.add_subplot(111)
+    if foff < 0:
+        ax11.invert_xaxis()
+
+    ax11.plot(freqs, bandpass, 'k-', label="Bandpass")
+    if mask is not None:
+        if mask.sum():
+            logging.info('Flagged %d channels', mask.sum())
+            ax11.plot(freqs[mask], bandpass[mask], 'ro', label="Flagged Channels")
+    ax11.set_xlabel("Frequency (MHz)")
+    ax11.set_ylabel("Arb. Units")
+    ax11.legend()
+
+    ax21 = ax11.twiny()
+    ax21.plot(chan_nos, bandpass, alpha=0)
+    ax21.set_xlabel("Channel Numbers")
+
+    return plt.savefig(bp_plot, bbox_inches='tight')
