@@ -6,7 +6,6 @@ site_description: 'Your Documentation'
 theme:
   name: material
   palette:
-    scheme: slate
     primary: indigo
 
 repo_name: your
