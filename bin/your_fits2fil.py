@@ -108,8 +108,8 @@ def write_fil(data, y, nchans=None, chan_freq=None, filename=None, outdir=None):
     logger.info(f'Successfully written data to Filterbank file: {filfile}')
 
 
-def convert(f, c=None, outdir=None, filfile=None, progress=None, flag_rfi=False, sk_sig=4, sg_fw=15, 
-        sg_sig=4, zero_dm_subt=False):
+def convert(f, c=None, outdir=None, filfile=None, progress=None, flag_rfi=False, sk_sig=4, sg_fw=15,
+            sg_sig=4, zero_dm_subt=False):
     '''
     reads data from one or more PSRFITS files
     and writes out a Filterbank File.
@@ -161,15 +161,15 @@ def convert(f, c=None, outdir=None, filfile=None, progress=None, flag_rfi=False,
             mask = np.zeros(data.shape[1], dtype=np.bool)
             mask[sk_mask] = True
             mask[np.where(mask == False)[0][sg_mask]] = True
-            
+
             if y.your_header.dtype == np.uint8:
-                data[:,mask]= np.around(np.mean(data[:,~mask]))
+                data[:, mask] = np.around(np.mean(data[:, ~mask]))
             else:
-                data[:,mask]= np.mean(data[:,~mask])
-            
+                data[:, mask] = np.mean(data[:, ~mask])
+
             if zero_dm_subt:
                 logger.debug('Subtracting 0-DM time series from the data')
-                data = data - data.mean(1)[:,None]
+                data = data - data.mean(1)[:, None]
 
         logger.info(
             f'Writing data from spectra {nstart}-{nstart + nsamp} in the frequency channel range {min_c}-{max_c} to filterbank')
@@ -201,7 +201,8 @@ if __name__ == '__main__':
     parser.add_argument('-sgsig', '--sg_sig', help='Sigma for savgol filter', type=float, default=4, required=False)
     parser.add_argument('-sgfw', '--sg_fw', help='Filter window for savgol filter (MHz)', type=float, default=15,
                         required=False)
-    parser.add_argument('-zero_dm_subt', '--zero_dm_subt', help='Enable 0 DM subtraction', action='store_true', default=False)
+    parser.add_argument('-zero_dm_subt', '--zero_dm_subt', help='Enable 0 DM subtraction', action='store_true',
+                        default=False)
     values = parser.parse_args()
 
     logging_format = '%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s'
@@ -217,5 +218,5 @@ if __name__ == '__main__':
         logging.info("Argument %s: %r", arg, value)
 
     convert(f=values.files, c=values.chans, outdir=values.outdir, filfile=values.fil_name, progress=values.no_progress,
-            flag_rfi=values.flag_rfi, sk_sig=values.sk_sig, sg_fw=values.sg_fw, sg_sig=values.sg_sig, 
+            flag_rfi=values.flag_rfi, sk_sig=values.sk_sig, sg_fw=values.sg_fw, sg_sig=values.sg_sig,
             zero_dm_subt=values.zero_dm_subt)
