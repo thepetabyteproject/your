@@ -349,8 +349,13 @@ class Header:
 
             from your.utils.astro import ra2deg
             from your.utils.astro import dec2deg
-            ra = ra2deg(your.src_raj)
-            dec = dec2deg(your.src_dej)
+            if your.src_raj and your.src_decj:
+                ra = ra2deg(your.src_raj)
+                dec = dec2deg(your.src_dej)
+            else:
+                # for 174 bit header Filterbank
+                ra = None
+                dec = None
             self.ra_deg = ra
             self.dec_deg = dec
             self.bw = your.nchans * your.foff
@@ -390,9 +395,14 @@ class Header:
         self.isfil = your.isfil
 
         from astropy.coordinates import SkyCoord
-        loc = SkyCoord(self.ra_deg, self.dec_deg, unit='deg')
-        self.gl = loc.galactic.l.value - 180
-        self.gb = loc.galactic.b.value
+        if self.ra_deg and self.dec_deg:
+            loc = SkyCoord(self.ra_deg, self.dec_deg, unit='deg')
+            self.gl = loc.galactic.l.value - 180
+            self.gb = loc.galactic.b.value
+        else:
+            # for 174 bit header Filterbank
+            self.gl = None
+            self.gb = None
 
         from astropy.time import Time
         ts = Time(your.tstart, format='mjd')
