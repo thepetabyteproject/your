@@ -349,7 +349,7 @@ class Header:
 
             from your.utils.astro import ra2deg
             from your.utils.astro import dec2deg
-            if your.src_raj and your.src_decj:
+            if your.src_raj and your.src_dej:
                 ra = ra2deg(your.src_raj)
                 dec = dec2deg(your.src_dej)
             else:
