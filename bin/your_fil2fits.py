@@ -223,7 +223,15 @@ def initialize_psrfits(outfile, y, npsub=None):
     src_name = y.your_header.source_name
 
     from astropy.coordinates import SkyCoord
-    loc = SkyCoord(y.your_header.ra_deg, y.your_header.dec_deg, unit='deg')
+    
+    if y.your_header.ra_deg and y.your_header.dec_deg:
+        ra = y.your_header.ra_deg
+        dec = y.your_header.dec_deg
+    else:
+        ra = 0
+        dec = 0
+        
+    loc = SkyCoord(ra, dec, unit='deg')
     ra_hms = loc.ra.hms
     dec_dms = loc.dec.dms
 
