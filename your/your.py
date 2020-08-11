@@ -52,6 +52,8 @@ class Your(PsrfitsFile, SigprocFile):
             else:
                 raise TypeError('Filetype not supported')
         elif isinstance(self.your_file, list):
+            if len(self.your_file) == 0: 
+                raise ValueError('Filelist is empty. Please check the input')
             if len(self.your_file) == 1 and os.path.splitext(*self.your_file)[1] == ".fil":
                 for filterbank_file in self.your_file:
                     logger.debug(f'Reading filterbank file {filterbank_file}')
@@ -61,10 +63,10 @@ class Your(PsrfitsFile, SigprocFile):
             else:
                 for f in self.your_file:
                     ext = os.path.splitext(f)[1]
-                    if ext == ".fits" or ext == ".sf" or ext == ".fil":
+                    if ext == ".fits" or ext == ".sf":
                         pass
                     else:
-                        raise TypeError("Can only work with list of fits file or filterbanks")
+                        raise TypeError("Can only work with a list of fits file or an individual filterbank file")
                 self.your_file.sort()
                 logger.debug(f'Reading the following fits files: {self.your_file}')
                 PsrfitsFile.__init__(self, psrfitslist=self.your_file)
