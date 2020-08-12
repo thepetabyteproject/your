@@ -697,19 +697,3 @@ def is_PSRFITS(filename):
             isPSRFITS = False
 
     return isPSRFITS
-
-
-def main():
-    specinf = SpectraInfo(args.files)
-    if args.output is not None:
-        print(args.output % specinf)
-
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Get info about PSRFITS files.")
-    parser.add_argument("files", metavar="FILE", nargs='+', \
-                        type=str, help="PSRFITS files.")
-    parser.add_argument("-o", type=str, dest="output", default=None, \
-                        help="String to interpolate with info about the file.")
-    args = parser.parse_args()
-    main()
