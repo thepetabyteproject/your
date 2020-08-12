@@ -13,6 +13,7 @@ def test_save_bandpass():
     assert os.path.isfile('28_bp.png')
     os.remove('28_bp.png')
 
+
 def test_plot_h5():
     h5_file = os.path.join(_install_dir, 'data/test.h5')
     plot_h5(h5_file, publication=False)
