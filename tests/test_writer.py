@@ -9,16 +9,24 @@ def test_to_fil():
     file = os.path.join(_install_dir, 'data/small.fil')
     f = Your(file)
     w = Writer(f)
-    w.to_fil(nstart=0, nsamp=10, filfile='temp.fil', outdir='./')
+    w.to_fil(nstart=0, nsamp=2, filfile='temp.fil', outdir='./')
     assert os.path.isfile('temp.fil')
     os.remove('temp.fil')
+
+    w.to_fil(nstart=0, nsamp=1, outdir='./')
+    assert os.path.isfile('small_converted.fil')
+    os.remove('small_converted.fil')
 
     file = os.path.join(_install_dir, 'data/small.fits')
     f = Your(file)
     w = Writer(f)
-    w.to_fil(nstart=0, nsamp=10, filfile='temp.fil', outdir='./')
+    w.to_fil(nstart=0, nsamp=1, filfile='temp.fil', outdir='./')
     assert os.path.isfile('temp.fil')
     os.remove('temp.fil')
+
+    w.to_fil(nstart=0, nsamp=2, outdir='./')
+    assert os.path.isfile('small_converted.fil')
+    os.remove('small_converted.fil')
 
 
 def test_to_fits():
@@ -29,6 +37,10 @@ def test_to_fits():
     assert os.path.isfile('temp.fits')
     os.remove('temp.fits')
 
+    w.to_fits(outdir='./')
+    assert os.path.isfile('small_converted.fits')
+    os.remove('small_converted.fits')
+
     file = os.path.join(_install_dir, 'data/small.fits')
     f = Your(file)
     w = Writer(f)
@@ -36,3 +48,6 @@ def test_to_fits():
     assert os.path.isfile('temp.fits')
     os.remove('temp.fits')
 
+    w.to_fits(outdir='./')
+    assert os.path.isfile('small_converted.fits')
+    os.remove('small_converted.fits')
