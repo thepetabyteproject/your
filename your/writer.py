@@ -118,7 +118,7 @@ class Writer:
                 if len(temp) > 1:
                     fitsfile = '_'.join(temp[:-1]) + '_converted.fits'
                 else:
-                    fitsfile = temp + '_converted.fits'
+                    fitsfile = name + '_converted.fits'
             else:
                 fitsfile = name + '_converted.fits'
 

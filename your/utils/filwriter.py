@@ -82,7 +82,7 @@ def write_fil(data, y, nchans=None, chan_freq=None, filename=None, outdir=None, 
             if len(temp) > 1:
                 filename = '_'.join(temp[:-1]) + '_converted.fil'
             else:
-                filename = temp + '_converted.fil'
+                filename = name + '_converted.fil'
         else:
             filename = name + '_converted.fil'
 
