@@ -78,7 +78,11 @@ def write_fil(data, y, nchans=None, chan_freq=None, filename=None, outdir=None, 
     if not filename:
         name, ext = os.path.splitext(orig_basename)
         if ext == '.fits':
-            filename = '_'.join(name.split('_')[:-1]) + '_converted.fil'
+            temp = name.split('_')
+            if len(temp) > 1:
+                filename = '_'.join(temp[:-1]) + '_converted.fil'
+            else:
+                filename = temp + '_converted.fil'
         else:
             filename = name + '_converted.fil'
 
