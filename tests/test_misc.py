@@ -1,4 +1,5 @@
 from your.utils.misc import *
+import os
 
 def test_pad_along_axis():
     d = np.random.random((10,10))
@@ -18,6 +19,7 @@ def test_pad_along_axis():
     d_same = pad_along_axis(d, 9, 'end', 0, mode='median')
     assert (d_same - d).sum() == 0
 
+
 def test_crop():
     d = np.random.random((10, 10))
     try:
@@ -33,3 +35,19 @@ def test_crop():
 
     d_same = crop(d, 2, 10, 1)
     assert (d_same - d).sum() == 0
+
+
+def test_myencoder():
+    c = MyEncoder()
+    t = {}
+    t['1'] = np.int(1)
+    t['2'] = np.float(2)
+    t['3'] = np.array([1, 2])
+    t['4'] = 1
+    t['5'] = 'a'
+
+    with open('test.json', 'w') as fp:
+        json.dump(t, fp, cls=MyEncoder, indent=4)
+
+    assert os.path.isfile('test.json')
+    os.remove('test.json')
