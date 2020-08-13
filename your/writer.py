@@ -89,7 +89,7 @@ class Writer:
             data = self.your_obj.get_data(st, samp).astype(self.your_obj.your_header.dtype)
             data = data[:, min_c:max_c]
             if flag_rfi:
-                mask = sk_sg_filter(data, self, sk_sig, nchans, sg_fw, sg_sig)
+                mask = sk_sg_filter(data, self.your_obj, sk_sig, nchans, sg_fw, sg_sig)
 
                 if self.your_obj.your_header.dtype == np.uint8:
                     data[:, mask] = np.around(np.mean(data[:, ~mask]))
@@ -190,7 +190,7 @@ class Writer:
             nread = isub * npsub
             data = self.your_obj.get_data(nstart=nstart, nsamp=nread).astype(self.your_obj.your_header.dtype)
             if flag_rfi:
-                mask = sk_sg_filter(data, self, sk_sig, nchans, sg_fw, sg_sig)
+                mask = sk_sg_filter(data, self.your_obj, sk_sig, nchans, sg_fw, sg_sig)
 
                 if self.your_obj.your_header.dtype == np.uint8:
                     data[:, mask] = np.around(np.mean(data[:, ~mask]))
