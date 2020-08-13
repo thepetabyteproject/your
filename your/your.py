@@ -72,6 +72,8 @@ class Your(PsrfitsFile, SigprocFile):
                 PsrfitsFile.__init__(self, psrfitslist=self.your_file)
                 self.isfits = True
                 self.isfil = False
+        else:
+            raise ValueError('file should be a string of input file path or a list of strings with relevant file paths.')
 
         if not self.source_name:
             logger.info(f'Source name not present in the file. Setting source name to TEMP')

@@ -12,13 +12,24 @@ import json
 
 def _decimate(data, decimate_factor, axis, pad=False, **kwargs):
     """
+    Decimate an input array by an input factor. Optionally padding can also be done.
 
-    :param data: data array to decimate
-    :param decimate_factor: number of samples to combine
-    :param axis: axis along which decimation is to be done
-    :param pad: Whether to apply padding if the data axis length is not a multiple of decimation factor
-    :param args: arguments of padding
-    :return:
+    Args:
+
+        data: data array to decimate
+
+        decimate_factor: number of samples to combine
+
+        axis: axis along which decimation is to be done
+
+        pad: Whether to apply padding if the data axis length is not a multiple of decimation factor
+
+        args: arguments of padding
+
+    Returns:
+
+        Decimated array
+
     """
     if data.shape[axis] % decimate_factor and pad is True:
         logger.info(f'padding along axis {axis}')
@@ -35,12 +46,22 @@ def _decimate(data, decimate_factor, axis, pad=False, **kwargs):
 
 def _resize(data, size, axis, **kwargs):
     """
+    Resize an input array to a required size
 
-    :param data: data array to resize
-    :param size: required size of the axis
-    :param axis: axis long which resizing is to be done
-    :param args: arguments for skimage.transform resize function
-    :return:
+    Args:
+
+        data: data array to resize
+
+        size: required size of the axis
+
+        axis: axis long which resizing is to be done
+
+        args: arguments for skimage.transform resize function
+
+    Returns:
+
+        Resized array
+
     """
     if axis:
         return resize(data, (data.shape[0], size), **kwargs)
@@ -50,12 +71,22 @@ def _resize(data, size, axis, **kwargs):
 
 def crop(data, start_sample, length, axis):
     """
+    Crops the input array to a required size
 
-    :param data: Data array to crop
-    :param start_sample: Sample to start the output cropped array
-    :param length: Final Length along the axis of the output
-    :param axis: Axis to crop
-    :return:
+    Args:
+
+        data: Data array to crop
+
+        start_sample: Sample to start the output cropped array
+
+        length: Final Length along the axis of the output
+
+        axis: Axis to crop
+
+    Returns:
+
+        Cropped array
+
     """
     if data.shape[axis] > start_sample + length:
         if axis:
@@ -70,19 +101,28 @@ def crop(data, start_sample, length, axis):
 
 def pad_along_axis(array: np.ndarray, target_length, loc='end', axis=0, **kwargs):
     """
+    Pads data along the required axis on the input array to reach a target size
 
-    :param array: Input array to pad
-    :param target_length: Required length of the axis
-    :param loc: Location to pad: start: pad in beginning, end: pad in end, else: pad equally on both sides
-    :param axis: Axis to pad along
-    :return:
+    Args:
+
+        array: Input array to pad
+
+        target_length: Required length of the axis
+
+        loc: Location to pad: start: pad in beginning, end: pad in end, else: pad equally on both sides
+
+        axis: Axis to pad along
+
+    Returns:
+
+        Padded array
+
     """
     pad_size = target_length - array.shape[axis]
     axis_nb = len(array.shape)
 
     if pad_size < 0:
         return array
-        # return a
 
     npad = [(0, 0) for x in range(axis_nb)]
 
@@ -99,6 +139,7 @@ def pad_along_axis(array: np.ndarray, target_length, loc='end', axis=0, **kwargs
 class MyEncoder(json.JSONEncoder):
     """
     Custom Encoder Class to convert any class to a JSON serializable object
+
     """
 
     def default(self, obj):

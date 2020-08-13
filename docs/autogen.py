@@ -42,6 +42,16 @@ pages = {
                      'your.pysigproc.SigprocFile.write_header',
                      'your.pysigproc.SigprocFile.append_spectra'],
 
+    'psrfits.md': ['your.psrfits.PsrfitsFile',
+                   'your.psrfits.PsrfitsFile.read_subint',
+                   'your.psrfits.PsrfitsFile.get_data',
+                   'your.psrfits.SpectraInfo',
+                   'your.psrfits.unpack_2bit',
+                   'your.psrfits.unpack_4bit'],
+
+    'writer.md':['your.writer.Writer.to_fil',
+                 'your.writer.Writer.to_fits'],
+
     'utils/rfi.md': ["your.utils.rfi.savgol_filter",
                      "your.utils.rfi.spectral_kurtosis"],
 
@@ -68,7 +78,15 @@ pages = {
                      "your.utils.gpu.gpu_dedisp_and_dmt_crop",
                      "your.utils.gpu.get_gpu_memory_map"],
 
-    'utils/misc.md': ["your.utils.misc.MyEncoder"]
+    'utils/misc.md': ["your.utils.misc.crop",
+                      "your.utils.misc.pad_along_axis",
+                      "your.utils.misc.MyEncoder"],
+
+    'utils/filwriter.md': ["your.utils.filwriter.make_sigproc_obj",
+                           "your.utils.filwriter.write_fil"],
+
+    'utils/fitswriter.md': ["your.utils.fitswriter.initialize_psrfits",
+                            "your.utils.fitswriter.ObsInfo"],
 }
 
 doc_generator = DocumentationGenerator(pages)

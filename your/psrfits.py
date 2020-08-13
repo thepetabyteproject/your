@@ -30,15 +30,17 @@ date_obs_re = re.compile(r"^(?P<year>[0-9]{4})-(?P<month>[0-9]{2})-" \
 
 
 def unpack_2bit(data):
-    """Unpack 2-bit data that has been read in as bytes.
+    """
+    Unpack 2-bit data that has been read in as bytes.
 
-        Input: 
-            data2bit: array of unsigned 2-bit ints packed into
-                an array of bytes.
+    Args:
 
-        Output: 
-            outdata: unpacked array. The size of this array will 
-                be four times the size of the input data.
+        data: array of unsigned 2-bit ints packed into an array of bytes.
+
+    Returns:
+
+        unpacked array. The size of this array will be four times the size of the input data.
+
     """
     piece0 = np.bitwise_and(data >> 0x06, 0x03)
     piece1 = np.bitwise_and(data >> 0x04, 0x03)
@@ -48,15 +50,17 @@ def unpack_2bit(data):
 
 
 def unpack_4bit(data):
-    """Unpack 4-bit data that has been read in as bytes.
+    """
+    Unpack 4-bit data that has been read in as bytes.
 
-        Input: 
-            data4bit: array of unsigned 4-bit ints packed into
-                an array of bytes.
+    Args:
 
-        Output: 
-            outdata: unpacked array. The size of this array will 
-                be twice the size of the input data.
+        data: array of unsigned 4-bit ints packed into an array of bytes.
+
+    Returns:
+
+        unpacked array. The size of this array will be twice the size of the input data.
+
     """
     piece0 = np.bitwise_and(data >> 0x04, 0x0F)
     piece1 = np.bitwise_and(data, 0x0F)
@@ -64,6 +68,65 @@ def unpack_4bit(data):
 
 
 class PsrfitsFile(object):
+    """
+    Simple functions for reading psrfits files from python. Not all possible features are implemented.
+
+    Original Source from Scott Ransom's
+    [psrfits](https://github.com/scottransom/presto/blob/master/python/presto/psrfits.py ).
+
+    Args:
+
+        psrfitslist (str): list of files
+
+    Attributes:
+
+        filename (str): Name of the first file
+
+        filelist (list): List of files
+        
+        fileid (int): Index of the current file
+        
+        fits (obj): fits object of the current file read
+        
+        specinfo (obj): Object of class SpectraInfo for the given file list
+        
+        header (list): Header of the fits file
+        
+        source_name (str): Source Name
+
+        machine_id (int) : Machine ID
+
+        barycentric (int): If 1 the data is barycentered
+
+        pulsarcentric (int): Is the data in pulsar's frame of reference?
+
+        src_raj (float): RA of the source (HHMMSS.SS)
+
+        src_deg (float): Dec of the source (DDMMSS.SS)
+
+        az_start (float): Telescope Azimuth (degrees)
+
+        za_start (float): Telescope Zenith Angle (degrees)
+
+        fch1 (float): Frequency of first channel (MHz))
+
+        foff (float): Channel bandwidth (MHz)
+
+        nchans (int): Number of channels
+
+        nbeams (int): Number of beams in the rcvr.
+
+        ibeam (int): Beam number
+
+        nbits (int): Number of bits the data are recorded in.
+
+        tstart (float): Start MJD of the data
+
+        tsamp (float): Sampling interval (seconds)
+
+        nifs (int): Number of IFs in the data.
+        
+    """
     def __init__(self, psrfitslist):
         psrfitsfn = psrfitslist[0]
         if not os.path.isfile(psrfitsfn):
@@ -103,38 +166,79 @@ class PsrfitsFile(object):
         self.backend = self.header['BACKEND'].strip()
 
     def nspectra(self):
+        """
+
+        Returns:
+
+            Total number of spectra in all files in filelist
+
+        """
         return int(self.specinfo.spectra_per_subint * np.sum(self.specinfo.num_subint))
 
     def native_nspectra(self):
+        """
+        Native number of total spectra in all the files. This will be made a property so that it can't be overwritten
+
+        Returns:
+
+            Total number of spectra in all files in filelist
+
+        """
         return int(self.specinfo.spectra_per_subint * np.sum(self.specinfo.num_subint))
 
     def native_tsamp(self):
+        """
+        This will be made a property so that it can't be overwritten.
+
+        Returns:
+
+            Native sampling time of the file.
+
+        """
         return self.specinfo.dt
 
     def native_foff(self):
+        """
+        This will be made a property so that it can't be overwritten.
+
+        Returns:
+
+             Native channel bandwidth
+
+        """
         return self.bw / self.nchan
 
     def native_nchans(self):
+        """
+        This will be made a property so that it can't be overwritten.
+
+        Returns:
+
+            Native number of channels in the filterbank
+
+        """
         return self.nchan
 
     def read_subint(self, isub, apply_weights=True, apply_scales=True, \
                     apply_offsets=True, pol=0):
         """
         Read a PSRFITS subint from a open pyfits file object.
-         Applys scales, weights, and offsets to the data.
+        Applys scales, weights, and offsets to the data.
 
-             Inputs: 
-                isub: index of subint (first subint is 0)
-                apply_weights: If True, apply weights. 
-                    (Default: apply weights)
-                apply_scales: If True, apply scales. 
-                    (Default: apply scales)
-                apply_offsets: If True, apply offsets. 
-                    (Default: apply offsets)
+        Args:
 
-             Output: 
-                data: Subint data with scales, weights, and offsets
-                     applied in float32 dtype with shape (nsamps,nchan).
+            isub: index of subint (first subint is 0)
+
+            apply_weights: If True, apply weights. (Default: apply weights)
+
+            apply_scales: If True, apply scales. (Default: apply scales)
+
+            apply_offsets: If True, apply offsets. (Default: apply offsets)
+
+        Returns:
+
+            Subint data with scales, weights, and offsets applied in float32 dtype with shape (nsamps,nchan).
+
         """
         sdata = self.fits['SUBINT'].data[isub]['DATA']
         shp = sdata.squeeze().shape
@@ -195,47 +299,64 @@ class PsrfitsFile(object):
         return data
 
     def get_weights(self, isub):
-        """Return weights for a particular subint.
+        """
+        Return weights for a particular subint.
 
-            Inputs:
-                isub: index of subint (first subint is 0)
+        Args:
+
+           isub: index of subint (first subint is 0)
             
-            Output:
-                weights: Subint weights. (There is one value for each channel)
+        Returns:
+
+            weights: Subint weights. (There is one value for each channel)
+
         """
         return self.fits['SUBINT'].data[isub]['DAT_WTS']
 
     def get_scales(self, isub):
-        """Return scales for a particular subint.
+        """
+        Return scales for a particular subint.
 
-            Inputs:
-                isub: index of subint (first subint is 0)
+        Args:
+
+             isub: index of subint (first subint is 0)
             
-            Output:
-                scales: Subint scales. (There is one value for each channel)
+        Returns:
+
+            scales: Subint scales. (There is one value for each channel)
+
         """
         return self.fits['SUBINT'].data[isub]['DAT_SCL']
 
     def get_offsets(self, isub):
-        """Return offsets for a particular subint.
+        """
+        Return offsets for a particular subint.
 
-            Inputs:
-                isub: index of subint (first subint is 0)
+        Args:
+
+            isub: index of subint (first subint is 0)
             
-            Output:
-                offsets: Subint offsets. (There is one value for each channel)
+        Returns:
+
+            offsets: Subint offsets. (There is one value for each channel)
+
         """
         return self.fits['SUBINT'].data[isub]['DAT_OFFS']
 
     def get_data(self, nstart, nsamp, pol=0):
-        """Return 2D array of data from PSRFITS file.
+        """
+        Return 2D array of data from PSRFITS files.
  
-            Inputs:
-                nstart, Starting sample
-                nsamp: number of samples to read
+        Args:
+
+            nstart: Starting sample
+
+            nsamp: number of samples to read
  
-            Output:
-                data: Time-Frequency numpy array
+        Returns:
+
+            data: Time-Frequency numpy array
+
         """
         # Calculate starting subint and ending subint
         startsub = int(nstart / self.nsamp_per_subint)
@@ -329,6 +450,14 @@ class PsrfitsFile(object):
 
 
 class SpectraInfo:
+    """
+    Class to read the header of fits files
+
+    Args:
+
+        filenames: list of fits files
+
+    """
     def __init__(self, filenames):
         self.filenames = filenames
         self.num_files = len(filenames)
@@ -343,6 +472,7 @@ class SpectraInfo:
         self.start_spec = np.empty(self.num_files)
         self.num_pad = np.empty(self.num_files)
         self.num_spec = np.empty(self.num_files)
+
 
         # The following should default to False
         self.need_scale = False
@@ -595,8 +725,9 @@ class SpectraInfo:
         self.secs = (self.start_MJD[0] % 1) * SECPERDAY
 
     def __str__(self):
-        """Format spectra_info's information into a easy to
-            read string and return it.
+        """
+        Format spectra_info's information into a easy to read string and return it.
+
         """
         result = []  # list of strings. Will be concatenated with newlines (\n).
         result.append("From the PSRFITS file '%s':" % self.filenames[0])
@@ -670,9 +801,13 @@ class SpectraInfo:
 
 
 def DATEOBS_to_MJD(dateobs):
-    """Convert DATE-OBS string from PSRFITS primary HDU to a MJD.
-        Returns a 2-tuple:
-            (integer part of MJD, fractional part of MJD)
+    """
+    Convert DATE-OBS string from PSRFITS primary HDU to a MJD.
+
+    Returns:
+
+         a 2-tuple: (integer part of MJD, fractional part of MJD)
+
     """
     # Parse string using regular expression defined at top of file
     m = date_obs_re.match(dateobs)
@@ -684,8 +819,9 @@ def DATEOBS_to_MJD(dateobs):
 
 
 def is_PSRFITS(filename):
-    """Return True if filename appears to be PSRFITS format.
-        Return False otherwise.
+    """
+    Return True if filename appears to be PSRFITS format. Return False otherwise.
+
     """
     with pyfits.open(filename, mode='readonly', memmap=True) as hdus:
         primary = hdus['PRIMARY'].header

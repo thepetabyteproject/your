@@ -22,9 +22,12 @@ nav:
       - your_header.py: bin/your_header.md
       - your_heimdall.py: bin/your_heimdall.md
       - your_rfimask.py: bin/your_rfimask.md
+      - your_writer.py: bin/your_writer.md
   - psrdada: psrdada.md
   - filterbank: pysigproc.md
+  - psrfits: psrfits.md
   - Candidate: candidate.md
+  - Writer: writer.md
   - Utils:
       - RFI: utils/rfi.md
       - Astro: utils/astro.md
@@ -33,6 +36,8 @@ nav:
       - Heimdall: utils/heimdall.md
       - Math: utils/math.md
       - Misc: utils/misc.md
+      - FilWriter: utils/filwriter.md
+      - FitsWriter: utils/fitswriter.md
 
 markdown_extensions:
   - pymdownx.emoji:
