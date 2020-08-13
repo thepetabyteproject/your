@@ -95,15 +95,6 @@ def write_fil(data, y, nchans=None, chan_freq=None, filename=None, outdir=None, 
         nstart: Start sample number
 
     """
-    '''
-    Write Filterbank file given the Your object
-    :param data: data to write to the filterbank file
-    :param y: Your object for the PSRFITS files
-    :param nchans: No:of channels in the frequency range
-    :param chan_freq: Required frequency channel range
-    :param filename: Output name of the Filterbank file
-    :param outdir: Output directory for the Filterbank file
-    '''
 
     original_dir, orig_basename = os.path.split(y.your_header.filename)
     if not filename:
