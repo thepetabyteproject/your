@@ -1,7 +1,7 @@
 import os
 
 from your import Your
-from your.writer import Writer
+from your.io.writer import Writer
 
 _install_dir = os.path.abspath(os.path.dirname(__file__))
 

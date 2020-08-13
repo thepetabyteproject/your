@@ -2,7 +2,7 @@ import os
 
 import numpy as np
 
-from your.pysigproc import SigprocFile
+from your.io.pysigproc import SigprocFile
 
 _install_dir = os.path.abspath(os.path.dirname(__file__))
 

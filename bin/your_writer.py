@@ -10,7 +10,7 @@ import logging
 from datetime import datetime
 
 from your import Your
-from your.writer import Writer
+from your.io.writer import Writer
 
 logger = logging.getLogger(__name__)
 

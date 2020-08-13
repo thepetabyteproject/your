@@ -12,7 +12,6 @@ repo_name: your
 repo_url: https://github.com/devanshkv/your
 
 nav:
-  - Core: your.md
   - Getting Started:
       - Reading: ipynb/Getting_started.md
       - Writing: ipynb/writer_demo.md
@@ -25,21 +24,27 @@ nav:
       - your_heimdall.py: bin/your_heimdall.md
       - your_rfimask.py: bin/your_rfimask.md
       - your_writer.py: bin/your_writer.md
-  - psrdada: psrdada.md
-  - filterbank: pysigproc.md
-  - psrfits: psrfits.md
-  - Candidate: candidate.md
-  - Writer: writer.md
-  - Utils:
-      - RFI: utils/rfi.md
-      - Astro: utils/astro.md
-      - Plotter: utils/plotter.md
-      - GPU: utils/gpu.md
-      - Heimdall: utils/heimdall.md
-      - Math: utils/math.md
-      - Misc: utils/misc.md
-      - FilWriter: utils/filwriter.md
-      - FitsWriter: utils/fitswriter.md
+  - API:
+      - Core:
+          - Your: your.md
+          - Candiate: candidate.md
+      - IO:
+          - Psrdada: io/psrdada.md
+          - Filterbank: io/pysigproc.md
+          - Psrfits: io/psrfits.md
+          - Writer: io/writer.md
+          - FilWriter: io/filwriter.md
+          - FitsWriter: io/fitswriter.md
+      - Utils:
+          - RFI: utils/rfi.md
+          - Astro: utils/astro.md
+          - Plotter: utils/plotter.md
+          - GPU: utils/gpu.md
+          - Heimdall: utils/heimdall.md
+          - Math: utils/math.md
+          - Misc: utils/misc.md
+
+
 
 markdown_extensions:
   - pymdownx.emoji:

@@ -3,7 +3,7 @@ import os
 
 import numpy as np
 
-from your.pysigproc import SigprocFile
+from your.io.pysigproc import SigprocFile
 
 logger = logging.getLogger(__name__)
 
