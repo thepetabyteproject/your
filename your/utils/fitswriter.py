@@ -15,6 +15,10 @@ import json
 
 
 class ObsInfo(object):
+    """
+    Class to setup observation info for psrfits header
+
+    """
     def __init__(self):
         self.file_date = self.format_date(time.Time.now().isot)
         self.observer = "Human"
@@ -186,9 +190,14 @@ def initialize_psrfits(outfile, y, npsub=None):
     Set up a PSRFITS file with everything set up EXCEPT
     the DATA.
 
-    :param outfile: path to the output fits file to write to
-    :param y: your object with the input Filterbank file
-    :param npsub: number of spectra in a subint
+    Args:
+
+        outfile: path to the output fits file to write to
+
+        y: your object with the input Filterbank file
+
+        npsub: number of spectra in a subint
+
     """
 
     # Obs Specific Metadata
