@@ -8,7 +8,9 @@ from astropy.io import fits
 import numpy as np
 import tqdm
 import os
+
 logger = logging.getLogger(__name__)
+
 
 class Writer:
     """
@@ -23,9 +25,9 @@ class Writer:
     def __init__(self, y):
         self.your_obj = y
 
-    def to_fil(self, nstart=None, nsamp=None, c=None, outdir=None, filfile=None, progress=None,
-            flag_rfi=False, sk_sig=4, sg_fw=15, sg_sig=4, zero_dm_subt=False):
-        '''
+    def to_fil(self, nstart=None, nsamp=None, c=None, outdir=None, outname=None, flag_rfi=False,
+               progress=None, sk_sig=4, sg_fw=15, sg_sig=4, zero_dm_subt=False):
+        """
         Writes out a Filterbank File.
 
         Args:
@@ -37,7 +39,7 @@ class Writer:
 
             outdir: Output directory for Filterbank file
 
-            filfile: Name of the Filterbank file to write to
+            outname: Name of the Filterbank file to write to
 
             progress: turn on/off progress bar
 
@@ -51,7 +53,7 @@ class Writer:
 
             zero_dm_subt: enable zero DM rfi excision
 
-        '''
+        """
 
         if c:
             min_c = int(np.min(c))
@@ -101,15 +103,16 @@ class Writer:
                 data = data - data.mean(1)[:, None]
 
             logger.info(
-                f'Writing data from spectra {st}-{st + samp} in the frequency channel range {min_c}-{max_c} to filterbank')
-            write_fil(data, self.your_obj, nchans=nchans, chan_freq=chan_freq, outdir=outdir, filename=filfile, nstart=nstart)
+                f'Writing data from spectra {st}-{st + samp} in the frequency channel range {min_c}-{max_c} '
+                f'to filterbank')
+            write_fil(data, self.your_obj, nchans=nchans, chan_freq=chan_freq, outdir=outdir, filename=outname,
+                      nstart=nstart)
             logger.debug(f'Successfully written data from spectra {st}-{st + samp} to filterbank')
 
         logging.debug(f'Read all the necessary spectra')
 
-
-    def to_fits(self, npsub=-1, outdir=None, fitsfile=None, progress=None, flag_rfi=False, sk_sig=4, sg_fw=15,
-            sg_sig=4, zero_dm_subt=False):
+    def to_fits(self, npsub=-1, outdir=None, outname=None, progress=None, flag_rfi=False, sk_sig=4, sg_fw=15,
+                sg_sig=4, zero_dm_subt=False):
         """
         Writes out a fits file
 
@@ -118,7 +121,7 @@ class Writer:
 
             outdir: Output directory for Filterbank file
 
-            fitsfile: Name of the PSRFITS file to write to
+            outname: Name of the PSRFITS file to write to
 
             progress: turn on/off progress bar
 
@@ -135,47 +138,47 @@ class Writer:
         """
 
         tsamp = self.your_obj.your_header.tsamp
-    
+
         if npsub == -1:
             npsub = int(1.0 / tsamp)
         else:
             pass
 
-        if not fitsfile:
+        if not outname:
             original_dir, orig_basename = os.path.split(self.your_obj.your_header.filename)
             name, ext = os.path.splitext(orig_basename)
             if ext == '.fits':
                 temp = name.split('_')
                 if len(temp) > 1:
-                    fitsfile = '_'.join(temp[:-1]) + '_converted.fits'
+                    outname = '_'.join(temp[:-1]) + '_converted.fits'
                 else:
-                    fitsfile = name + '_converted.fits'
+                    outname = name + '_converted.fits'
             else:
-                fitsfile = name + '_converted.fits'
+                outname = name + '_converted.fits'
 
         if not outdir:
             outdir = os.getcwd()
-    
-        outfile = outdir + '/' + fitsfile
-    
+
+        outfile = outdir + '/' + outname
+
         initialize_psrfits(outfile=outfile, y=self.your_obj, npsub=npsub)
-    
+
         nifs = self.your_obj.your_header.npol
         nchans = self.your_obj.your_header.nchans
         foff = self.your_obj.your_header.foff
-    
+
         logger.info("Filling PSRFITS file with data")
-    
+
         # Open PSRFITS file
         hdulist = fits.open(outfile, mode='update')
         hdu = hdulist[1]
         nsubints = len(hdu.data[:]['data'])
-    
+
         # Loop through chunks of data to write to PSRFITS
         n_read_subints = 10
         nstart = 0
         logger.info(f'Number of subints to write {nsubints}')
-    
+
         for istart in tqdm.tqdm(np.arange(0, nsubints, n_read_subints), disable=progress):
             istop = istart + n_read_subints
             if istop > nsubints:
@@ -183,9 +186,9 @@ class Writer:
             else:
                 pass
             isub = istop - istart
-    
+
             logger.info(f"Writing data to {outfile} from subint = {istart} to {istop}.")
-    
+
             # Read in nread samples from filfile
             nread = isub * npsub
             data = self.your_obj.get_data(nstart=nstart, nsamp=nread).astype(self.your_obj.your_header.dtype)
@@ -200,10 +203,10 @@ class Writer:
             if zero_dm_subt:
                 logger.debug('Subtracting 0-DM time series from the data')
                 data = data - data.mean(1)[:, None]
-    
+
             logger.debug(f'Shape of data array after get_data is {data.shape}')
             nstart += nread
-    
+
             nvals = isub * npsub * nifs
             if data.shape[0] < nvals:
                 logger.debug(f'nspectra in this chunk ({data.shape[0]}) < nsubints * npsub * nifs ({nvals})')
@@ -212,23 +215,23 @@ class Writer:
                 data = np.vstack((data, pad_back))
             else:
                 pass
-    
+
             data = np.reshape(data, (isub, npsub, nifs, nchans))
-    
+
             # If foff is negative, we need to flip the freq axis
             if foff < 0:
                 logger.debug(f"Flipping band as {foff} < 0")
                 data = data[:, :, :, ::-1]
             else:
                 pass
-    
+
             # Put data in hdu data array
             logger.debug(f'Writing data of shape {data.shape} to {outfile}.')
             hdu.data[istart:istop]['data'][:, :, :, :] = data[:].astype(self.your_obj.your_header.dtype)
-    
+
             # Write to file
             hdulist.flush()
-    
+
         logger.info(f'All spectra written to {outfile}')
         # Close open FITS file
         hdulist.close()
