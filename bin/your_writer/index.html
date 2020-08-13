@@ -19,7 +19,7 @@
     
     
       
-        <title>your_header.py - Your Documentation</title>
+        <title>your_writer.py - Your Documentation</title>
       
     
     
@@ -94,7 +94,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              your_header.py
+              your_writer.py
             
           </span>
         </div>
@@ -333,49 +333,11 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        your_header.py
-        <span class="md-nav__icon md-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"/></svg>
-        </span>
-      </label>
-    
-    <a href="./" title="your_header.py" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../your_header/" title="your_header.py" class="md-nav__link">
       your_header.py
     </a>
-    
-      
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-      </span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#arguments" class="md-nav__link">
-    Arguments
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-    
   </li>
 
         
@@ -407,11 +369,49 @@
           
           
 
+  
 
-  <li class="md-nav__item">
-    <a href="../your_writer/" title="your_writer.py" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        your_writer.py
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"/></svg>
+        </span>
+      </label>
+    
+    <a href="./" title="your_writer.py" class="md-nav__link md-nav__link--active">
       your_writer.py
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#arguments" class="md-nav__link">
+    Arguments
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
   </li>
 
         
@@ -660,7 +660,7 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/devanshkv/your/edit/master/docs/bin/your_header.md" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/devanshkv/your/edit/master/docs/bin/your_writer.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
@@ -668,9 +668,12 @@
                   
                 
                 
-                  <h1>your_header.py</h1>
+                  <h1>your_writer.py</h1>
                 
-                <div class="codehilite"><pre><span></span><code>usage: your_header.py [-h] -f FILES [FILES ...]
+                <div class="codehilite"><pre><span></span><code>usage: your_writer.py [-h] [-v] -f FILES [FILES ...] -t TYPE [-c CHANS CHANS]
+                      [-nstart NSTART] [-nsamp NSAMP] [-o OUTDIR]
+                      [-name OUT_NAME] [--no_progress] [-r] [-sksig SK_SIG]
+                      [-sgsig SG_SIG] [-sgfw SG_FW] [-zero_dm_subt]
 </code></pre></div>
 
 
@@ -692,10 +695,88 @@
 <td>show this help message and exit</td>
 </tr>
 <tr>
+<td><code>-v</code></td>
+<td><code>--verbose</code></td>
+<td></td>
+<td>Be verbose</td>
+</tr>
+<tr>
 <td><code>-f</code></td>
 <td><code>--files</code></td>
 <td><code>None</code></td>
-<td>Fits or filterbank files to read header.</td>
+<td>Paths of input files to be converted to an output format. Surround with quotes, and either use wildcards or separate with spaces</td>
+</tr>
+<tr>
+<td><code>-t</code></td>
+<td><code>--type</code></td>
+<td><code>None</code></td>
+<td>Output file type (fits or fil)</td>
+</tr>
+<tr>
+<td><code>-c</code></td>
+<td><code>--chans</code></td>
+<td><code>None</code></td>
+<td>Required channels (eg -c 0 4096)</td>
+</tr>
+<tr>
+<td><code>-nstart</code></td>
+<td><code>--nstart</code></td>
+<td><code>None</code></td>
+<td>Start spectra number</td>
+</tr>
+<tr>
+<td><code>-nsamp</code></td>
+<td><code>--nsamp</code></td>
+<td><code>None</code></td>
+<td>Number of spectra to convert</td>
+</tr>
+<tr>
+<td><code>-o</code></td>
+<td><code>--outdir</code></td>
+<td><code>.</code></td>
+<td>Output directory for the file</td>
+</tr>
+<tr>
+<td><code>-name</code></td>
+<td><code>--out_name</code></td>
+<td><code>None</code></td>
+<td>Output name of the file</td>
+</tr>
+<tr>
+<td></td>
+<td><code>--no_progress</code></td>
+<td><code>None</code></td>
+<td>Do not show the tqdm bar</td>
+</tr>
+<tr>
+<td><code>-r</code></td>
+<td><code>--flag_rfi</code></td>
+<td></td>
+<td>Turn on RFI flagging</td>
+</tr>
+<tr>
+<td><code>-sksig</code></td>
+<td><code>--sk_sig</code></td>
+<td><code>4</code></td>
+<td>Sigma for spectral kurtosis filter</td>
+</tr>
+<tr>
+<td><code>-sgsig</code></td>
+<td><code>--sg_sig</code></td>
+<td><code>4</code></td>
+<td>Sigma for savgol filter</td>
+</tr>
+<tr>
+<td><code>-sgfw</code></td>
+<td><code>--sg_fw</code></td>
+<td><code>15</code></td>
+<td>Filter window for savgol filter (MHz)</td>
+</tr>
+<tr>
+<td><code>-zero_dm_subt</code></td>
+<td><code>--zero_dm_subt</code></td>
+<td></td>
+<td>Enable 0 DM subtraction</td>
 </tr>
 </tbody>
 </table>
@@ -717,7 +798,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
         
-          <a href="../your_h5plotter/" title="your_h5plotter.py" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../your_rfimask/" title="your_rfimask.py" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-footer-nav__button md-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
             </div>
@@ -726,19 +807,19 @@
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                your_h5plotter.py
+                your_rfimask.py
               </div>
             </div>
           </a>
         
         
-          <a href="../your_heimdall/" title="your_heimdall.py" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../../psrdada/" title="psrdada" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-footer-nav__title">
               <div class="md-ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                your_heimdall.py
+                psrdada
               </div>
             </div>
             <div class="md-footer-nav__button md-icon">
