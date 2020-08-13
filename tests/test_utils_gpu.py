@@ -3,14 +3,13 @@ from your.candidate import Candidate
 from your.utils.misc import crop
 
 from numba import cuda
+import pytest
 import os
 os.environ['HDF5_USE_FILE_LOCKING'] = 'FALSE'
 _install_dir = os.path.abspath(os.path.dirname(__file__))
 
-if not cuda.is_available():
-    os.environ['NUMBA_ENABLE_CUDASIM'] = '1'
 
-
+@pytest.mark.skipif(not cuda.is_available(), reason='requires a GPU')
 def test_gpu_dedisperse():
     file = os.path.join(_install_dir, 'data/28.fil')
     cand = Candidate(fp=file, dm=475.28400, tcand=2.0288800, width=2, label=-1, snr=16.8128, min_samp=256, device=0)
@@ -23,6 +22,7 @@ def test_gpu_dedisperse():
     assert np.isclose(np.max(cand.dedispersed.T.sum(0)), 47527, atol=1)
 
 
+@pytest.mark.skipif(not cuda.is_available(), reason='requires a GPU')
 def test_gpu_dmt():
     file = os.path.join(_install_dir, 'data/28.fil')
     cand = Candidate(fp=file, dm=10, tcand=2.0288800, width=2, label=-1, snr=16.8128, min_samp=256, device=0)
@@ -36,6 +36,7 @@ def test_gpu_dmt():
     assert np.max(g_dmt - c_dmt)/np.max(g_dmt) < 0.05
 
 
+@pytest.mark.skipif(not cuda.is_available(), reason='requires a GPU')
 def test_gpu_dedisp_dmt_crop():
     file = os.path.join(_install_dir, 'data/28.fil')
     cand = Candidate(fp=file, dm=10, tcand=2.0288800, width=2, label=-1, snr=16.8128, min_samp=256, device=0)
