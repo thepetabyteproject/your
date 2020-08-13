@@ -11,25 +11,46 @@ import os
 logger = logging.getLogger(__name__)
 
 class Writer:
+    """
+    Writer class
+
+    Args:
+
+        y: your object
+
+    """
+
     def __init__(self, y):
         self.your_obj = y
 
     def to_fil(self, nstart=None, nsamp=None, c=None, outdir=None, filfile=None, progress=None,
             flag_rfi=False, sk_sig=4, sg_fw=15, sg_sig=4, zero_dm_subt=False):
         '''
-        TODO: Add a check/warning when a fil file is already present
-        writes out a Filterbank File.
-        :param nstart: Start sample to read from
-        :param nsamp: Number of samples to write
-        :param c: Required frequency channel range
-        :param outdir: Output directory for Filterbank file
-        :param filfile: Name of the Filterbank file to write to
-        :param progress: turn on/off progress bar
-        :param flag_rfi: To turn on RFI flagging
-        :param sk_sig: sigma for spectral kurtosis filter
-        :param sg_fw: filter window for savgol filter
-        :param sg_sig: sigma for savgol filter
-        :param zero_dm_subt: enable zero DM rfi excision
+        Writes out a Filterbank File.
+
+        Args:
+            nstart: Start sample to read from
+
+            nsamp: Number of samples to write
+
+            c: Required frequency channel range
+
+            outdir: Output directory for Filterbank file
+
+            filfile: Name of the Filterbank file to write to
+
+            progress: turn on/off progress bar
+
+            flag_rfi: To turn on RFI flagging
+
+            sk_sig: sigma for spectral kurtosis filter
+
+            sg_fw: filter window for savgol filter
+
+            sg_sig: sigma for savgol filter
+
+            zero_dm_subt: enable zero DM rfi excision
+
         '''
 
         if c:
@@ -90,17 +111,27 @@ class Writer:
     def to_fits(self, npsub=-1, outdir=None, fitsfile=None, progress=None, flag_rfi=False, sk_sig=4, sg_fw=15,
             sg_sig=4, zero_dm_subt=False):
         """
-        TODO: Add option to select spectra and channels for the output file
         Writes out a fits file
-        :param npsub: Number of spectra per subint
-        :param outdir: Output directory for Filterbank file
-        :param fitsfile: Name of the PSRFITS file to write to
-        :param progress: turn on/off progress bar
-        :param flag_rfi: To turn on RFI flagging
-        :param sk_sig: sigma for spectral kurtosis filter
-        :param sg_fw: filter window for savgol filter
-        :param sg_sig: sigma for savgol filter
-        :param zero_dm_subt: enable zero DM rfi excision
+
+        Args:
+            npsub: Number of spectra per subint
+
+            outdir: Output directory for Filterbank file
+
+            fitsfile: Name of the PSRFITS file to write to
+
+            progress: turn on/off progress bar
+
+            flag_rfi: To turn on RFI flagging
+
+            sk_sig: sigma for spectral kurtosis filter
+
+            sg_fw: filter window for savgol filter
+
+            sg_sig: sigma for savgol filter
+
+            zero_dm_subt: enable zero DM rfi excision
+
         """
 
         tsamp = self.your_obj.your_header.tsamp

@@ -9,14 +9,25 @@ logger = logging.getLogger(__name__)
 
 
 def make_sigproc_obj(filfile, y, nchans, chan_freq, nstart):
-    '''
-    Use Your class object of the lower band to make Sigproc
-    class object with the relevant parameters
-    :param filfile: Name of the Filterbank file
-    :param y: Your object for the PSRFITS files
-    :param nchans: No:of channels in the frequency range
-    :param chan_freq: Required frequency channel range
-    '''
+    """
+    Use Your class to make Sigproc class object with relevant parameters
+
+    Args:
+
+        filfile: Name of the Filterbank file
+
+        y: Your object for the PSRFITS files
+
+        nchans: No:of channels in the frequency range
+
+        chan_freq: Required frequency channel range
+
+
+    Returns:
+
+        obj : Object of class SigprocFile
+
+    """
     logger.debug(f'Generating Sigproc object')
     fil_obj = SigprocFile()
 
@@ -64,6 +75,26 @@ def make_sigproc_obj(filfile, y, nchans, chan_freq, nstart):
 
 
 def write_fil(data, y, nchans=None, chan_freq=None, filename=None, outdir=None, nstart=None):
+    """
+    Write Filterbank file given the Your object
+
+    Args:
+
+        data: data to write to the filterbank file
+
+        y: Your object for the PSRFITS files
+
+        nchans: No of channels in the frequency range
+
+        chan_freq: Required frequency channel range
+
+        filename: Output name of the Filterbank file
+
+        outdir: Output directory for the Filterbank file
+
+        nstart: Start sample number
+
+    """
     '''
     Write Filterbank file given the Your object
     :param data: data to write to the filterbank file
