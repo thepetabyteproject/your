@@ -3,7 +3,7 @@ import os
 
 import numpy as np
 
-from your.pysigproc import SigprocFile
+from your.io.pysigproc import SigprocFile
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +51,7 @@ def make_sigproc_obj(filfile, y, nchans, chan_freq, nstart):
     fil_obj.tsamp = y.your_header.tsamp
     if not nstart:
         nstart = 0
-    fil_obj.tstart = y.your_header.tstart + nstart*y.your_header.tsamp/(60*60*24)
+    fil_obj.tstart = y.your_header.tstart + nstart * y.your_header.tsamp / (60 * 60 * 24)
     fil_obj.nifs = 1  # Only use Intensity values
 
     if y.your_header.ra_deg and y.your_header.dec_deg:
@@ -132,5 +132,3 @@ def write_fil(data, y, nchans=None, chan_freq=None, filename=None, outdir=None, 
         logger.info(f'Writing {data.shape[0]} spectra to file: {filfile}')
         fil_obj.append_spectra(data, filfile)
     logger.info(f'Successfully written data to Filterbank file: {filfile}')
-
-

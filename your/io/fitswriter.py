@@ -4,11 +4,12 @@ Convert Filterbank files to PSRFITS file
 Original Source: https://github.com/rwharton/fil2psrfits
 """
 
+import logging
+
+import astropy.coordinates as coord
+import astropy.time as time
 import numpy as np
 from astropy.io import fits
-import astropy.time as time
-import astropy.coordinates as coord
-import logging
 
 logger = logging.getLogger(__name__)
 import json
@@ -19,6 +20,7 @@ class ObsInfo(object):
     Class to setup observation info for psrfits header
 
     """
+
     def __init__(self):
         self.file_date = self.format_date(time.Time.now().isot)
         self.observer = "Human"

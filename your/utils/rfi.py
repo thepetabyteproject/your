@@ -1,8 +1,11 @@
+import logging
+
 import numpy as np
 from scipy import stats
 from scipy.signal import savgol_filter as sg
-import logging
+
 logger = logging.getLogger(__name__)
+
 
 def savgol_filter(data, foff, fw=15, sig=6):
     """

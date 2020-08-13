@@ -1,8 +1,10 @@
-from your.utils.misc import *
 import os
 
+from your.utils.misc import *
+
+
 def test_pad_along_axis():
-    d = np.random.random((10,10))
+    d = np.random.random((10, 10))
     d_end = pad_along_axis(d, 12, 'end', 0, mode='median')
     assert d_end.shape[0] == 12
     assert (d_end[11, :] - np.median(d, axis=0)).sum() == 0

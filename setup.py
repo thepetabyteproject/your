@@ -2,9 +2,11 @@ import glob
 
 from setuptools import setup, find_packages
 
+import your
+
 setup(
     name='your',
-    version='0.4.9',
+    version=your.__version__,
     packages=find_packages(),
     url='http://github.com/devanshkv/your',
     author='Devansh Agarwal, Kshitij Aggarwal',

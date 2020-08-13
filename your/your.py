@@ -5,8 +5,8 @@ import os
 
 import numpy as np
 
-from your.psrfits import PsrfitsFile
-from your.pysigproc import SigprocFile
+from your.io.psrfits import PsrfitsFile
+from your.io.pysigproc import SigprocFile
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +52,7 @@ class Your(PsrfitsFile, SigprocFile):
             else:
                 raise TypeError('Filetype not supported')
         elif isinstance(self.your_file, list):
-            if len(self.your_file) == 0: 
+            if len(self.your_file) == 0:
                 raise ValueError('Filelist is empty. Please check the input')
             if len(self.your_file) == 1 and os.path.splitext(*self.your_file)[1] == ".fil":
                 for filterbank_file in self.your_file:
@@ -73,7 +73,8 @@ class Your(PsrfitsFile, SigprocFile):
                 self.isfits = True
                 self.isfil = False
         else:
-            raise ValueError('file should be a string of input file path or a list of strings with relevant file paths.')
+            raise ValueError(
+                'file should be a string of input file path or a list of strings with relevant file paths.')
 
         if not self.source_name:
             logger.info(f'Source name not present in the file. Setting source name to TEMP')

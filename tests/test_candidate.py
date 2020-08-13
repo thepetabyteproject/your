@@ -1,15 +1,17 @@
+import os
+
 import numpy as np
 
 from your.candidate import Candidate
 
-import os
 os.environ['HDF5_USE_FILE_LOCKING'] = 'FALSE'
 _install_dir = os.path.abspath(os.path.dirname(__file__))
 
 
 def test_Candidate():
     fits_file = os.path.join(_install_dir, 'data/28.fits')
-    cand = Candidate(fp=fits_file, dm=475.28400, tcand=2.0288800, width=2, label=-1, snr=16.8128, min_samp=256, device=0)
+    cand = Candidate(fp=fits_file, dm=475.28400, tcand=2.0288800, width=2, label=-1, snr=16.8128, min_samp=256,
+                     device=0)
     assert np.isclose(cand.dispersion_delay(), 0.6254989199749227, atol=1e-3)
 
 

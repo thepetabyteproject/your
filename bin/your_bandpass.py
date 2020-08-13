@@ -3,8 +3,10 @@
 Generate bandpass of data
 """
 import argparse
+
 from your import Your
 from your.utils.plotter import save_bandpass
+
 
 def bandpass(f, time=0, nspectra=8192, outname=None):
     """
@@ -20,7 +22,7 @@ def bandpass(f, time=0, nspectra=8192, outname=None):
 
     y = Your(f)
     if time > 0:
-        ns = time//y.your_header.native_tsamp
+        ns = time // y.your_header.native_tsamp
     else:
         ns = nspectra
     bandpass = y.bandpass(nspectra=ns)
@@ -35,14 +37,14 @@ if __name__ == '__main__':
                         help='Fits or filterbank files to read.',
                         required=True, nargs='+')
     parser.add_argument('-n', '--nspectra',
-                        help='Number of spectra to use for bandpass.', 
+                        help='Number of spectra to use for bandpass.',
                         required=False, type=int, default=8192)
-    parser.add_argument('-t', '--time', 
-                        help='Time (s) to use for bandpass.', 
+    parser.add_argument('-t', '--time',
+                        help='Time (s) to use for bandpass.',
                         required=False, type=float, default=0)
     parser.add_argument('-b', '--name',
                         help='Name of bandpass png', type=str,
-                        required=False, default=None) 
+                        required=False, default=None)
     values = parser.parse_args()
 
     bandpass(f=values.files, time=values.time, nspectra=values.nspectra, outname=values.name)
