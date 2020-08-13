@@ -21,7 +21,8 @@ def test_candidate_chunk_and_dedispersion():
     cand.dedisperse()
     assert np.isclose(np.max(cand.dedispersed.T.sum(0)), 47527, atol=1)
     assert np.isclose(np.max(cand.dedispersets()), 47527, atol=1)
-
+    cand.dmtime()
+    assert cand.dmt.shape[0] == 256
     fnout = cand.save_h5()
     assert os.path.isfile(fnout)
     os.remove(fnout)
