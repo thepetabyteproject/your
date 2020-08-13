@@ -1,7 +1,8 @@
 import numpy as np
 from scipy import stats
 from scipy.signal import savgol_filter as sg
-
+import logging
+logger = logging.getLogger(__name__)
 
 def savgol_filter(data, foff, fw=15, sig=6):
     """
@@ -118,3 +119,40 @@ def calc_N(foff, nchans, tsamp):
 
     tn = nchans * np.abs(1 / (2 * foff * nchans * 10 ** 6))
     return np.round(tsamp / tn)
+
+
+def sk_sg_filter(data, y, sk_sig, nchans, sg_fw, sg_sig):
+    """
+
+    Apply Spectral Kurtosis and Savgol filter to the data
+
+    Args:
+
+        data (numpy.ndarray): 2D frequency time data
+
+        y: Your object
+
+        sk_sig (float): sigma value to apply cutoff on for SK filter
+
+        nchans (int): number of channels
+
+        sg_fw (float): frequency window for savgol filter(MHz)
+
+        sg_sig (float): sigma value to apply cutoff on for savgol filter
+
+
+    Returns:
+
+         numpy.ndarray: mask for channels
+
+    """
+
+    logger.info(f'Applying spectral kurtosis filter with sigma={sk_sig}')
+    sk_mask = sk_filter(data, foff=y.your_header.foff, nchans=nchans, tsamp=y.your_header.tsamp, sig=sk_sig)
+    bp = data.sum(0)[~sk_mask]
+    logger.info(f'Applying savgol filter with fw={sg_fw} and sig={sg_sig}')
+    sg_mask = savgol_filter(bp, y.your_header.foff, fw=sg_fw, sig=sg_sig)
+    mask = np.zeros(data.shape[1], dtype=np.bool)
+    mask[sk_mask] = True
+    mask[np.where(mask == False)[0][sg_mask]] = True
+    return mask

@@ -16,7 +16,7 @@ def test_save_bandpass():
 
 def test_plot_h5():
     h5_file = os.path.join(_install_dir, 'data/test.h5')
-    plot_h5(h5_file, publication=False)
+    plot_h5(h5_file, publication=False, outdir=os.path.join(_install_dir, 'data/'))
     png_file = os.path.join(_install_dir, 'data/test.png')
     assert os.path.isfile(png_file)
     os.remove(png_file)

@@ -15,7 +15,7 @@
 | Format        | Read                     | Write               |
 | ------------- |:-------------:           | -----:              |
 | filterbank    | :white_check_mark:       | :white_check_mark:  |
-| psrfits       | :white_check_mark:       | :x:                 |
+| psrfits       | :white_check_mark:       | :white_check_mark:  |
 | psrdada       | :x:                      | :white_check_mark:  |
 
 The inspiration for the name comes from the Daily Dose of Internet [videos](https://www.youtube.com/channel/UCdC0An4ZPNr_YiFiYoVbwaw).
@@ -28,4 +28,4 @@ Once psrdada is installed, git clone the repo and use `setup.py` to install `you
     cd your
     python setup.py install
 
-Have a look at our [docs](https://devanshkv.github.io/your/) for the basic documentation. We will add detail shortly. 
+Have a look at our [docs](https://devanshkv.github.io/your/) for the basic documentation. We will add more details shortly. 

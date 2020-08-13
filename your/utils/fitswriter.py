@@ -1,28 +1,24 @@
-#!/usr/bin/env python
-
 """
 Convert Filterbank files to PSRFITS file
 
 Original Source: https://github.com/rwharton/fil2psrfits
 """
 
-from your import Your
 import numpy as np
 from astropy.io import fits
 import astropy.time as time
 import astropy.coordinates as coord
-from datetime import datetime
-import os
-from your.utils.rfi import sk_filter, savgol_filter
 import logging
 
 logger = logging.getLogger(__name__)
 import json
-import tqdm
-import argparse
 
 
 class ObsInfo(object):
+    """
+    Class to setup observation info for psrfits header
+
+    """
     def __init__(self):
         self.file_date = self.format_date(time.Time.now().isot)
         self.observer = "Human"
@@ -194,9 +190,14 @@ def initialize_psrfits(outfile, y, npsub=None):
     Set up a PSRFITS file with everything set up EXCEPT
     the DATA.
 
-    :param outfile: path to the output fits file to write to
-    :param y: your object with the input Filterbank file
-    :param npsub: number of spectra in a subint
+    Args:
+
+        outfile: path to the output fits file to write to
+
+        y: your object with the input Filterbank file
+
+        npsub: number of spectra in a subint
+
     """
 
     # Obs Specific Metadata
@@ -223,14 +224,14 @@ def initialize_psrfits(outfile, y, npsub=None):
     src_name = y.your_header.source_name
 
     from astropy.coordinates import SkyCoord
-    
+
     if y.your_header.ra_deg and y.your_header.dec_deg:
         ra = y.your_header.ra_deg
         dec = y.your_header.dec_deg
     else:
         ra = 0
         dec = 0
-        
+
     loc = SkyCoord(ra, dec, unit='deg')
     ra_hms = loc.ra.hms
     dec_dms = loc.dec.dms
@@ -367,155 +368,3 @@ def initialize_psrfits(outfile, y, npsub=None):
     fits_data.writeto(outfile, overwrite=True)
     logging.info(f'Header information written in {outfile}')
     return
-
-
-def convert(f, npsub=-1, outdir=None, fitsfile=None, progress=None, flag_rfi=False, sk_sig=4, sg_fw=15,
-            sg_sig=4, zero_dm_subt=False):
-    """
-    reads data from one or more PSRFITS files
-    and writes out a Filterbank File.
-
-    :param f: List of PSRFITS files
-    :param npsub: Number of spectra per subint
-    :param outdir: Output directory for Filterbank file
-    :param fitsfile: Name of the PSRFITS file to write to
-    :param progress: turn on/off progress bar
-    :param flag_rfi: To turn on RFI flagging
-    :param sk_sig: sigma for spectral kurtosis filter
-    :param sg_fw: filter window for savgol filter
-    :param sg_sig: sigma for savgol filter
-    :param zero_dm_subt: enable zero DM rfi excision
-    """
-
-    y = Your(f)
-    tsamp = y.your_header.tsamp
-
-    if npsub == -1:
-        npsub = int(1.0 / tsamp)
-    else:
-        pass
-
-    if not fitsfile:
-        fitsfile = y.your_header.basename.split('.fil')[0] + '.fits'
-
-    if not outdir:
-        outdir = os.getcwd()
-
-    outfile = outdir + '/' + fitsfile
-
-    initialize_psrfits(outfile=outfile, y=y, npsub=npsub)
-
-    nifs = y.your_header.npol
-    nchans = y.your_header.nchans
-    foff = y.your_header.foff
-
-    logger.info("Filling PSRFITS file with data")
-
-    # Open PSRFITS file
-    hdulist = fits.open(outfile, mode='update')
-    hdu = hdulist[1]
-    nsubints = len(hdu.data[:]['data'])
-
-    # Loop through chunks of data to write to PSRFITS
-    n_read_subints = 10
-    nstart = 0
-    logger.info(f'Number of subints to write {nsubints}')
-
-    for istart in tqdm.tqdm(np.arange(0, nsubints, n_read_subints), disable=progress):
-        istop = istart + n_read_subints
-        if istop > nsubints:
-            istop = nsubints
-        else:
-            pass
-        isub = istop - istart
-
-        logger.info(f"Writing data to {outfile} from subint = {istart} to {istop}.")
-
-        # Read in nread samples from filfile
-        nread = isub * npsub
-        data = y.get_data(nstart=nstart, nsamp=nread).astype(y.your_header.dtype)
-        if flag_rfi:
-            logger.info(f'Applying spectral kurtosis filter with sigma={sk_sig}')
-            sk_mask = sk_filter(data, foff=y.your_header.foff, nchans=nchans, tsamp=y.your_header.tsamp, sig=sk_sig)
-            bp = data.sum(0)[~sk_mask]
-            logger.info(f'Applying savgol filter with fw={sg_fw} and sig={sg_sig}')
-            sg_mask = savgol_filter(bp, y.your_header.foff, fw=sg_fw, sig=sg_sig)
-            mask = np.zeros(data.shape[1], dtype=np.bool)
-            mask[sk_mask] = True
-            mask[np.where(mask == False)[0][sg_mask]] = True
-            data[:, mask] = 0
-        if zero_dm_subt:
-            logger.debug('Subtracting 0-DM time series from the data')
-            data = data - data.mean(1)[:, None]
-
-        logger.debug(f'Shape of data array after get_data is {data.shape}')
-        nstart += nread
-
-        nvals = isub * npsub * nifs
-        if data.shape[0] < nvals:
-            logger.debug(f'nspectra in this chunk ({data.shape[0]}) < nsubints * npsub * nifs ({nvals})')
-            logger.debug(f'Appending zeros at the end to fill the subint')
-            pad_back = np.zeros((nvals - data.shape[0], data.shape[1]))
-            data = np.vstack((data, pad_back))
-        else:
-            pass
-
-        data = np.reshape(data, (isub, npsub, nifs, nchans))
-
-        # If foff is negative, we need to flip the freq axis
-        if foff < 0:
-            logger.debug(f"Flipping band as {foff} < 0")
-            data = data[:, :, :, ::-1]
-        else:
-            pass
-
-        # Put data in hdu data array
-        logger.debug(f'Writing data of shape {data.shape} to {outfile}.')
-        hdu.data[istart:istop]['data'][:, :, :, :] = data[:].astype(y.your_header.dtype)
-
-        # Write to file
-        hdulist.flush()
-
-    logger.info(f'All spectra written to {outfile}')
-    # Close open FITS file
-    hdulist.close()
-
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(prog='your_fil2fits.py',
-                                     description="Convert file from filterbank to PSRFITS format"
-                                                 "format.", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('-v', '--verbose', help='Be verbose', action='store_true')
-    parser.add_argument('-f', '--files',
-                        help='Paths of Filterbank file to be converted to PSRFITS file', required=True, nargs='+')
-    parser.add_argument('-p', '--npsub', help='Number of spectra per subint', required=False, type=int, default=-1)
-    parser.add_argument('-o', '--outdir', type=str, help='Output directory for PSRFITS file', default='.',
-                        required=False)
-    parser.add_argument('-fits', '--fits_name', type=str, help='Output name of the PSRFITS file', default=None,
-                        required=False)
-    parser.add_argument('--no_progress', help='Do not show the tqdm bar', action='store_true', default=None)
-    parser.add_argument('-r', '--flag_rfi', help='Turn on RFI flagging', action='store_true', default=False)
-    parser.add_argument('-sksig', '--sk_sig', help='Sigma for spectral kurtosis filter', type=float, default=4,
-                        required=False)
-    parser.add_argument('-sgsig', '--sg_sig', help='Sigma for savgol filter', type=float, default=4, required=False)
-    parser.add_argument('-sgfw', '--sg_fw', help='Filter window for savgol filter (MHz)', type=float, default=15,
-                        required=False)
-    parser.add_argument('-zero_dm_subt', '--zero_dm_subt', help='Enable 0 DM subtraction', action='store_true',
-                        default=False)
-    values = parser.parse_args()
-
-    logging_format = '%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s'
-    log_filename = values.outdir + '/' + datetime.utcnow().strftime('fil2fits_%Y_%m_%d_%H_%M_%S_%f.log')
-
-    if values.verbose:
-        logging.basicConfig(filename=log_filename, level=logging.DEBUG, format=logging_format)
-    else:
-        logging.basicConfig(filename=log_filename, level=logging.INFO, format=logging_format)
-
-    logging.info("Input Arguments:-")
-    for arg, value in sorted(vars(values).items()):
-        logging.info("Argument %s: %r", arg, value)
-
-    convert(f=values.files, npsub=values.npsub, outdir=values.outdir, fitsfile=values.fits_name,
-            progress=values.no_progress, flag_rfi=values.flag_rfi, sk_sig=values.sk_sig, sg_fw=values.sg_fw,
-            sg_sig=values.sg_sig, zero_dm_subt=values.zero_dm_subt)
