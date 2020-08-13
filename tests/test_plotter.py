@@ -1,7 +1,6 @@
-from your.utils.plotter import *
 from your import Your
+from your.utils.plotter import *
 
-import os
 os.environ['HDF5_USE_FILE_LOCKING'] = 'FALSE'
 _install_dir = os.path.abspath(os.path.dirname(__file__))
 
@@ -22,6 +21,6 @@ def test_plot_h5():
     os.remove(png_file)
 
     plot_h5(h5_file, publication=True, mad_filter=True)
-    png_file = os.path.join(_install_dir,'data/test.png')
+    png_file = os.path.join(_install_dir, 'data/test.png')
     assert os.path.isfile(png_file)
     os.remove(png_file)

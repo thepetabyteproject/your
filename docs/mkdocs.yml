@@ -13,11 +13,13 @@ repo_url: https://github.com/devanshkv/your
 
 nav:
   - Core: your.md
-  - Getting Started: ipynb/Getting_started.md
+  - Getting Started:
+      - Reading: ipynb/Getting_started.md
+      - Writing: ipynb/writer_demo.md
   - CLI:
+      - your_bandpass.py: bin/your_bandpass.md
       - your_candmaker.py: bin/your_candmaker.md
       - your_combine_mocks.py: bin/your_combine_mocks.md
-      - your_fits2fil.py: bin/your_fits2fil.md
       - your_h5plotter.py: bin/your_h5plotter.md
       - your_header.py: bin/your_header.md
       - your_heimdall.py: bin/your_heimdall.md

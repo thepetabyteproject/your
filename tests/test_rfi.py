@@ -1,5 +1,5 @@
-import numpy as np
 from your.utils.rfi import *
+
 
 def test_calc_N():
     assert calc_N(foff=-1, nchans=336, tsamp=0.001) == 2000
@@ -9,6 +9,7 @@ def test_savgol_filter_on_noise():
     d = np.random.random(100)
     m = savgol_filter(d, -1, 15, 4)
     assert m.sum() == 0
+
 
 def test_savgol_filter_on_impulse():
     d = np.random.random(100)
@@ -23,12 +24,9 @@ def test_spectral_kurtosis_on_noise():
     sk = spectral_kurtosis(d, 1, None)
     assert np.isclose(sk, 1, atol=0.1)
 
+
 def test_spectral_kurtosis_on_impulse():
     d = np.random.random(100)
     d[10:12] = 5
     sk = spectral_kurtosis(d, 1, None)
     assert np.isclose(sk, 1, atol=0.1)
-
-
-
-

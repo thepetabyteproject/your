@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 
 import logging
-from your.utils.rfi import sk_sg_filter
-from your.utils.filwriter import write_fil
-from your.utils.fitswriter import initialize_psrfits
-from astropy.io import fits
+import os
+
 import numpy as np
 import tqdm
-import os
+from astropy.io import fits
+
+from your.utils.filwriter import write_fil
+from your.utils.fitswriter import initialize_psrfits
+from your.utils.rfi import sk_sg_filter
 
 logger = logging.getLogger(__name__)
 

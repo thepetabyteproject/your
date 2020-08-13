@@ -1,6 +1,7 @@
+import os
+
 from your import Your
 
-import os
 _install_dir = os.path.abspath(os.path.dirname(__file__))
 
 

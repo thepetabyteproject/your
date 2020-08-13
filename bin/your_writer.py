@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='your_writer.py',
                                      description="Convert/Write files from any format to a single file in any format."
-                                                 , formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+                                     , formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-v', '--verbose', help='Be verbose', action='store_true')
     parser.add_argument('-f', '--files',
                         help='Paths of input files to be converted to an output format. Surround '

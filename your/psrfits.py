@@ -6,7 +6,6 @@ Read PSRFITS data.
 
 Original Source: https://github.com/scottransom/presto/blob/master/python/presto/psrfits.py 
 """
-import argparse
 import logging
 import os
 import os.path
@@ -127,6 +126,7 @@ class PsrfitsFile(object):
         nifs (int): Number of IFs in the data.
         
     """
+
     def __init__(self, psrfitslist):
         psrfitsfn = psrfitslist[0]
         if not os.path.isfile(psrfitsfn):
@@ -458,6 +458,7 @@ class SpectraInfo:
         filenames: list of fits files
 
     """
+
     def __init__(self, filenames):
         self.filenames = filenames
         self.num_files = len(filenames)
@@ -472,7 +473,6 @@ class SpectraInfo:
         self.start_spec = np.empty(self.num_files)
         self.num_pad = np.empty(self.num_files)
         self.num_spec = np.empty(self.num_files)
-
 
         # The following should default to False
         self.need_scale = False

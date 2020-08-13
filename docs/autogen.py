@@ -49,8 +49,8 @@ pages = {
                    'your.psrfits.unpack_2bit',
                    'your.psrfits.unpack_4bit'],
 
-    'writer.md':['your.writer.Writer.to_fil',
-                 'your.writer.Writer.to_fits'],
+    'writer.md': ['your.writer.Writer.to_fil',
+                  'your.writer.Writer.to_fits'],
 
     'utils/rfi.md': ["your.utils.rfi.savgol_filter",
                      "your.utils.rfi.spectral_kurtosis"],
