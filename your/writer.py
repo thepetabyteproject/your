@@ -7,8 +7,8 @@ import numpy as np
 import tqdm
 from astropy.io import fits
 
-from your.io.filwriter import write_fil
-from your.io.fitswriter import initialize_psrfits
+from your.formats.filwriter import write_fil
+from your.formats.fitswriter import initialize_psrfits
 from your.utils.rfi import sk_sg_filter
 
 logger = logging.getLogger(__name__)

@@ -22,10 +22,8 @@ logger = logging.getLogger(__name__)
 SECPERDAY = float('86400.0')
 
 # Regular expression for parsing DATE-OBS card's format.
-date_obs_re = re.compile(r"^(?P<year>[0-9]{4})-(?P<month>[0-9]{2})-" \
-                         "(?P<day>[0-9]{2})T(?P<hour>[0-9]{2}):" \
-                         "(?P<min>[0-9]{2}):(?P<sec>[0-9]{2}" \
-                         "(?:\.[0-9]+)?)$")
+date_obs_re = re.compile(r"^(?P<year>[0-9]{4})-(?P<month>[0-9]{2})-(?P<day>[0-9]{2})T(?P<hour>[0-9]{2}):"
+                         r"(?P<min>[0-9]{2}):(?P<sec>[0-9]{2}""(?:\.[0-9]+)?)$")
 
 
 def unpack_2bit(data):

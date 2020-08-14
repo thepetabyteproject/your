@@ -5,8 +5,8 @@ import os
 
 import numpy as np
 
-from your.io.psrfits import PsrfitsFile
-from your.io.pysigproc import SigprocFile
+from your.formats.psrfits import PsrfitsFile
+from your.formats.pysigproc import SigprocFile
 
 logger = logging.getLogger(__name__)
 

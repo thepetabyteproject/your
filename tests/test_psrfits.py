@@ -2,7 +2,7 @@ import os
 
 import numpy as np
 
-from your.io.psrfits import PsrfitsFile
+from your.formats.psrfits import PsrfitsFile
 
 _install_dir = os.path.abspath(os.path.dirname(__file__))
 

@@ -10,7 +10,7 @@ import logging
 from datetime import datetime
 
 from your import Your
-from your.io.writer import Writer
+from your.writer import Writer
 
 logger = logging.getLogger(__name__)
 
@@ -63,11 +63,11 @@ if __name__ == '__main__':
         if values.chans or values.nstart or values.nsamp:
             logging.warning('Writer currently doesnot support selecting channel or sample ranges while writing '
                             'psrfits file. Therefore, these inputs will be ignored.')
-        w.to_fits(outdir=values.outdir, fitsfile=values.out_name, progress=values.no_progress, flag_rfi=values.flag_rfi,
+        w.to_fits(outdir=values.outdir, outname=values.out_name, progress=values.no_progress, flag_rfi=values.flag_rfi,
                   sk_sig=values.sk_sig, sg_fw=values.sg_fw, sg_sig=values.sg_sig, zero_dm_subt=values.zero_dm_subt)
     elif values.type == 'fil':
         w.to_fil(c=values.chans, nstart=values.nstart, nsamp=values.nsamp, outdir=values.outdir,
-                 filfile=values.out_name, progress=values.no_progress, flag_rfi=values.flag_rfi, sk_sig=values.sk_sig,
+                 outname=values.out_name, progress=values.no_progress, flag_rfi=values.flag_rfi, sk_sig=values.sk_sig,
                  sg_fw=values.sg_fw, sg_sig=values.sg_sig, zero_dm_subt=values.zero_dm_subt)
     else:
         raise ValueError("Type can either be 'fits' or 'fil'")

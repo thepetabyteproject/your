@@ -17,7 +17,7 @@ import numpy as np
 import tqdm
 
 from your import Your
-from your.io.pysigproc import SigprocFile
+from your.formats.pysigproc import SigprocFile
 
 logger = logging.getLogger(__name__)
 
