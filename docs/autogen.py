@@ -23,8 +23,8 @@ pages = {
                      "your.candidate.Candidate.decimate",
                      "your.candidate.Candidate.resize"],
 
-    'writer.md': ['your.formats.writer.Writer.to_fil',
-                     'your.formats.writer.Writer.to_fits'],
+    'writer.md': ['your.writer.Writer.to_fil',
+                     'your.writer.Writer.to_fits'],
 
     'formats/psrdada.md': ['your.formats.dada.DadaManager',
                       'your.formats.dada.DadaManager.setup',
