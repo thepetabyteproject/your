@@ -33,6 +33,7 @@ class Writer:
         Writes out a Filterbank File.
 
         Args:
+
             nstart: Start sample to read from
 
             nsamp: Number of samples to write
@@ -119,6 +120,7 @@ class Writer:
         Writes out a fits file
 
         Args:
+
             npsub: Number of spectra per subint
 
             outdir: Output directory for Filterbank file
