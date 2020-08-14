@@ -96,37 +96,24 @@ def write_fil(data, y, nchans=None, chan_freq=None, filename=None, outdir=None, 
 
     """
 
-    original_dir, orig_basename = os.path.split(y.your_header.filename)
-    if not filename:
-        name, ext = os.path.splitext(orig_basename)
-        if ext == '.fits':
-            temp = name.split('_')
-            if len(temp) > 1:
-                filename = '_'.join(temp[:-1]) + '_converted.fil'
-            else:
-                filename = name + '_converted.fil'
-        else:
-            filename = name + '_converted.fil'
-
-    if not outdir:
-        outdir = original_dir
-
     filfile = outdir + '/' + filename
 
     # Add checks for an existing fil file
     logger.info(f'Trying to write data to filterbank file: {filfile}')
     try:
         if os.stat(filfile).st_size > 8192:  # check and replace with the size of header
+            logger.warning(f'Filterbank file already exists at {filfile}. Appending spectra to it.')
             logger.info(f'Writing {data.shape[0]} spectra to file: {filfile}')
             SigprocFile.append_spectra(data, filfile)
-
         else:
+            logger.warning(f'Filterbank file already exists at {filfile}')
+            logger.info('Size of the Filerbank file is too small. Overwriting it.')
             fil_obj = make_sigproc_obj(filfile, y, nchans, chan_freq, nstart)
             fil_obj.write_header(filfile)
             logger.info(f'Writing {data.shape[0]} spectra to file: {filfile}')
             fil_obj.append_spectra(data, filfile)
-
     except FileNotFoundError:
+        logger.info(f'Output file does not already exist. Creating a new Filterbank file.')
         fil_obj = make_sigproc_obj(filfile, y, nchans, chan_freq, nstart)
         fil_obj.write_header(filfile)
         logger.info(f'Writing {data.shape[0]} spectra to file: {filfile}')

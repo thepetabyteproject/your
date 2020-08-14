@@ -88,6 +88,21 @@ class Writer:
         if nsamp % interval != 0:
             nsamps = np.append(nsamps, [nsamp % interval])
 
+        original_dir, orig_basename = os.path.split(self.your_obj.your_header.filename)
+        if not outname:
+            name, ext = os.path.splitext(orig_basename)
+            if ext == '.fits':
+                temp = name.split('_')
+                if len(temp) > 1:
+                    outname = '_'.join(temp[:-1]) + '_converted.fil'
+                else:
+                    outname = name + '_converted.fil'
+            else:
+                outname = name + '_converted.fil'
+
+        if not outdir:
+            outdir = original_dir
+
         # Read data
         for st, samp in tqdm.tqdm(zip(nstarts, nsamps), total=len(nstarts), disable=progress):
             logger.debug(f'Reading spectra {st}-{st + samp} in file {self.your_obj.your_header.filename}')
