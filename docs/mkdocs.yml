@@ -28,13 +28,13 @@ nav:
       - Core:
           - Your: your.md
           - Candiate: candidate.md
-      - IO:
-          - Psrdada: io/psrdada.md
-          - Filterbank: io/pysigproc.md
-          - Psrfits: io/psrfits.md
-          - Writer: io/writer.md
-          - FilWriter: io/filwriter.md
-          - FitsWriter: io/fitswriter.md
+          - Writer: writer.md
+      - Formats:
+          - Psrdada: formats/psrdada.md
+          - Filterbank: formats/pysigproc.md
+          - Psrfits: formats/psrfits.md
+          - FilWriter: formats/filwriter.md
+          - FitsWriter: formats/fitswriter.md
       - Utils:
           - RFI: utils/rfi.md
           - Astro: utils/astro.md
