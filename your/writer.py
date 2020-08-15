@@ -38,7 +38,7 @@ class Writer:
 
             nsamp: Number of samples to write
 
-            c: Required frequency channel range
+            c: Required frequency channel range [min_chan, max_chan] (excludes the higher channel number)
 
             outdir: Output directory for Filterbank file
 
@@ -130,12 +130,18 @@ class Writer:
 
         logging.debug(f'Read all the necessary spectra')
 
-    def to_fits(self, nstart=None, nsamp=None, npsub=-1, outdir=None, outname=None, progress=None, flag_rfi=False,
-                sk_sig=4, sg_fw=15, sg_sig=4, zero_dm_subt=False):
+    def to_fits(self, nstart=None, c=None, nsamp=None, npsub=-1, outdir=None, outname=None, progress=None,
+                flag_rfi=False, sk_sig=4, sg_fw=15, sg_sig=4, zero_dm_subt=False):
         """
         Writes out a fits file
 
         Args:
+
+            nstart: start sample number to read from
+
+            nsamp: number of samples to read/write
+
+            c: Required frequency channel range [min_chan, max_chan] (excludes the higher channel number)
 
             npsub: Number of spectra per subint
 
@@ -185,10 +191,20 @@ class Writer:
 
         outfile = outdir + '/' + outname
 
-        initialize_psrfits(outfile=outfile, y=self.your_obj, npsub=npsub, nstart=nstart, nsamp=nsamp)
+        if c:
+            min_c = int(np.min(c))
+            max_c = int(np.max(c))
+        else:
+            min_c = 0
+            max_c = len(self.your_obj.chan_freqs)
+
+        chan_freqs = self.your_obj.chan_freqs[min_c:max_c]
+        nchans = len(chan_freqs)
+
+        initialize_psrfits(outfile=outfile, y=self.your_obj, npsub=npsub, nstart=nstart, nsamp=nsamp,
+                           chan_freqs=chan_freqs)
 
         nifs = self.your_obj.your_header.npol
-        nchans = self.your_obj.your_header.nchans
 
         logger.info("Filling PSRFITS file with data")
 
@@ -216,6 +232,7 @@ class Writer:
             # Read in nread samples from filfile
             nread = isub * npsub
             data = self.your_obj.get_data(nstart=nstart, nsamp=nread)
+            data = data[:, min_c:max_c]
             if flag_rfi:
                 mask = sk_sg_filter(data, self.your_obj, sk_sig, nchans, sg_fw, sg_sig)
 
@@ -227,8 +244,6 @@ class Writer:
             if zero_dm_subt:
                 logger.debug('Subtracting 0-DM time series from the data')
                 data = data - data.mean(1)[:, None]
-
-            data = data.astype(self.your_obj.your_header.dtype)
 
             logger.debug(f'Shape of data array after get_data is {data.shape}')
             nstart += nread

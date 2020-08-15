@@ -187,7 +187,7 @@ class ObsInfo(object):
         return t_hdr
 
 
-def initialize_psrfits(outfile, y, npsub=-1, nstart=None, nsamp=None):
+def initialize_psrfits(outfile, y, npsub=-1, nstart=None, nsamp=None, chan_freqs=None):
     """
     Set up a PSRFITS file with everything set up EXCEPT
     the DATA.
@@ -203,6 +203,8 @@ def initialize_psrfits(outfile, y, npsub=-1, nstart=None, nsamp=None):
         nstart: start sample to read from (for the input file)
 
         nsamp: number of spectra to read
+
+        chan_freqs: array with frequencies of all the channels
 
     """
 
@@ -224,12 +226,14 @@ def initialize_psrfits(outfile, y, npsub=-1, nstart=None, nsamp=None):
             nsamps = y.your_header.nspectra - nstart
 
     # Frequency Info (All freqs in MHz)
-    nchans = y.your_header.nchans
-    fch1 = y.your_header.fch1
+    if not chan_freqs.all():
+        chan_freqs = y.chan_freqs
+    nchans = len(chan_freqs)
+    fch1 = chan_freqs[0]
     foff = y.your_header.foff
 
     freqs = fch1 + np.arange(nchans) * foff
-    fcenter = y.your_header.center_freq
+    fcenter = fch1 + nchans * foff / 2
 
     nifs = y.your_header.npol
     # Source Info
