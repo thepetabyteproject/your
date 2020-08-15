@@ -106,7 +106,7 @@ class Writer:
         # Read data
         for st, samp in tqdm.tqdm(zip(nstarts, nsamps), total=len(nstarts), disable=progress):
             logger.debug(f'Reading spectra {st}-{st + samp} in file {self.your_obj.your_header.filename}')
-            data = self.your_obj.get_data(st, samp).astype(self.your_obj.your_header.dtype)
+            data = self.your_obj.get_data(st, samp)
             data = data[:, min_c:max_c]
             if flag_rfi:
                 mask = sk_sg_filter(data, self.your_obj, sk_sig, nchans, sg_fw, sg_sig)
@@ -120,6 +120,7 @@ class Writer:
                 logger.debug('Subtracting 0-DM time series from the data')
                 data = data - data.mean(1)[:, None]
 
+            data = data.astype(self.your_obj.your_header.dtype)
             logger.info(
                 f'Writing data from spectra {st}-{st + samp} in the frequency channel range {min_c}-{max_c} '
                 f'to filterbank')
@@ -214,7 +215,7 @@ class Writer:
 
             # Read in nread samples from filfile
             nread = isub * npsub
-            data = self.your_obj.get_data(nstart=nstart, nsamp=nread).astype(self.your_obj.your_header.dtype)
+            data = self.your_obj.get_data(nstart=nstart, nsamp=nread)
             if flag_rfi:
                 mask = sk_sg_filter(data, self.your_obj, sk_sig, nchans, sg_fw, sg_sig)
 
@@ -226,6 +227,8 @@ class Writer:
             if zero_dm_subt:
                 logger.debug('Subtracting 0-DM time series from the data')
                 data = data - data.mean(1)[:, None]
+
+            data = data.astype(self.your_obj.your_header.dtype)
 
             logger.debug(f'Shape of data array after get_data is {data.shape}')
             nstart += nread
