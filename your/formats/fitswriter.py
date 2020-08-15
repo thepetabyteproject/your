@@ -72,7 +72,7 @@ class ObsInfo(object):
 
     def fill_freq_info(self, fcenter, nchan, chan_bw):
         self.fcenter = fcenter
-        self.bw = np.abs(nchan * chan_bw)
+        self.bw = nchan * chan_bw
         self.nchan = nchan
         self.chan_bw = chan_bw
 
@@ -187,7 +187,7 @@ class ObsInfo(object):
         return t_hdr
 
 
-def initialize_psrfits(outfile, y, npsub=None):
+def initialize_psrfits(outfile, y, npsub=-1, nstart=None, nsamp=None):
     """
     Set up a PSRFITS file with everything set up EXCEPT
     the DATA.
@@ -200,14 +200,28 @@ def initialize_psrfits(outfile, y, npsub=None):
 
         npsub: number of spectra in a subint
 
+        nstart: start sample to read from (for the input file)
+
+        nsamp: number of spectra to read
+
     """
 
     # Obs Specific Metadata
     # Time Info
     nbits = y.your_header.nbits
     mjd = y.your_header.tstart
-    dt = y.your_header.tsamp  # seconds
-    nsamps = y.your_header.nspectra
+    tsamp = y.your_header.tsamp  # seconds
+
+    if nsamp:
+        nsamps = nsamp
+    else:
+        nsamps = y.your_header.nspectra
+
+    if nstart:
+        mjd += nstart*tsamp/(24*60*60)
+        if nstart + nsamps > y.your_header.nspectra:
+            logging.warning('Data requested exceeds the length of file. Reading data till end of file.')
+            nsamps = y.your_header.nspectra - nstart
 
     # Frequency Info (All freqs in MHz)
     nchans = y.your_header.nchans
@@ -215,11 +229,7 @@ def initialize_psrfits(outfile, y, npsub=None):
     foff = y.your_header.foff
 
     freqs = fch1 + np.arange(nchans) * foff
-    freq_lo = np.min(freqs)
-
-    chan_df = np.abs(foff)
-
-    fcenter = freq_lo + 0.5 * (nchans - 1) * chan_df
+    fcenter = y.your_header.center_freq
 
     nifs = y.your_header.npol
     # Source Info
@@ -250,10 +260,10 @@ def initialize_psrfits(outfile, y, npsub=None):
     # Fill in the ObsInfo class
     d = ObsInfo()
     d.fill_from_mjd(mjd)
-    d.fill_freq_info(fcenter, nchans, chan_df)
+    d.fill_freq_info(fcenter, nchans, foff)
     d.fill_source_info(src_name, ra_str, dec_str)
     d.fill_beam_info(bmaj_deg, bmin_deg, bpa_deg)
-    d.fill_data_info(dt, nbits)
+    d.fill_data_info(tsamp, nbits)
     d.calc_start_lst(mjd)
 
     logging.info('ObsInfo updated with relevant parameters')
@@ -262,14 +272,14 @@ def initialize_psrfits(outfile, y, npsub=None):
     if npsub > 0:
         n_per_subint = npsub
     else:
-        n_per_subint = int(1.0 / dt)
+        n_per_subint = int(1.0 / tsamp)
 
     n_subints = int(nsamps / n_per_subint)
     if nsamps % n_per_subint:
         n_subints += 1
 
     tstart = 0.0
-    t_subint = n_per_subint * dt
+    t_subint = n_per_subint * tsamp
     d.nsblk = n_per_subint
     d.scan_len = t_subint * n_subints
 

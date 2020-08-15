@@ -34,7 +34,7 @@ def test_to_fits():
     file = os.path.join(_install_dir, 'data/small.fil')
     f = Your(file)
     w = Writer(f)
-    w.to_fits(outname='temp.fits', outdir='./', flag_rfi=True, zero_dm_subt=True)
+    w.to_fits(outname='temp.fits', outdir='./', flag_rfi=True, zero_dm_subt=True, nstart=0, nsamp=2)
     assert os.path.isfile('temp.fits')
     os.remove('temp.fits')
 
@@ -45,7 +45,7 @@ def test_to_fits():
     file = os.path.join(_install_dir, 'data/small.fits')
     f = Your(file)
     w = Writer(f)
-    w.to_fits(outname='temp.fits', outdir='./')
+    w.to_fits(outname='temp.fits', outdir='./', nstart=0, nsamp=2)
     assert os.path.isfile('temp.fits')
     os.remove('temp.fits')
 

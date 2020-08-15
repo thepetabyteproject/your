@@ -129,8 +129,8 @@ class Writer:
 
         logging.debug(f'Read all the necessary spectra')
 
-    def to_fits(self, npsub=-1, outdir=None, outname=None, progress=None, flag_rfi=False, sk_sig=4, sg_fw=15,
-                sg_sig=4, zero_dm_subt=False):
+    def to_fits(self, nstart=None, nsamp=None, npsub=-1, outdir=None, outname=None, progress=None, flag_rfi=False,
+                sk_sig=4, sg_fw=15, sg_sig=4, zero_dm_subt=False):
         """
         Writes out a fits file
 
@@ -163,6 +163,10 @@ class Writer:
         else:
             pass
 
+        if nsamp:
+            if nsamp < npsub:
+                npsub = nsamp
+
         if not outname:
             original_dir, orig_basename = os.path.split(self.your_obj.your_header.filename)
             name, ext = os.path.splitext(orig_basename)
@@ -180,11 +184,10 @@ class Writer:
 
         outfile = outdir + '/' + outname
 
-        initialize_psrfits(outfile=outfile, y=self.your_obj, npsub=npsub)
+        initialize_psrfits(outfile=outfile, y=self.your_obj, npsub=npsub, nstart=nstart, nsamp=nsamp)
 
         nifs = self.your_obj.your_header.npol
         nchans = self.your_obj.your_header.nchans
-        foff = self.your_obj.your_header.foff
 
         logger.info("Filling PSRFITS file with data")
 
@@ -195,7 +198,8 @@ class Writer:
 
         # Loop through chunks of data to write to PSRFITS
         n_read_subints = 10
-        nstart = 0
+        if not nstart:
+            nstart = 0
         logger.info(f'Number of subints to write {nsubints}')
 
         for istart in tqdm.tqdm(np.arange(0, nsubints, n_read_subints), disable=progress):
@@ -238,11 +242,11 @@ class Writer:
             data = np.reshape(data, (isub, npsub, nifs, nchans))
 
             # If foff is negative, we need to flip the freq axis
-            if foff < 0:
-                logger.debug(f"Flipping band as {foff} < 0")
-                data = data[:, :, :, ::-1]
-            else:
-                pass
+#            if foff < 0:
+#                logger.debug(f"Flipping band as {foff} < 0")
+#                data = data[:, :, :, ::-1]
+#            else:
+#                pass
 
             # Put data in hdu data array
             logger.debug(f'Writing data of shape {data.shape} to {outfile}.')
