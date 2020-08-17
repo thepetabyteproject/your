@@ -129,8 +129,6 @@ class Candidate(Your):
         """
         if dms is None:
             dms = self.dm
-        if dms is None:
-            return None
         else:
             return 4148808.0 * dms * (1 / np.min(self.chan_freqs) ** 2 - 1 / np.max(self.chan_freqs) ** 2) / 1000
 
