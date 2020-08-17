@@ -40,7 +40,15 @@ def test_dedisperse(cand):
     assert np.isclose(np.max(cand.dedispersets()), 47527, atol=1)
 
 
-def test_dmtime(cand):
+def test_snr_none(cand):
+    assert cand.get_snr() == None
+
+
+def test_optimize_dm(cand):
+    assert cand.optimize_dm() == None
+
+
+def test_dmtime_snr_opt_snr(cand):
     cand.get_chunk()
     cand.dedisperse()
     cand.dmtime()
