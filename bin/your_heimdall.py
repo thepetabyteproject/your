@@ -10,7 +10,7 @@ from multiprocessing import Process
 import numpy as np
 
 from your import Your
-from your import dada
+from your.formats import dada
 from your.utils.heimdall import HeimdallManager
 from your.utils.misc import MyEncoder
 from your.utils.plotter import save_bandpass

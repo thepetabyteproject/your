@@ -6,34 +6,45 @@ site_description: 'Your Documentation'
 theme:
   name: material
   palette:
-    scheme: slate
     primary: indigo
 
 repo_name: your
 repo_url: https://github.com/devanshkv/your
 
 nav:
-  - Core: your.md
-  - Getting Started: ipynb/Getting_started.md
+  - Getting Started:
+      - Reading: ipynb/Getting_started.md
+      - Writing: ipynb/writer_demo.md
   - CLI:
+      - your_bandpass.py: bin/your_bandpass.md
       - your_candmaker.py: bin/your_candmaker.md
       - your_combine_mocks.py: bin/your_combine_mocks.md
-      - your_fits2fil.py: bin/your_fits2fil.md
       - your_h5plotter.py: bin/your_h5plotter.md
       - your_header.py: bin/your_header.md
       - your_heimdall.py: bin/your_heimdall.md
       - your_rfimask.py: bin/your_rfimask.md
-  - psrdada: psrdada.md
-  - filterbank: pysigproc.md
-  - Candidate: candidate.md
-  - Utils:
-      - RFI: utils/rfi.md
-      - Astro: utils/astro.md
-      - Plotter: utils/plotter.md
-      - GPU: utils/gpu.md
-      - Heimdall: utils/heimdall.md
-      - Math: utils/math.md
-      - Misc: utils/misc.md
+      - your_writer.py: bin/your_writer.md
+  - API:
+      - Core:
+          - Your: your.md
+          - Candiate: candidate.md
+          - Writer: writer.md
+      - Formats:
+          - Psrdada: formats/psrdada.md
+          - Filterbank: formats/pysigproc.md
+          - Psrfits: formats/psrfits.md
+          - FilWriter: formats/filwriter.md
+          - FitsWriter: formats/fitswriter.md
+      - Utils:
+          - RFI: utils/rfi.md
+          - Astro: utils/astro.md
+          - Plotter: utils/plotter.md
+          - GPU: utils/gpu.md
+          - Heimdall: utils/heimdall.md
+          - Math: utils/math.md
+          - Misc: utils/misc.md
+
+
 
 markdown_extensions:
   - pymdownx.emoji:

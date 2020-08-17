@@ -2,14 +2,20 @@ import glob
 
 from setuptools import setup, find_packages
 
+import your
+
+with open('requirements.txt') as f:
+    required = f.read().splitlines()
+
 setup(
     name='your',
-    version='0.4.9',
+    version=your.__version__,
     packages=find_packages(),
     url='http://github.com/devanshkv/your',
     author='Devansh Agarwal, Kshitij Aggarwal',
     scripts=glob.glob('bin/*'),
     tests_require=['pytest', 'pytest-cov'],
+    install_requires=required,
     author_email='da0017@mix.wvu.edu, ka0064@mix.wvu.edu',
     zip_safe=False,
     description='A unified reader for sigproc filterbank and psrfits data',

@@ -5,8 +5,8 @@ import os
 
 import numpy as np
 
-from your.psrfits import PsrfitsFile
-from your.pysigproc import SigprocFile
+from your.formats.psrfits import PsrfitsFile
+from your.formats.pysigproc import SigprocFile
 
 logger = logging.getLogger(__name__)
 
@@ -52,6 +52,8 @@ class Your(PsrfitsFile, SigprocFile):
             else:
                 raise TypeError('Filetype not supported')
         elif isinstance(self.your_file, list):
+            if len(self.your_file) == 0:
+                raise ValueError('Filelist is empty. Please check the input')
             if len(self.your_file) == 1 and os.path.splitext(*self.your_file)[1] == ".fil":
                 for filterbank_file in self.your_file:
                     logger.debug(f'Reading filterbank file {filterbank_file}')
@@ -61,15 +63,18 @@ class Your(PsrfitsFile, SigprocFile):
             else:
                 for f in self.your_file:
                     ext = os.path.splitext(f)[1]
-                    if ext == ".fits" or ext == ".sf" or ext == ".fil":
+                    if ext == ".fits" or ext == ".sf":
                         pass
                     else:
-                        raise TypeError("Can only work with list of fits file or filterbanks")
+                        raise TypeError("Can only work with a list of fits file or an individual filterbank file")
                 self.your_file.sort()
                 logger.debug(f'Reading the following fits files: {self.your_file}')
                 PsrfitsFile.__init__(self, psrfitslist=self.your_file)
                 self.isfits = True
                 self.isfil = False
+        else:
+            raise ValueError(
+                'file should be a string of input file path or a list of strings with relevant file paths.')
 
         if not self.source_name:
             logger.info(f'Source name not present in the file. Setting source name to TEMP')
@@ -349,8 +354,13 @@ class Header:
 
             from your.utils.astro import ra2deg
             from your.utils.astro import dec2deg
-            ra = ra2deg(your.src_raj)
-            dec = dec2deg(your.src_dej)
+            if your.src_raj and your.src_dej:
+                ra = ra2deg(your.src_raj)
+                dec = dec2deg(your.src_dej)
+            else:
+                # for 174 bit header Filterbank
+                ra = None
+                dec = None
             self.ra_deg = ra
             self.dec_deg = dec
             self.bw = your.nchans * your.foff
@@ -390,9 +400,14 @@ class Header:
         self.isfil = your.isfil
 
         from astropy.coordinates import SkyCoord
-        loc = SkyCoord(self.ra_deg, self.dec_deg, unit='deg')
-        self.gl = loc.galactic.l.value - 180
-        self.gb = loc.galactic.b.value
+        if self.ra_deg and self.dec_deg:
+            loc = SkyCoord(self.ra_deg, self.dec_deg, unit='deg')
+            self.gl = loc.galactic.l.value - 180
+            self.gb = loc.galactic.b.value
+        else:
+            # for 174 bit header Filterbank
+            self.gl = None
+            self.gb = None
 
         from astropy.time import Time
         ts = Time(your.tstart, format='mjd')

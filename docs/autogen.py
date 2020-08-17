@@ -23,24 +23,41 @@ pages = {
                      "your.candidate.Candidate.decimate",
                      "your.candidate.Candidate.resize"],
 
-    'psrdada.md': ['your.dada.DadaManager',
-                   'your.dada.DadaManager.setup',
-                   'your.dada.DadaManager.dump_header',
-                   'your.dada.DadaManager.dump_data',
-                   'your.dada.DadaManager.mark_filled',
-                   'your.dada.DadaManager.eod',
-                   'your.dada.DadaManager.teardown',
-                   'your.dada.YourDada',
-                   'your.dada.YourDada.setup',
-                   'your.dada.YourDada.teardown',
-                   'your.dada.YourDada.your_dada_header',
-                   'your.dada.YourDada.to_dada'],
+    'writer.md': ['your.writer.Writer.to_fil',
+                     'your.writer.Writer.to_fits'],
 
-    'pysigproc.md': ['your.pysigproc.SigprocFile',
-                     'your.pysigproc.SigprocFile.get_data',
-                     'your.pysigproc.SigprocFile.unpack',
-                     'your.pysigproc.SigprocFile.write_header',
-                     'your.pysigproc.SigprocFile.append_spectra'],
+    'formats/psrdada.md': ['your.formats.dada.DadaManager',
+                      'your.formats.dada.DadaManager.setup',
+                      'your.formats.dada.DadaManager.dump_header',
+                      'your.formats.dada.DadaManager.dump_data',
+                      'your.formats.dada.DadaManager.mark_filled',
+                      'your.formats.dada.DadaManager.eod',
+                      'your.formats.dada.DadaManager.teardown',
+                      'your.formats.dada.YourDada',
+                      'your.formats.dada.YourDada.setup',
+                      'your.formats.dada.YourDada.teardown',
+                      'your.formats.dada.YourDada.your_dada_header',
+                      'your.formats.dada.YourDada.to_dada'],
+
+    'formats/pysigproc.md': ['your.formats.pysigproc.SigprocFile',
+                        'your.formats.pysigproc.SigprocFile.get_data',
+                        'your.formats.pysigproc.SigprocFile.unpack',
+                        'your.formats.pysigproc.SigprocFile.write_header',
+                        'your.formats.pysigproc.SigprocFile.append_spectra'],
+
+    'formats/psrfits.md': ['your.formats.psrfits.PsrfitsFile',
+                      'your.formats.psrfits.PsrfitsFile.read_subint',
+                      'your.formats.psrfits.PsrfitsFile.get_data',
+                      'your.formats.psrfits.SpectraInfo',
+                      'your.formats.psrfits.unpack_2bit',
+                      'your.formats.psrfits.unpack_2bit',                      
+                      'your.formats.psrfits.unpack_4bit'],
+
+    'formats/filwriter.md': ["your.formats.filwriter.make_sigproc_obj",
+                        "your.formats.filwriter.write_fil"],
+
+    'formats/fitswriter.md': ["your.formats.fitswriter.initialize_psrfits",
+                         "your.formats.fitswriter.ObsInfo"],
 
     'utils/rfi.md': ["your.utils.rfi.savgol_filter",
                      "your.utils.rfi.spectral_kurtosis"],
@@ -68,7 +85,10 @@ pages = {
                      "your.utils.gpu.gpu_dedisp_and_dmt_crop",
                      "your.utils.gpu.get_gpu_memory_map"],
 
-    'utils/misc.md': ["your.utils.misc.MyEncoder"]
+    'utils/misc.md': ["your.utils.misc.crop",
+                      "your.utils.misc.pad_along_axis",
+                      "your.utils.misc.MyEncoder"],
+
 }
 
 doc_generator = DocumentationGenerator(pages)
