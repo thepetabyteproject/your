@@ -10,7 +10,7 @@
 [![codecov](https://codecov.io/gh/devanshkv/your/branch/master/graph/badge.svg?style=flat-square)](https://codecov.io/gh/devanshkv/your)
 
 
-`your` stands for Your Unified Reader. This library reads sigproc filterbanks, psrfits, and psrdada formats and can go from one format to another.
+`your` stands for Your Unified Reader. This library can read data in sigproc filterbanks, psrfits, and psrdada formats in a unified way and can go from one format to another.
 
 | Format        | Read                     | Write               |
 | ------------- |:-------------:           | -----:              |
@@ -18,14 +18,22 @@
 | psrfits       | :white_check_mark:       | :white_check_mark:  |
 | psrdada       | :x:                      | :white_check_mark:  |
 
-The inspiration for the name comes from the Daily Dose of Internet [videos](https://www.youtube.com/channel/UCdC0An4ZPNr_YiFiYoVbwaw).
+The inspiration for the name comes from the introduction of every [Daily Dose of Internet](https://www.youtube.com/channel/UCdC0An4ZPNr_YiFiYoVbwaw) video.
 
 # Installation
-First you need to install [psrdada-python](https://github.com/AA-ALERT/psrdada-python).
-Once psrdada is installed, git clone the repo and use `setup.py` to install `your`.
+Here is how you can install `your`:
 
     git clone https://github.com/devanshkv/your.git
     cd your
     python setup.py install
 
-Have a look at our [docs](https://devanshkv.github.io/your/) for the basic documentation. We will add more details shortly. 
+If you want to use dada, then you need to install [psrdada-python](https://github.com/AA-ALERT/psrdada-python). 
+[`your_heimdall.py`](https://github.com/devanshkv/your/blob/master/bin/your_heimdall.py) requires [Heimdall](https://sourceforge.net/projects/heimdall-astro/) to be installed in addition to psrdada-python. 
+
+
+# Documentation
+Have a look at our [docs](https://devanshkv.github.io/your/) for the documentation.
+
+# Tutorials
+Here are some [tutorial notebooks](https://github.com/devanshkv/your/tree/master/examples) to get you started.
+
