@@ -20,9 +20,7 @@ if __name__ == '__main__':
                                      , formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-v', '--verbose', help='Be verbose', action='store_true')
     parser.add_argument('-f', '--files',
-                        help='Paths of input files to be converted to an output format. Surround '
-                             'with quotes, and either use wildcards or separate with spaces',
-                        required=True, nargs='+')
+                        help='Paths of input files to be converted to an output format.', required=True, nargs='+')
     parser.add_argument('-t', '--type', help='Output file type (fits or fil)', type=str, required=True)
     parser.add_argument('-c', '--chans', help='Required channels (eg -c 0 4096)', required=False, type=int, nargs=2,
                         default=None)
@@ -55,7 +53,6 @@ if __name__ == '__main__':
     logging.info("Input Arguments:-")
     for arg, value in sorted(vars(values).items()):
         logging.info("Argument %s: %r", arg, value)
-
     y = Your(values.files)
     w = Writer(y)
 
