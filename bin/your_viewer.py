@@ -6,6 +6,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from scipy import ndimage
 from scipy import misc
 from matplotlib.figure import Figure
+import numpy as np
 
 #based on https://steemit.com/utopian-io/@hadif66/tutorial-embeding-scipy-matplotlib-with-tkinter-to-work-on-images-in-a-gui-framework
 
@@ -46,7 +47,7 @@ class Paint(Frame):
         #added "file" to our menu
         menu.add_cascade(label="File", menu=file)
         self.start_samp = 0 
-        self.gulp = 4096
+        self.gulp = 4000
 
     def create_widgets(self):
             self.browse = Button(self)
@@ -68,8 +69,8 @@ class Paint(Frame):
     canvas=''
     def load_file(self):
         print("In load file")
-        file_name = filedialog.askopenfilename(filetypes = (("fits/fil files", "*.fil *.fits")
-                                                             ,("All files", "*.*") ))
+        file_name = '/hyrule/data/users/kshitij/p3231/your/tests/data/28.fil' #filedialog.askopenfilename(filetypes = (("fits/fil files", "*.fil *.fits")
+                    #                                         ,("All files", "*.*") ))
 
         self.yr = Your(file_name)
         gulp = self.yr.get_data(self.start_samp, self.gulp)         
@@ -84,8 +85,9 @@ class Paint(Frame):
         if self.canvas=='':
             self.im = plt.imshow(self.image, aspect='auto') # later use a.set_data(new_data)
             plt.colorbar(orientation='vertical')
-            axs = plt.gca()
-            #axs.set_xticklabels([])
+            axs = self.im.axes
+            xticks = [str(int(l+self.start_samp)) for l in axs.get_xticks()]
+            axs.set_xticklabels(xticks)
             #axs.set_yticklabels([])
 
             # a tk.DrawingArea
@@ -106,7 +108,9 @@ class Paint(Frame):
         self.image = gulp
         self.image = ndimage.rotate(self.image, -90)
         self.im.set_data(gulp)
-        
+        axs = self.im.axes
+        xticks = [str(int(l+self.start_samp)) for l in axs.get_xticks()]
+        axs.set_xticklabels(xticks)
         self.im.set_data(self.image)
         self.canvas.draw()    
 
@@ -117,7 +121,9 @@ class Paint(Frame):
         self.image = gulp
         self.image = ndimage.rotate(self.image, -90)
         self.im.set_data(gulp)
-        
+        axs = self.im.axes
+        xticks = [str(int(l+self.start_samp)) for l in axs.get_xticks()]
+        axs.set_xticklabels(xticks) 
         self.im.set_data(self.image)
         self.canvas.draw()    
         
