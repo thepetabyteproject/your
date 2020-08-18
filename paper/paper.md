@@ -51,13 +51,13 @@ bibliography: paper.bib
 
 
 # Summary
-The understanding of fast radio transients like pulsars and especially Fast Radio Bursts has evolved rapidly over the 
-past few years. This is primarily due to dedicated transient search campaigns by sensitive radio telescopes. The 
+The understanding of fast radio transients like pulsars, RRATs and especially Fast Radio Bursts has evolved rapidly 
+over the last decade. This is primarily due to dedicated transient search campaigns by sensitive radio telescopes. The 
 advancement in signal processing and GPU processing systems has enabled new transient detectors at various telescopes 
 to perform much more sensitive searches than their predecessors due to the ability to find and process FRB candidates 
 in real-time or near-real-time. Typically the data output from the telescopes is in one of the two commonly used
-formats (psrfits and Filterbank). Software developed for transient searches also work with either one of these two formats, 
-limiting their general applicability. Researchers therefore have to write custom scripts to read/write the data
+formats (`psrfits`[@hotan2004]  and [`Sigproc filterbank`](http://sigproc.sourceforge.net/)). Software developed for 
+transient searches also work with either one of these two formats, limiting their general applicability. Researchers therefore have to write custom scripts to read/write the data
 in their format of choice, before they can begin any data analysis relevant for their research. This has led to 
 development of several libraries to manage one or the other data format (like: 
 [pysigproc](https://github.com/demorest/pysigproc), 
@@ -80,7 +80,7 @@ data processing (reading, writing, etc) to filter out artificial signals.
  (using `Candidate` class): generate candidate data cutouts, create publication ready visualizations, and 
  perform GPU accelerated pre-processing for candidate classification. It also consists of functions to run a 
  commonly used single pulse search software 
- [`Heimdall`](https://sourceforge.net/projects/heimdall-astro/)[@barsdell2012] on any input data format. 
+ [`Heimdall`] (https://sourceforge.net/projects/heimdall-astro/)[@barsdell2012] on any input data format. 
 
 `Your` will not only benefit experienced researchers but also new undergraduate and graduate students who 
 otherwise have to face a significant bottleneck to understand various data formats and develop custom tools
