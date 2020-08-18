@@ -59,7 +59,7 @@ in real-time or near-real-time. Typically the data output from the telescopes is
 formats (psrfits and Filterbank). Software developed for transient searches also work with either one of these two formats, 
 limiting their general applicability. Researchers therefore have to write custom scripts to read/write the data
 in their format of choice, before they can begin any data analysis relevant for their research. This has led to 
-development of several libraries (and converters) to manage one or the other data format (like: 
+development of several libraries to manage one or the other data format (like: 
 [pysigproc](https://github.com/demorest/pysigproc), 
 [psrfits](https://github.com/scottransom/presto/blob/master/python/presto/psrfits.py), 
 [sigpyproc](https://github.com/FRBs/sigpyproc3), etc) but no general tool exists which can work across data formats. 
@@ -69,20 +69,20 @@ commonly used formats. `Your` was originally conceived to perform data ingestion
 As this project is going to process data which is in different formats from multiple telescopes all around the world, 
 a unified reader was required to streamline the pipeline. `Your` implements a user-friendly interface to read and write
 in the data format of choice. It also generates a unified metadata (or header) corresponding to the input data file, 
-for a quick understanding of observation parameters. It provides utilities to perform common data analysis operations 
-like: visualize data, convert data, extract data cutouts, some more???. `Your` also provides several state-of-the-art 
-Radio Frequency Interference Mitigation algorithms [@agarwal2020; @nita2010], which can now be used during any stage of 
-data processing (reading, writing, etc) to remove artificial transient signals.
+for a quick understanding of observation parameters and provides utilities to perform common data analysis operations. 
+`Your` also provides several state-of-the-art Radio Frequency Interference Mitigation algorithms [@agarwal2020; @nita2010], which can now be used during any stage of 
+data processing (reading, writing, etc) to filter out artificial signals.
 
 `Your` can be used at the data ingestion step of any transient search pipeline, and can provide data and observation
  parameters in a format independent manner. Generic tools can thus be used to perform the search and further data
- analysis. It also enables online processing like: RFI flagging, decimation, subband search, etc, functions for some 
+ analysis. It also enables online processing like: RFI flagging, decimation, subband search, etc; functions for some 
  of these are already available in `Your`. It can also be used to perform analysis of individual candidate events 
  (using `Candidate` class): generate candidate data cutouts, create publication ready visualizations, and 
  perform GPU accelerated pre-processing for candidate classification. It also consists of functions to run a 
- commonly used single pulse search software `Heimdall` on any input data format. 
+ commonly used single pulse search software 
+ [`Heimdall`](https://sourceforge.net/projects/heimdall-astro/)[@barsdell2012] on any input data format. 
 
-`Your` will not only benefit the experienced researchers but also new undergraduate and graduate students who 
+`Your` will not only benefit experienced researchers but also new undergraduate and graduate students who 
 otherwise have to face a significant bottleneck to understand various data formats and develop custom tools
 to access the data, before any analysis can be done on it. Moreover, `Your` is written purely in python, which is a 
 commonly used language within Astronomy. It also comes with comprehensive 
