@@ -56,7 +56,7 @@ over the last decade. This is primarily due to dedicated transient search campai
 advancement in signal processing and GPU processing systems has enabled new transient detectors at various telescopes 
 to perform much more sensitive searches than their predecessors due to the ability to find and process FRB candidates 
 in real-time or near-real-time. Typically the data output from the telescopes is in one of the two commonly used
-formats (`psrfits`[@hotan2004]  and [`Sigproc filterbank`](http://sigproc.sourceforge.net/)). Software developed for 
+formats: `psrfits` [@hotan2004] and [`Sigproc filterbank`](http://sigproc.sourceforge.net/). Software developed for 
 transient searches also work with either one of these two formats, limiting their general applicability. Researchers therefore have to write custom scripts to read/write the data
 in their format of choice, before they can begin any data analysis relevant for their research. This has led to 
 development of several libraries to manage one or the other data format (like: 
@@ -80,7 +80,7 @@ data processing (reading, writing, etc) to filter out artificial signals.
  (using `Candidate` class): generate candidate data cutouts, create publication ready visualizations, and 
  perform GPU accelerated pre-processing for candidate classification. It also consists of functions to run a 
  commonly used single pulse search software 
- [`Heimdall`] (https://sourceforge.net/projects/heimdall-astro/)[@barsdell2012] on any input data format. 
+ [`Heimdall`](https://sourceforge.net/projects/heimdall-astro/) [@barsdell2012] on any input data format. 
 
 `Your` will not only benefit experienced researchers but also new undergraduate and graduate students who 
 otherwise have to face a significant bottleneck to understand various data formats and develop custom tools
@@ -90,9 +90,10 @@ commonly used language within Astronomy. It also comes with comprehensive
 [example notebooks](https://github.com/devanshkv/your/tree/master/examples) to make it easier to get started. 
 
 `Your` uses the matplotlib library [@Hunter:2007] for plotting, and also makes use of various 
-numpy [@oliphant2006guide; @van2011numpy], scipy [@2020SciPy] and Pandas [@reback2020pandas; @pandas2010] functions. 
-`Your` also relies heavily on several functions in the Astropy package [@astropy:2013; astropy:2018]: fits 
-(astropy.io.fits), units (astropy.units), coordinates (astropy.coordinates) and time (astropy.time). 
+numpy [@oliphant2006guide; @van2011numpy], scipy [@2020SciPy], scikit-image [@van2014scikit], numba [@numba] and 
+Pandas [@reback2020pandas; @pandas2010] functions. `Your` also relies heavily on several functions in the 
+Astropy package [@astropy:2013; astropy:2018]: fits (astropy.io.fits), units (astropy.units), 
+coordinates (astropy.coordinates) and time (astropy.time). 
 
 
 # Acknowledgements
