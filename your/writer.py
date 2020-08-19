@@ -20,7 +20,7 @@ class Writer:
 
     Args:
 
-        y: your object
+        y: Your object
 
     """
 
@@ -44,17 +44,17 @@ class Writer:
 
             outname: Name of the Filterbank file to write to
 
-            progress: turn on/off progress bar
+            progress: Turn on/off progress bar
 
             flag_rfi: To turn on RFI flagging
 
-            sk_sig: sigma for spectral kurtosis filter
+            sk_sig: Sigma for spectral kurtosis filter
 
-            sg_fw: filter window for savgol filter
+            sg_fw: Filter window for savgol filter
 
-            sg_sig: sigma for savgol filter
+            sg_sig: Sigma for savgol filter
 
-            zero_dm_subt: enable zero DM rfi excision
+            zero_dm_subt: Enable zero-DM RFI excision
 
         """
 
@@ -133,13 +133,13 @@ class Writer:
     def to_fits(self, nstart=None, c=None, nsamp=None, npsub=-1, outdir=None, outname=None, progress=None,
                 flag_rfi=False, sk_sig=4, sg_fw=15, sg_sig=4, zero_dm_subt=False):
         """
-        Writes out a fits file
+        Writes out a PSRFITS file
 
         Args:
 
-            nstart: start sample number to read from
+            nstart: Start sample number to read from
 
-            nsamp: number of samples to read/write
+            nsamp: Number of samples to read/write
 
             c: Required frequency channel range [min_chan, max_chan] (excludes the higher channel number)
 
@@ -149,17 +149,17 @@ class Writer:
 
             outname: Name of the PSRFITS file to write to
 
-            progress: turn on/off progress bar
+            progress: Turn on/off progress bar
 
             flag_rfi: To turn on RFI flagging
 
-            sk_sig: sigma for spectral kurtosis filter
+            sk_sig: Sigma for spectral kurtosis filter
 
-            sg_fw: filter window for savgol filter
+            sg_fw: Filter window for savgol filter
 
-            sg_sig: sigma for savgol filter
+            sg_sig: Sigma for savgol filter
 
-            zero_dm_subt: enable zero DM rfi excision
+            zero_dm_subt: Enable zero-DM RFI excision
 
         """
 
