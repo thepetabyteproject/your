@@ -129,8 +129,8 @@ class Candidate(Your):
         """
         if dms is None:
             dms = self.dm
-        else:
-            return 4148808.0 * dms * (1 / np.min(self.chan_freqs) ** 2 - 1 / np.max(self.chan_freqs) ** 2) / 1000
+
+        return 4148808.0 * dms * (1 / np.min(self.chan_freqs) ** 2 - 1 / np.max(self.chan_freqs) ** 2) / 1000
 
     def get_chunk(self, tstart=None, tstop=None):
         """
