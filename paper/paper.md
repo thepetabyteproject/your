@@ -66,7 +66,7 @@ candidates in real-time or near-real-time. Typically the data output from the te
 [sigpyproc](https://github.com/FRBs/sigpyproc3), etc). Still, no general tool exists which can work across data formats.
 
 `Your` (Your Unified Reader) is a python-based library that unifies the data processing across multiple commonly 
-used formats. `Your` was originally conceived to perform data ingestion for The Petabyte FRB search Project (TPP), which 
+used formats. `Your` was conceived initially to perform data ingestion for The Petabyte FRB search Project (TPP), which 
 will uniformly search a large number of datasets from telescopes around the world for FRBs. As this 
 project is going to process data in different formats from multiple telescopes worldwide, a unified reader was 
 required to streamline the pipeline. `Your` implements a user-friendly interface to read and write in the data format 
@@ -83,12 +83,13 @@ of these are already available in `Your`. It can also be used to perform analysi
 pre-processing for candidate classification [@fetch2020]. It also consists of functions to run commonly used single-pulse search 
 software [`Heimdall`](https://sourceforge.net/projects/heimdall-astro/) [@barsdell2012] on any input data format.
 
-`Your` will not only benefit experienced researchers but also new undergraduate and graduate students who 
-otherwise have to face a significant bottleneck to understand various data formats and develop custom tools
-to access the data, before any analysis can be done on it. Moreover, `Your` is written purely in python, which is a 
+`Your` will benefit experienced not only researchers but also new undergraduate and graduate students who otherwise 
+have to face a significant bottleneck to understand various data formats and develop custom tools
+to access the data before any analysis can be done on it. Moreover, `Your` is written purely in python, which is a 
 commonly used language within Astronomy. It also comes with comprehensive 
 [documentation](https://devanshkv.github.io/your/) and 
-[example notebooks](https://github.com/devanshkv/your/tree/master/examples) to make it easier to get started. 
+[example notebooks](https://github.com/devanshkv/your/tree/master/examples) to make it easier to get started.
+ 
 
 `Your` uses the matplotlib library [@Hunter:2007] for plotting, and also makes use of various 
 numpy [@oliphant2006guide; @van2011numpy], scipy [@2020SciPy], scikit-image [@van2014scikit], numba [@numba] and 
