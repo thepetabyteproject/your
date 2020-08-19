@@ -22,145 +22,165 @@ class Writer:
 
         y: Your object
 
+        nstart: Start sample to read from
+
+        nsamp: Number of samples to write
+
+        c_min: Starting channel index (default: 0)
+
+        c_max: End channel index (default: total number of frequencies)
+
+        outdir: Output directory for file
+
+        outname: Name of the file to write to (without the file extension)
+
+        progress: Turn on/off progress bar
+
+        flag_rfi: To turn on RFI flagging
+
+        sk_sig: Sigma for spectral kurtosis filter
+
+        sg_fw: Filter window for savgol filter
+
+        sg_sig: Sigma for savgol filter
+
+        zero_dm_subt: Enable zero-DM RFI excision
+
     """
 
-    def __init__(self, y):
-        self.your_obj = y
-
-    def to_fil(self, nstart=None, nsamp=None, c=None, outdir=None, outname=None, flag_rfi=False,
+    def __init__(self, y, nstart=None, nsamp=None, c_min=None, c_max=None, outdir=None, outname=None, flag_rfi=False,
                progress=None, sk_sig=4, sg_fw=15, sg_sig=4, zero_dm_subt=False):
-        """
-        Writes out a Filterbank File.
 
-        Args:
+        self.your_obj = y
+        self.nstart = nstart
+        self.nsamp = nsamp
 
-            nstart: Start sample to read from
+        if not self.nstart:
+            self.nstart = 0
 
-            nsamp: Number of samples to write
-
-            c: Required frequency channel range [min_chan, max_chan] (excludes the higher channel number)
-
-            outdir: Output directory for Filterbank file
-
-            outname: Name of the Filterbank file to write to
-
-            progress: Turn on/off progress bar
-
-            flag_rfi: To turn on RFI flagging
-
-            sk_sig: Sigma for spectral kurtosis filter
-
-            sg_fw: Filter window for savgol filter
-
-            sg_sig: Sigma for savgol filter
-
-            zero_dm_subt: Enable zero-DM RFI excision
-
-        """
-
-        if c:
-            min_c = int(np.min(c))
-            max_c = int(np.max(c))
+        if c_min:
+            self.c_min = c_min
         else:
-            min_c = 0
-            max_c = len(self.your_obj.chan_freqs)
+            self.c_min = 0
 
-        chan_freq = self.your_obj.chan_freqs[min_c:max_c]
-        nchans = len(chan_freq)
-
-        # Calculate loop of spectra
-        if not nstart:
-            nstart = 0
-
-        if not nsamp:
-            nsamp = self.your_obj.your_header.native_nspectra
-
-        interval = 4096 * 24
-        if nsamp < interval:
-            interval = nsamp
-
-        if nsamp > interval:
-            nloops = 1 + nsamp // interval
+        if c_max:
+            self.c_max = c_max
         else:
-            nloops = 1
-        nstarts = np.arange(nstart, interval * nloops, interval, dtype=int)
-        nsamps = np.full(nloops, interval)
-        if nsamp % interval != 0:
-            nsamps = np.append(nsamps, [nsamp % interval])
+            self.c_max = len(self.your_obj.chan_freqs)
+
+        if self.c_max < self.c_min:
+            logging.warning('Start channel index is larger than end channel index. Swapping them.')
+            self.c_min, self.c_max = self.c_max, self.c_min
+
+        self.outdir = outdir
+        self.outname = outname
+        self.flag_rfi = flag_rfi
+        self.progress = progress
+        self.sk_sig = sk_sig
+        self.sg_fw = sg_fw
+        self.sg_sig = sg_sig
+        self.zero_dm_subt = zero_dm_subt
+        self.chan_freqs = None
+        self.nchans = None
+        self.data = None
+        self.set_freqs()
 
         original_dir, orig_basename = os.path.split(self.your_obj.your_header.filename)
-        if not outname:
+        if not self.outname:
             name, ext = os.path.splitext(orig_basename)
             if ext == '.fits':
                 temp = name.split('_')
                 if len(temp) > 1:
-                    outname = '_'.join(temp[:-1]) + '_converted.fil'
+                    self.outname = '_'.join(temp[:-1]) + '_converted'
                 else:
-                    outname = name + '_converted.fil'
+                    self.outname = name + '_converted'
             else:
-                outname = name + '_converted.fil'
+                self.outname = name + '_converted'
 
-        if not outdir:
-            outdir = original_dir
+        if not self.outdir:
+            self.outdir = original_dir
+
+    def set_freqs(self):
+        """
+        Sets chan_freqs and nchans based on input channel selection
+
+        """
+        self.chan_freqs = self.your_obj.chan_freqs[self.c_min:self.c_max]
+        self.nchans = len(self.chan_freqs)
+
+    def get_data_to_write(self, st, samp):
+        """
+        Read data to self.data, selects channels
+        Optionally perform RFI filtering and zero-DM subtraction
+
+        Args:
+
+            st: Start sample number to read from
+
+            samp: Number of samples to read
+
+        """
+        data = self.your_obj.get_data(st, samp)
+        data = data[:, self.c_min:self.c_max]
+        if self.flag_rfi:
+            mask = sk_sg_filter(data, self.your_obj, self.sk_sig, self.nchans, self.sg_fw, self.sg_sig)
+
+            if self.your_obj.your_header.dtype == np.uint8:
+                data[:, mask] = np.around(np.mean(data[:, ~mask]))
+            else:
+                data[:, mask] = np.mean(data[:, ~mask])
+
+        if self.zero_dm_subt:
+            logger.debug('Subtracting 0-DM time series from the data')
+            data = data - data.mean(1)[:, None]
+
+        data = data.astype(self.your_obj.your_header.dtype)
+        self.data = data
+
+    def to_fil(self):
+        """
+        Writes out a Filterbank File.
+
+        """
+
+        # Calculate loop of spectra
+        if not self.nsamp:
+            self.nsamp = self.your_obj.your_header.native_nspectra
+
+        interval = 4096 * 24
+        if self.nsamp < interval:
+            interval = self.nsamp
+
+        if self.nsamp > interval:
+            nloops = 1 + self.nsamp // interval
+        else:
+            nloops = 1
+        nstarts = np.arange(self.nstart, interval * nloops, interval, dtype=int)
+        nsamps = np.full(nloops, interval)
+        if nsamps % interval != 0:
+            nsamps = np.append(nsamps, [nsamps % interval])
 
         # Read data
-        for st, samp in tqdm.tqdm(zip(nstarts, nsamps), total=len(nstarts), disable=progress):
+        for st, samp in tqdm.tqdm(zip(nstarts, nsamps), total=len(nstarts), disable=self.progress):
             logger.debug(f'Reading spectra {st}-{st + samp} in file {self.your_obj.your_header.filename}')
-            data = self.your_obj.get_data(st, samp)
-            data = data[:, min_c:max_c]
-            if flag_rfi:
-                mask = sk_sg_filter(data, self.your_obj, sk_sig, nchans, sg_fw, sg_sig)
-
-                if self.your_obj.your_header.dtype == np.uint8:
-                    data[:, mask] = np.around(np.mean(data[:, ~mask]))
-                else:
-                    data[:, mask] = np.mean(data[:, ~mask])
-
-            if zero_dm_subt:
-                logger.debug('Subtracting 0-DM time series from the data')
-                data = data - data.mean(1)[:, None]
-
-            data = data.astype(self.your_obj.your_header.dtype)
+            self.get_data_to_write(st, samp)
             logger.info(
-                f'Writing data from spectra {st}-{st + samp} in the frequency channel range {min_c}-{max_c} '
+                f'Writing data from spectra {st}-{st + samp} in the frequency channel range {self.c_min}-{self.c_max} '
                 f'to filterbank')
-            write_fil(data, self.your_obj, nchans=nchans, chan_freq=chan_freq, outdir=outdir, filename=outname,
-                      nstart=nstart)
+            write_fil(self.data, self.your_obj, nchans=self.nchans, chan_freq=self.chan_freqs, outdir=self.outdir,
+                      filename=self.outname + '.fil', nstart=self.nstart)
             logger.debug(f'Successfully written data from spectra {st}-{st + samp} to filterbank')
 
         logging.debug(f'Read all the necessary spectra')
 
-    def to_fits(self, nstart=None, c=None, nsamp=None, npsub=-1, outdir=None, outname=None, progress=None,
-                flag_rfi=False, sk_sig=4, sg_fw=15, sg_sig=4, zero_dm_subt=False):
+    def to_fits(self, npsub=-1):
         """
         Writes out a PSRFITS file
 
         Args:
 
-            nstart: Start sample number to read from
-
-            nsamp: Number of samples to read/write
-
-            c: Required frequency channel range [min_chan, max_chan] (excludes the higher channel number)
-
-            npsub: Number of spectra per subint
-
-            outdir: Output directory for Filterbank file
-
-            outname: Name of the PSRFITS file to write to
-
-            progress: Turn on/off progress bar
-
-            flag_rfi: To turn on RFI flagging
-
-            sk_sig: Sigma for spectral kurtosis filter
-
-            sg_fw: Filter window for savgol filter
-
-            sg_sig: Sigma for savgol filter
-
-            zero_dm_subt: Enable zero-DM RFI excision
-
+            npsub: number of spectra per subint
+        
         """
 
         tsamp = self.your_obj.your_header.tsamp
@@ -170,39 +190,14 @@ class Writer:
         else:
             pass
 
-        if nsamp:
-            if nsamp < npsub:
-                npsub = nsamp
+        if self.nsamp:
+            if self.nsamp < npsub:
+                npsub = self.nsamp
 
-        if not outname:
-            original_dir, orig_basename = os.path.split(self.your_obj.your_header.filename)
-            name, ext = os.path.splitext(orig_basename)
-            if ext == '.fits':
-                temp = name.split('_')
-                if len(temp) > 1:
-                    outname = '_'.join(temp[:-1]) + '_converted.fits'
-                else:
-                    outname = name + '_converted.fits'
-            else:
-                outname = name + '_converted.fits'
+        outfile = self.outdir + '/' + self.outname + '.fits'
 
-        if not outdir:
-            outdir = os.getcwd()
-
-        outfile = outdir + '/' + outname
-
-        if c:
-            min_c = int(np.min(c))
-            max_c = int(np.max(c))
-        else:
-            min_c = 0
-            max_c = len(self.your_obj.chan_freqs)
-
-        chan_freqs = self.your_obj.chan_freqs[min_c:max_c]
-        nchans = len(chan_freqs)
-
-        initialize_psrfits(outfile=outfile, y=self.your_obj, npsub=npsub, nstart=nstart, nsamp=nsamp,
-                           chan_freqs=chan_freqs)
+        initialize_psrfits(outfile=outfile, y=self.your_obj, npsub=npsub, nstart=self.nstart, nsamp=self.nsamp,
+                           chan_freqs=self.chan_freqs)
 
         nifs = self.your_obj.your_header.npol
 
@@ -215,11 +210,10 @@ class Writer:
 
         # Loop through chunks of data to write to PSRFITS
         n_read_subints = 10
-        if not nstart:
-            nstart = 0
         logger.info(f'Number of subints to write {nsubints}')
 
-        for istart in tqdm.tqdm(np.arange(0, nsubints, n_read_subints), disable=progress):
+        st = self.nstart
+        for istart in tqdm.tqdm(np.arange(0, nsubints, n_read_subints), disable=self.progress):
             istop = istart + n_read_subints
             if istop > nsubints:
                 istop = nsubints
@@ -231,22 +225,9 @@ class Writer:
 
             # Read in nread samples from filfile
             nread = isub * npsub
-            data = self.your_obj.get_data(nstart=nstart, nsamp=nread)
-            data = data[:, min_c:max_c]
-            if flag_rfi:
-                mask = sk_sg_filter(data, self.your_obj, sk_sig, nchans, sg_fw, sg_sig)
-
-                if self.your_obj.your_header.dtype == np.uint8:
-                    data[:, mask] = np.around(np.mean(data[:, ~mask]))
-                else:
-                    data[:, mask] = np.mean(data[:, ~mask])
-
-            if zero_dm_subt:
-                logger.debug('Subtracting 0-DM time series from the data')
-                data = data - data.mean(1)[:, None]
-
-            logger.debug(f'Shape of data array after get_data is {data.shape}')
-            nstart += nread
+            self.get_data_to_write(st, nread)
+            data = self.data
+            st += nread
 
             nvals = isub * npsub * nifs
             if data.shape[0] < nvals:
@@ -257,7 +238,7 @@ class Writer:
             else:
                 pass
 
-            data = np.reshape(data, (isub, npsub, nifs, nchans))
+            data = np.reshape(data, (isub, npsub, nifs, self.nchans))
 
             # If foff is negative, we need to flip the freq axis
 #            if foff < 0:
