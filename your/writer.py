@@ -44,7 +44,7 @@ class Writer:
 
         sg_sig: Sigma for savgol filter
 
-        zero_dm_subt: Enable zero-DM RFI excision
+        zero_dm_subt: Enable zero DM rfi excision
 
     """
 
@@ -58,19 +58,12 @@ class Writer:
         if not self.nstart:
             self.nstart = 0
 
-        if c_min:
-            self.c_min = c_min
-        else:
-            self.c_min = 0
+        self.c_min = c_min
+        self.c_max = c_max
 
-        if c_max:
-            self.c_max = c_max
-        else:
-            self.c_max = len(self.your_obj.chan_freqs)
-
-        if self.c_max < self.c_min:
-            logging.warning('Start channel index is larger than end channel index. Swapping them.')
-            self.c_min, self.c_max = self.c_max, self.c_min
+        #if self.c_max < self.c_min:
+        #    logging.warning('Start channel index is larger than end channel index. Swapping them.')
+        #    self.c_min, self.c_max = self.c_max, self.c_min
 
         self.outdir = outdir
         self.outname = outname
@@ -80,10 +73,7 @@ class Writer:
         self.sg_fw = sg_fw
         self.sg_sig = sg_sig
         self.zero_dm_subt = zero_dm_subt
-        self.chan_freqs = None
-        self.nchans = None
         self.data = None
-        self.set_freqs()
 
         original_dir, orig_basename = os.path.split(self.your_obj.your_header.filename)
         if not self.outname:
@@ -100,16 +90,30 @@ class Writer:
         if not self.outdir:
             self.outdir = original_dir
 
-    def set_freqs(self):
-        """
-        Sets chan_freqs and nchans based on input channel selection
+    @property
+    def chan_min(self):
+        if self.c_min:
+            return self.c_min
+        else:
+            return 0
 
-        """
-        self.chan_freqs = self.your_obj.chan_freqs[self.c_min:self.c_max]
-        self.nchans = len(self.chan_freqs)
+    @property
+    def chan_max(self):
+        if self.c_max:
+            return self.c_max
+        else:
+            return len(self.your_obj.chan_freqs)
+    @property
+    def chan_freqs(self):
+        return self.your_obj.chan_freqs[self.chan_min:self.chan_max]
+
+    @property
+    def nchans(self):
+        return len(self.chan_freqs)
 
     def get_data_to_write(self, st, samp):
         """
+
         Read data to self.data, selects channels
         Optionally perform RFI filtering and zero-DM subtraction
 
@@ -121,7 +125,7 @@ class Writer:
 
         """
         data = self.your_obj.get_data(st, samp)
-        data = data[:, self.c_min:self.c_max]
+        data = data[:, self.chan_min:self.chan_max]
         if self.flag_rfi:
             mask = sk_sg_filter(data, self.your_obj, self.sk_sig, self.nchans, self.sg_fw, self.sg_sig)
 
@@ -139,6 +143,7 @@ class Writer:
 
     def to_fil(self):
         """
+
         Writes out a Filterbank File.
 
         """
@@ -165,7 +170,7 @@ class Writer:
             logger.debug(f'Reading spectra {st}-{st + samp} in file {self.your_obj.your_header.filename}')
             self.get_data_to_write(st, samp)
             logger.info(
-                f'Writing data from spectra {st}-{st + samp} in the frequency channel range {self.c_min}-{self.c_max} '
+                f'Writing data from spectra {st}-{st + samp} in the frequency channel range {self.chan_min}-{self.chan_max} '
                 f'to filterbank')
             write_fil(self.data, self.your_obj, nchans=self.nchans, chan_freq=self.chan_freqs, outdir=self.outdir,
                       filename=self.outname + '.fil', nstart=self.nstart)
@@ -180,7 +185,7 @@ class Writer:
         Args:
 
             npsub: number of spectra per subint
-        
+
         """
 
         tsamp = self.your_obj.your_header.tsamp
