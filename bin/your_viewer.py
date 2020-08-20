@@ -8,7 +8,10 @@ from scipy import misc
 import numpy as np
 from matplotlib.figure import Figure
 import argparse
-
+import logging
+logger = logging.getLogger()
+logging_format = '%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s'
+logging.basicConfig(level=logging.INFO, format=logging_format)
 #based on https://steemit.com/utopian-io/@hadif66/tutorial-embeding-scipy-matplotlib-with-tkinter-to-work-on-images-in-a-gui-framework
 
 class Paint(Frame):
@@ -51,20 +54,20 @@ class Paint(Frame):
         #self.gulp_size = 100
 
     def create_widgets(self):
-            self.browse = Button(self)
-            self.browse["text"] = "Browse file"
-            self.browse["command"] = self.load_file
-            self.browse.grid(row=0, column=0)
+        self.browse = Button(self)
+        self.browse["text"] = "Browse file"
+        self.browse["command"] = self.load_file
+        self.browse.grid(row=0, column=0)
 
-            self.next = Button(self)
-            self.next["text"] = "Next Gulp"
-            self.next["command"] = self.next_gulp
-            self.next.grid(row=0, column=1)
-            
-            self.prev = Button(self)
-            self.prev["text"] = "Prevous Gulp"
-            self.prev["command"] = self.prev_gulp
-            self.prev.grid(row=0, column=3)
+        self.next = Button(self)
+        self.next["text"] = "Next Gulp"
+        self.next["command"] = self.next_gulp
+        self.next.grid(row=0, column=1)
+
+        self.prev = Button(self)
+        self.prev["text"] = "Prevous Gulp"
+        self.prev["command"] = self.prev_gulp
+        self.prev.grid(row=0, column=3)
 
     def nice_print(self, dic):
         for key, item in dic.items():
@@ -86,17 +89,22 @@ class Paint(Frame):
             file_name = filedialog.askopenfilename(filetypes = (("fits/fil files", "*.fil *.fits")
                                                                   ,("All files", "*.*") ))
         
+        logging.info(f'Reading file {file_name}.')
         self.master.title(file_name)
         self.yr = Your(file_name)
-        gulp = self.yr.get_data(self.start_samp, self.gulp_size)         
+        logging.info(f'Printing Header parameters')
         self.get_header()          
-                  
-        self.image = gulp #misc.imread(filename)
-        self.image = ndimage.rotate(self.image, -90)
-        fig, ax = plt.subplots(1,1,figsize=(10,7))
+
+        self.data = self.read_data()
+        
+        self.im = plt.imshow(self.data, aspect='auto') # later use a.set_data(new_data)
+        #ax.set_xticklabels(np.linspace(0,self.yr.your_header.nchans-1,8))
+        plt.colorbar(orientation='vertical')
+        
+        ax = self.im.axes
         ax.set_xlabel('Time [sec]')
         ax.set_ylabel('Frequency [MHz]')
-        ax.set_xlim(0, gulp_size)
+
         #axs = self.im.axes
         #ax.set_xlabel()
         ax.set_yticks(np.linspace(0,self.yr.your_header.nchans,8))
@@ -104,23 +112,24 @@ class Paint(Frame):
         yticks = [str(int(j)) for j in np.linspace(self.yr.chan_freqs[0],self.yr.chan_freqs[-1],8)]
         ax.set_yticklabels(yticks)
         
-        xticks =  np.linspace(self.start_samp,self.start_samp+self.gulp_size,8)
-        ax.set_xticks(xticks)
-        ax.set_xticklabels([f"{j:.2f}" for j in xticks*self.yr.tsamp])
+        self.set_x_axis()
         
-        self.im = plt.imshow(self.image, aspect='auto') # later use a.set_data(new_data)
-        #ax.set_xticklabels(np.linspace(0,self.yr.your_header.nchans-1,8))
-        if self.canvas=='':
-            self.im = plt.imshow(self.image, aspect='auto') # later use a.set_data(new_data)
-            plt.colorbar(orientation='vertical')
+        # a tk.DrawingArea
+        self.canvas = FigureCanvasTkAgg(self.im.figure, master=root)
+        self.canvas.draw()
+        self.canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
 
-            # a tk.DrawingArea
-            self.canvas = FigureCanvasTkAgg(fig, master=root)
-            self.canvas.draw()
-            self.canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
-        else:
-            self.im.set_data(self.image)
-            self.canvas.draw()
+#         if self.canvas=='':
+#             self.im = plt.imshow(self.data, aspect='auto') # later use a.set_data(new_data)
+#             plt.colorbar(orientation='vertical')
+
+#             # a tk.DrawingArea
+#             self.canvas = FigureCanvasTkAgg(fig, master=root)
+#             self.canvas.draw()
+#             self.canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
+#         else:
+#             self.im.set_data(self.data)
+#             self.canvas.draw()
 
     def client_exit(self):
         exit()
@@ -132,33 +141,33 @@ class Paint(Frame):
         if proposed_end > self.yr.your_header.nspectra:
             self.start_samp  = self.start_samp - (proposed_end - self.yr.your_header.nspectra)
             print('End of file.')
-        gulp = self.yr.get_data(self.start_samp, self.gulp_size) 
-        self.image = gulp
-        self.image = ndimage.rotate(self.image, -90)
-        self.im.set_data(gulp)
-        
-        axs = self.im.axes
-        xticks = axs.get_xticks()
-        xtick_labels = (xticks + self.start_samp)*self.yr.tsamp
-        axs.set_xticklabels([f"{j:.2f}" for j in xtick_labels])
-
-        self.im.set_data(self.image)
+            
+        self.data = self.read_data()        
+        self.set_x_axis()
+        self.im.set_data(self.data)
         self.canvas.draw()    
 
     def prev_gulp(self):
         if (self.start_samp - self.gulp_size) >= 0:
             self.start_samp -= self.gulp_size
-        gulp = self.yr.get_data(self.start_samp, self.gulp_size)
-        self.image = gulp
-        self.image = ndimage.rotate(self.image, -90)
-        self.im.set_data(gulp) 
-        axs = self.im.axes
-        xticks = axs.get_xticks()
-        xtick_labels = (xticks + self.start_samp)*self.yr.tsamp
-        axs.set_xticklabels([f"{j:.2f}" for j in xtick_labels])
         
-        self.im.set_data(self.image)
+        self.data = self.read_data()        
+        self.set_x_axis()        
+        self.im.set_data(self.data)
         self.canvas.draw()    
+    
+    def read_data(self):
+        ts = self.start_samp*self.yr.your_header.tsamp
+        te = (self.start_samp + self.gulp_size)*self.yr.your_header.tsamp
+        logging.info(f'Displaying {self.gulp_size} samples from sample {self.start_samp} i.e {ts:.2f}-{te:.2f}s')
+        data = self.yr.get_data(self.start_samp, self.gulp_size)
+        return ndimage.rotate(data, -90)
+
+    def set_x_axis(self):
+        ax = self.im.axes
+        xticks = ax.get_xticks()
+        xtick_labels = (xticks + self.start_samp)*self.yr.tsamp
+        ax.set_xticklabels([f"{j:.2f}" for j in xtick_labels])
 
     
 # root window created. Here, that would be the only window, but
