@@ -60,3 +60,53 @@ def test_dmtime_snr_opt_snr(cand):
 
     assert pytest.approx(cand.get_snr(), rel=2) == 13
     assert pytest.approx(cand.optimize_dm()[0], rel=2) == 475
+
+def test_decimate_on_dedispersed(cand):
+    cand.get_chunk()
+    cand.dedisperse()
+    ts_orig = cand.dedispersed.T.mean(0)
+    orig_dedispersed_data = cand.dedispersed
+    orig_std = np.std(orig_dedispersed_data)
+    orig_mean = np.mean(orig_dedispersed_data)
+    bp_orig = orig_dedispersed_data.mean(0)
+
+    cand.decimate(key='ft', axis=0, pad=True, decimate_factor=4, mode='median')
+    assert cand.dedispersed.shape[0] == 248
+    assert np.isclose(np.std(cand.dedispersed), orig_std / 2, atol=2)
+    assert np.isclose(np.mean(cand.dedispersed), orig_mean, atol=1)
+
+    cand.dedispersed = orig_dedispersed_data
+    cand.decimate(key='ft', axis=1, pad=True, decimate_factor=16, mode='median')
+    assert cand.dedispersed.shape[1] == 21
+    assert np.isclose(np.std(cand.dedispersed), orig_std / 4, atol=2)
+    assert np.isclose(np.mean(cand.dedispersed), orig_mean, atol=1)
+
+    cand.dedispersed = orig_dedispersed_data
+    cand.decimate(key='ft', axis=1, pad=True, decimate_factor=336, mode='median')
+    assert cand.dedispersed.shape == (991, 1)
+    assert (ts_orig - cand.dedispersed[:, 0]).sum() == 0
+
+    cand.dedispersed = orig_dedispersed_data
+    cand.decimate(key='ft', axis=0, pad=True, decimate_factor=991, mode='median')
+    assert cand.dedispersed.shape == (1, 336)
+    assert (bp_orig - cand.dedispersed[0, :]).sum() == 0
+
+def test_decimate_on_dmt(cand):
+    cand.get_chunk()
+    cand.dmtime()
+    dmt_orig = cand.dmt
+    orig_mean = np.mean(dmt_orig)
+
+    cand.decimate(key='dmt', axis=0, pad=True, decimate_factor=4, mode='median')
+    assert cand.dmt.shape == (256 // 4, 991)
+    assert np.isclose(np.mean(cand.dmt), orig_mean, atol=1)
+
+    cand.dmt = dmt_orig
+    cand.decimate(key='dmt', axis=1, pad=True, decimate_factor=4, mode='median')
+    assert cand.dmt.shape == (256, 248)
+    assert np.isclose(np.mean(cand.dmt), orig_mean, atol=1)
+
+    try:
+        cand.decimate(key='at', axis=0, pad=True, decimate_factor=4, mode='median')
+    except AttributeError:
+        pass
