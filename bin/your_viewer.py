@@ -11,7 +11,6 @@ import argparse
 import logging
 logger = logging.getLogger()
 logging_format = '%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s'
-logging.basicConfig(level=logging.INFO, format=logging_format)
 #based on https://steemit.com/utopian-io/@hadif66/tutorial-embeding-scipy-matplotlib-with-tkinter-to-work-on-images-in-a-gui-framework
 
 class Paint(Frame):
@@ -166,7 +165,9 @@ class Paint(Frame):
     def set_x_axis(self):
         ax = self.im.axes
         xticks = ax.get_xticks()
+        logging.debug(f'x-axis ticks are {xticks}')
         xtick_labels = (xticks + self.start_samp)*self.yr.tsamp
+        logging.debug(f'Setting x-axis tick labels to {xtick_labels}')
         ax.set_xticklabels([f"{j:.2f}" for j in xtick_labels])
 
     
@@ -192,9 +193,17 @@ if __name__ == '__main__':
     parser.add_argument('-g', '--gulp',
                         help='Gulp size', type=int,
                         required=False, default=3072)
+    parser.add_argument('-v', '--verbose', help='Be verbose', action='store_true')
     values = parser.parse_args()
-
+    
+    if values.verbose:
+        logging.basicConfig(level=logging.DEBUG, format=logging_format)
+    else:
+        logging.basicConfig(level=logging.INFO, format=logging_format)
+        
+    matplotlib_logger = logging.getLogger('matplotlib')
+    matplotlib_logger.setLevel(logging.INFO)
+    
     app.load_file(values.files, values.start, values.gulp)
-
     root.mainloop()
 
