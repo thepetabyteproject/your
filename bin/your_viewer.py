@@ -7,6 +7,7 @@ from scipy import ndimage
 from scipy import misc
 import numpy as np
 from matplotlib.figure import Figure
+import argparse
 
 #based on https://steemit.com/utopian-io/@hadif66/tutorial-embeding-scipy-matplotlib-with-tkinter-to-work-on-images-in-a-gui-framework
 
@@ -46,11 +47,10 @@ class Paint(Frame):
 
         #added "file" to our menu
         menu.add_cascade(label="File", menu=file)
-        self.start_samp = 0 
-        self.gulp_size = 100
+        #self.start_samp = 0 
+        #self.gulp_size = 100
 
     def create_widgets(self):
-        
             self.browse = Button(self)
             self.browse["text"] = "Browse file"
             self.browse["command"] = self.load_file
@@ -67,12 +67,10 @@ class Paint(Frame):
             self.prev.grid(row=0, column=3)
 
     def nice_print(self, dic):
-        
         for key, item in dic.items():
             print(f"{key : >27}:\t{item}")
         
-    def get_header(self):
-        
+    def get_header(self): 
         dic = vars(self.yr.your_header)
         dic['tsamp'] = self.yr.your_header.tsamp
         dic['nchans'] = self.yr.your_header.nchans
@@ -81,11 +79,13 @@ class Paint(Frame):
         self.nice_print(dic)
             
     canvas=''
-    def load_file(self, f):
+    def load_file(self, file_name='', start_samp=0, gulp_size=1024):
+        self.start_samp = start_samp
+        self.gulp_size = gulp_size
+        if len(file_name) == 0: 
+            file_name = filedialog.askopenfilename(filetypes = (("fits/fil files", "*.fil *.fits")
+                                                                  ,("All files", "*.*") ))
         
-#         file_name = filedialog.askopenfilename(filetypes = (("fits/fil files", "*.fil *.fits")
-#                                                              ,("All files", "*.*") ))
-        file_name = f
         self.master.title(file_name)
         self.yr = Your(file_name)
         gulp = self.yr.get_data(self.start_samp, self.gulp_size)         
@@ -131,8 +131,7 @@ class Paint(Frame):
         if proposed_end > self.yr.your_header.nspectra:
             self.start_samp  = self.start_samp - (proposed_end - self.yr.your_header.nspectra)
             print('End of file.')
-        gulp = self.yr.get_data(self.start_samp, self.gulp_size)
-        
+        gulp = self.yr.get_data(self.start_samp, self.gulp_size) 
         self.image = gulp
         self.image = ndimage.rotate(self.image, -90)
         self.im.set_data(gulp)
@@ -151,8 +150,7 @@ class Paint(Frame):
         gulp = self.yr.get_data(self.start_samp, self.gulp_size)
         self.image = gulp
         self.image = ndimage.rotate(self.image, -90)
-        self.im.set_data(gulp)
-        
+        self.im.set_data(gulp) 
         axs = self.im.axes
         xticks = axs.get_xticks()
         xtick_labels = (xticks + self.start_samp)*self.yr.tsamp
@@ -170,9 +168,23 @@ root.geometry("1920x1080")
 
 #creation of an instance
 app = Paint(root)
-f = '../tests/data/28.fil'
-app.load_file(f)
 
-#mainloop
-root.mainloop()
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(prog='your_header.py',
+                                     description="Read header from fits/fil files and print the your header",
+                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('-f', '--files',
+                        help='Fits or filterbank files to view.',
+                        required=False, default='')
+    parser.add_argument('-s', '--start',
+                        help='Start index', type=int,
+                        required=False, default=0)
+    parser.add_argument('-g', '--gulp',
+                        help='Gulp size', type=int,
+                        required=False, default=3072)
+    values = parser.parse_args()
+
+    app.load_file(values.files, values.start, values.gulp)
+
+    root.mainloop()
 
