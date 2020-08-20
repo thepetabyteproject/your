@@ -96,6 +96,7 @@ class Paint(Frame):
         fig, ax = plt.subplots(1,1,figsize=(10,7))
         ax.set_xlabel('Time [sec]')
         ax.set_ylabel('Frequency [MHz]')
+        ax.set_xlim(0, gulp_size)
         #axs = self.im.axes
         #ax.set_xlabel()
         ax.set_yticks(np.linspace(0,self.yr.your_header.nchans,8))
