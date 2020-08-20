@@ -96,9 +96,12 @@ class Paint(Frame):
 
         self.data = self.read_data()
         
-        self.im = plt.imshow(self.data, aspect='auto') # later use a.set_data(new_data)
+        self.vmax = np.median(self.data) + 5*np.std(self.data)
+        self.vmin = np.min(self.data)
+        
+        self.im = plt.imshow(self.data, aspect='auto', vmin=self.vmin, vmax=self.vmax) # later use a.set_data(new_data)
         #ax.set_xticklabels(np.linspace(0,self.yr.your_header.nchans-1,8))
-        plt.colorbar(orientation='vertical')
+#         plt.colorbar(orientation='vertical')
         
         ax = self.im.axes
         ax.set_xlabel('Time [sec]')
