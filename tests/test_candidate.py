@@ -110,3 +110,21 @@ def test_decimate_on_dmt(cand):
         cand.decimate(key='at', axis=0, pad=True, decimate_factor=4, mode='median')
     except AttributeError:
         pass
+
+def test_resize(cand):
+    cand.get_chunk()
+    cand.dedisperse()
+    cand.dmtime()
+
+    cand.resize('ft', size=200, axis=1, anti_aliasing=True, mode='constant')
+    cand.resize('ft', size=300, axis=0, anti_aliasing=True, mode='constant')
+    assert cand.dedispersed.shape == (300, 200)
+
+    cand.resize('dmt', size=100, axis=1, anti_aliasing=True, mode='constant')
+    cand.resize('dmt', size=500, axis=0, anti_aliasing=True, mode='constant')
+    assert cand.dmt.shape == (500, 100)
+
+    try:
+        cand.resize('at', size=200, axis=1, anti_aliasing=True, mode='constant')
+    except AttributeError:
+        pass
