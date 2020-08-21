@@ -3,15 +3,14 @@ from tkinter import *
 from tkinter import filedialog
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from scipy import ndimage
-from scipy import misc
 import numpy as np
 from matplotlib.figure import Figure
 import argparse
 import logging
 logger = logging.getLogger()
 logging_format = '%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s'
-#based on https://steemit.com/utopian-io/@hadif66/tutorial-embeding-scipy-matplotlib-with-tkinter-to-work-on-images-in-a-gui-framework
+
+# based on https://steemit.com/utopian-io/@hadif66/tutorial-embeding-scipy-matplotlib-with-tkinter-to-work-on-images-in-a-gui-framework
 
 class Paint(Frame):
 
@@ -49,8 +48,6 @@ class Paint(Frame):
 
         #added "file" to our menu
         menu.add_cascade(label="File", menu=file)
-        #self.start_samp = 0 
-        #self.gulp_size = 100
 
     def create_widgets(self):
         self.browse = Button(self)
@@ -93,45 +90,25 @@ class Paint(Frame):
         self.yr = Your(file_name)
         logging.info(f'Printing Header parameters')
         self.get_header()          
-
         self.data = self.read_data()
         
         self.vmax = np.median(self.data) + 5*np.std(self.data)
-        self.vmin = np.min(self.data)
-        
+        self.vmin = np.min(self.data)        
         self.im = plt.imshow(self.data, aspect='auto', vmin=self.vmin, vmax=self.vmax) # later use a.set_data(new_data)
-        #ax.set_xticklabels(np.linspace(0,self.yr.your_header.nchans-1,8))
-#         plt.colorbar(orientation='vertical')
+        plt.colorbar(orientation='vertical')
         
         ax = self.im.axes
         ax.set_xlabel('Time [sec]')
         ax.set_ylabel('Frequency [MHz]')
-
-        #axs = self.im.axes
-        #ax.set_xlabel()
         ax.set_yticks(np.linspace(0,self.yr.your_header.nchans,8))
-        #yticks = [str(int(j)) for j in np.linspace(self.yr.your_header.nchans, 0,8)]
         yticks = [str(int(j)) for j in np.linspace(self.yr.chan_freqs[0],self.yr.chan_freqs[-1],8)]
         ax.set_yticklabels(yticks)
-        
-        self.set_x_axis()
+        self.set_x_axis()        
         
         # a tk.DrawingArea
         self.canvas = FigureCanvasTkAgg(self.im.figure, master=root)
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
-
-#         if self.canvas=='':
-#             self.im = plt.imshow(self.data, aspect='auto') # later use a.set_data(new_data)
-#             plt.colorbar(orientation='vertical')
-
-#             # a tk.DrawingArea
-#             self.canvas = FigureCanvasTkAgg(fig, master=root)
-#             self.canvas.draw()
-#             self.canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
-#         else:
-#             self.im.set_data(self.data)
-#             self.canvas.draw()
 
     def client_exit(self):
         exit()
@@ -163,7 +140,7 @@ class Paint(Frame):
         te = (self.start_samp + self.gulp_size)*self.yr.your_header.tsamp
         logging.info(f'Displaying {self.gulp_size} samples from sample {self.start_samp} i.e {ts:.2f}-{te:.2f}s')
         data = self.yr.get_data(self.start_samp, self.gulp_size)
-        return ndimage.rotate(data, -90)
+        return data.T
 
     def set_x_axis(self):
         ax = self.im.axes
@@ -174,15 +151,6 @@ class Paint(Frame):
         ax.set_xticklabels([f"{j:.2f}" for j in xtick_labels])
 
     
-# root window created. Here, that would be the only window, but
-# you can later have windows within windows.
-root = Tk()
-
-root.geometry("1920x1080")
-
-#creation of an instance
-app = Paint(root)
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='your_header.py',
                                      description="Read header from fits/fil files and print the your header",
@@ -207,6 +175,11 @@ if __name__ == '__main__':
     matplotlib_logger = logging.getLogger('matplotlib')
     matplotlib_logger.setLevel(logging.INFO)
     
+    # root window created. Here, that would be the only window, but
+    # you can later have windows within windows.
+    root = Tk()
+    root.geometry("1920x1080")
+    #creation of an instance
+    app = Paint(root)
     app.load_file(values.files, values.start, values.gulp)
     root.mainloop()
-
