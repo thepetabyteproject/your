@@ -21,7 +21,7 @@ authors:
     affiliation: "1, 2"
   - name: Scott M. Ransom
     affiliation: "3"
-  - name: Paul Demorest
+  - name: Paul B. Demorest
     affiliation: "4"
   - name: Robert S. Wharton
     affiliation: "5" 
@@ -52,15 +52,16 @@ bibliography: paper.bib
 
 # Summary
 The understanding of fast radio transients like pulsars, rotating radio transients (RRATs), and especially Fast Radio Bursts (FRBs) 
-has evolved rapidly over the last decade. This is primarily due to dedicated transient search campaigns by sensitive radio telescopes. 
+has evolved rapidly over the last decade. This is primarily due to dedicated campaigns by sensitive radio telescopes to 
+search for transients. 
 The advancement in signal processing and GPU processing systems has enabled new transient detectors at various 
 telescopes to perform much more sensitive searches than their predecessors due to the ability to find and process FRB 
 candidates in real-time or near-real-time. Typically the data output from the telescopes is in one of the two commonly
  used formats: psrfits [@hotan2004] and [`Sigproc filterbank`](http://sigproc.sourceforge.net/) [@sigproc]. Software developed for
-  transient searches also work with either one of these two formats, limiting their general applicability. 
+  transient searches often only works with one of these two formats, limiting their general applicability. 
   Therefore, researchers have to write custom scripts to read/write the data in their format of choice before 
   they can begin any data analysis relevant for their 
- research. This has led to the development of several libraries to manage one or the other data format (like 
+ research. This has led to the development of several python libraries to manage one or the other data format (like 
  [pysigproc](https://github.com/demorest/pysigproc), 
 [psrfits](https://github.com/scottransom/presto/blob/master/python/presto/psrfits.py), 
 [sigpyproc](https://github.com/FRBs/sigpyproc3), etc). Still, no general tool exists which can work across data formats.
@@ -70,7 +71,7 @@ used formats. `Your` was conceived initially to perform data ingestion for The P
 will uniformly search a large number of datasets from telescopes around the world for FRBs. As this 
 project is going to process data in different formats from multiple telescopes worldwide, a unified reader was 
 required to streamline the pipeline. `Your` implements a user-friendly interface to read and write in the data format 
-of choice. It also generates unified metadata (or a header) corresponding to the input data file for a quick 
+of choice. It also generates unified metadata corresponding to the input data file for a quick 
 understanding of observation parameters and provides utilities to perform common data analysis operations. `Your` also 
 provide several state-of-the-art radio frequency interference mitigation (RFI) algorithms [@agarwal2020; @nita2010], which 
 can now be used during any stage of data processing (reading, writing, etc.) to filter out artificial signals.
@@ -83,7 +84,7 @@ of these are already available in `Your`. It can also be used to perform analysi
 pre-processing for candidate classification [@fetch2020]. It also consists of functions to run commonly used single-pulse search 
 software [`Heimdall`](https://sourceforge.net/projects/heimdall-astro/) [@barsdell2012] on any input data format.
 
-`Your` will benefit experienced not only researchers but also new undergraduate and graduate students who otherwise 
+`Your` will not only benefit experienced researchers but also new undergraduate and graduate students who otherwise 
 have to face a significant bottleneck to understand various data formats and develop custom tools
 to access the data before any analysis can be done on it. Moreover, `Your` is written purely in python, which is a 
 commonly used language within Astronomy. It also comes with comprehensive 
@@ -93,12 +94,15 @@ commonly used language within Astronomy. It also comes with comprehensive
 
 `Your` uses the matplotlib library [@Hunter:2007] for plotting, and also makes use of various 
 numpy [@oliphant2006guide; @van2011numpy], scipy [@2020SciPy], scikit-image [@van2014scikit], numba [@numba] and 
-Pandas [@reback2020pandas; @pandas2010] functions. `Your` also relies heavily on several functions in the 
+Pandas [@reback2020pandas; @pandas2010] functions. `Your` also leverages several functions in the 
 Astropy package [@astropy:2013; astropy:2018]: fits (astropy.io.fits), units (astropy.units), 
 coordinates (astropy.coordinates) and time (astropy.time). 
 
 
 # Acknowledgements
-
+KA, DA, WF, SMR, PDB, SBS, DRL, MAM, and NGD are members of the NANOGrav Physics Frontiers Center, supported by NSF 
+award number 1430284. MAM, DA, DRL, JWK, and SBS are also supported by NSF award number 1458952. DRL, MAM, DA and JWK  
+acknowledge support from the NSF award AAG-1616042. WF acknowledges funding from the WVU STEM Mountains of Excellence 
+graduate fellowship.
 
 # References
