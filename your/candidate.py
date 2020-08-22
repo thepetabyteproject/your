@@ -184,6 +184,10 @@ class Candidate(Your):
         """
         Dedisperse a chunk of data. Saves the dedispersed chunk in `self.dedispersed`.
 
+        Note:
+
+            Our method rolls the data around while dedispersing it.
+
         Args:
 
             dms (float): The DM to dedisperse the data at.
@@ -215,6 +219,10 @@ class Candidate(Your):
         """
         Create a dedispersed time series
 
+        Note:
+
+            Our method rolls the data around while dedispersing it.
+
         Args:
 
             dms (float): The DM to dedisperse the data at.
@@ -238,6 +246,10 @@ class Candidate(Your):
     def dmtime(self, dmsteps=256, target='CPU'):
         """
         Generates DM-time array of the candidate by dedispersing at adjacent DM values. Saves the data in `self.dmt`.
+
+        Note:
+
+            Our method rolls the data around while dedispersing it.
 
         Args:
 
