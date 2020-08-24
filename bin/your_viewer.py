@@ -14,6 +14,9 @@ logging_format = '%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(messa
 # based on https://steemit.com/utopian-io/@hadif66/tutorial-embeding-scipy-matplotlib-with-tkinter-to-work-on-images-in-a-gui-framework
 
 class Paint(Frame):
+    """
+    Class for plotting object
+    """
 
     # Define settings upon initialization. Here you can specify
     def __init__(self, master=None):
@@ -25,47 +28,68 @@ class Paint(Frame):
         self.master = master
 
         #Creation of init_window
-        # changing the title of our master widget
+        #set widget title
         self.master.title("your_viewer")
 
-        # allowing the widget to take the full space of the root window
+        #allowing the widget to take the full space of the root window
         self.pack(fill=BOTH)#, expand=1)
         self.create_widgets()
-        # creating a menu instance
+        #creating a menu instance
         menu = Menu(self.master)
         self.master.config(menu=menu)
 
-        # create the file object)
+        #create the file object)
         file = Menu(menu)
         
-        # adds a command to the menu option, calling it exit, and the
-        # command it runs on event is client_exit
+        #adds a command to the menu option, calling it exit, and the
+        #command it runs on event is client_exit
         file.add_command(label="Exit", command=self.client_exit)
 
         #added "file" to our menu
         menu.add_cascade(label="File", menu=file)
 
     def create_widgets(self):
+        """
+        Create all the user buttons
+        """
+        #which file to load
         self.browse = Button(self)
         self.browse["text"] = "Browse file"
         self.browse["command"] = self.load_file
         self.browse.grid(row=0, column=0)
 
+        #move image foward to next gulp of data
         self.next = Button(self)
         self.next["text"] = "Next Gulp"
         self.next["command"] = self.next_gulp
         self.next.grid(row=0, column=1)
 
+        #move image back to previous gulp of data
         self.prev = Button(self)
         self.prev["text"] = "Prevous Gulp"
         self.prev["command"] = self.prev_gulp
         self.prev.grid(row=0, column=3)
 
+        ##save figure
+        #self.prev = Button(self)
+        #self.prev["text"] = "Save Fig"
+        #self.prev["command"] = self.save_canvas
+        #self.prev.grid(row=0, column=4)
+        
     def nice_print(self, dic):
+        """
+        Prints out data files into in a nice to view way
+
+        Inputs:
+        dic --  dictionary containing data file meta data to be printed
+        """
         for key, item in dic.items():
             print(f"{key : >27}:\t{item}")
         
-    def get_header(self): 
+    def get_header(self):
+        """
+        Gets meta data from data file and give the data to nice_print() to print to user
+        """
         dic = vars(self.yr.your_header)
         dic['tsamp'] = self.yr.your_header.tsamp
         dic['nchans'] = self.yr.your_header.nchans
@@ -75,6 +99,14 @@ class Paint(Frame):
             
     canvas=''
     def load_file(self, file_name='', start_samp=0, gulp_size=1024):
+        """
+        Loads data from a file:
+
+        Inputs:
+        file_name -- name of file to load, if none given user must use gui to give file
+        start_samp -- sample number where to start show the file, defaults to the beginning of the file
+        gulp_size -- amount of data to show at a given time
+        """
         self.start_samp = start_samp
         self.gulp_size = gulp_size
         if len(file_name) == 0: 
@@ -82,11 +114,13 @@ class Paint(Frame):
                                                                   ,("All files", "*.*") ))
         
         logging.info(f'Reading file {file_name}.')
-        self.master.title(file_name)
+        self.master.title(file_name)#make your obj that will access the data
         self.yr = Your(file_name)
         logging.info(f'Printing Header parameters')
         self.get_header()          
         self.data = self.read_data()
+
+        #create three plots, for ax1=time_series, ax2=dynamic spectra, ax4=bandpass
         gs = gridspec.GridSpec(2, 2, width_ratios=[4, 1], height_ratios=[1, 4], wspace=0.02, hspace=0.03)
         ax1 = plt.subplot(gs[0, 0])
         ax2 = plt.subplot(gs[1, 0])
@@ -95,22 +129,22 @@ class Paint(Frame):
         ax3.axis('off')
         ax1.set_xticks([])
         ax4.set_yticks([])
-
-        ax1.set_ylabel('Avg. Arb. Flux')
-        ax4.set_xlabel('Avg. Arb. Flux')
         
+        #get the min and max image values to that we can see the typical values well
         self.vmax = np.median(self.data) + 5*np.std(self.data)
         self.vmin = np.min(self.data)        
         self.im_ft = ax2.imshow(self.data, aspect='auto', vmin=self.vmin, vmax=self.vmax) # later use a.set_data(new_data)
+        
         bandpass = np.mean(self.data, axis=1)
         self.im_bandpass, = ax4.plot(bandpass, np.linspace(self.yr.your_header.nchans, 0, len(bandpass)))
         ax4.set_ylim([-1, len(bandpass)+1])
+        ax4.set_xlabel('Avg. Arb. Flux')
+        
         time_series = np.mean(self.data,axis=0)
         self.im_time,  = ax1.plot(time_series)
         ax1.set_xlim(-1, len(time_series+1))
-        #ax.set_xticklabels(np.linspace(0,self.yr.your_header.nchans-1,8))
+        ax1.set_ylabel('Avg. Arb. Flux')
         
-        #plt.colorbar(orientation='vertical', pad=0.01, aspect=30)
         plt.colorbar(self.im_ft, orientation='vertical', pad=0.01, aspect=30)
         
         ax = self.im_ft.axes
@@ -127,15 +161,21 @@ class Paint(Frame):
         self.canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
 
     def client_exit(self):
+        """
+        exits the plotter
+        """
         exit()
 
     def next_gulp(self):
+        """
+        Moves the images to the next gulp of data
+        """
         self.start_samp += self.gulp_size
+        #check if there is a enough data to fill plt
         proposed_end = self.start_samp + self.gulp_size
-        #distance_to_end = self.yr.your_header.nspectra - proposed_end
         if proposed_end > self.yr.your_header.nspectra:
             self.start_samp  = self.start_samp - (proposed_end - self.yr.your_header.nspectra)
-            print('End of file.')
+            logging.info('End of file.')
             
         self.data = self.read_data()        
         self.set_x_axis()
@@ -145,17 +185,26 @@ class Paint(Frame):
         self.canvas.draw()    
 
     def prev_gulp(self):
+        """
+        Movies the images to the prevous gulp of data
+        """
+        #check if new start samp is in the file
         if (self.start_samp - self.gulp_size) >= 0:
             self.start_samp -= self.gulp_size
         
         self.data = self.read_data()        
         self.set_x_axis()        
-        self.im.set_data(self.data)
+        self.im_ft.set_data(self.data)
         self.im_bandpass.set_xdata(np.mean(self.data, axis=1))
         self.im_time.set_ydata(np.mean(self.data, axis=0))
         self.canvas.draw()    
     
     def read_data(self):
+        """
+        Read data from the psr seach data file
+        Returns:
+        data -- a 2D array of frequency time plts
+        """
         ts = self.start_samp*self.yr.your_header.tsamp
         te = (self.start_samp + self.gulp_size)*self.yr.your_header.tsamp
         logging.info(f'Displaying {self.gulp_size} samples from sample {self.start_samp} i.e {ts:.2f}-{te:.2f}s')
@@ -163,6 +212,9 @@ class Paint(Frame):
         return data.T
 
     def set_x_axis(self):
+        """
+        sets x axis labels in the correct location
+        """
         ax = self.im_ft.axes
         xticks = ax.get_xticks()
         logging.debug(f'x-axis ticks are {xticks}')
@@ -170,6 +222,16 @@ class Paint(Frame):
         logging.debug(f'Setting x-axis tick labels to {xtick_labels}')
         ax.set_xticklabels([f"{j:.2f}" for j in xtick_labels])
 
+    def save_canvas(self):
+        """
+        Saves the canvas image | not implemented
+        """
+        #self.canvas().postscript(file='test.ps', colormode='color')
+        #x=root.winfo_rootx()+widget.winfo_x()
+        #y=root.winfo_rooty()+widget.winfo_y()
+        #x1=x+widget.winfo_width()
+        #y1=y+widget.winfo_height()
+        #ImageGrab.grab().crop((x,y,x1,y1)).save("file path here")
     
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='your_viewer.py',
