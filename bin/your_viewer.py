@@ -9,7 +9,6 @@ import matplotlib.gridspec as gridspec
 import argparse
 import logging
 logger = logging.getLogger()
-
 logging_format = '%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s'
 
 # based on https://steemit.com/utopian-io/@hadif66/tutorial-embeding-scipy-matplotlib-with-tkinter-to-work-on-images-in-a-gui-framework
@@ -25,12 +24,7 @@ class Paint(Frame):
         #reference to the master widget, which is the tk window
         self.master = master
 
-        #with that, we want to then run init_window, which doesn't yet exist
-        self.init_paint()
-
-    #Creation of init_window
-    def init_paint(self):
-
+        #Creation of init_window
         # changing the title of our master widget
         self.master.title("your_viewer")
 
@@ -93,7 +87,7 @@ class Paint(Frame):
         logging.info(f'Printing Header parameters')
         self.get_header()          
         self.data = self.read_data()
-        gs = gridspec.GridSpec(2, 2, width_ratios=[4, 1], height_ratios=[1, 4])
+        gs = gridspec.GridSpec(2, 2, width_ratios=[4, 1], height_ratios=[1, 4], wspace=0.02, hspace=0.03)
         ax1 = plt.subplot(gs[0, 0])
         ax2 = plt.subplot(gs[1, 0])
         ax3 = plt.subplot(gs[0, 1])
@@ -143,8 +137,8 @@ class Paint(Frame):
         self.data = self.read_data()        
         self.set_x_axis()
         self.im_ft.set_data(self.data)
-        self.im_bandpass.set_data(np.mean(self.data, axis=1))
-        self.im_time.set_data(np.mean(self.data,axis=0))
+        self.im_bandpass.set_xdata(np.mean(self.data, axis=1))
+        self.im_time.set_ydata(np.mean(self.data,axis=0))
         self.canvas.draw()    
 
     def prev_gulp(self):
@@ -154,8 +148,8 @@ class Paint(Frame):
         self.data = self.read_data()        
         self.set_x_axis()        
         self.im.set_data(self.data)
-        self.im_bandpass.setdata(np.mean(self.data, axis=1))
-        self.im_time.setdata(np.mean(self.data, axis=0))
+        self.im_bandpass.set_xdata(np.mean(self.data, axis=1))
+        self.im_time.set_ydata(np.mean(self.data, axis=0))
         self.canvas.draw()    
     
     def read_data(self):
@@ -175,8 +169,8 @@ class Paint(Frame):
 
     
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(prog='your_header.py',
-                                     description="Read header from fits/fil files and print the your header",
+    parser = argparse.ArgumentParser(prog='your_viewer.py',
+                                     description="Read fits/fil file and show the data",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-f', '--files',
                         help='Fits or filterbank files to view.',
