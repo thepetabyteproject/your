@@ -209,8 +209,8 @@ class Paint(Frame):
         """
         ts = self.start_samp*self.yr.your_header.tsamp
         te = (self.start_samp + self.gulp_size)*self.yr.your_header.tsamp
-        logging.info(f'Displaying {self.gulp_size} samples from sample {self.start_samp} i.e {ts:.2f}-{te:.2f}s')
         data = self.yr.get_data(self.start_samp, self.gulp_size)
+        logging.info(f'Displaying {self.gulp_size} samples from sample {self.start_samp} i.e {ts:.2f}-{te:.2f}s - gulp mean:{np.mean(data):.3f} std:{np.std(data):.3f}')
         return data.T
 
     def set_x_axis(self):
@@ -230,7 +230,7 @@ class Paint(Frame):
         """
         img_name = os.path.splitext(os.path.basename(self.file_name))[0]+f'_{self.start_samp}_{self.start_samp+self.gulp_size}.png'
         logging.info(f'Saving figure: {img_name}')
-        plt.savefig(img_name,dpi=400)
+        plt.savefig(img_name,dpi=300)
     
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='your_viewer.py',
