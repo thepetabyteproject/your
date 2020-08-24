@@ -102,12 +102,20 @@ class Paint(Frame):
         self.vmax = min(np.max(self.data), np.median(self.data) + 5*np.std(self.data))
         self.vmin = max(np.min(self.data), np.median(self.data) - 5*np.std(self.data))
         self.im_ft = ax2.imshow(self.data, aspect='auto', vmin=self.vmin, vmax=self.vmax) # later use a.set_data(new_data)
+
+        #make bandpass
         bandpass = np.mean(self.data, axis=1)
-        self.im_bandpass, = ax4.plot(bandpass, np.linspace(self.yr.your_header.nchans, 0, len(bandpass)))
+        bp_std = np.std(self.data, axis=1)
+        bp_y = np.linspace(self.yr.your_header.nchans, 0, len(bandpass))
+        self.im_bandpass, = ax4.plot(bandpass, bp_y)
+        self.im_bp_fill = ax4.fill_betweenx(x1=bandpass-bp_std,x2=bandpass+bp_std,y=bp_y,interpolate=False, alpha=0.25, color='r')
         ax4.set_ylim([-1, len(bandpass)+1])
+        
+        #make time series
         time_series = np.mean(self.data,axis=0)
         self.im_time,  = ax1.plot(time_series)
         ax1.set_xlim(-1, len(time_series+1))
+
         #ax.set_xticklabels(np.linspace(0,self.yr.your_header.nchans-1,8))
         
         #plt.colorbar(orientation='vertical', pad=0.01, aspect=30)
@@ -141,6 +149,7 @@ class Paint(Frame):
         self.set_x_axis()
         self.im_ft.set_data(self.data)
         self.im_bandpass.set_xdata(np.mean(self.data, axis=1))
+        self.fill_bp()
         self.im_time.set_ydata(np.mean(self.data,axis=0))
         self.canvas.draw()    
 
@@ -152,9 +161,17 @@ class Paint(Frame):
         self.set_x_axis()        
         self.im.set_data(self.data)
         self.im_bandpass.set_xdata(np.mean(self.data, axis=1))
+        self.fill_bp()
         self.im_time.set_ydata(np.mean(self.data, axis=0))
         self.canvas.draw()    
     
+    def fill_bp(self):
+        self.im_bp_fill.remove()
+        bandpass = np.mean(self.data, axis=1)
+        bp_std = np.std(self.data, axis=1)
+        bp_y = self.im_bandpass.get_ydata()
+        self.im_bp_fill = self.im_bandpass.axes.fill_betweenx(x1=bandpass-bp_std,x2=bandpass+bp_std,y=bp_y,interpolate=False, alpha=0.25, color='r') 
+
     def read_data(self):
         ts = self.start_samp*self.yr.your_header.tsamp
         te = (self.start_samp + self.gulp_size)*self.yr.your_header.tsamp
