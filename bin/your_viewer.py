@@ -5,9 +5,11 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
 from matplotlib.figure import Figure
+import matplotlib.gridspec as gridspec
 import argparse
 import logging
 logger = logging.getLogger()
+
 logging_format = '%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s'
 
 # based on https://steemit.com/utopian-io/@hadif66/tutorial-embeding-scipy-matplotlib-with-tkinter-to-work-on-images-in-a-gui-framework
@@ -91,14 +93,30 @@ class Paint(Frame):
         logging.info(f'Printing Header parameters')
         self.get_header()          
         self.data = self.read_data()
+        gs = gridspec.GridSpec(2, 2, width_ratios=[4, 1], height_ratios=[1, 4])
+        ax1 = plt.subplot(gs[0, 0])
+        ax2 = plt.subplot(gs[1, 0])
+        ax3 = plt.subplot(gs[0, 1])
+        ax4 = plt.subplot(gs[1, 1])
+        ax3.axis('off')
+        ax1.set_xticks([])
+        ax4.set_yticks([])
+
+        ax1.set_ylabel('Avg. Arb. Flux')
+        ax4.set_xlabel('Avg. Arb. Flux')
         
         self.vmax = np.median(self.data) + 5*np.std(self.data)
         self.vmin = np.min(self.data)        
-        self.im = plt.imshow(self.data, aspect='auto', vmin=self.vmin, vmax=self.vmax) # later use a.set_data(new_data)
+        self.im_ft = ax2.imshow(self.data, aspect='auto', vmin=self.vmin, vmax=self.vmax) # later use a.set_data(new_data)
+        bandpass = np.mean(self.data, axis=1)
+        self.im_bandpass, = ax4.plot(bandpass, np.linspace(self.yr.your_header.nchans, 0, len(bandpass)))
+        self.im_time,  = ax1.plot(np.mean(self.data,axis=0))
         #ax.set_xticklabels(np.linspace(0,self.yr.your_header.nchans-1,8))
-        plt.colorbar(orientation='vertical', pad=0.01, aspect=30)
         
-        ax = self.im.axes
+        #plt.colorbar(orientation='vertical', pad=0.01, aspect=30)
+        plt.colorbar(self.im_ft, orientation='vertical', pad=0.01, aspect=30)
+        
+        ax = self.im_ft.axes
         ax.set_xlabel('Time [sec]')
         ax.set_ylabel('Frequency [MHz]')
         ax.set_yticks(np.linspace(0,self.yr.your_header.nchans,8))
@@ -107,7 +125,7 @@ class Paint(Frame):
         self.set_x_axis()        
         
         # a tk.DrawingArea
-        self.canvas = FigureCanvasTkAgg(self.im.figure, master=root)
+        self.canvas = FigureCanvasTkAgg(self.im_ft.figure, master=root)
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
 
@@ -124,7 +142,9 @@ class Paint(Frame):
             
         self.data = self.read_data()        
         self.set_x_axis()
-        self.im.set_data(self.data)
+        self.im_ft.set_data(self.data)
+        self.im_bandpass.set_data(np.mean(self.data, axis=1))
+        self.im_time.set_data(np.mean(self.data,axis=0))
         self.canvas.draw()    
 
     def prev_gulp(self):
@@ -134,6 +154,8 @@ class Paint(Frame):
         self.data = self.read_data()        
         self.set_x_axis()        
         self.im.set_data(self.data)
+        self.im_bandpass.setdata(np.mean(self.data, axis=1))
+        self.im_time.setdata(np.mean(self.data, axis=0))
         self.canvas.draw()    
     
     def read_data(self):
@@ -144,7 +166,7 @@ class Paint(Frame):
         return data.T
 
     def set_x_axis(self):
-        ax = self.im.axes
+        ax = self.im_ft.axes
         xticks = ax.get_xticks()
         logging.debug(f'x-axis ticks are {xticks}')
         xtick_labels = (xticks + self.start_samp)*self.yr.tsamp
