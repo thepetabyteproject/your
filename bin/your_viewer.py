@@ -99,8 +99,8 @@ class Paint(Frame):
         ax1.set_ylabel('Avg. Arb. Flux')
         ax4.set_xlabel('Avg. Arb. Flux')
         
-        self.vmax = np.median(self.data) + 5*np.std(self.data)
-        self.vmin = np.min(self.data)        
+        self.vmax = min(np.max(self.data), np.median(self.data) + 5*np.std(self.data))
+        self.vmin = max(np.min(self.data), np.median(self.data) - 5*np.std(self.data))
         self.im_ft = ax2.imshow(self.data, aspect='auto', vmin=self.vmin, vmax=self.vmax) # later use a.set_data(new_data)
         bandpass = np.mean(self.data, axis=1)
         self.im_bandpass, = ax4.plot(bandpass, np.linspace(self.yr.your_header.nchans, 0, len(bandpass)))
