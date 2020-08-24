@@ -140,11 +140,13 @@ class Paint(Frame):
         bandpass = np.mean(self.data, axis=1)
         self.im_bandpass, = ax4.plot(bandpass, np.linspace(self.yr.your_header.nchans, 0, len(bandpass)))
         ax4.set_ylim([-1, len(bandpass)+1])
+        ax4.autoscale(axis='x')
         ax4.set_xlabel('Avg. Arb. Flux')
         
         time_series = np.mean(self.data,axis=0)
         self.im_time,  = ax1.plot(time_series)
         ax1.set_xlim(-1, len(time_series+1))
+        ax1.autoscale(axis='y')
         ax1.set_ylabel('Avg. Arb. Flux')
         
         plt.colorbar(self.im_ft, orientation='vertical', pad=0.01, aspect=30)
