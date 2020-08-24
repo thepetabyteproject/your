@@ -116,11 +116,11 @@ class Paint(Frame):
         self.file_name = file_name 
         
         logging.info(f'Reading file {file_name}.')
-        self.master.title(file_name)#make your obj that will access the data
+        self.master.title(file_name)
         self.yr = Your(file_name)
         logging.info(f'Printing Header parameters')
         self.get_header()          
-        self.data = self.read_data()
+        self.read_data()
 
         #create three plots, for ax1=time_series, ax2=dynamic spectra, ax4=bandpass
         self.gs = gridspec.GridSpec(2, 2, width_ratios=[4, 1], height_ratios=[1, 4], wspace=0.02, hspace=0.03)
@@ -133,20 +133,23 @@ class Paint(Frame):
         ax4.set_yticks([])
         
         #get the min and max image values to that we can see the typical values well
-        self.vmax = np.median(self.data) + 5*np.std(self.data)
-        self.vmin = np.min(self.data)        
-        self.im_ft = ax2.imshow(self.data, aspect='auto', vmin=self.vmin, vmax=self.vmax) # later use a.set_data(new_data)
+        self.vmax = min(np.max(self.data), np.median(self.data) + 5*np.std(self.data))
+        self.vmin = max(np.min(self.data), np.median(self.data) - 5*np.std(self.data))
+        self.im_ft = ax2.imshow(self.data, aspect='auto', vmin=self.vmin, vmax=self.vmax)
+
+        #make bandpass
+        bp_std = np.std(self.data, axis=1)
+        bp_y = np.linspace(self.yr.your_header.nchans, 0, len(self.bandpass))
+        self.im_bandpass, = ax4.plot(self.bandpass, bp_y)
+        self.im_bp_fill = ax4.fill_betweenx(x1=self.bandpass-bp_std,x2=self.bandpass+bp_std,y=bp_y,interpolate=False, alpha=0.25, color='r')
+        ax4.set_ylim([-1, len(self.bandpass)+1])
+        ax4.set_xlabel('Avg. Arb. Flux') 
         
-        bandpass = np.mean(self.data, axis=1)
-        self.im_bandpass, = ax4.plot(bandpass, np.linspace(self.yr.your_header.nchans, 0, len(bandpass)))
-        ax4.set_ylim([-1, len(bandpass)+1])
-        ax4.autoscale(axis='x')
+        
+        #make time series
         ax4.set_xlabel('Avg. Arb. Flux')
-        
-        time_series = np.mean(self.data,axis=0)
-        self.im_time,  = ax1.plot(time_series)
-        ax1.set_xlim(-1, len(time_series+1))
-        ax1.autoscale(axis='y')
+        self.im_time,  = ax1.plot(self.time_series)
+        ax1.set_xlim(-1, len(self.time_series+1))
         ax1.set_ylabel('Avg. Arb. Flux')
         
         plt.colorbar(self.im_ft, orientation='vertical', pad=0.01, aspect=30)
@@ -180,13 +183,8 @@ class Paint(Frame):
         if proposed_end > self.yr.your_header.nspectra:
             self.start_samp  = self.start_samp - (proposed_end - self.yr.your_header.nspectra)
             logging.info('End of file.')
+        self.update_plot()
             
-        self.data = self.read_data()        
-        self.set_x_axis()
-        self.im_ft.set_data(self.data)
-        self.im_bandpass.set_xdata(np.mean(self.data, axis=1))
-        self.im_time.set_ydata(np.mean(self.data,axis=0))
-        self.canvas.draw()    
 
     def prev_gulp(self):
         """
@@ -195,14 +193,25 @@ class Paint(Frame):
         #check if new start samp is in the file
         if (self.start_samp - self.gulp_size) >= 0:
             self.start_samp -= self.gulp_size
-        
-        self.data = self.read_data()        
-        self.set_x_axis()        
-        self.im_ft.set_data(self.data)
-        self.im_bandpass.set_xdata(np.mean(self.data, axis=1))
-        self.im_time.set_ydata(np.mean(self.data, axis=0))
-        self.canvas.draw()    
+        self.update_plot()
     
+    def update_plot(self):
+        self.read_data()
+        self.set_x_axis()
+        self.im_ft.set_data(self.data)
+        self.im_bandpass.set_xdata(self.bandpass)
+        self.fill_bp()
+        self.im_bandpass.axes.set_xlim(np.min(self.bandpass), np.max(self.bandpass))
+        self.im_time.set_ydata(np.mean(self.data, axis=0))
+        self.im_time.axes.set_ylim(np.min(self.time_series), np.max(self.time_series))
+        self.canvas.draw()        
+
+    def fill_bp(self):
+        self.im_bp_fill.remove()
+        bp_std = np.std(self.data, axis=1)
+        bp_y = self.im_bandpass.get_ydata()
+        self.im_bp_fill = self.im_bandpass.axes.fill_betweenx(x1=self.bandpass-bp_std,x2=self.bandpass+bp_std,y=bp_y,interpolate=False, alpha=0.25, color='r') 
+
     def read_data(self):
         """
         Read data from the psr seach data file
@@ -211,9 +220,10 @@ class Paint(Frame):
         """
         ts = self.start_samp*self.yr.your_header.tsamp
         te = (self.start_samp + self.gulp_size)*self.yr.your_header.tsamp
-        data = self.yr.get_data(self.start_samp, self.gulp_size)
-        logging.info(f'Displaying {self.gulp_size} samples from sample {self.start_samp} i.e {ts:.2f}-{te:.2f}s - gulp mean:{np.mean(data):.3f} std:{np.std(data):.3f}')
-        return data.T
+        self.data = self.yr.get_data(self.start_samp, self.gulp_size).T
+        self.bandpass = np.mean(self.data, axis=1)
+        self.time_series = np.mean(self.data, axis=0)
+        logging.info(f'Displaying {self.gulp_size} samples from sample {self.start_samp} i.e {ts:.2f}-{te:.2f}s - gulp mean: {np.mean(self.data):.3f}, std: {np.std(self.data):.3f}')
 
     def set_x_axis(self):
         """
@@ -230,9 +240,10 @@ class Paint(Frame):
         """
         Saves the canvas image
         """
-        img_name = os.path.splitext(os.path.basename(self.file_name))[0]+f'_{self.start_samp}_{self.start_samp+self.gulp_size}.png'
+        img_name = os.path.splitext(os.path.basename(self.file_name))[0]+f'_samp_{self.start_samp}_{self.start_samp+self.gulp_size}.png'
         logging.info(f'Saving figure: {img_name}')
-        plt.savefig(img_name,dpi=300)
+        self.im_ft.figure.savefig(img_name,dpi=300)
+        logging.info(f'Saved figure: {img_name}')
     
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='your_viewer.py',
