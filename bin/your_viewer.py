@@ -7,9 +7,10 @@ import numpy as np
 from matplotlib.figure import Figure
 import matplotlib.gridspec as gridspec
 import argparse
+import os
 import logging
 logger = logging.getLogger()
-logging_format = '%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s'
+logging_format = '%(asctime)s - %(funcName)s - %(name)s - %(levelname)s - %(message)s'
 
 # based on https://steemit.com/utopian-io/@hadif66/tutorial-embeding-scipy-matplotlib-with-tkinter-to-work-on-images-in-a-gui-framework
 
@@ -70,11 +71,11 @@ class Paint(Frame):
         self.prev["command"] = self.prev_gulp
         self.prev.grid(row=0, column=3)
 
-        ##save figure
-        #self.prev = Button(self)
-        #self.prev["text"] = "Save Fig"
-        #self.prev["command"] = self.save_canvas
-        #self.prev.grid(row=0, column=4)
+        #save figure
+        self.prev = Button(self)
+        self.prev["text"] = "Save Fig"
+        self.prev["command"] = self.save_figure
+        self.prev.grid(row=0, column=4)
         
     def nice_print(self, dic):
         """
@@ -112,6 +113,7 @@ class Paint(Frame):
         if len(file_name) == 0: 
             file_name = filedialog.askopenfilename(filetypes = (("fits/fil files", "*.fil *.fits")
                                                                   ,("All files", "*.*") ))
+        self.file_name = file_name 
         
         logging.info(f'Reading file {file_name}.')
         self.master.title(file_name)#make your obj that will access the data
@@ -121,11 +123,11 @@ class Paint(Frame):
         self.data = self.read_data()
 
         #create three plots, for ax1=time_series, ax2=dynamic spectra, ax4=bandpass
-        gs = gridspec.GridSpec(2, 2, width_ratios=[4, 1], height_ratios=[1, 4], wspace=0.02, hspace=0.03)
-        ax1 = plt.subplot(gs[0, 0])
-        ax2 = plt.subplot(gs[1, 0])
-        ax3 = plt.subplot(gs[0, 1])
-        ax4 = plt.subplot(gs[1, 1])
+        self.gs = gridspec.GridSpec(2, 2, width_ratios=[4, 1], height_ratios=[1, 4], wspace=0.02, hspace=0.03)
+        ax1 = plt.subplot(self.gs[0, 0])
+        ax2 = plt.subplot(self.gs[1, 0])
+        ax3 = plt.subplot(self.gs[0, 1])
+        ax4 = plt.subplot(self.gs[1, 1])
         ax3.axis('off')
         ax1.set_xticks([])
         ax4.set_yticks([])
@@ -222,16 +224,13 @@ class Paint(Frame):
         logging.debug(f'Setting x-axis tick labels to {xtick_labels}')
         ax.set_xticklabels([f"{j:.2f}" for j in xtick_labels])
 
-    def save_canvas(self):
+    def save_figure(self):
         """
-        Saves the canvas image | not implemented
+        Saves the canvas image
         """
-        #self.canvas().postscript(file='test.ps', colormode='color')
-        #x=root.winfo_rootx()+widget.winfo_x()
-        #y=root.winfo_rooty()+widget.winfo_y()
-        #x1=x+widget.winfo_width()
-        #y1=y+widget.winfo_height()
-        #ImageGrab.grab().crop((x,y,x1,y1)).save("file path here")
+        img_name = os.path.splitext(os.path.basename(self.file_name))[0]+f'_{self.start_samp}_{self.start_samp+self.gulp_size}.png'
+        logging.info(f'Saving figure: {img_name}')
+        plt.savefig(img_name,dpi=400)
     
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='your_viewer.py',
