@@ -116,7 +116,7 @@ class Paint(Frame):
         self.file_name = file_name 
         
         logging.info(f'Reading file {file_name}.')
-        self.master.title(file_name)#make your obj that will access the data
+        self.master.title(file_name)
         self.yr = Your(file_name)
         logging.info(f'Printing Header parameters')
         self.get_header()          
@@ -135,7 +135,7 @@ class Paint(Frame):
         #get the min and max image values to that we can see the typical values well
         self.vmax = min(np.max(self.data), np.median(self.data) + 5*np.std(self.data))
         self.vmin = max(np.min(self.data), np.median(self.data) - 5*np.std(self.data))
-        self.im_ft = ax2.imshow(self.data, aspect='auto', vmin=self.vmin, vmax=self.vmax) # later use a.set_data(new_data)
+        self.im_ft = ax2.imshow(self.data, aspect='auto', vmin=self.vmin, vmax=self.vmax)
 
         #make bandpass
         bandpass = np.mean(self.data, axis=1)
@@ -243,9 +243,10 @@ class Paint(Frame):
         """
         Saves the canvas image
         """
-        img_name = os.path.splitext(os.path.basename(self.file_name))[0]+f'_{self.start_samp}_{self.start_samp+self.gulp_size}.png'
+        img_name = os.path.splitext(os.path.basename(self.file_name))[0]+f'_samp_{self.start_samp}_{self.start_samp+self.gulp_size}.png'
         logging.info(f'Saving figure: {img_name}')
-        plt.savefig(img_name,dpi=400)
+        self.im_ft.figure.savefig(img_name,dpi=400)
+        logging.info(f'Saved figure: {img_name}')
     
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='your_viewer.py',
