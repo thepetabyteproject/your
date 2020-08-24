@@ -20,12 +20,10 @@ if __name__ == '__main__':
                                      , formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-v', '--verbose', help='Be verbose', action='store_true')
     parser.add_argument('-f', '--files',
-                        help='Paths of input files to be converted to an output format. Surround '
-                             'with quotes, and either use wildcards or separate with spaces',
-                        required=True, nargs='+')
+                        help='Paths of input files to be converted to an output format.', required=True, nargs='+')
     parser.add_argument('-t', '--type', help='Output file type (fits or fil)', type=str, required=True)
     parser.add_argument('-c', '--chans', help='Required channels (eg -c 0 4096)', required=False, type=int, nargs=2,
-                        default=None)
+                        default=[None, None])
     parser.add_argument('-nstart', '--nstart', help='Start spectra number', required=False, type=int, default=None)
     parser.add_argument('-nsamp', '--nsamp', help='Number of spectra to convert', required=False, type=int,
                         default=None)
@@ -55,17 +53,14 @@ if __name__ == '__main__':
     logging.info("Input Arguments:-")
     for arg, value in sorted(vars(values).items()):
         logging.info("Argument %s: %r", arg, value)
-
     y = Your(values.files)
-    w = Writer(y)
+    w = Writer(y, c_min=values.chans[0], c_max=values.chans[1], nstart=values.nstart, nsamp=values.nsamp, outdir=values.outdir, outname=values.out_name,
+                progress=values.no_progress, flag_rfi=values.flag_rfi, sk_sig=values.sk_sig, sg_fw=values.sg_fw,
+                sg_sig=values.sg_sig, zero_dm_subt=values.zero_dm_subt)
 
     if values.type == 'fits':
-        w.to_fits(c=values.chans, nstart=values.nstart, nsamp=values.nsamp, outdir=values.outdir, outname=values.out_name, 
-                progress=values.no_progress, flag_rfi=values.flag_rfi, sk_sig=values.sk_sig, sg_fw=values.sg_fw, 
-                sg_sig=values.sg_sig, zero_dm_subt=values.zero_dm_subt)
+        w.to_fits()
     elif values.type == 'fil':
-        w.to_fil(c=values.chans, nstart=values.nstart, nsamp=values.nsamp, outdir=values.outdir,
-                 outname=values.out_name, progress=values.no_progress, flag_rfi=values.flag_rfi, sk_sig=values.sk_sig,
-                 sg_fw=values.sg_fw, sg_sig=values.sg_sig, zero_dm_subt=values.zero_dm_subt)
+        w.to_fil()
     else:
         raise ValueError("Type can either be 'fits' or 'fil'")

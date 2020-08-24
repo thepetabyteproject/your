@@ -129,10 +129,8 @@ class Candidate(Your):
         """
         if dms is None:
             dms = self.dm
-        if dms is None:
-            return None
-        else:
-            return 4148808.0 * dms * (1 / np.min(self.chan_freqs) ** 2 - 1 / np.max(self.chan_freqs) ** 2) / 1000
+
+        return 4148808.0 * dms * (1 / np.min(self.chan_freqs) ** 2 - 1 / np.max(self.chan_freqs) ** 2) / 1000
 
     def get_chunk(self, tstart=None, tstop=None):
         """
@@ -186,6 +184,10 @@ class Candidate(Your):
         """
         Dedisperse a chunk of data. Saves the dedispersed chunk in `self.dedispersed`.
 
+        Note:
+
+            Our method rolls the data around while dedispersing it.
+
         Args:
 
             dms (float): The DM to dedisperse the data at.
@@ -217,6 +219,10 @@ class Candidate(Your):
         """
         Create a dedispersed time series
 
+        Note:
+
+            Our method rolls the data around while dedispersing it.
+
         Args:
 
             dms (float): The DM to dedisperse the data at.
@@ -240,6 +246,10 @@ class Candidate(Your):
     def dmtime(self, dmsteps=256, target='CPU'):
         """
         Generates DM-time array of the candidate by dedispersing at adjacent DM values. Saves the data in `self.dmt`.
+
+        Note:
+
+            Our method rolls the data around while dedispersing it.
 
         Args:
 

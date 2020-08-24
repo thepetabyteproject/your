@@ -16,7 +16,7 @@ def generate_dm_list(dm_start: float, dm_end: float, dt: float, ti: float, f0: f
 
         dt (float): Sampling interval (in seconds)
 
-        ti (float): ??
+        ti (float): pulse width (in seconds)
 
         f0 (float): Frequency of first channel (MHz)
 
@@ -32,6 +32,7 @@ def generate_dm_list(dm_start: float, dm_end: float, dt: float, ti: float, f0: f
 
     """
     dt *= 1e6
+    ti *= 1e6
     center_freq = (f0 + (nchans / 2) * df) * 1e-3
     a = 8.3 * df / (center_freq ** 3)
     b = a ** 2 * nchans ** 2 / 16

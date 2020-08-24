@@ -44,6 +44,8 @@ if __name__ == '__main__':
     logging_format = '%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s'
     if values.verbose:
         logging.basicConfig(level=logging.DEBUG, format=logging_format)
+        matplotlib_logger = logging.getLogger('matplotlib')
+        matplotlib_logger.setLevel(logging.INFO)
     else:
         logging.basicConfig(level=logging.INFO, format=logging_format)
 

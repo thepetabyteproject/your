@@ -5,13 +5,14 @@ from your.utils.math import *
 
 def test_closest_number():
     assert 1 == closest_number(511, 256)
+    assert 0 == closest_number(5, 5)
 
 
 def test_primes():
     assert [3, 3, 5] == primes(45)
 
 
-def test_closest_devisor():
+def test_closest_divisor():
     assert 3 == closest_divisor(15, 2)
 
 
@@ -24,3 +25,12 @@ def test_normalise():
     data = normalise(data)
     assert approx(np.std(data), rel=1e-3) == 1
     assert approx(np.median(data), rel=1e-3) == 0
+
+
+def test_smad_plotter():
+    data = np.random.normal(0, 1, size=(256, 256))
+    data[32, 32] = 255
+    new_data = smad_plotter(data)
+    assert new_data[32, 32] < 255
+    new_data = smad_plotter(data, clip=False)
+    assert new_data[32, 32] == 0

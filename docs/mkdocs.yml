@@ -12,18 +12,10 @@ repo_name: your
 repo_url: https://github.com/devanshkv/your
 
 nav:
-  - Getting Started:
-      - Reading: ipynb/Getting_started.md
-      - Writing: ipynb/writer_demo.md
-  - CLI:
-      - your_bandpass.py: bin/your_bandpass.md
-      - your_candmaker.py: bin/your_candmaker.md
-      - your_combine_mocks.py: bin/your_combine_mocks.md
-      - your_h5plotter.py: bin/your_h5plotter.md
-      - your_header.py: bin/your_header.md
-      - your_heimdall.py: bin/your_heimdall.md
-      - your_rfimask.py: bin/your_rfimask.md
-      - your_writer.py: bin/your_writer.md
+  - Getting Started: index.md
+  - Reading: ipynb/Getting_started.md
+  - Writing: ipynb/writer_demo.md
+  - Command Line: cli.md
   - API:
       - Core:
           - Your: your.md
@@ -43,6 +35,15 @@ nav:
           - Heimdall: utils/heimdall.md
           - Math: utils/math.md
           - Misc: utils/misc.md
+      - CLI:
+          - your_bandpass.py: bin/your_bandpass.md
+          - your_candmaker.py: bin/your_candmaker.md
+          - your_combine_mocks.py: bin/your_combine_mocks.md
+          - your_h5plotter.py: bin/your_h5plotter.md
+          - your_header.py: bin/your_header.md
+          - your_heimdall.py: bin/your_heimdall.md
+          - your_rfimask.py: bin/your_rfimask.md
+          - your_writer.py: bin/your_writer.md
 
 
 
