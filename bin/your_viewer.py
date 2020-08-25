@@ -9,8 +9,6 @@ import matplotlib.gridspec as gridspec
 import argparse
 import os
 import logging
-logger = logging.getLogger()
-logging_format = '%(asctime)s - %(funcName)s - %(name)s - %(levelname)s - %(message)s'
 
 # based on https://steemit.com/utopian-io/@hadif66/tutorial-embeding-scipy-matplotlib-with-tkinter-to-work-on-images-in-a-gui-framework
 
@@ -97,9 +95,8 @@ class Paint(Frame):
         dic['foff'] = self.yr.your_header.foff
         dic['nspectra'] = self.yr.your_header.nspectra
         self.nice_print(dic)
-            
-    canvas=''
-    def load_file(self, file_name='', start_samp=0, gulp_size=1024):
+    
+    def load_file(self, file_name='', start_samp=0, gulp_size=1024, error=False):
         """
         Loads data from a file:
 
@@ -140,8 +137,10 @@ class Paint(Frame):
         #make bandpass
         bp_std = np.std(self.data, axis=1)
         bp_y = np.linspace(self.yr.your_header.nchans, 0, len(self.bandpass))
-        self.im_bandpass, = ax4.plot(self.bandpass, bp_y)
-        self.im_bp_fill = ax4.fill_betweenx(x1=self.bandpass-bp_std,x2=self.bandpass+bp_std,y=bp_y,interpolate=False, alpha=0.25, color='r')
+        self.im_bandpass, = ax4.plot(self.bandpass, bp_y, label='Bandpass')
+        if error:
+            self.im_bp_fill = ax4.fill_betweenx(x1=self.bandpass-bp_std,x2=self.bandpass+bp_std,y=bp_y,interpolate=False, alpha=0.25, color='r', label='1 STD')
+            ax4.legend()
         ax4.set_ylim([-1, len(self.bandpass)+1])
         ax4.set_xlabel('Avg. Arb. Flux') 
         
@@ -201,9 +200,9 @@ class Paint(Frame):
         self.im_ft.set_data(self.data)
         self.im_bandpass.set_xdata(self.bandpass)
         self.fill_bp()
-        self.im_bandpass.axes.set_xlim(np.min(self.bandpass), np.max(self.bandpass))
+        self.im_bandpass.axes.set_xlim(np.min(self.bandpass)*0.97, np.max(self.bandpass)*1.03)
         self.im_time.set_ydata(np.mean(self.data, axis=0))
-        self.im_time.axes.set_ylim(np.min(self.time_series), np.max(self.time_series))
+        self.im_time.axes.set_ylim(np.min(self.time_series)*0.97, np.max(self.time_series)*1.03)
         self.canvas.draw()        
 
     def fill_bp(self):
@@ -246,6 +245,9 @@ class Paint(Frame):
         logging.info(f'Saved figure: {img_name}')
     
 if __name__ == '__main__':
+    logger = logging.getLogger()
+    logging_format = '%(asctime)s - %(funcName)s - %(name)s - %(levelname)s - %(message)s'
+    
     parser = argparse.ArgumentParser(prog='your_viewer.py',
                                      description="Read fits/fil file and show the data",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -258,6 +260,9 @@ if __name__ == '__main__':
     parser.add_argument('-g', '--gulp',
                         help='Gulp size', type=int,
                         required=False, default=3072)
+    parser.add_argument('-e', '--error',
+                        help='Show 1 standard devation per channel in bandpass',
+                        required=False, default=False, action='store_true')
     parser.add_argument('-v', '--verbose', help='Be verbose', action='store_true')
     values = parser.parse_args()
     
@@ -269,11 +274,10 @@ if __name__ == '__main__':
     matplotlib_logger = logging.getLogger('matplotlib')
     matplotlib_logger.setLevel(logging.INFO)
     
-    # root window created. Here, that would be the only window, but
-    # you can later have windows within windows.
+    # root window created.
     root = Tk()
     root.geometry("1920x1080")
     #creation of an instance
     app = Paint(root)
-    app.load_file(values.files, values.start, values.gulp)
+    app.load_file(values.files, values.start, values.gulp, values.error)#load file with user parms
     root.mainloop()
