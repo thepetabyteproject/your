@@ -220,7 +220,7 @@ def initialize_psrfits(outfile, y, npsub=-1, nstart=None, nsamp=None, chan_freqs
         nsamps = y.your_header.nspectra
 
     if nstart:
-        mjd += nstart*tsamp/(24*60*60)
+        mjd += nstart * tsamp / (24 * 60 * 60)
         if nstart + nsamps > y.your_header.nspectra:
             logging.warning('Data requested exceeds the length of file. Reading data till end of file.')
             nsamps = y.your_header.nspectra - nstart

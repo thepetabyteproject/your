@@ -1,10 +1,11 @@
-from your.utils.gpu import *
+import os
+
+import pytest
+
 from your.candidate import Candidate
+from your.utils.gpu import *
 from your.utils.misc import crop
 
-from numba import cuda
-import pytest
-import os
 os.environ['HDF5_USE_FILE_LOCKING'] = 'FALSE'
 _install_dir = os.path.abspath(os.path.dirname(__file__))
 
@@ -33,7 +34,7 @@ def test_gpu_dmt():
     c_dmt = cand.dmt
     assert cand.dmt.shape[0] == 256
     assert np.isclose(np.mean(g_dmt - c_dmt), 0, atol=1)
-    assert np.max(g_dmt - c_dmt)/np.max(g_dmt) < 0.05
+    assert np.max(g_dmt - c_dmt) / np.max(g_dmt) < 0.05
 
 
 @pytest.mark.skipif(not cuda.is_available(), reason='requires a GPU')

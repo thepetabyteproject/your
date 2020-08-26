@@ -61,6 +61,7 @@ def test_dmtime_snr_opt_snr(cand):
     assert pytest.approx(cand.get_snr(), rel=2) == 13
     assert pytest.approx(cand.optimize_dm()[0], rel=2) == 475
 
+
 def test_decimate_on_dedispersed(cand):
     cand.get_chunk()
     cand.dedisperse()
@@ -91,6 +92,7 @@ def test_decimate_on_dedispersed(cand):
     assert cand.dedispersed.shape == (1, 336)
     assert (bp_orig - cand.dedispersed[0, :]).sum() == 0
 
+
 def test_decimate_on_dmt(cand):
     cand.get_chunk()
     cand.dmtime()
@@ -110,6 +112,7 @@ def test_decimate_on_dmt(cand):
         cand.decimate(key='at', axis=0, pad=True, decimate_factor=4, mode='median')
     except AttributeError:
         pass
+
 
 def test_resize(cand):
     cand.get_chunk()

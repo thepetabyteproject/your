@@ -49,7 +49,7 @@ class Writer:
     """
 
     def __init__(self, y, nstart=None, nsamp=None, c_min=None, c_max=None, outdir=None, outname=None, flag_rfi=False,
-               progress=None, sk_sig=4, sg_fw=15, sg_sig=4, zero_dm_subt=False):
+                 progress=None, sk_sig=4, sg_fw=15, sg_sig=4, zero_dm_subt=False):
 
         self.your_obj = y
         self.nstart = nstart
@@ -61,7 +61,7 @@ class Writer:
         self.c_min = c_min
         self.c_max = c_max
 
-        #if self.c_max < self.c_min:
+        # if self.c_max < self.c_min:
         #    logging.warning('Start channel index is larger than end channel index. Swapping them.')
         #    self.c_min, self.c_max = self.c_max, self.c_min
 
@@ -103,6 +103,7 @@ class Writer:
             return self.c_max
         else:
             return len(self.your_obj.chan_freqs)
+
     @property
     def chan_freqs(self):
         return self.your_obj.chan_freqs[self.chan_min:self.chan_max]
@@ -246,11 +247,11 @@ class Writer:
             data = np.reshape(data, (isub, npsub, nifs, self.nchans))
 
             # If foff is negative, we need to flip the freq axis
-#            if foff < 0:
-#                logger.debug(f"Flipping band as {foff} < 0")
-#                data = data[:, :, :, ::-1]
-#            else:
-#                pass
+            #            if foff < 0:
+            #                logger.debug(f"Flipping band as {foff} < 0")
+            #                data = data[:, :, :, ::-1]
+            #            else:
+            #                pass
 
             # Put data in hdu data array
             logger.debug(f'Writing data of shape {data.shape} to {outfile}.')

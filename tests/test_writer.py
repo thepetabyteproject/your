@@ -10,7 +10,8 @@ def test_fil_to_fil():
     # from fil
     file = os.path.join(_install_dir, 'data/small.fil')
     f = Your(file)
-    w = Writer(f, nstart=0, nsamp=2, outname='temp', c_min=10, c_max=200, outdir='./', flag_rfi=False, zero_dm_subt=False)
+    w = Writer(f, nstart=0, nsamp=2, outname='temp', c_min=10, c_max=200, outdir='./', flag_rfi=False,
+               zero_dm_subt=False)
     # test with outname
     w.to_fil()
     assert os.path.isfile('temp.fil')
@@ -28,6 +29,7 @@ def test_fil_to_fil():
     assert y.your_header.nspectra == 10
     assert y.your_header.nchans == f.your_header.nchans
     os.remove('small_converted.fil')
+
 
 def test_fits_to_fil():
     # from fits
@@ -54,10 +56,12 @@ def test_fits_to_fil():
     assert (y.get_data(0, ns) - f.get_data(0, ns)).sum() == 0
     os.remove('small_converted.fil')
 
+
 def test_fil_to_fits():
     file = os.path.join(_install_dir, 'data/small.fil')
     f = Your(file)
-    w = Writer(f, outname='temp', outdir='./', flag_rfi=False, zero_dm_subt=False, nstart=0, nsamp=2, c_min=40, c_max=200)
+    w = Writer(f, outname='temp', outdir='./', flag_rfi=False, zero_dm_subt=False, nstart=0, nsamp=2, c_min=40,
+               c_max=200)
     # test with outname
     w.to_fits()
     assert os.path.isfile('temp.fits')
@@ -76,6 +80,7 @@ def test_fil_to_fits():
     ns = y.your_header.nspectra
     os.remove('small_converted.fits')
 
+
 def test_fits_to_fits():
     file = os.path.join(_install_dir, 'data/small.fits')
     f = Your(file)
@@ -83,7 +88,7 @@ def test_fits_to_fits():
     # test with outname
     w.to_fits()
     assert os.path.isfile('temp.fits')
-    y =Your('temp.fits')
+    y = Your('temp.fits')
     assert y.your_header.nspectra == 2
     assert y.your_header.nchans == f.your_header.nchans
     assert (y.get_data(0, 2) - f.get_data(0, 2)).sum() == 0
