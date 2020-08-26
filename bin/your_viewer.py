@@ -91,11 +91,11 @@ class Paint(Frame):
         """
         Gets meta data from data file and give the data to nice_print() to print to user
         """
-        dic = vars(self.yr.your_header)
-        dic['tsamp'] = self.yr.your_header.tsamp
-        dic['nchans'] = self.yr.your_header.nchans
-        dic['channel_bandwidth'] = self.yr.your_header.foff
-        dic['nspectra'] = self.yr.your_header.nspectra
+        dic = vars(self.your_obj.your_header)
+        dic['tsamp'] = self.your_obj.your_header.tsamp
+        dic['nchans'] = self.your_obj.your_header.nchans
+        dic['foff'] = self.your_obj.your_header.foff
+        dic['nspectra'] = self.your_obj.your_header.nspectra
         self.nice_print(dic)
 
     def load_file(self, file_name='', start_samp=0, gulp_size=1024, chan_std=False):
@@ -118,7 +118,7 @@ class Paint(Frame):
 
         logging.info(f'Reading file {file_name}.')
         self.master.title(file_name)
-        self.yr = Your(file_name)
+        self.your_obj = Your(file_name)
         logging.info(f'Printing Header parameters')
         self.get_header()
         self.read_data()
@@ -140,7 +140,7 @@ class Paint(Frame):
 
         # make bandpass
         bp_std = np.std(self.data, axis=1)
-        bp_y = np.linspace(self.yr.your_header.nchans, 0, len(self.bandpass))
+        bp_y = np.linspace(self.your_obj.your_header.nchans, 0, len(self.bandpass))
         self.im_bandpass, = ax4.plot(self.bandpass, bp_y, label='Bandpass')
         if self.chan_std:
             self.im_bp_fill = ax4.fill_betweenx(x1=self.bandpass - bp_std, x2=self.bandpass + bp_std, y=bp_y,
@@ -160,8 +160,8 @@ class Paint(Frame):
         ax = self.im_ft.axes
         ax.set_xlabel('Time [sec]')
         ax.set_ylabel('Frequency [MHz]')
-        ax.set_yticks(np.linspace(0, self.yr.your_header.nchans, 8))
-        yticks = [str(int(j)) for j in np.linspace(self.yr.chan_freqs[0], self.yr.chan_freqs[-1], 8)]
+        ax.set_yticks(np.linspace(0, self.your_obj.your_header.nchans, 8))
+        yticks = [str(int(j)) for j in np.linspace(self.your_obj.chan_freqs[0], self.your_obj.chan_freqs[-1], 8)]
         ax.set_yticklabels(yticks)
         self.set_x_axis()
 
@@ -183,8 +183,8 @@ class Paint(Frame):
         self.start_samp += self.gulp_size
         # check if there is a enough data to fill plt
         proposed_end = self.start_samp + self.gulp_size
-        if proposed_end > self.yr.your_header.nspectra:
-            self.start_samp = self.start_samp - (proposed_end - self.yr.your_header.nspectra)
+        if proposed_end > self.your_obj.your_header.nspectra:
+            self.start_samp = self.start_samp - (proposed_end - self.your_obj.your_header.nspectra)
             logging.info('End of file.')
         self.update_plot()
 
@@ -192,7 +192,7 @@ class Paint(Frame):
         """
         Movies the images to the prevous gulp of data
         """
-        # check if new start nsamp is in the file
+        # check if new start samp is in the file
         if (self.start_samp - self.gulp_size) >= 0:
             self.start_samp -= self.gulp_size
         self.update_plot()
@@ -222,13 +222,14 @@ class Paint(Frame):
         Returns:
         data -- a 2D array of frequency time plts
         """
-        ts = self.start_samp * self.yr.your_header.tsamp
-        te = (self.start_samp + self.gulp_size) * self.yr.your_header.tsamp
-        self.data = self.yr.get_data(self.start_samp, self.gulp_size).T
+        ts = self.start_samp * self.your_obj.your_header.tsamp
+        te = (self.start_samp + self.gulp_size) * self.your_obj.your_header.tsamp
+        self.data = self.your_obj.get_data(self.start_samp, self.gulp_size).T
         self.bandpass = np.mean(self.data, axis=1)
         self.time_series = np.mean(self.data, axis=0)
         logging.info(
-            f'Displaying {self.gulp_size} samples from sample {self.start_samp} i.e {ts:.2f}-{te:.2f}s - gulp mean: {np.mean(self.data):.3f}, std: {np.std(self.data):.3f}')
+            f'Displaying {self.gulp_size} samples from sample {self.start_samp} i.e {ts:.2f}-{te:.2f}s - gulp mean: '
+            f'{np.mean(self.data):.3f}, std: {np.std(self.data):.3f}')
 
     def set_x_axis(self):
         """
@@ -237,7 +238,7 @@ class Paint(Frame):
         ax = self.im_ft.axes
         xticks = ax.get_xticks()
         logging.debug(f'x-axis ticks are {xticks}')
-        xtick_labels = (xticks + self.start_samp) * self.yr.tsamp
+        xtick_labels = (xticks + self.start_samp) * self.your_obj.your_header.tsamp
         logging.debug(f'Setting x-axis tick labels to {xtick_labels}')
         ax.set_xticklabels([f"{j:.2f}" for j in xtick_labels])
 
@@ -287,5 +288,5 @@ if __name__ == '__main__':
     root.geometry("1920x1080")
     # creation of an instance
     app = Paint(root)
-    app.load_file(values.files, values.start, values.gulp, values.chan_std)  # load file with user parms
+    app.load_file(values.files, values.start, values.gulp, values.chan_std)  # load file with user params
     root.mainloop()
