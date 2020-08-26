@@ -48,10 +48,11 @@ class Writer:
 
     """
 
-    def __init__(self, y, nstart=None, nsamp=None, c_min=None, c_max=None, outdir=None, outname=None, flag_rfi=False,
-                 progress=None, sk_sig=4, sg_fw=15, sg_sig=4, zero_dm_subt=False):
+    def __init__(self, your_object, nstart=None, nsamp=None, c_min=None, c_max=None, outdir=None, outname=None,
+                 flag_rfi=False, progress=None, spectral_kurtosis_sigma=4, savgol_frequency_window=15, savgol_sigma=4,
+                 zero_dm_subt=False):
 
-        self.your_obj = y
+        self.your_obj = your_object
         self.nstart = nstart
         self.nsamp = nsamp
 
@@ -65,9 +66,9 @@ class Writer:
         self.outname = outname
         self.flag_rfi = flag_rfi
         self.progress = progress
-        self.sk_sig = sk_sig
-        self.sg_fw = sg_fw
-        self.sg_sig = sg_sig
+        self.sk_sig = spectral_kurtosis_sigma
+        self.sg_fw = savgol_frequency_window
+        self.sg_sig = savgol_sigma
         self.zero_dm_subt = zero_dm_subt
         self.data = None
 
@@ -124,7 +125,7 @@ class Writer:
         data = self.your_obj.get_data(start_sample, nsamp)
         data = data[:, self.chan_min:self.chan_max]
         if self.flag_rfi:
-            mask = sk_sg_filter(data, self.your_obj, self.sk_sig, self.nchans, self.sg_fw, self.sg_sig)
+            mask = sk_sg_filter(data, self.your_obj, self.nchans, self.sk_sig, self.sg_fw, self.sg_sig)
 
             if self.your_obj.your_header.dtype == np.uint8:
                 data[:, mask] = np.around(np.mean(data[:, ~mask]))
