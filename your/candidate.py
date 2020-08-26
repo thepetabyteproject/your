@@ -99,7 +99,7 @@ class Candidate(Your):
 
             f.attrs['tsamp'] = self.your_header.tsamp
             f.attrs['nchans'] = self.your_header.nchans
-            f.attrs['channel_bandwidth'] = self.your_header.foff
+            f.attrs['foff'] = self.your_header.foff
             f.attrs['nspectra'] = self.your_header.nspectra
 
             freq_time_dset = f.create_dataset('data_freq_time', data=self.dedispersed, dtype=self.dedispersed.dtype,
