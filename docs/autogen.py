@@ -107,36 +107,12 @@ doc_generator.generate("./sources")
 
 shutil.copyfile("../README.md", "sources/index.md")
 
-github_repo_dir = "devanshkv/your/blob/master/examples/"
+os.mkdir("sources/ipynb")
+for nb in glob.glob("../examples/*ipynb"):
+    file_name = os.path.basename(nb)
+    os.symlink(os.path.abspath(nb), "sources/ipynb/" + file_name)
 
-for ipynb_files in glob.glob("../examples/*ipynb"):
-    os.system(
-        f"jupyter-nbconvert {ipynb_files} --to markdown --output-dir=sources/ipynb/"
-    )
-    file_name_no_ext = ipynb_files.split("/")[-1][:-6]
-    md_path = f"sources/ipynb/{file_name_no_ext}.md"
-    with open(md_path, "r") as md_file:
-        button_lines = [
-            ":material-link: "
-            "[**View in Colab**](https://colab.research.google.com/github/"
-            + github_repo_dir
-            + file_name_no_ext
-            + ".ipynb"
-            + ")   &nbsp; &nbsp;"
-            # + '<span class="k-dot">•</span>'
-            + ":octicons-octoface: "
-              "[**GitHub source**](https://github.com/"
-            + github_repo_dir
-            + file_name_no_ext
-            + ".ipynb)",
-            "\n",
-        ]
-        md_content = "".join(button_lines) + "\n" + md_file.read()
-
-    with open(md_path, "w") as md_file:
-        md_file.write(md_content)
-
-os.system("mkdir -p sources/bin")
+os.mkdir("sources/bin")
 
 os.system(f"cd sources/bin; argmark -f ../../../bin/*py; cd ../")
 

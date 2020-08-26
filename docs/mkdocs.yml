@@ -13,11 +13,12 @@ repo_url: https://github.com/devanshkv/your
 
 nav:
   - Getting Started: index.md
-  - Reading: ipynb/Getting_started.md
-  - Writing: ipynb/writer_demo.md
-  - Candidates: ipynb/candidate_demo.md
-  - Command Line: cli.md
-  - API:
+  - Reading Files: ipynb/Reader.ipynb
+  - Writing Files: ipynb/Writer.ipynb
+  - Candidates: ipynb/Candidate.ipynb
+  - RFI Mitigation: ipynb/RFI.ipynb
+  - Command Line Scripts: cli.md
+  - Reference API:
       - Core:
           - Your: your.md
           - Candiate: candidate.md
@@ -45,8 +46,10 @@ nav:
           - your_heimdall.py: bin/your_heimdall.md
           - your_rfimask.py: bin/your_rfimask.md
           - your_writer.py: bin/your_writer.md
+          - your_viewer.py: bin/your_viewer.md
 
-
+plugins:
+  - mkdocs-jupyter
 
 markdown_extensions:
   - pymdownx.emoji:
