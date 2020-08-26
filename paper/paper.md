@@ -103,6 +103,7 @@ coordinates (astropy.coordinates) and time (astropy.time).
 KA, DA, WF, SMR, PDB, SBS, DRL, MAM, and NGD are members of the NANOGrav Physics Frontiers Center, supported by NSF 
 award number 1430284. MAM, DA, DRL, JWK, and SBS are also supported by NSF award number 1458952. DRL, MAM, DA and JWK  
 acknowledge support from the NSF award AAG-1616042. WF acknowledges funding from the WVU STEM Mountains of Excellence 
-graduate fellowship.
+graduate fellowship. RSW acknowledges financial support by the European Research Council (ERC) for the ERC Synergy 
+Grant BlackHoleCam under contract no. 610058.
 
 # References
