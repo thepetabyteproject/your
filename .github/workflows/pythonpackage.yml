@@ -41,7 +41,7 @@ jobs:
           file: ./coverage.xml
           name: codecov-umbrella
           fail_ci_if_error: true
-      -name: Generate Docs
+      - name: Generate Docs
         run: |
           pip install -r docs/requirements.txt
           cd docs; python autogen.py; mkdocs gh-deploy --force
