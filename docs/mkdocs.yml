@@ -15,6 +15,7 @@ nav:
   - Getting Started: index.md
   - Reading: ipynb/Getting_started.md
   - Writing: ipynb/writer_demo.md
+  - Candidates: ipynb/candidate_demo.md
   - Command Line: cli.md
   - API:
       - Core:
