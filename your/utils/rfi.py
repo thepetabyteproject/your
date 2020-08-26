@@ -7,13 +7,13 @@ from scipy.signal import savgol_filter as sg
 logger = logging.getLogger(__name__)
 
 
-def savgol_filter(data, channel_bandwidth, frequency_window=15, sigma=6):
+def savgol_filter(bandpass, channel_bandwidth, frequency_window=15, sigma=6):
     """
     Apply savgol filter to the data. See [Agarwal el al. 2020](https://arxiv.org/abs/2003.14272) for details.
 
     Args:
     
-        data (numpy.ndarray): bandpass of the data
+        bandpass (numpy.ndarray): bandpass of the data
 
         channel_bandwidth (float): channel bandwidth (MHz)
 
@@ -27,8 +27,8 @@ def savgol_filter(data, channel_bandwidth, frequency_window=15, sigma=6):
 
     """
     window = int(np.ceil(frequency_window / np.abs(channel_bandwidth)) // 2 * 2 + 1)
-    y = sg(data, window, 2)
-    sub = data - y
+    y = sg(bandpass, window, 2)
+    sub = bandpass - y
     sigma = sigma * np.std(sub)
     mask = (sub > sigma) | (sub < -sigma)
     return mask
@@ -61,7 +61,7 @@ def spectral_kurtosis(data, N=1, d=None):
     return ((M * d * N) + 1) * ((M * S2 / (S1 ** 2)) - 1) / (M - 1)
 
 
-def sk_filter(data, foff, nchans, tsamp, N=None, d=1, sigma=5):
+def sk_filter(data, channel_bandwidth, nchans, tsamp, N=None, d=1, sigma=5):
     """
     Apply Spectral Kurtosis filter to the data
 
@@ -69,7 +69,7 @@ def sk_filter(data, foff, nchans, tsamp, N=None, d=1, sigma=5):
 
         data (numpy.ndarray): 2D frequency time data
 
-        foff (float): channel bandwidth (MHz)
+        channel_bandwidth (float): channel bandwidth (MHz)
 
         nchans (int): number of channels 
 
@@ -88,7 +88,7 @@ def sk_filter(data, foff, nchans, tsamp, N=None, d=1, sigma=5):
 
     """
     if not N:
-        N = calc_N(foff, nchans, tsamp)
+        N = calc_N(channel_bandwidth, nchans, tsamp)
     sk = spectral_kurtosis(data, d=d, N=N)
     nan_mask = np.isnan(sk)
     sk[nan_mask] = np.nan
