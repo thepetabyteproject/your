@@ -21,7 +21,7 @@ class Candidate(Your):
 
         dm (float): Dispersion Measure of the candidate
 
-        tcand (float): start time of the candidate in seconds
+        tcand (float): start time of the candidate in seconds at the highest frequency channel
 
         width (int): pulse width of the candidate in samples
 
