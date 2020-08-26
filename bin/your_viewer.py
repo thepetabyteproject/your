@@ -94,7 +94,7 @@ class Paint(Frame):
         dic = vars(self.yr.your_header)
         dic['tsamp'] = self.yr.your_header.tsamp
         dic['nchans'] = self.yr.your_header.nchans
-        dic['foff'] = self.yr.your_header.foff
+        dic['channel_bandwidth'] = self.yr.your_header.foff
         dic['nspectra'] = self.yr.your_header.nspectra
         self.nice_print(dic)
 
@@ -192,7 +192,7 @@ class Paint(Frame):
         """
         Movies the images to the prevous gulp of data
         """
-        # check if new start samp is in the file
+        # check if new start nsamp is in the file
         if (self.start_samp - self.gulp_size) >= 0:
             self.start_samp -= self.gulp_size
         self.update_plot()

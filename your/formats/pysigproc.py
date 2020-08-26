@@ -43,7 +43,7 @@ class SigprocFile(object):
 
         fch1 (float): Frequency of first channel (MHz))
 
-        foff (float): Channel bandwidth (MHz)
+        channel_bandwidth (float): Channel bandwidth (MHz)
 
         nchans (int): Number of channels
 
@@ -74,7 +74,7 @@ class SigprocFile(object):
     _type['za_start'] = 'double'
     _type['data_type'] = 'int'
     _type['fch1'] = 'double'
-    _type['foff'] = 'double'
+    _type['channel_bandwidth'] = 'double'
     _type['nchans'] = 'int'
     _type['nbeams'] = 'int'
     _type['ibeam'] = 'int'

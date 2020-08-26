@@ -7,7 +7,7 @@ from scipy.signal import savgol_filter as sg
 logger = logging.getLogger(__name__)
 
 
-def savgol_filter(data, foff, fw=15, sig=6):
+def savgol_filter(data, channel_bandwidth, frequency_window=15, sigma=6):
     """
     Apply savgol filter to the data. See [Agarwal el al. 2020](https://arxiv.org/abs/2003.14272) for details.
 
@@ -15,21 +15,21 @@ def savgol_filter(data, foff, fw=15, sig=6):
     
         data (numpy.ndarray): bandpass of the data
 
-        foff (float): channel bandwidth (MHz)
+        channel_bandwidth (float): channel bandwidth (MHz)
 
-        fw (float): frequency window (MHz)
+        frequency_window (float): frequency window (MHz)
         
-        sig (float): sigma value to apply cutoff on
+        sigma (float): sigma value to apply cutoff on
 
     Returns:
 
         numpy.ndarray: mask for channels
 
     """
-    window = int(np.ceil(fw / np.abs(foff)) // 2 * 2 + 1)
+    window = int(np.ceil(frequency_window / np.abs(channel_bandwidth)) // 2 * 2 + 1)
     y = sg(data, window, 2)
     sub = data - y
-    sigma = sig * np.std(sub)
+    sigma = sigma * np.std(sub)
     mask = (sub > sigma) | (sub < -sigma)
     return mask
 
@@ -61,7 +61,7 @@ def spectral_kurtosis(data, N=1, d=None):
     return ((M * d * N) + 1) * ((M * S2 / (S1 ** 2)) - 1) / (M - 1)
 
 
-def sk_filter(data, foff, nchans, tsamp, N=None, d=1, sig=5):
+def sk_filter(data, foff, nchans, tsamp, N=None, d=1, sigma=5):
     """
     Apply Spectral Kurtosis filter to the data
 
@@ -79,7 +79,7 @@ def sk_filter(data, foff, nchans, tsamp, N=None, d=1, sig=5):
 
         d (float): shape factor
 
-        sig (float): sigma value to apply cutoff on
+        sigma (float): sigma value to apply cutoff on
 
 
     Returns:
@@ -94,20 +94,20 @@ def sk_filter(data, foff, nchans, tsamp, N=None, d=1, sig=5):
     sk[nan_mask] = np.nan
     sk_c = sk[~nan_mask]
     std = 1.4826 * stats.median_absolute_deviation(sk_c)
-    h = np.median(sk_c) + sig * std
-    l = np.median(sk_c) - sig * std
+    h = np.median(sk_c) + sigma * std
+    l = np.median(sk_c) - sigma * std
     mask = (sk < h) & (sk > l)
     return ~mask
 
 
-def calc_N(foff, nchans, tsamp):
+def calc_N(channel_bandwidth, nchans, tsamp):
     """
 
     Calculates number of accumulations on FPGA
 
     Args:
 
-        foff (float): channel bandwidth (MHz)
+        channel_bandwidth (float): channel bandwidth (MHz)
 
         nchans (int): number of channels
 
@@ -120,11 +120,11 @@ def calc_N(foff, nchans, tsamp):
 
     """
 
-    tn = nchans * np.abs(1 / (2 * foff * nchans * 10 ** 6))
+    tn = nchans * np.abs(1 / (2 * channel_bandwidth * nchans * 10 ** 6))
     return np.round(tsamp / tn)
 
 
-def sk_sg_filter(data, y, sk_sig, nchans, sg_fw, sg_sig):
+def sk_sg_filter(data, your_object, nchans, spectral_kurtosis_sigma=6, savgol_frequency_window=15, savgol_sigma=5):
     """
 
     Apply Spectral Kurtosis and Savgol filter to the data
@@ -133,15 +133,15 @@ def sk_sg_filter(data, y, sk_sig, nchans, sg_fw, sg_sig):
 
         data (numpy.ndarray): 2D frequency time data
 
-        y: Your object
-
-        sk_sig (float): sigma value to apply cutoff on for SK filter
+        your_object: Your object
 
         nchans (int): number of channels
 
-        sg_fw (float): frequency window for savgol filter(MHz)
+        spectral_kurtosis_sigma (float): sigma value to apply cutoff on for SK filter
 
-        sg_sig (float): sigma value to apply cutoff on for savgol filter
+        savgol_frequency_window (float): frequency window for savgol filter(MHz)
+
+        savgol_sigma (float): sigma value to apply cutoff on for savgol filter
 
 
     Returns:
@@ -150,11 +150,13 @@ def sk_sg_filter(data, y, sk_sig, nchans, sg_fw, sg_sig):
 
     """
 
-    logger.info(f'Applying spectral kurtosis filter with sigma={sk_sig}')
-    sk_mask = sk_filter(data, foff=y.your_header.foff, nchans=nchans, tsamp=y.your_header.tsamp, sig=sk_sig)
+    logger.info(f'Applying spectral kurtosis filter with sigma={spectral_kurtosis_sigma}')
+    sk_mask = sk_filter(data, foff=your_object.your_header.foff, nchans=nchans, tsamp=your_object.your_header.tsamp,
+                        sigma=spectral_kurtosis_sigma)
     bp = data.sum(0)[~sk_mask]
-    logger.info(f'Applying savgol filter with fw={sg_fw} and sig={sg_sig}')
-    sg_mask = savgol_filter(bp, y.your_header.foff, fw=sg_fw, sig=sg_sig)
+    logger.info(f'Applying savgol filter with frequency_window={savgol_frequency_window} and sigma={savgol_sigma}')
+    sg_mask = savgol_filter(bp, your_object.your_header.foff, frequency_window=savgol_frequency_window,
+                            sigma=savgol_sigma)
     mask = np.zeros(data.shape[1], dtype=np.bool)
     mask[sk_mask] = True
     mask[np.where(mask == False)[0][sg_mask]] = True

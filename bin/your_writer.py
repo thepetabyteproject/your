@@ -33,10 +33,13 @@ if __name__ == '__main__':
                         required=False)
     parser.add_argument('--no_progress', help='Do not show the tqdm bar', action='store_true', default=None)
     parser.add_argument('-r', '--flag_rfi', help='Turn on RFI flagging', action='store_true', default=False)
-    parser.add_argument('-sksig', '--sk_sig', help='Sigma for spectral kurtosis filter', type=float, default=4,
+    parser.add_argument('-sksig', '--spectral_kurtosis_sigma', help='Sigma for spectral kurtosis filter', type=float,
+                        default=4,
                         required=False)
-    parser.add_argument('-sgsig', '--sg_sig', help='Sigma for savgol filter', type=float, default=4, required=False)
-    parser.add_argument('-sgfw', '--sg_fw', help='Filter window for savgol filter (MHz)', type=float, default=15,
+    parser.add_argument('-sgsig', '--savgol_sigma', help='Sigma for savgol filter', type=float, default=4,
+                        required=False)
+    parser.add_argument('-sgfw', '--savgol_frequency_window', help='Filter window for savgol filter (MHz)', type=float,
+                        default=15,
                         required=False)
     parser.add_argument('-zero_dm_subt', '--zero_dm_subt', help='Enable 0 DM subtraction', action='store_true',
                         default=False)

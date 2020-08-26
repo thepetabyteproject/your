@@ -25,9 +25,10 @@ if __name__ == "__main__":
     parser.add_argument('-dm', '--dm', help='DM (eg -dm 10 1000)', type=float, nargs=2, default=[10, 1000])
     parser.add_argument('-g', '--gpu_id', help='GPU ID to run heimdall on', type=int, required=False, default=0)
     parser.add_argument('-sg', '--apply_savgol', help='Apply savgol filter to zap bad channels', action='store_true')
-    parser.add_argument('-fw', '--filter_window', help='Window size (MHz) for savgol filter', required=False,
+    parser.add_argument('-frequency_window', '--filter_window', help='Window size (MHz) for savgol filter',
+                        required=False,
                         default=15, type=float)
-    parser.add_argument('-sig', '--sigma', help='Sigma for the savgol filter', required=False, default=6, type=float)
+    parser.add_argument('-sigma', '--sigma', help='Sigma for the savgol filter', required=False, default=6, type=float)
     parser.add_argument('-m', '--mask', help='Input RFI mask (could be 1-D bad channel mask or 2-D FT mask)',
                         required=False, type=str,
                         default=None)
@@ -73,7 +74,8 @@ if __name__ == "__main__":
 
     if args.apply_savgol:
         bandpass = your_object.bandpass(nspectra=8192)
-        mask = savgol_filter(bandpass, your_object.your_header.foff, fw=args.filter_window, sig=args.sigma)
+        mask = savgol_filter(bandpass, your_object.your_header.foff, frequency_window=args.filter_window,
+                             sigma=args.sigma)
         chan_nos = np.arange(0, bandpass.shape[0], dtype=np.int)
         bad_chans = list(chan_nos[mask])
 

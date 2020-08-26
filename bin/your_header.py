@@ -17,7 +17,7 @@ def read_header(f):
     dic = vars(y.your_header)
     dic['tsamp'] = y.your_header.tsamp
     dic['nchans'] = y.your_header.nchans
-    dic['foff'] = y.your_header.foff
+    dic['channel_bandwidth'] = y.your_header.foff
     dic['nspectra'] = y.your_header.nspectra
     nice_print(dic)
 

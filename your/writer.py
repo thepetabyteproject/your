@@ -61,10 +61,6 @@ class Writer:
         self.c_min = c_min
         self.c_max = c_max
 
-        # if self.c_max < self.c_min:
-        #    logging.warning('Start channel index is larger than end channel index. Swapping them.')
-        #    self.c_min, self.c_max = self.c_max, self.c_min
-
         self.outdir = outdir
         self.outname = outname
         self.flag_rfi = flag_rfi
@@ -112,7 +108,7 @@ class Writer:
     def nchans(self):
         return len(self.chan_freqs)
 
-    def get_data_to_write(self, st, samp):
+    def get_data_to_write(self, start_sample, nsamp):
         """
 
         Read data to self.data, selects channels
@@ -120,12 +116,12 @@ class Writer:
 
         Args:
 
-            st: Start sample number to read from
+            start_sample: Start sample number to read from
 
-            samp: Number of samples to read
+            nsamp: Number of samples to read
 
         """
-        data = self.your_obj.get_data(st, samp)
+        data = self.your_obj.get_data(start_sample, nsamp)
         data = data[:, self.chan_min:self.chan_max]
         if self.flag_rfi:
             mask = sk_sg_filter(data, self.your_obj, self.sk_sig, self.nchans, self.sg_fw, self.sg_sig)
@@ -202,7 +198,8 @@ class Writer:
 
         outfile = self.outdir + '/' + self.outname + '.fits'
 
-        initialize_psrfits(outfile=outfile, y=self.your_obj, npsub=npsub, nstart=self.nstart, nsamp=self.nsamp,
+        initialize_psrfits(outfile=outfile, your_object=self.your_obj, npsub=npsub, nstart=self.nstart,
+                           nsamp=self.nsamp,
                            chan_freqs=self.chan_freqs)
 
         nifs = self.your_obj.your_header.npol
@@ -246,9 +243,9 @@ class Writer:
 
             data = np.reshape(data, (isub, npsub, nifs, self.nchans))
 
-            # If foff is negative, we need to flip the freq axis
-            #            if foff < 0:
-            #                logger.debug(f"Flipping band as {foff} < 0")
+            # If channel_bandwidth is negative, we need to flip the freq axis
+            #            if channel_bandwidth < 0:
+            #                logger.debug(f"Flipping band as {channel_bandwidth} < 0")
             #                data = data[:, :, :, ::-1]
             #            else:
             #                pass

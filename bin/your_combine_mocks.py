@@ -89,7 +89,7 @@ def read_and_combine_subint(lowband_obj, upband_obj, fsub, upchanskip, lowchansk
     upsub_data *= upband_obj.get_weights(fsub)[:upband_obj.nchan]
 
     logger.debug(f'Combining data from relevant channels from upper and lower bands')
-    # Note freq are not exactly same in the two subbands. Assuming fch1 and foff from lower band. 
+    # Note freq are not exactly same in the two subbands. Assuming fch1 and channel_bandwidth from lower band.
     # The exact freq in upperband will vary
     data = np.flip(np.concatenate((lowsub_data[:, :-lowchanskip], upsub_data[:, upchanskip:]), axis=1), axis=1)
 
@@ -226,7 +226,7 @@ def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
     del y2
 
     if lowband_obj.foff < 0 or upband_obj.foff < 0:
-        raise AttributeError('Negative foff in Mock fits not supported.')
+        raise AttributeError('Negative channel_bandwidth in Mock fits not supported.')
 
     low_header = vars(lowband_obj.your_header)
     up_header = vars(upband_obj.your_header)

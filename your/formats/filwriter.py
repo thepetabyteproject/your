@@ -8,7 +8,7 @@ from your.formats.pysigproc import SigprocFile
 logger = logging.getLogger(__name__)
 
 
-def make_sigproc_obj(filfile, y, nchans, chan_freq, nstart):
+def make_sigproc_obj(filfile, your_object, nchans, chan_freq, nstart):
     """
     Use Your class to make Sigproc class object with relevant parameters
 
@@ -16,11 +16,13 @@ def make_sigproc_obj(filfile, y, nchans, chan_freq, nstart):
 
         filfile: Name of the Filterbank file
 
-        y: Your object for the PSRFITS files
+        your_object : Your object for the PSRFITS files
 
-        nchans: No. of channels in the frequency range
+        nchans (int) : No. of channels in the frequency range
 
-        chan_freq: Required frequency channel range
+        chan_freq (np.ndarray) : An array of required frequency channel range
+
+        nstart (int): Start sample
 
 
     Returns:
@@ -33,7 +35,7 @@ def make_sigproc_obj(filfile, y, nchans, chan_freq, nstart):
 
     logger.debug(f'Setting attributes of Sigproc object from Your object.')
     fil_obj.rawdatafile = filfile
-    fil_obj.source_name = y.your_header.source_name
+    fil_obj.source_name = your_object.your_header.source_name
 
     # Verify the following parameters
     fil_obj.machine_id = 0  # use "Fake" for now
@@ -43,20 +45,20 @@ def make_sigproc_obj(filfile, y, nchans, chan_freq, nstart):
     fil_obj.data_type = 0
 
     fil_obj.nchans = nchans
-    fil_obj.foff = y.your_header.foff
+    fil_obj.foff = your_object.your_header.foff
     fil_obj.fch1 = chan_freq[0]
     fil_obj.nbeams = 1
     fil_obj.ibeam = 0
-    fil_obj.nbits = y.your_header.nbits
-    fil_obj.tsamp = y.your_header.tsamp
+    fil_obj.nbits = your_object.your_header.nbits
+    fil_obj.tsamp = your_object.your_header.tsamp
     if not nstart:
         nstart = 0
-    fil_obj.tstart = y.your_header.tstart + nstart * y.your_header.tsamp / (60 * 60 * 24)
+    fil_obj.tstart = your_object.your_header.tstart + nstart * your_object.your_header.tsamp / (60 * 60 * 24)
     fil_obj.nifs = 1  # Only use Intensity values
 
-    if y.your_header.ra_deg and y.your_header.dec_deg:
-        ra = y.your_header.ra_deg
-        dec = y.your_header.dec_deg
+    if your_object.your_header.ra_deg and your_object.your_header.dec_deg:
+        ra = your_object.your_header.ra_deg
+        dec = your_object.your_header.dec_deg
     else:
         ra = 0
         dec = 0
@@ -74,7 +76,7 @@ def make_sigproc_obj(filfile, y, nchans, chan_freq, nstart):
     return fil_obj
 
 
-def write_fil(data, y, nchans=None, chan_freq=None, filename=None, outdir=None, nstart=None):
+def write_fil(data, your_object, nchans=None, chan_freq=None, filename=None, outdir=None, nstart=None):
     """
     Write Filterbank file given the Your object
 
@@ -82,7 +84,7 @@ def write_fil(data, y, nchans=None, chan_freq=None, filename=None, outdir=None, 
 
         data: Data to write to the Filterbank file
 
-        y: Your object for the PSRFITS files
+        your_object: Your object for the PSRFITS files
 
         nchans: No. of channels in the frequency range
 
@@ -108,13 +110,13 @@ def write_fil(data, y, nchans=None, chan_freq=None, filename=None, outdir=None, 
         else:
             logger.warning(f'Filterbank file already exists at {filfile}')
             logger.info('Size of the Filerbank file is too small. Overwriting it.')
-            fil_obj = make_sigproc_obj(filfile, y, nchans, chan_freq, nstart)
+            fil_obj = make_sigproc_obj(filfile, your_object, nchans, chan_freq, nstart)
             fil_obj.write_header(filfile)
             logger.info(f'Writing {data.shape[0]} spectra to file: {filfile}')
             fil_obj.append_spectra(data, filfile)
     except FileNotFoundError:
         logger.info(f'Output file does not already exist. Creating a new Filterbank file.')
-        fil_obj = make_sigproc_obj(filfile, y, nchans, chan_freq, nstart)
+        fil_obj = make_sigproc_obj(filfile, your_object, nchans, chan_freq, nstart)
         fil_obj.write_header(filfile)
         logger.info(f'Writing {data.shape[0]} spectra to file: {filfile}')
         fil_obj.append_spectra(data, filfile)

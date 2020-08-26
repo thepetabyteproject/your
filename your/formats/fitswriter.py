@@ -127,7 +127,7 @@ class ObsInfo(object):
         p_hdr["NRCVR"] = (1, "Number of receiver polarisation channels     ")
         p_hdr["FD_POLN"] = ('CIRC', "LIN or CIRC                                  ")
         p_hdr["FD_HAND"] = (-1, "+/- 1. +1 is LIN:A=X,B=Y, CIRC:A=L,B=R (I)   ")
-        p_hdr["FD_SANG"] = (45.0, "[deg] FA of E vect for equal sig in A&B (E)  ")
+        p_hdr["FD_SANG"] = (45.0, "[deg] FA of E vect for equal sigma in A&B (E)  ")
         p_hdr["FD_XYPH"] = (0.0, "[deg] Phase of A^* B for injected cal (E)    ")
         p_hdr["BACKEND"] = ('YUPPI', "Backend ID                                   ")
         p_hdr["BECONFIG"] = ('N/A', "Backend configuration file name              ")
@@ -187,7 +187,7 @@ class ObsInfo(object):
         return t_hdr
 
 
-def initialize_psrfits(outfile, y, npsub=-1, nstart=None, nsamp=None, chan_freqs=None):
+def initialize_psrfits(outfile, your_object, npsub=-1, nstart=None, nsamp=None, chan_freqs=None):
     """
     Set up a PSRFITS file with everything set up EXCEPT
     the DATA.
@@ -196,7 +196,7 @@ def initialize_psrfits(outfile, y, npsub=-1, nstart=None, nsamp=None, chan_freqs
 
         outfile: path to the output fits file to write to
 
-        y: your object with the input Filterbank file
+        your_object: your object with the input Filterbank file
 
         npsub: number of spectra in a subint
 
@@ -210,40 +210,40 @@ def initialize_psrfits(outfile, y, npsub=-1, nstart=None, nsamp=None, chan_freqs
 
     # Obs Specific Metadata
     # Time Info
-    nbits = y.your_header.nbits
-    mjd = y.your_header.tstart
-    tsamp = y.your_header.tsamp  # seconds
+    nbits = your_object.your_header.nbits
+    mjd = your_object.your_header.tstart
+    tsamp = your_object.your_header.tsamp  # seconds
 
     if nsamp:
         nsamps = nsamp
     else:
-        nsamps = y.your_header.nspectra
+        nsamps = your_object.your_header.nspectra
 
     if nstart:
         mjd += nstart * tsamp / (24 * 60 * 60)
-        if nstart + nsamps > y.your_header.nspectra:
+        if nstart + nsamps > your_object.your_header.nspectra:
             logging.warning('Data requested exceeds the length of file. Reading data till end of file.')
-            nsamps = y.your_header.nspectra - nstart
+            nsamps = your_object.your_header.nspectra - nstart
 
     # Frequency Info (All freqs in MHz)
     if not chan_freqs.all():
-        chan_freqs = y.chan_freqs
+        chan_freqs = your_object.chan_freqs
     nchans = len(chan_freqs)
     fch1 = chan_freqs[0]
-    foff = y.your_header.foff
+    foff = your_object.your_header.foff
 
     freqs = fch1 + np.arange(nchans) * foff
     fcenter = fch1 + nchans * foff / 2
 
-    nifs = y.your_header.npol
+    nifs = your_object.your_header.npol
     # Source Info
-    src_name = y.your_header.source_name
+    src_name = your_object.your_header.source_name
 
     from astropy.coordinates import SkyCoord
 
-    if y.your_header.ra_deg and y.your_header.dec_deg:
-        ra = y.your_header.ra_deg
-        dec = y.your_header.dec_deg
+    if your_object.your_header.ra_deg and your_object.your_header.dec_deg:
+        ra = your_object.your_header.ra_deg
+        dec = your_object.your_header.dec_deg
     else:
         ra = 0
         dec = 0
@@ -297,12 +297,12 @@ def initialize_psrfits(outfile, y, npsub=-1, nstart=None, nsamp=None, chan_freqs
     phdr = d.fill_primary_header()
     thdr = d.fill_table_header()
     fits_data = fits.HDUList()
-    data = np.array([], dtype=y.your_header.dtype)
+    data = np.array([], dtype=your_object.your_header.dtype)
 
     # Prepare arrays for columns
     lst_sub = np.array([d.calc_lst(mjd + tsub / (24. * 3600.0), d.longitude) for tsub in offs_sub], dtype=np.float64)
-    ra_deg, dec_deg = y.your_header.ra_deg, y.your_header.dec_deg
-    l_deg, b_deg = y.your_header.gl, y.your_header.gb
+    ra_deg, dec_deg = your_object.your_header.ra_deg, your_object.your_header.dec_deg
+    l_deg, b_deg = your_object.your_header.gl, your_object.your_header.gb
     ra_sub = np.ones(n_subints, dtype=np.float64) * ra_deg
     dec_sub = np.ones(n_subints, dtype=np.float64) * dec_deg
     glon_sub = np.ones(n_subints, dtype=np.float64) * l_deg
@@ -314,9 +314,9 @@ def initialize_psrfits(outfile, y, npsub=-1, nstart=None, nsamp=None, chan_freqs
     tel_zen = np.zeros(n_subints, dtype=np.float32)
     dat_freq = np.vstack([freqs] * n_subints).astype(np.float32)
 
-    dat_wts = np.ones((n_subints, nchans), dtype=y.your_header.dtype)
-    dat_offs = np.zeros((n_subints, nchans), dtype=y.your_header.dtype)
-    dat_scl = np.ones((n_subints, nchans), dtype=y.your_header.dtype)
+    dat_wts = np.ones((n_subints, nchans), dtype=your_object.your_header.dtype)
+    dat_offs = np.zeros((n_subints, nchans), dtype=your_object.your_header.dtype)
+    dat_scl = np.ones((n_subints, nchans), dtype=your_object.your_header.dtype)
 
     # https://het.as.utexas.edu/HET/Software/Astropy-1.0/_modules/astropy/io/fits/column.html
     # mapping from TFORM data type to numpy data type (code)
@@ -331,7 +331,7 @@ def initialize_psrfits(outfile, y, npsub=-1, nstart=None, nsamp=None, chan_freqs
     # M: Double-precision Complex
     # A: Character
 
-    dtype = y.your_header.dtype
+    dtype = your_object.your_header.dtype
     if dtype == np.uint8:
         data_format = 'B'
     elif dtype == np.uint16:

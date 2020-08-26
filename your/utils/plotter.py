@@ -114,7 +114,8 @@ def plot_h5(h5_file, save=True, detrend_ft=True, publication=False, mad_filter=F
         freq_time -= np.median(freq_time)
         freq_time /= np.std(freq_time)
         fch1, foff, nchan, dm, cand_id, tsamp, dm_opt, snr, snr_opt, width = f.attrs['fch1'], \
-                                                                             f.attrs['foff'], f.attrs['nchans'], \
+                                                                             f.attrs['channel_bandwidth'], f.attrs[
+                                                                                 'nchans'], \
                                                                              f.attrs['dm'], f.attrs['cand_id'], \
                                                                              f.attrs['tsamp'], f.attrs['dm_opt'], \
                                                                              f.attrs['snr'], f.attrs['snr_opt'], \

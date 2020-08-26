@@ -17,9 +17,11 @@ if __name__ == "__main__":
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-f', '--files', help='filterbank or psrfits', nargs='+')
     parser.add_argument('-sg', '--apply_savgol', help='Apply savgol filter to zap bad channels', action='store_true')
-    parser.add_argument('-fw', '--filter_window', help='Window size (MHz) for savgol filter', required=False,
+    parser.add_argument('-frequency_window', '--filter_window', help='Window size (MHz) for savgol filter',
+                        required=False,
                         default=[15], type=float, nargs='+')
-    parser.add_argument('-sig', '--sigma', help='Sigma for the savgol filter', required=False, default=[6], type=float,
+    parser.add_argument('-sigma', '--sigma', help='Sigma for the savgol filter', required=False, default=[6],
+                        type=float,
                         nargs='+')
     parser.add_argument('-o', '--output_dir', help='Output dir for heimdall candidates', type=str, required=False,
                         default='.')
@@ -32,7 +34,7 @@ if __name__ == "__main__":
         bandpass = your_object.bandpass(nspectra=8192)
         chan_nos = np.arange(0, bandpass.shape[0], dtype=np.int)
         for fw, sig in zip(args.filter_window, args.sigma):
-            mask = savgol_filter(bandpass, your_object.your_header.foff, fw=fw, sig=sig)
+            mask = savgol_filter(bandpass, your_object.your_header.foff, frequency_window=fw, sigma=sig)
             basename = f'{args.output_dir}/{your_object.your_header.basename}_w{fw}_sig{sig}'
             save_bandpass(your_object, bandpass, chan_nos=chan_nos, mask=mask,
                           outdir=args.output_dir + '/', outname=f'{basename}_bandpass.png')
