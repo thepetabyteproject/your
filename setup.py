@@ -7,6 +7,9 @@ import your
 with open('requirements.txt') as f:
     required = f.read().splitlines()
 
+with open("README.md", "r") as f:
+    long_description = f.read()
+
 setup(
     name='your',
     version=your.__version__,
@@ -16,6 +19,8 @@ setup(
     scripts=glob.glob('bin/*'),
     tests_require=['pytest', 'pytest-cov'],
     install_requires=required,
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     author_email='da0017@mix.wvu.edu, ka0064@mix.wvu.edu',
     zip_safe=False,
     description='A unified reader for sigproc filterbank and psrfits data',
