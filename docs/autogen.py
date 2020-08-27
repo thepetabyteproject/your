@@ -115,6 +115,8 @@ doc_generator.generate("./sources")
 
 # Make readme as the start page
 shutil.copyfile("../README.md", "sources/index.md")
+shutil.copyfile("../CODE_OF_CONDUCT.md", "sources/CODE_OF_CONDUCT.md")
+shutil.copyfile("../CONTRIBUTING.md", "sources/CONTRIBUTING.md")
 
 # Make the dir for tutorials
 os.mkdir("sources/ipynb")
