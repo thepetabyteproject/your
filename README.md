@@ -28,11 +28,11 @@ pip install your
 
 
 **Note**: If you want to use dada, then you need to install [psrdada-python](https://github.com/AA-ALERT/psrdada-python). 
-[`your_heimdall.py`](https://github.com/devanshkv/your/blob/master/bin/your_heimdall.py) requires [Heimdall](https://sourceforge.net/projects/heimdall-astro/) to be installed in addition to psrdada-python. 
+[`your_heimdall.py`](https://thepetabyteproject.github.io/your/bin/your_heimdall/) requires [Heimdall](https://sourceforge.net/projects/heimdall-astro/) to be installed in addition to psrdada-python. 
 
 
 # Documentation
-Have a look at our [docs](https://devanshkv.github.io/your/) for the documentation.
+Have a look at our [docs](https://thepetabyteproject.github.io/your/) for the documentation.
 
 # Tutorials
 Here are some [tutorial notebooks](https://github.com/devanshkv/your/tree/master/examples) to get you started.
