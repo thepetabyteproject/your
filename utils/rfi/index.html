@@ -490,6 +490,27 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#sk_filter" class="md-nav__link">
+    sk_filter
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calc_n" class="md-nav__link">
+    calc_N
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sk_sg_filter" class="md-nav__link">
+    sk_sg_filter
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -754,6 +775,27 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#sk_filter" class="md-nav__link">
+    sk_filter
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calc_n" class="md-nav__link">
+    calc_N
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sk_sg_filter" class="md-nav__link">
+    sk_sg_filter
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -816,6 +858,85 @@ d (float): shape factor
 
 <p>Returns:</p>
 <div class="codehilite"><pre><span></span><code> numpy.ndarray: Spectral Kurtosis along frequency axis
+</code></pre></div>
+
+
+<hr />
+<h3 id="sk_filter">sk_filter</h3>
+<div class="codehilite"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">rfi</span><span class="o">.</span><span class="n">sk_filter</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">foff</span><span class="p">,</span> <span class="n">nchans</span><span class="p">,</span> <span class="n">tsamp</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p>Apply Spectral Kurtosis filter to the data</p>
+<p>Args:</p>
+<div class="codehilite"><pre><span></span><code>data (numpy.ndarray): 2D frequency time data
+
+foff (float): channel bandwidth (MHz)
+
+nchans (int): number of channels
+
+tsamp (float): sampling time (seconds)
+
+N (int): Number of accumulations on the FPGA
+
+d (float): shape factor
+
+sigma (float): sigma value to apply cutoff on
+</code></pre></div>
+
+
+<p>Returns:</p>
+<div class="codehilite"><pre><span></span><code> numpy.ndarray: mask for channels
+</code></pre></div>
+
+
+<hr />
+<h3 id="calc_n">calc_N</h3>
+<div class="codehilite"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">rfi</span><span class="o">.</span><span class="n">calc_N</span><span class="p">(</span><span class="n">channel_bandwidth</span><span class="p">,</span> <span class="n">nchans</span><span class="p">,</span> <span class="n">tsamp</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p>Calculates number of accumulations on FPGA</p>
+<p>Args:</p>
+<div class="codehilite"><pre><span></span><code>channel_bandwidth (float): channel bandwidth (MHz)
+
+nchans (int): number of channels
+
+tsamp (float): sampling time (seconds)
+</code></pre></div>
+
+
+<p>Returns:</p>
+<div class="codehilite"><pre><span></span><code>int: FPGA accumulation length
+</code></pre></div>
+
+
+<hr />
+<h3 id="sk_sg_filter">sk_sg_filter</h3>
+<div class="codehilite"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">rfi</span><span class="o">.</span><span class="n">sk_sg_filter</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span> <span class="n">your_object</span><span class="p">,</span> <span class="n">nchans</span><span class="p">,</span> <span class="n">spectral_kurtosis_sigma</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">savgol_frequency_window</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">savgol_sigma</span><span class="o">=</span><span class="mi">5</span>
+<span class="p">)</span>
+</code></pre></div>
+
+
+<p>Apply Spectral Kurtosis and Savgol filter to the data</p>
+<p>Args:</p>
+<div class="codehilite"><pre><span></span><code>data (numpy.ndarray): 2D frequency time data
+
+your_object: Your object
+
+nchans (int): number of channels
+
+spectral_kurtosis_sigma (float): sigma value to apply cutoff on for SK filter
+
+savgol_frequency_window (float): frequency window for savgol filter(MHz)
+
+savgol_sigma (float): sigma value to apply cutoff on for savgol filter
+</code></pre></div>
+
+
+<p>Returns:</p>
+<div class="codehilite"><pre><span></span><code> numpy.ndarray: mask for channels
 </code></pre></div>
 
 

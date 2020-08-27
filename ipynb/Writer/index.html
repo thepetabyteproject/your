@@ -1973,7 +1973,7 @@ h6:hover .anchor-link {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We can write + convert files using the <a href="https://github.com/devanshkv/your/blob/master/your/writer.py">Writer</a> class in <code>Your</code>. Let's read a PSRFITS file and write out a PSRFITS and a filterbank file</p>
+<p>We can write + convert files using the <a href="https://thepetabyteproject.github.io/your/writer/#writer">Writer</a> class in <a href="https://thepetabyteproject.github.io/your/your/#your">Your</a>. Let's read a PSRFITS file and write out a PSRFITS and a filterbank file</p>
 
 </div>
 </div>
@@ -2032,7 +2032,7 @@ h6:hover .anchor-link {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="writing-filterbanks">Writing Filterbanks<a class="anchor-link" href="#Writing-Filterbanks">&#182;</a></h2><p>To write a filterbank we use the <a href="https://devanshkv.github.io/your/writer/#to_fil"><code>to_fil</code></a> method,</p>
+<h2 id="writing-filterbanks">Writing Filterbanks<a class="anchor-link" href="#Writing-Filterbanks">&#182;</a></h2><p>To write a filterbank we use the <a href="https://thepetabyteproject.github.io/your/writer/#to_fil"><code>to_fil</code></a> method,</p>
 
 </div>
 </div>
@@ -2063,12 +2063,11 @@ h6:hover .anchor-link {
 
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>2020-08-26 18:48:21,743 - your.writer - MainThread - INFO - Writing data from spectra 0-10 in the frequency channel range 10-100 to filterbank
-2020-08-26 18:48:21,752 - your.formats.filwriter - MainThread - INFO - Trying to write data to filterbank file: ./filfromfits_28.fil
-2020-08-26 18:48:21,755 - your.formats.filwriter - MainThread - WARNING - Filterbank file already exists at ./filfromfits_28.fil
-2020-08-26 18:48:21,756 - your.formats.filwriter - MainThread - INFO - Size of the Filerbank file is too small. Overwriting it.
-2020-08-26 18:48:21,780 - your.formats.filwriter - MainThread - INFO - Writing 10 spectra to file: ./filfromfits_28.fil
-2020-08-26 18:48:21,783 - your.formats.filwriter - MainThread - INFO - Successfully written data to Filterbank file: ./filfromfits_28.fil
+<pre>2020-08-26 20:02:54,109 - your.writer - MainThread - INFO - Writing data from spectra 0-10 in the frequency channel range 10-100 to filterbank
+2020-08-26 20:02:54,112 - your.formats.filwriter - MainThread - INFO - Trying to write data to filterbank file: ./filfromfits_28.fil
+2020-08-26 20:02:54,118 - your.formats.filwriter - MainThread - INFO - Output file does not already exist. Creating a new Filterbank file.
+2020-08-26 20:02:54,157 - your.formats.filwriter - MainThread - INFO - Writing 10 spectra to file: ./filfromfits_28.fil
+2020-08-26 20:02:54,159 - your.formats.filwriter - MainThread - INFO - Successfully written data to Filterbank file: ./filfromfits_28.fil
 </pre>
 </div>
 </div>
@@ -2080,7 +2079,7 @@ h6:hover .anchor-link {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We can just read this Filterbank using <a href="https://github.com/devanshkv/your/blob/master/your/your.py">Your</a> to make sure that the header parameters and the data are correctly written.</p>
+<p>We can just read this Filterbank using <a href="https://thepetabyteproject.github.io/your/your/#your">Your</a> to make sure that the header parameters and the data are correctly written.</p>
 
 </div>
 </div>
@@ -2273,7 +2272,7 @@ and select some channels</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>To write a PSRFITS we use the <a href="https://devanshkv.github.io/your/writer/#to_fits"><code>to_fits</code></a> method,</p>
+<p>To write a PSRFITS we use the <a href="https://thepetabyteproject.github.io/your/writer/#to_fits"><code>to_fits</code></a> method,</p>
 
 </div>
 </div>
@@ -2304,8 +2303,8 @@ and select some channels</p>
 
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>2020-08-26 18:48:22,012 - root - MainThread - INFO - ObsInfo updated with relevant parameters
-2020-08-26 18:48:22,026 - your.formats.fitswriter - MainThread - INFO - Setting the following info to be written in ./fitsfromfits_28.fits 
+<pre>2020-08-26 20:02:54,342 - root - MainThread - INFO - ObsInfo updated with relevant parameters
+2020-08-26 20:02:54,357 - your.formats.fitswriter - MainThread - INFO - Setting the following info to be written in ./fitsfromfits_28.fits 
  {
     &#34;ant_x&#34;: -1601185.63,
     &#34;ant_y&#34;: -5041978.15,
@@ -2318,7 +2317,7 @@ and select some channels</p>
     &#34;dec_str&#34;: &#34;13:57:52.1120&#34;,
     &#34;dt&#34;: 0.00126646875,
     &#34;fcenter&#34;: 1415.0,
-    &#34;file_date&#34;: &#34;2020-08-26T22:48:21&#34;,
+    &#34;file_date&#34;: &#34;2020-08-27T00:02:54&#34;,
     &#34;longitude&#34;: -107.61833443381258,
     &#34;nbits&#34;: 8,
     &#34;nchan&#34;: 100,
@@ -2336,13 +2335,13 @@ and select some channels</p>
     &#34;stt_smjd&#34;: 53595,
     &#34;telescope&#34;: &#34;VLA&#34;
 }
-2020-08-26 18:48:22,073 - root - MainThread - INFO - Building the PSRFITS table
-2020-08-26 18:48:22,153 - root - MainThread - INFO - Writing PSRFITS table to file: ./fitsfromfits_28.fits
-2020-08-26 18:48:22,292 - root - MainThread - INFO - Header information written in ./fitsfromfits_28.fits
-2020-08-26 18:48:22,295 - your.writer - MainThread - INFO - Filling PSRFITS file with data
-2020-08-26 18:48:22,367 - your.writer - MainThread - INFO - Number of subints to write 1
-2020-08-26 18:48:22,369 - your.writer - MainThread - INFO - Writing data to ./fitsfromfits_28.fits from subint = 0 to 1.
-2020-08-26 18:48:23,076 - your.writer - MainThread - INFO - All spectra written to ./fitsfromfits_28.fits
+2020-08-26 20:02:54,378 - root - MainThread - INFO - Building the PSRFITS table
+2020-08-26 20:02:54,461 - root - MainThread - INFO - Writing PSRFITS table to file: ./fitsfromfits_28.fits
+2020-08-26 20:02:54,530 - root - MainThread - INFO - Header information written in ./fitsfromfits_28.fits
+2020-08-26 20:02:54,532 - your.writer - MainThread - INFO - Filling PSRFITS file with data
+2020-08-26 20:02:54,605 - your.writer - MainThread - INFO - Number of subints to write 1
+2020-08-26 20:02:54,623 - your.writer - MainThread - INFO - Writing data to ./fitsfromfits_28.fits from subint = 0 to 1.
+2020-08-26 20:02:55,469 - your.writer - MainThread - INFO - All spectra written to ./fitsfromfits_28.fits
 </pre>
 </div>
 </div>
@@ -2354,7 +2353,7 @@ and select some channels</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Similar to reading the PSRFITS file, we can also read a filterbank file and convert to both formats by first defining a <a href="https://devanshkv.github.io/your/writer/"><code>writer_object</code></a> and using the <a href="https://devanshkv.github.io/your/writer/#to_fits"><code>to_fits</code></a> and <a href="https://devanshkv.github.io/your/writer/#to_fil"><code>to_fil</code></a> methods.</p>
+<p>Similar to reading the PSRFITS file, we can also read a filterbank file and convert to both formats by first defining a <a href="https://thepetabyteproject.github.io/your/writer/"><code>writer_object</code></a> and using the <a href="https://thepetabyteproject.github.io/your/writer/#to_fits"><code>to_fits</code></a> and <a href="https://thepetabyteproject.github.io/your/writer/#to_fil"><code>to_fil</code></a> methods.</p>
 
 </div>
 </div>
