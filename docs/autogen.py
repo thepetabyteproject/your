@@ -109,19 +109,25 @@ pages = {
     ],
 }
 
+# Generate documentation from the installed package
 doc_generator = DocumentationGenerator(pages)
 doc_generator.generate("./sources")
 
+# Make readme as the start page
 shutil.copyfile("../README.md", "sources/index.md")
 
+# Make the dir for tutorials
 os.mkdir("sources/ipynb")
 for nb in glob.glob("../examples/*ipynb"):
     file_name = os.path.basename(nb)
     os.symlink(os.path.abspath(nb), "sources/ipynb/" + file_name)
 
+# make the dir for bin files and run argmark
 os.mkdir("sources/bin")
 
 os.system(f"cd sources/bin; argmark -f ../../../bin/*py; cd ../")
+
+# From the bin/*.md files make a table
 
 mdFile = MdUtils(file_name="sources/cli", title="Command Line Interface")
 mdFile.new_header(level=1, title="Overview")

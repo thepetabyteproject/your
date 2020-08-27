@@ -5,8 +5,10 @@ Our documentation uses extended Markdown, as implemented by [MkDocs](http://mkdo
 
 ## Building the documentation
 
-- Install keras-autodoc: `pip install keras-autodoc`
+- Install requirements: `pip install -r requirements.txt`
 - From the root directory, `cd` into the `docs/` folder and run:
     - `python autogen.py`
     - `mkdocs serve`    # Starts a local webserver:  [localhost:8000](http://localhost:8000)
     - `mkdocs build`    # Builds a static site in `site/` directory
+    - `mkdocs gh-deploy` # To deploy the docs online
+    
