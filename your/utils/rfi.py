@@ -1,9 +1,8 @@
-import logging
 
 import numpy as np
 from scipy import stats
 from scipy.signal import savgol_filter as sg
-
+import logging
 logger = logging.getLogger(__name__)
 
 
@@ -47,7 +46,6 @@ def spectral_kurtosis(data, N=1, d=None):
         d (float): shape factor
 
 
-    Returns:
 
          numpy.ndarray: Spectral Kurtosis along frequency axis
 
@@ -149,13 +147,13 @@ def sk_sg_filter(data, your_object, nchans, spectral_kurtosis_sigma=6, savgol_fr
          numpy.ndarray: mask for channels
 
     """
-
+    
     logger.info(f'Applying spectral kurtosis filter with sigma={spectral_kurtosis_sigma}')
-    sk_mask = sk_filter(data, foff=your_object.your_header.foff, nchans=nchans, tsamp=your_object.your_header.tsamp,
+    sk_mask = sk_filter(data=data, channel_bandwidth=your_object.your_header.foff, nchans=nchans, tsamp=your_object.your_header.tsamp,
                         sigma=spectral_kurtosis_sigma)
     bp = data.sum(0)[~sk_mask]
     logger.info(f'Applying savgol filter with frequency_window={savgol_frequency_window} and sigma={savgol_sigma}')
-    sg_mask = savgol_filter(bp, your_object.your_header.foff, frequency_window=savgol_frequency_window,
+    sg_mask = savgol_filter(bandpass=bp, channel_bandwidth=your_object.your_header.foff, frequency_window=savgol_frequency_window,
                             sigma=savgol_sigma)
     mask = np.zeros(data.shape[1], dtype=np.bool)
     mask[sk_mask] = True
