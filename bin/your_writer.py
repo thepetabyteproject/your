@@ -59,8 +59,10 @@ if __name__ == '__main__':
     y = Your(values.files)
     w = Writer(y, c_min=values.chans[0], c_max=values.chans[1], nstart=values.nstart, nsamp=values.nsamp,
                outdir=values.outdir, outname=values.out_name,
-               progress=values.no_progress, flag_rfi=values.flag_rfi, sk_sig=values.sk_sig, sg_fw=values.sg_fw,
-               sg_sig=values.sg_sig, zero_dm_subt=values.zero_dm_subt)
+               progress=values.no_progress, flag_rfi=values.flag_rfi,
+               spectral_kurtosis_sigma=values.spectral_kurtosis_sigma,
+               savgol_frequency_window=values.savgol_frequency_window,
+               savgol_sigma=values.savgol_sigma, zero_dm_subt=values.zero_dm_subt)
 
     if values.type == 'fits':
         w.to_fits()
