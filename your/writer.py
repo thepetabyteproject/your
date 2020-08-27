@@ -20,7 +20,7 @@ class Writer:
 
     Args:
 
-        y: Your object
+        your_object: Your object
 
         nstart: Start sample to read from
 
