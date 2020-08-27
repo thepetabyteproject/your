@@ -1,13 +1,19 @@
 # your
 
-[![Issues](https://img.shields.io/github/issues/devanshkv/your?style=flat-square)](https://github.com/devanshkv/your/issues)
-[![Forks](https://img.shields.io/github/forks/devanshkv/your?style=flat-square)](https://github.com/devanshkv/your/network/members)
-[![Stars](https://img.shields.io/github/stars/devanshkv/your?style=flat-square)](https://github.com/devanshkv/your/stargazers)
-[![License](https://img.shields.io/github/license/devanshkv/your?style=flat-square)](https://github.com/devanshkv/your/blob/master/LICENSE)
-[![Tweet](https://img.shields.io/twitter/url?url=https%3A%2F%2Fgithub.com%2Fdevanshkv%2Fyour)]()
+  
+[![GitHub issues](https://img.shields.io/github/issues/thepetabyteproject/your?style=flat-square)](https://github.com/thepetabyteproject/your/issues)
+[![GitHub forks](https://img.shields.io/github/forks/thepetabyteproject/your?style=flat-square)](https://github.com/thepetabyteproject/your/network)
+[![GitHub stars](https://img.shields.io/github/stars/thepetabyteproject/your?style=flat-square)](https://github.com/thepetabyteproject/your/stargazers)
+[![GitHub license](https://img.shields.io/github/license/thepetabyteproject/your?style=flat-square)](https://github.com/thepetabyteproject/your/blob/master/LICENSE)
 [![HitCount](http://hits.dwyl.com/devanshkv/your.svg)](http://hits.dwyl.com/devanshkv/your)
-[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fdevanshkv%2Fyour%2Fbadge&style=flat-square)](https://github.com/devanshkv/your/actions)
-[![codecov](https://codecov.io/gh/devanshkv/your/branch/master/graph/badge.svg?style=flat-square)](https://codecov.io/gh/devanshkv/your)
+![Python package](https://github.com/thepetabyteproject/your/workflows/Python%20package/badge.svg?style=flat-square)
+[![codecov](https://codecov.io/gh/thepetabyteproject/your/branch/master/graph/badge.svg?style=flat-square)](https://codecov.io/gh/thepetabyteproject/your)
+
+
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/your?style=flat-square)
+![PyPI](https://img.shields.io/pypi/v/your?style=flat-square)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/your?style=flat-square)
+  
 
 
 `your` stands for Your Unified Reader. This library can read data in sigproc filterbanks, psrfits, and psrdada formats in a unified way and can go from one format to another.
@@ -21,18 +27,25 @@
 The inspiration for the name comes from the introduction of every [Daily Dose of Internet](https://www.youtube.com/channel/UCdC0An4ZPNr_YiFiYoVbwaw) video.
 
 # Installation
-Here is how you can install `your`:
+You can install `your` directly using `pip`
 
-    git clone https://github.com/devanshkv/your.git
-    cd your
-    python setup.py install
+```bash
+pip install your
+```
+Or if you want to try out the lastest stuff,
+```bash
+pip install git+https://github.com/thepetabyteproject/your.git
+```
 
-**Note** If you want to use dada, then you need to install [psrdada-python](https://github.com/AA-ALERT/psrdada-python). 
-[`your_heimdall.py`](https://github.com/devanshkv/your/blob/master/bin/your_heimdall.py) requires [Heimdall](https://sourceforge.net/projects/heimdall-astro/) to be installed in addition to psrdada-python. 
+
+
+**Note**:
+To use `psrdada`, you would need to install [psrdada-python](https://github.com/AA-ALERT/psrdada-python). 
+[`your_heimdall.py`](https://thepetabyteproject.github.io/your/bin/your_heimdall/) requires [Heimdall](https://sourceforge.net/projects/heimdall-astro/) and [psrdada-python](https://github.com/AA-ALERT/psrdada-python). 
 
 
 # Documentation
-Have a look at our [docs](https://devanshkv.github.io/your/) for the documentation.
+Have a look at our [docs](https://thepetabyteproject.github.io/your/) for the documentation.
 
 # Tutorials
 Here are some [tutorial notebooks](https://github.com/devanshkv/your/tree/master/examples) to get you started.
