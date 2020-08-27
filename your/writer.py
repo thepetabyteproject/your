@@ -87,6 +87,10 @@ class Writer:
         if not self.outdir:
             self.outdir = original_dir
 
+        logging.debug("Writer Attributes:-")
+        for arg, value in sorted(vars(self).items()):
+            logging.debug("Attribute %s: %r", arg, value)
+
     @property
     def chan_min(self):
         if self.c_min:
@@ -158,11 +162,13 @@ class Writer:
             nloops = 1 + self.nsamp // interval
         else:
             nloops = 1
-        nstarts = np.arange(self.nstart, interval * nloops, interval, dtype=int)
+        nstarts = np.arange(self.nstart, self.nstart + interval * nloops, interval, dtype=int)
         nsamps = np.full(nloops, interval)
         if nsamps % interval != 0:
             nsamps = np.append(nsamps, [nsamps % interval])
 
+        logging.debug(f'nstarts is {nstarts}, nsamps is {nsamps}, nloops is {nloops}, interval is {interval}, '
+                      f'nstart is {self.nstart}')
         # Read data
         for st, samp in tqdm.tqdm(zip(nstarts, nsamps), total=len(nstarts), disable=self.progress):
             logger.debug(f'Reading spectra {st}-{st + samp} in file {self.your_obj.your_header.filename}')
