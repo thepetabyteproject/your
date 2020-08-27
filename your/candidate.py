@@ -132,7 +132,7 @@ class Candidate(Your):
 
         return 4148808.0 * dms * (1 / np.min(self.chan_freqs) ** 2 - 1 / np.max(self.chan_freqs) ** 2) / 1000
 
-    def get_chunk(self, tstart=None, tstop=None):
+    def get_chunk(self, tstart=None, tstop=None, for_preprocessing=True):
         """
         Get a chunk of data. The data is saved in `self.data`.
 
@@ -140,38 +140,66 @@ class Candidate(Your):
 
             tstart (float): start time of the chunk in seconds
 
-            tstop (float): stop time of the chunk in secons
+            tstop (float): stop time of the chunk in seconds
+
+            for_preprocessing (bool): if the data is to be preprocessed later. This will modify the number of samples
+            read based on the width of the candidate
 
         """
         if tstart is None:
             tstart = self.tcand - self.dispersion_delay() - self.width * self.native_tsamp
-            if tstart < 0:
-                tstart = 0
         if tstop is None:
             tstop = self.tcand + self.dispersion_delay() + self.width * self.native_tsamp
-            if tstop > self.tend:
-                tstop = self.tend
+
         nstart = int(tstart / self.native_tsamp)
         nsamp = int((tstop - tstart) / self.native_tsamp)
-        if self.width < 2:
-            nchunk = self.min_samp
-        else:
-            nchunk = self.width * self.min_samp // 2
-        if nsamp < nchunk:
-            # if number of time samples less than nchunk, make it min_samp.
-            nstart -= (nchunk - nsamp) // 2
-            nsamp = nchunk
-        if nstart < 0:
-            self.data = self.get_data(nstart=0, nsamp=nsamp + nstart)
-            logger.debug('median padding data as nstart < 0')
-            self.data = pad_along_axis(self.data, nsamp, loc='start', axis=0, mode='median')
-        elif nstart + nsamp > self.your_header.nspectra:
-            self.data = self.get_data(nstart=nstart, nsamp=self.your_header.nspectra - nstart)
-            logger.debug('median padding data as nstop > nspectra')
-            self.data = pad_along_axis(self.data, nsamp, loc='end', axis=0, mode='median')
-        else:
-            self.data = self.get_data(nstart=nstart, nsamp=nsamp)
+        nsamp_read = nsamp
 
+        if for_preprocessing:
+            if self.width > 2:
+                nsamp_read *= self.width // 2
+            if nsamp_read < self.min_samp:
+                nsamp_read = self.min_samp
+                nstart_read = nstart - (nsamp_read - nsamp) // 2
+            else:
+                nstart_read = nstart
+        else:
+            nstart_read = nstart
+        logging.debug(f'nstart_read is {nstart_read}, nsamp_read is {nsamp_read},'
+                      f' nstart is {nstart}, nsamp is {nsamp}')
+
+        nspectra = int(self.your_header.nspectra)
+        if nstart_read >= 0 and nstart_read + nsamp_read <= nspectra:
+            logging.debug(f'nstart_read({nstart_read})>=0 and '
+                          f'nstart_read({nstart_read})+nsamp_read({nsamp_read})<=nspectra({nspectra})')
+            data = self.get_data(nstart=nstart_read, nsamp=nsamp_read)
+        elif nstart_read < 0:
+            if nstart_read + nsamp_read <= nspectra:
+                logging.debug(f'nstart_read({nstart_read})<0 and nstart_read({nstart_read})'
+                              f'+nsamp_read({nsamp_read})<=nspectra({nspectra})')
+                logging.debug('Padding with median in the beginning')
+                d = self.get_data(nstart=0, nsamp=nsamp_read + nstart_read)
+                dmedian = np.median(d, axis=0)
+                data = np.ones((nsamp_read, self.your_header.nchans)) * dmedian[None, :]
+                data[-nstart_read:, :] = d
+            else:
+                logging.debug(f'nstart_read({nstart_read})<0 and nstart_read({nstart_read})'
+                              f'+nsamp_read({nsamp_read})>nspectra({nspectra})')
+                logging.debug('Padding with median in the beginning and the end')
+                d = self.get_data(nstart=0, nsamp=nspectra)
+                dmedian = np.median(d, axis=0)
+                data = np.ones((nsamp_read, self.your_header.nchans)) * dmedian[None, :]
+                data[-nstart_read:-nstart_read + nspectra, :] = d
+        else:
+            logging.debug(f'nstart_read({nstart_read})>=0 and nstart_read({nstart_read})'
+                          f'+nsamp_read({nsamp_read})>nspectra({nspectra})')
+            logging.debug('Padding with median in the end')
+            d = self.get_data(nstart=nstart_read, nsamp=nspectra - nstart_read)
+            dmedian = np.median(d, axis=0)
+            data = np.ones((nsamp_read, self.your_header.nchans)) * dmedian[None, :]
+            data[:nspectra - nstart_read, :] = d
+
+        self.data = data
         if self.kill_mask is not None:
             assert len(self.kill_mask) == self.data.shape[1]
             data_copy = self.data.copy()
