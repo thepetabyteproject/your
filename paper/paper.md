@@ -88,8 +88,8 @@ software [`Heimdall`](https://sourceforge.net/projects/heimdall-astro/) [@barsde
 have to face a significant bottleneck to understand various data formats and develop custom tools
 to access the data before any analysis can be done on it. Moreover, `Your` is written purely in python, which is a 
 commonly used language within Astronomy. It also comes with comprehensive 
-[documentation](https://devanshkv.github.io/your/) and 
-[example notebooks](https://github.com/devanshkv/your/tree/master/examples) to make it easier to get started.
+[documentation](https://thepetabyteproject.github.io/your/) and 
+[example notebooks](https://github.com/thepetabyteproject/your/tree/master/examples) to make it easier to get started.
  
 
 `Your` uses the matplotlib library [@Hunter:2007] for plotting, and also makes use of various 
