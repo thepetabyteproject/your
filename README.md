@@ -27,7 +27,7 @@ Here is how you can install `your`:
     cd your
     python setup.py install
 
-If you want to use dada, then you need to install [psrdada-python](https://github.com/AA-ALERT/psrdada-python). 
+**Note** If you want to use dada, then you need to install [psrdada-python](https://github.com/AA-ALERT/psrdada-python). 
 [`your_heimdall.py`](https://github.com/devanshkv/your/blob/master/bin/your_heimdall.py) requires [Heimdall](https://sourceforge.net/projects/heimdall-astro/) to be installed in addition to psrdada-python. 
 
 
@@ -36,4 +36,7 @@ Have a look at our [docs](https://devanshkv.github.io/your/) for the documentati
 
 # Tutorials
 Here are some [tutorial notebooks](https://github.com/devanshkv/your/tree/master/examples) to get you started.
+
+# Code Contributions
+We welcome all types of code contribution. Please have a look at our [guideline](CONTRIBUTING.md) and [code of conduct](CODE_OF_CONDUCT.md).
 

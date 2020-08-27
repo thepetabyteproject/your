@@ -11,7 +11,7 @@ theme:
     - search.highlight
 
 repo_name: your
-repo_url: https://github.com/devanshkv/your
+repo_url: https://github.com/thepetabyteproject/your
 
 nav:
   - Getting Started: index.md
@@ -51,10 +51,12 @@ nav:
           - your_viewer.py: bin/your_viewer.md
 
 plugins:
-  - mkdocs-jupyter
-  - git-revision-date:
+  - mkdocs-jupyter:
+      include_source: True
+
 
 markdown_extensions:
+  - admonition
   - pymdownx.emoji:
       emoji_index: !!python/name:materialx.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
