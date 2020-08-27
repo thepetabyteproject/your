@@ -72,7 +72,7 @@ pages = {
     ],
     "utils/rfi.md": [
         "your.utils.rfi.savgol_filter",
-        "your.utils.rfi.spectral_kurtosis"
+        "your.utils.rfi.spectral_kurtosis",
         "your.utils.rfi.sk_filter",
         "your.utils.rfi.calc_N",
         "your.utils.rfi.sk_sg_filter"
