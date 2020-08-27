@@ -429,7 +429,7 @@ class Header:
 
     @property
     def nspectra(self):
-        return self.native_nspectra // self.time_decimation_factor
+        return int(self.native_nspectra // self.time_decimation_factor)
 
     def __repr__(self):
         property_names = [p for p in dir(self) if not p.startswith('__')]
