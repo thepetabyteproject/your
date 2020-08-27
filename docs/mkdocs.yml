@@ -6,7 +6,9 @@ site_description: 'Your Documentation'
 theme:
   name: material
   palette:
-    primary: indigo
+    primary: black
+  features:
+    - search.highlight
 
 repo_name: your
 repo_url: https://github.com/devanshkv/your
@@ -50,14 +52,17 @@ nav:
 
 plugins:
   - mkdocs-jupyter
+  - git-revision-date:
 
 markdown_extensions:
   - pymdownx.emoji:
       emoji_index: !!python/name:materialx.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
   - codehilite:
-      guess_lang: False
-      use_pygments: True
+      guess_lang: false
+      use_pygments: true
+
+
 
 google_analytics:
   - UA-167281386-1
