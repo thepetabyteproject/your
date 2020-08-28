@@ -73,7 +73,7 @@ project is going to process data in different formats from multiple telescopes w
 required to streamline the pipeline. `Your` implements a user-friendly interface to read and write in the data format 
 of choice. It also generates unified metadata corresponding to the input data file for a quick 
 understanding of observation parameters and provides utilities to perform common data analysis operations. `Your` also 
-provide several state-of-the-art radio frequency interference mitigation (RFI) algorithms [@agarwal2020; @nita2010], which 
+provides several state-of-the-art radio frequency interference mitigation (RFI) algorithms [@agarwal2020; @nita2010], which 
 can now be used during any stage of data processing (reading, writing, etc.) to filter out artificial signals.
 
 `Your` can be used at the data ingestion step of any transient search pipeline and can provide data and observation 
