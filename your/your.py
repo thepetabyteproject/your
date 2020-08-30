@@ -31,10 +31,6 @@ class Your(PsrfitsFile, SigprocFile):
 
     Attributes:
 
-        isfits (bool): your object made from fits files
-
-        isfil (bool) : your object makde from filterbank file
-
         your_header : instance of the Header class
 
     """
