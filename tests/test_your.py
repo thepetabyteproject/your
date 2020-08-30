@@ -42,13 +42,16 @@ def test_your_no_file():
     with pytest.raises(ValueError):
         Your([])
 
+    with pytest.raises(AssertionError):
+        Your("nofile.blah")
+
 
 def test_unsupported_file():
     with pytest.raises(TypeError):
-        Your("some.blah")
+        Your(os.path.join(_install_dir, 'data/some.blah'))
 
     with pytest.raises(TypeError):
-        Your(["some.blah"])
+        Your([os.path.join(_install_dir, 'data/some.blah')])
 
 
 def test_paths():
