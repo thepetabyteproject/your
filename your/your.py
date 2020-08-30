@@ -7,9 +7,13 @@ import numpy as np
 
 from your.formats.psrfits import PsrfitsFile
 from your.formats.pysigproc import SigprocFile
+from your.utils.misc import check_file_exist, MyEncoder
 
 logger = logging.getLogger(__name__)
 
+formats = {}
+formats['fil'] = SigprocFile
+formats['fits'] = PsrfitsFile
 
 class Your(PsrfitsFile, SigprocFile):
     """
@@ -39,43 +43,38 @@ class Your(PsrfitsFile, SigprocFile):
         self.your_file = file
         if isinstance(self.your_file, str):
             ext = os.path.splitext(self.your_file)[1]
+            check_file_exist(self.your_file)
             if ext == ".fits" or ext == ".sf":
-                logger.debug(f'Reading the fits file: {self.your_file}')
-                PsrfitsFile.__init__(self, psrfitslist=[self.your_file])
-                self.isfits = True
-                self.isfil = False
+                self.format = 'fits'
+                self.your_file = [self.your_file]
             elif ext == ".fil":
-                logger.debug(f'Reading filterbank file {self.your_file}')
-                SigprocFile.__init__(self, fp=self.your_file)
-                self.isfits = False
-                self.isfil = True
+                self.format = 'fil'
             else:
-                raise TypeError('Filetype not supported')
+                raise TypeError(f'Filetype {ext} not supported')
         elif isinstance(self.your_file, list):
             if len(self.your_file) == 0:
                 raise ValueError('Filelist is empty. Please check the input')
             if len(self.your_file) == 1 and os.path.splitext(*self.your_file)[1] == ".fil":
-                for filterbank_file in self.your_file:
-                    logger.debug(f'Reading filterbank file {filterbank_file}')
-                    SigprocFile.__init__(self, fp=filterbank_file)
-                    self.isfits = False
-                    self.isfil = True
+                self.format = 'fil'
+                self.your_file = self.your_file[0]
+                check_file_exist(self.your_file)
             else:
                 for f in self.your_file:
+                    check_file_exist(f)
                     ext = os.path.splitext(f)[1]
                     if ext == ".fits" or ext == ".sf":
                         pass
                     else:
                         raise TypeError("Can only work with a list of fits file or an individual filterbank file")
                 self.your_file.sort()
-                logger.debug(f'Reading the following fits files: {self.your_file}')
-                PsrfitsFile.__init__(self, psrfitslist=self.your_file)
-                self.isfits = True
-                self.isfil = False
+                self.format = 'fits'
         else:
             raise ValueError(
                 'file should be a string of input file path or a list of strings with relevant file paths.')
 
+        logger.debug(f'Reading the file(s): {self.your_file}')
+        self.formatclass = formats[self.format]
+        self.formatclass.__init__(self, self.your_file)
         if not self.source_name:
             logger.info(f'Source name not present in the file. Setting source name to TEMP')
             self.source_name = 'TEMP'
@@ -97,10 +96,7 @@ class Your(PsrfitsFile, SigprocFile):
         Returns: Native sampling time of the data in seconds
 
         """
-        if self.isfil:
-            return SigprocFile.native_tsamp(self)
-        else:
-            return PsrfitsFile.native_tsamp(self)
+        return self.formatclass.native_tsamp(self)
 
     @property
     def native_foff(self):
@@ -109,10 +105,7 @@ class Your(PsrfitsFile, SigprocFile):
         Returns: Native channel bandwidth of the data in MHz
 
         """
-        if self.isfil:
-            return SigprocFile.native_foff(self)
-        else:
-            return PsrfitsFile.native_foff(self)
+        return self.formatclass.native_foff(self)
 
     @property
     def native_nchans(self):
@@ -121,10 +114,7 @@ class Your(PsrfitsFile, SigprocFile):
         Returns: Native number of channels in the data
 
         """
-        if self.isfil:
-            return SigprocFile.native_nchans(self)
-        else:
-            return PsrfitsFile.native_nchans(self)
+        return self.formatclass.native_nchans(self)
 
     @property
     def native_nspectra(self):
@@ -133,10 +123,7 @@ class Your(PsrfitsFile, SigprocFile):
         Returns: Native number of spectra in the data.
 
         """
-        if self.isfil:
-            return SigprocFile.native_nspectra(self)
-        else:
-            return PsrfitsFile.native_nspectra(self)
+        return self.formatclass.native_nspectra(self)
 
     @property
     def tend(self):
@@ -166,7 +153,8 @@ class Your(PsrfitsFile, SigprocFile):
             if nspectra < self.your_header.native_nspectra:
                 ns = nspectra
             else:
-                logger.info(f'nspectra > number of spectra in file, generating bandpass using all available spectra.')
+                logger.info(
+                    f'nspectra > number of spectra in file, generating bandpass using all available spectra.')
                 ns = self.your_header.native_nspectra
         else:
             logger.warning(f'This will read all the data in the RAM. Might be slow as well.')
@@ -232,7 +220,7 @@ class Your(PsrfitsFile, SigprocFile):
             raise ValueError(f"pol: {pol} can only be one of 0 (Intensity), 1 (Right Circular), 2 (Left Circular), "
                              "3 (Horizontal Linear), 4 (Vertical Linear)")
 
-        if self.isfil:
+        if self.format == 'fil':
             if pol > 0:
                 logging.warning(f"pol > 0 not tested for Filterbank files.")
                 if self.your_header.npol == 0:
@@ -240,13 +228,12 @@ class Your(PsrfitsFile, SigprocFile):
                     pol = 0
                 else:
                     logging.warning(f'pol: {pol}, Assuming IQUV polarisation data in Filterbank file')
-            data = SigprocFile.get_data(self, nstart, nsamp, pol=pol)[:, 0, :]
-        else:
-            data = PsrfitsFile.get_data(self, nstart, nsamp, pol=pol)[:, 0, :]
+        data = self.formatclass.get_data(self, nstart, nsamp, pol=pol)[:, 0, :]
 
         if (self.your_header.time_decimation_factor > 1) or (self.your_header.frequency_decimation_factor > 1):
             nt, nf = data.shape
-            data = data.reshape(self.your_header.time_decimation_factor, nt // self.your_header.time_decimation_factor,
+            data = data.reshape(self.your_header.time_decimation_factor,
+                                nt // self.your_header.time_decimation_factor,
                                 nf // self.your_header.frequency_decimation_factor,
                                 self.your_header.frequency_decimation_factor)
             data = data.astype(np.float32)
@@ -279,7 +266,6 @@ class Your(PsrfitsFile, SigprocFile):
         """
         return 4148808.0 * dms * (
                 1 / np.min(self.chan_freqs) ** 2 - 1 / np.max(self.chan_freqs) ** 2) / 1000
-
 
 class Header:
     # TODO: add nbeams, ibeam, data_type, az_start, za_start, telescope, backend
@@ -334,48 +320,25 @@ class Header:
     """
 
     def __init__(self, your):
-        if your.isfil:
-            if isinstance(your.your_file, str):
-                assert os.path.isfile(your.your_file)
-                self.filelist = [your.your_file]
-                self.filename = your.your_file
-            elif isinstance(your.your_file, list):
-                self.filelist = your.your_file
-                self.filename = your.your_file[0]
-            else:
-                raise IOError("Unknown type")
-
-            self.basename = os.path.basename(os.path.splitext(self.filename)[0])
-            logger.debug(f'Generating unified header for file {self.basename}')
-            if isinstance(your.source_name, str):
-                self.source_name = your.source_name
-            else:
-                self.source_name = your.source_name.decode("utf-8")
-
-            from your.utils.astro import ra2deg
-            from your.utils.astro import dec2deg
-            if your.src_raj and your.src_dej:
-                ra = ra2deg(your.src_raj)
-                dec = dec2deg(your.src_dej)
-            else:
-                # for 174 bit header Filterbank
-                ra = None
-                dec = None
-            self.ra_deg = ra
-            self.dec_deg = dec
-            self.bw = your.nchans * your.foff
-            self.center_freq = your.fch1 + self.bw / 2
+        if isinstance(your.your_file, str):
+            self.filelist = [your.your_file]
+            self.filename = your.your_file
+        elif isinstance(your.your_file, list):
+            self.filelist = your.your_file
+            self.filename = your.your_file[0]
         else:
-            self.filelist = your.filelist
-            self.filename = your.filename
-            self.basename = os.path.basename(os.path.splitext(self.filename)[0])[:-5]
-            logger.debug(f'Generating unified header for file {self.basename}')
-            self.ra_deg = your.ra_deg
-            self.dec_deg = your.dec_deg
-            self.bw = your.bw
-            self.source_name = your.source_name
-            self.center_freq = your.cfreq
+            raise IOError("Unknown type")
 
+        self.basename = os.path.basename(os.path.splitext(self.filename)[0])
+        logger.debug(f'Generating unified header for file {self.basename}')
+        if isinstance(your.source_name, str):
+            self.source_name = your.source_name
+        else:
+            self.source_name = your.source_name.decode("utf-8")
+        self.ra_deg = your.ra_deg
+        self.dec_deg = your.dec_deg
+        self.bw = your.bw
+        self.center_freq = your.cfreq
         self.nbits = your.nbits
 
         if self.nbits <= 8:
@@ -396,9 +359,6 @@ class Header:
         self.fch1 = your.fch1
         self.npol = your.nifs
         self.tstart = your.tstart
-        self.isfits = your.isfits
-        self.isfil = your.isfil
-
         from astropy.coordinates import SkyCoord
         if self.ra_deg and self.dec_deg:
             loc = SkyCoord(self.ra_deg, self.dec_deg, unit='deg')
@@ -437,4 +397,4 @@ class Header:
         for prop in property_names:
             d[prop] = getattr(self, prop)
         d['dtype'] = d['dtype'].__name__
-        return 'Unified Header:' + json.dumps(d, indent=2)[1:-1].replace(",", "")
+        return 'Unified Header:' + json.dumps(d, cls=MyEncoder, indent=2)[1:-1].replace(",", "")
