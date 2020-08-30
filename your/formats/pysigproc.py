@@ -7,6 +7,8 @@ import sys
 from collections import OrderedDict
 
 import numpy
+from your.utils.astro import ra2deg
+from your.utils.astro import dec2deg
 
 
 class SigprocFile(object):
@@ -98,6 +100,15 @@ class SigprocFile(object):
             self.read_header(self.fp)
             self._mmdata = mmap.mmap(self.fp.fileno(), 0, mmap.MAP_PRIVATE,
                                      mmap.PROT_READ)
+
+            self.bw = self.nchans * self.foff
+            self.cfreq = self.fch1 + self.bw / 2
+            if self.src_raj and self.src_dej:
+                self.ra_deg = ra2deg(self.src_raj)
+                self.dec_deg = dec2deg(self.src_dej)
+            else:
+                self.ra_deg = None
+                self.dec_deg = None
 
     # See sigproc send_stuff.c
 
