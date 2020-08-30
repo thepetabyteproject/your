@@ -346,6 +346,7 @@ class Header:
         else:
             raise ValueError(f"Unsupported number of bits {self.nbits}")
 
+        self.format = your.format
         self.time_decimation_factor = 1
         self.frequency_decimation_factor = 1
         self.native_tsamp = your.native_tsamp

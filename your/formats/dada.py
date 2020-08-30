@@ -100,7 +100,7 @@ class YourDada:
     def __init__(self, your_object):
 
         self.your_object = your_object
-        if self.your_object.isfits:
+        if self.your_object.your_header.format == 'fits':
             logger.debug(f'Calculating dada size and data step for the fits files')
             self.list_of_subints = self.your_object.specinfo.num_subint.astype('int')
             if len(self.list_of_subints) > 1:
