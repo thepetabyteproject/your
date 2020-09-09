@@ -98,12 +98,12 @@ class Paint(Frame):
         dic['nspectra'] = self.your_obj.your_header.nspectra
         self.nice_print(dic)
 
-    def load_file(self, file_name='', start_samp=0, gulp_size=1024, chan_std=False):
+    def load_file(self, file_name=[''], start_samp=0, gulp_size=1024, chan_std=False):
         """
         Loads data from a file:
 
         Inputs:
-        file_name -- name of file to load, if none given user must use gui to give file
+        file_name -- name or list of files to load, if none given user must use gui to give file
         start_samp -- sample number where to start show the file, defaults to the beginning of the file
         gulp_size -- amount of data to show at a given time
         """
@@ -117,8 +117,8 @@ class Paint(Frame):
         self.file_name = file_name
 
         logging.info(f'Reading file {file_name}.')
-        self.master.title(file_name)
         self.your_obj = Your(file_name)
+        self.master.title(self.your_obj.your_header.basename)
         logging.info(f'Printing Header parameters')
         self.get_header()
         self.read_data()
@@ -262,7 +262,7 @@ if __name__ == '__main__':
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-f', '--files',
                         help='Fits or filterbank files to view.',
-                        required=False, default='')
+                        required=False, default=[''], nargs='+')
     parser.add_argument('-s', '--start',
                         help='Start index', type=int,
                         required=False, default=0)
