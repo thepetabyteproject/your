@@ -202,7 +202,7 @@ class Your(PsrfitsFile, SigprocFile):
 
 
         """
-        logger.debug(f"Reading from {nsamp} samples from sample {nstart}")
+        logger.debug(f"Reading {nsamp} samples from sample {nstart}")
 
         if self.your_header.time_decimation_factor != 1:
             logger.warning(f"Setting Time decimation factor to {self.your_header.time_decimation_factor},"
