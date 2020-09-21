@@ -90,7 +90,7 @@ def cand2h5(cand_val):
         kill_mask = np.zeros(cand.nchans, dtype=np.bool)
         kill_mask[kill_chans] = True
         cand.kill_mask = kill_mask
-    cand.get_chunk()
+    cand.get_chunk(for_preprocessing=True)
     if cand.isfil:
         cand.fp.close()
 
