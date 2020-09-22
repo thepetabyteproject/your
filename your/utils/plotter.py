@@ -121,7 +121,8 @@ def plot_h5(h5_file, save=True, detrend_ft=True, publication=False, mad_filter=F
                                                                              f.attrs['snr'], f.attrs['snr_opt'], \
                                                                              f.attrs['width']
         tlen = freq_time.shape[1]
-        logging.warning('Lengh of time axis is not 256. This data is probably not pre-processed.')
+        if tlen != 256:
+            logging.warning('Lengh of time axis is not 256. This data is probably not pre-processed.')
         l = np.linspace(-tlen // 2, tlen // 2, tlen)
         if width > 1:
             ts = l * tsamp * width * 1000 / 2
