@@ -156,7 +156,7 @@ class Candidate(Your):
         nsamp_read = nsamp
 
         if for_preprocessing:
-            if self.width > 2:
+            if self.width > 2 and nsamp_read // (self.width // 2) < self.min_samp:
                 nsamp_read *= self.width // 2
             if nsamp_read < self.min_samp:
                 nsamp_read = self.min_samp
