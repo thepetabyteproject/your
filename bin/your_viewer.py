@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import argparse
 import logging
 import os
@@ -268,10 +269,13 @@ if __name__ == '__main__':
                         required=False, default=0)
     parser.add_argument('-g', '--gulp',
                         help='Gulp size', type=int,
-                        required=False, default=3072)
+                        required=False, default=4096)
     parser.add_argument('-e', '--chan_std',
                         help='Show 1 standard devation per channel in bandpass',
                         required=False, default=False, action='store_true')
+    parser.add_argument('-d', '--display',
+                        help='Display size for the plot', type=int, nargs=2, required=False,
+                        metavar=('width', 'height'), default=[1024, 640])
     parser.add_argument('-v', '--verbose', help='Be verbose', action='store_true')
     values = parser.parse_args()
 
@@ -285,7 +289,7 @@ if __name__ == '__main__':
 
     # root window created.
     root = Tk()
-    root.geometry("1920x1080")
+    root.geometry(f"{values.display[0]}x{values.display[1]}")
     # creation of an instance
     app = Paint(root)
     app.load_file(values.files, values.start, values.gulp, values.chan_std)  # load file with user params
