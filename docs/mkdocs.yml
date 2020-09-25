@@ -2,6 +2,8 @@ site_name: Your Documentation
 site_author: Devansh Agarwal, Kshitij Agarwal
 docs_dir: sources
 site_description: 'Your Documentation'
+repo_name: your
+repo_url: https://github.com/thepetabyteproject/your
 
 theme:
   name: material
@@ -9,9 +11,6 @@ theme:
     primary: black
   features:
     - search.highlight
-
-repo_name: your
-repo_url: https://github.com/thepetabyteproject/your
 
 nav:
   - Getting Started: index.md
@@ -49,22 +48,21 @@ nav:
           - your_rfimask.py: bin/your_rfimask.md
           - your_writer.py: bin/your_writer.md
           - your_viewer.py: bin/your_viewer.md
+      - Contributing Guide: CONTRIBUTING.md
 
 plugins:
+  - search
   - mkdocs-jupyter:
       include_source: True
 
 
 markdown_extensions:
-  - admonition
+  - codehilite
+  - pymdownx.superfences
   - pymdownx.emoji:
       emoji_index: !!python/name:materialx.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
-  - codehilite:
-      guess_lang: false
-      use_pygments: true
-
-
+  - admonition
 
 google_analytics:
   - UA-167281386-1

@@ -1,5 +1,5 @@
 keras-autodoc>=0.5.0
 mkdocs>=1.1.2
-mkdocs-material>=5.5.9
+mkdocs-material>=5.5.14
 argmark>=0.1
 mkdocs-jupyter>=0.13.0

@@ -75,7 +75,7 @@ pages = {
         "your.utils.rfi.spectral_kurtosis",
         "your.utils.rfi.sk_filter",
         "your.utils.rfi.calc_N",
-        "your.utils.rfi.sk_sg_filter"
+        "your.utils.rfi.sk_sg_filter",
     ],
     "utils/plotter.md": [
         "your.utils.plotter.figsize",
@@ -110,7 +110,9 @@ pages = {
 }
 
 # Generate documentation from the installed package
-doc_generator = DocumentationGenerator(pages)
+doc_generator = DocumentationGenerator(
+    pages, "https://github.com/thepetabyteproject/your/blob/master"
+)
 doc_generator.generate("./sources")
 
 # Make readme as the start page
