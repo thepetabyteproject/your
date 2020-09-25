@@ -48,7 +48,7 @@ nav:
           - your_rfimask.py: bin/your_rfimask.md
           - your_writer.py: bin/your_writer.md
           - your_viewer.py: bin/your_viewer.md
-      - Contributing Guide: CONTRIBUTING.md
+  - Contributing Guide: CONTRIBUTING.md
 
 plugins:
   - search
