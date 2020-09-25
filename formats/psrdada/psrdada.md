@@ -1,3 +1,5 @@
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L18)</span>
+
 ### DadaManager
 
 
@@ -19,6 +21,8 @@ Args:
 
 ----
 
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L36)</span>
+
 ### setup
 
 
@@ -33,6 +37,8 @@ Set up the dada buffers and connect to a writer.
 
 ----
 
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L48)</span>
+
 ### dump_header
 
 
@@ -45,6 +51,8 @@ Set the psrdada header
 
 
 ----
+
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L54)</span>
 
 ### dump_data
 
@@ -63,6 +71,8 @@ Args:
 
 ----
 
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L68)</span>
+
 ### mark_filled
 
 
@@ -75,6 +85,8 @@ Mark that data is filled in the buffer page.
 
 
 ----
+
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L74)</span>
 
 ### eod
 
@@ -89,6 +101,8 @@ Mark the end of data.
 
 ----
 
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L80)</span>
+
 ### teardown
 
 
@@ -101,6 +115,8 @@ Disconnect the writer and tear down the buffers.
 
 
 ----
+
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L89)</span>
 
 ### YourDada
 
@@ -119,6 +135,8 @@ Args:
 
 ----
 
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L125)</span>
+
 ### setup
 
 
@@ -132,6 +150,8 @@ Start the dada manager and make the header.
 
 ----
 
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L135)</span>
+
 ### teardown
 
 
@@ -144,6 +164,8 @@ Tear down the dada header.
 
 
 ----
+
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L142)</span>
 
 ### your_dada_header
 
@@ -161,6 +183,8 @@ Returns:
 
 
 ----
+
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L166)</span>
 
 ### to_dada
 

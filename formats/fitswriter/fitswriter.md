@@ -1,3 +1,5 @@
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/fitswriter.py#L190)</span>
+
 ### initialize_psrfits
 
 
@@ -27,6 +29,8 @@ Args:
 
 
 ----
+
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/fitswriter.py#L18)</span>
 
 ### ObsInfo
 

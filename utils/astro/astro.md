@@ -1,3 +1,5 @@
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/astro.py#L7)</span>
+
 ### dec2deg
 
 
@@ -14,6 +16,8 @@ Args:
 
 
 ----
+
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/astro.py#L25)</span>
 
 ### ra2deg
 

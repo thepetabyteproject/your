@@ -1,3 +1,5 @@
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L14)</span>
+
 ### Candidate
 
 
@@ -16,7 +18,7 @@ Args:
 
     dm (float): Dispersion Measure of the candidate
 
-    tcand (float): start time of the candidate in seconds
+    tcand (float): start time of the candidate in seconds at the highest frequency channel
 
     width (int): pulse width of the candidate in samples
 
@@ -32,6 +34,8 @@ Args:
 
 
 ----
+
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L57)</span>
 
 ### save_h5
 
@@ -56,6 +60,8 @@ Returns:
 
 ----
 
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L117)</span>
+
 ### dispersion_delay
 
 
@@ -77,11 +83,13 @@ Returns:
 
 ----
 
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L135)</span>
+
 ### get_chunk
 
 
 ```python
-Candidate.get_chunk(tstart=None, tstop=None)
+Candidate.get_chunk(tstart=None, tstop=None, for_preprocessing=True)
 ```
 
 
@@ -91,10 +99,15 @@ Args:
 
     tstart (float): start time of the chunk in seconds
 
-    tstop (float): stop time of the chunk in secons
+    tstop (float): stop time of the chunk in seconds
+
+    for_preprocessing (bool): if the data is to be preprocessed later. This will modify the number of samples
+    read based on the width of the candidate
 
 
 ----
+
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L211)</span>
 
 ### dedisperse
 
@@ -118,6 +131,8 @@ Args:
 
 
 ----
+
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L246)</span>
 
 ### dedispersets
 
@@ -143,6 +158,8 @@ Returns:
 
 ----
 
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L274)</span>
+
 ### dmtime
 
 
@@ -166,6 +183,8 @@ Args:
 
 ----
 
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L299)</span>
+
 ### get_snr
 
 
@@ -187,6 +206,8 @@ Returns:
 
 ----
 
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L324)</span>
+
 ### optimize_dm
 
 
@@ -207,6 +228,8 @@ Returns:
 
 
 ----
+
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L351)</span>
 
 ### decimate
 
@@ -236,6 +259,8 @@ Args:
 
 
 ----
+
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L385)</span>
 
 ### resize
 

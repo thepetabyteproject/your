@@ -1,3 +1,5 @@
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/gpu.py#L11)</span>
+
 ### gpu_dedisperse
 
 
@@ -20,6 +22,8 @@ Returns:
 
 
 ----
+
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/gpu.py#L55)</span>
 
 ### gpu_dmt
 
@@ -44,6 +48,8 @@ Returns:
 
 ----
 
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/gpu.py#L102)</span>
+
 ### gpu_dedisp_and_dmt_crop
 
 
@@ -66,6 +72,8 @@ Returns:
 
 
 ----
+
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/gpu.py#L224)</span>
 
 ### get_gpu_memory_map
 

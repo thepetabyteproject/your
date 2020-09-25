@@ -1,3 +1,5 @@
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/pysigproc.py#L12)</span>
+
 ### SigprocFile
 
 
@@ -57,6 +59,8 @@ Attributes:
 
 ----
 
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/pysigproc.py#L269)</span>
+
 ### get_data
 
 
@@ -84,6 +88,8 @@ Returns:
 
 ----
 
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/pysigproc.py#L304)</span>
+
 ### unpack
 
 
@@ -107,6 +113,8 @@ Returns:
 
 ----
 
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/pysigproc.py#L370)</span>
+
 ### write_header
 
 
@@ -123,6 +131,8 @@ Args:
 
 
 ----
+
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/pysigproc.py#L383)</span>
 
 ### append_spectra
 

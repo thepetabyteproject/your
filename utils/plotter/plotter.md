@@ -1,3 +1,5 @@
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/plotter.py#L17)</span>
+
 ### figsize
 
 
@@ -21,6 +23,8 @@ Returns:
 
 ----
 
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/plotter.py#L41)</span>
+
 ### get_params
 
 
@@ -43,6 +47,8 @@ Returns:
 
 
 ----
+
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/plotter.py#L83)</span>
 
 ### plot_h5
 
@@ -76,6 +82,8 @@ Returns:
 
 
 ----
+
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/plotter.py#L181)</span>
 
 ### save_bandpass
 

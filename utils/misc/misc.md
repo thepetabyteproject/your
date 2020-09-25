@@ -1,3 +1,5 @@
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/misc.py#L72)</span>
+
 ### crop
 
 
@@ -25,6 +27,8 @@ Returns:
 
 ----
 
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/misc.py#L102)</span>
+
 ### pad_along_axis
 
 
@@ -51,6 +55,8 @@ Returns:
 
 
 ----
+
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/misc.py#L139)</span>
 
 ### MyEncoder
 

@@ -1,3 +1,5 @@
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/math.py#L8)</span>
+
 ### closest_number
 
 
@@ -21,6 +23,8 @@ Returns:
 
 ----
 
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/math.py#L30)</span>
+
 ### primes
 
 
@@ -39,6 +43,8 @@ Returns: primes
 
 
 ----
+
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/math.py#L53)</span>
 
 ### closest_divisor
 
@@ -64,6 +70,8 @@ Returns:
 
 ----
 
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/math.py#L79)</span>
+
 ### find_gcd
 
 
@@ -85,6 +93,8 @@ Returns:
 
 ----
 
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/math.py#L96)</span>
+
 ### normalise
 
 
@@ -105,6 +115,8 @@ Returns:
 
 
 ----
+
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/math.py#L115)</span>
 
 ### smad_plotter
 

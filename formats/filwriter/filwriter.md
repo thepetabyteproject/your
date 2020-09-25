@@ -1,3 +1,5 @@
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/filwriter.py#L11)</span>
+
 ### make_sigproc_obj
 
 
@@ -27,6 +29,8 @@ Returns:
 
 
 ----
+
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/filwriter.py#L79)</span>
 
 ### write_fil
 

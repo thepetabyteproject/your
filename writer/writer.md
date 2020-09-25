@@ -1,9 +1,11 @@
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L17)</span>
+
 ### Writer
 
 
 ```python
 your.writer.Writer(
-    y,
+    your_object,
     nstart=None,
     nsamp=None,
     c_min=None,
@@ -12,9 +14,9 @@ your.writer.Writer(
     outname=None,
     flag_rfi=False,
     progress=None,
-    sk_sig=4,
-    sg_fw=15,
-    sg_sig=4,
+    spectral_kurtosis_sigma=4,
+    savgol_frequency_window=15,
+    savgol_sigma=4,
     zero_dm_subt=False,
 )
 ```
@@ -24,7 +26,7 @@ Writer class
 
 Args:
 
-    y: Your object
+    your_object: Your object
 
     nstart: Start sample to read from
 
@@ -53,6 +55,8 @@ Args:
 
 ----
 
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L146)</span>
+
 ### to_fil
 
 
@@ -65,6 +69,8 @@ Writes out a Filterbank File.
 
 
 ----
+
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L190)</span>
 
 ### to_fits
 

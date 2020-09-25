@@ -1,8 +1,10 @@
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/rfi.py#L9)</span>
+
 ### savgol_filter
 
 
 ```python
-your.utils.rfi.savgol_filter(data, channel_bandwidth, frequency_window=15, sigma=6)
+your.utils.rfi.savgol_filter(bandpass, channel_bandwidth, frequency_window=15, sigma=6)
 ```
 
 
@@ -10,7 +12,7 @@ Apply savgol filter to the data. See [Agarwal el al. 2020](https://arxiv.org/abs
 
 Args:
 
-    data (numpy.ndarray): bandpass of the data
+    bandpass (numpy.ndarray): bandpass of the data
 
     channel_bandwidth (float): channel bandwidth (MHz)
 
@@ -24,6 +26,8 @@ Returns:
 
 
 ----
+
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/rfi.py#L36)</span>
 
 ### spectral_kurtosis
 
@@ -44,18 +48,19 @@ Args:
     d (float): shape factor
 
 
-Returns:
 
      numpy.ndarray: Spectral Kurtosis along frequency axis
 
 
 ----
 
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/rfi.py#L62)</span>
+
 ### sk_filter
 
 
 ```python
-your.utils.rfi.sk_filter(data, foff, nchans, tsamp, N=None, d=1, sigma=5)
+your.utils.rfi.sk_filter(data, channel_bandwidth, nchans, tsamp, N=None, d=1, sigma=5)
 ```
 
 
@@ -65,7 +70,7 @@ Args:
 
     data (numpy.ndarray): 2D frequency time data
 
-    foff (float): channel bandwidth (MHz)
+    channel_bandwidth (float): channel bandwidth (MHz)
 
     nchans (int): number of channels 
 
@@ -84,6 +89,8 @@ Returns:
 
 
 ----
+
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/rfi.py#L101)</span>
 
 ### calc_N
 
@@ -110,6 +117,8 @@ Returns:
 
 
 ----
+
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/rfi.py#L125)</span>
 
 ### sk_sg_filter
 
