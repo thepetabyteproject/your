@@ -2,7 +2,7 @@ from your.utils.rfi import *
 
 
 def test_calc_N():
-    assert calc_N(channel_bandwidth=-1, nchans=336, tsamp=0.001) == 2000
+    assert calc_N(channel_bandwidth=-1, tsamp=0.001) == 2000
 
 
 def test_savgol_filter_on_noise():
