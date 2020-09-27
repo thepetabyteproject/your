@@ -14,13 +14,10 @@ def gpu_dedisperse(cand, device=0):
     GPU dedispersion (by rolling the array)
 
     Args:
-
         cand: Candidate instance
-
         device (int): GPU ID
 
     Returns:
-
         candidate object
 
     """
@@ -58,13 +55,10 @@ def gpu_dmt(cand, device=0):
     GPU DM-Time bow-tie (by rolling the array)
 
     Args:
-
         cand: Candidate instance
-
         device (int): GPU ID
 
     Returns:
-
         candidate object
 
     """
@@ -105,13 +99,10 @@ def gpu_dedisp_and_dmt_crop(cand, device=0):
     GPU based dedispersion, DM time bow-time plot and crop it to 256x256 shaped arrays (by rolling the array)
 
     Args:
-
         cand: Candidate instance
-
         device (int): GPU ID
 
     Returns:
-
         candidate object
 
     """
@@ -226,11 +217,9 @@ def get_gpu_memory_map(gpu_id):
     Get the current gpu free memory
 
     Args:
-
         gpu_id (int): GPU id
 
     Returns:
-
         int: amount of free GPU RAM
     """
     cmd_list = ['nvidia-smi', "-i", f"{gpu_id}", '--query-gpu=memory.free', '--format=csv,nounits,noheader']

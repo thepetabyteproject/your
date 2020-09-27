@@ -10,14 +10,11 @@ def closest_number(big_num, small_num):
     Finds the difference between the closest multiple of a smaller number with respect to a bigger number
 
     Args:
-
-        big_num: The bigger number to find the closest of
-
-        small_num: Number whose multiple is to be found and subtracted
+        big_num (int): The bigger number to find the closest of
+        small_num (int) : Number whose multiple is to be found and subtracted
 
     Returns:
-
-        The difference between the closest multiple of a smaller number with respect to a bigger number
+        int : The difference between the closest multiple of a smaller number with respect to a bigger number
 
     """
     if big_num % small_num == 0:
@@ -33,9 +30,10 @@ def primes(n):
 
     Args:
 
-        n: a positive number
+        n (int) : a positive number
 
-    Returns: primes
+    Returns:
+        list: List of primes
     """
 
     primfac = []
@@ -56,15 +54,12 @@ def closest_divisor(n, m):
     Calculates the divisor of n, which is closest to (i.e bigger than) m
 
     Args:
-
-        n: larger number of which divisor is to be found
-
-        m: divisor closest to this number
+        n (int) : larger number of which divisor is to be found
+        m (int) : divisor closest to this number
 
 
     Returns:
-
-        The divisor of n, which is closest to (i.e bigger than) m
+        int : The divisor of n, which is closest to (i.e bigger than) m
 
     """
     pfs = primes(n)
@@ -82,7 +77,7 @@ def find_gcd(list_of_nos):
 
     Args:
 
-        list_of_nos: list of numbers
+        list_of_nos (list) : list of numbers
 
     Returns:
 
@@ -98,11 +93,9 @@ def normalise(data):
     Subtract median, divide by standard deviations
 
     Args:
-
         data (numpy.ndarray): data
 
     Returns:
-
         numpy.ndarray: normalised data
 
     """
@@ -114,18 +107,14 @@ def normalise(data):
 
 def smad_plotter(freq_time, sigma=5.0, clip=True):
     """
-    spectal Median Absolute Deviation clipper
+    Spectral Median Absolute Deviation clipper
    
     Args:
-        
-        freq_time: the frequency time data
-
+        freq_time (np.ndarray) : the frequency time data
         sigma (float): sigma at which to clip data
-
         clip (bool): if true replaces clips the data else replaces it with zeroes
 
     Returns:
-
         np.ndarray: clipped/flagged data
     """
     medians = np.median(freq_time, axis=0)

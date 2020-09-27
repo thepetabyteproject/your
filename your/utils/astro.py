@@ -9,9 +9,7 @@ def dec2deg(src_dej):
     Convert the SIGPROC-style DDMMSS.SSSS declination to degrees
 
     Args:
-
         src_dej (float): Source dec
-
     """
     sign = 1.0
     if (src_dej < 0): sign = -1.0;
@@ -27,8 +25,6 @@ def ra2deg(src_raj):
     Convert the SIGPROC-style HHMMSS.SSSS right ascension to degrees
 
     Args:
-
         src_raj (float): Source RA
-
     """
     return 15.0 * dec2deg(src_raj)

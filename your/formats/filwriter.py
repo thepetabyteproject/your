@@ -13,21 +13,14 @@ def make_sigproc_obj(filfile, your_object, nchans, chan_freq, nstart):
     Use Your class to make Sigproc class object with relevant parameters
 
     Args:
-
-        filfile: Name of the Filterbank file
-
+        filfile (str) : Name of the Filterbank file
         your_object : Your object for the PSRFITS files
-
         nchans (int) : No. of channels in the frequency range
-
         chan_freq (np.ndarray) : An array of required frequency channel range
-
         nstart (int): Start sample
 
-
     Returns:
-
-        obj: Object of class SigprocFile
+        Object of class SigprocFile
 
     """
     logger.debug(f'Generating Sigproc object')
@@ -81,20 +74,13 @@ def write_fil(data, your_object, nchans=None, chan_freq=None, filename=None, out
     Write Filterbank file given the Your object
 
     Args:
-
-        data: Data to write to the Filterbank file
-
+        data (np.ndarray): Data to write to the Filterbank file
         your_object: Your object for the PSRFITS files
-
-        nchans: No. of channels in the frequency range
-
-        chan_freq: Required frequency channel range
-
-        filename: Output name of the Filterbank file
-
-        outdir: Output directory for the Filterbank file
-
-        nstart: Start sample number
+        nchans (int) : No. of channels in the frequency range
+        chan_freq (np.ndarray) : Required frequency channel range
+        filename (str) : Output name of the Filterbank file
+        outdir (str): Output directory for the Filterbank file
+        nstart (int): Start sample number
 
     """
 

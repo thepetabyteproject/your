@@ -19,15 +19,11 @@ def figsize(scale, width_by_height_ratio):
     Create figure size either a full page or a half page figure
 
     Args:
-
         scale (float): 0.5 for half page figure, 1 for full page
-
         width_by_height_ratio (float): ratio of width to height for the figure
 
     Returns:
-
         list: list of width and height
-
     """
     fig_width_pt = 513.17  # 469.755                  # Get this from LaTeX using \the\textwidth
     inches_per_pt = 1.0 / 72.27  # Convert pt to inch
@@ -43,15 +39,11 @@ def get_params(scale=0.5, width_by_height_ratio=1):
     Create a dictionary for pretty plotting
 
     Args:
-
         scale (float): 0.5 for half page figure, 1 for full page
-
         width_by_height_ratio (float): ratio of width to height for the figure
 
     Returns:
-
         dict: dictionary of parameters
-
     """
     params = {'backend': 'pdf',
               'axes.labelsize': 10,
@@ -85,21 +77,14 @@ def plot_h5(h5_file, save=True, detrend_ft=True, publication=False, mad_filter=F
     Plot the h5 candidates
 
     Args:
-
         mad_filter (int): use MAD filter to clip data
-
         h5_file (str): Name of the h5 file
-
         save (bool): Save the file as a png
-
         detrend_ft (bool): detrend the frequency time plot
-
         publication (bool): make publication quality plot
-
         outdir (str): Path to the save the files into.
 
     Returns:
-
         None
 
     """
@@ -183,19 +168,12 @@ def save_bandpass(your_object, bandpass, chan_nos=None, mask=None, outdir=None, 
     Plots and saves the bandpass
 
     Args:
-
         your_object: Your object
-
         bandpass (np.ndarray): Bandpass of the data
-
         chan_nos (np.ndarray): Array of channel numbers
-
         mask (np.ndarray): Boolean Array of channel mask
-
         outdir (str) : Output directory to save the plot
-
         outname (str): Name of the bandpass file
-
     """
 
     freqs = your_object.chan_freqs

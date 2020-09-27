@@ -15,20 +15,14 @@ def _decimate(data, decimate_factor, axis, pad=False, **kwargs):
     Decimate an input array by an input factor. Optionally padding can also be done.
 
     Args:
-
-        data: data array to decimate
-
-        decimate_factor: number of samples to combine
-
-        axis: axis along which decimation is to be done
-
-        pad: Whether to apply padding if the data axis length is not a multiple of decimation factor
-
-        args: arguments of padding
+        data (np.ndarray) : data array to decimat
+        decimate_factor (int) : number of samples to combine
+        axis (int) : axis along which decimation is to be done
+        pad (bool) : Whether to apply padding if the data axis length is not a multiple of decimation factor
+        **kwargs: arguments of padding
 
     Returns:
-
-        Decimated array
+        np.ndarray: Decimated array
 
     """
     if data.shape[axis] % decimate_factor and pad is True:
@@ -49,18 +43,13 @@ def _resize(data, size, axis, **kwargs):
     Resize an input array to a required size
 
     Args:
-
-        data: data array to resize
-
-        size: required size of the axis
-
-        axis: axis long which resizing is to be done
-
-        args: arguments for skimage.transform resize function
+        data (np.ndarray): data array to resize
+        size (int) : required size of the axis
+        axis (int) : axis long which resizing is to be done
+        **kargs: arguments for skimage.transform resize function
 
     Returns:
-
-        Resized array
+        np.ndarray: Resized array
 
     """
     if axis:
@@ -74,18 +63,13 @@ def crop(data, start_sample, length, axis):
     Crops the input array to a required size
 
     Args:
-
-        data: Data array to crop
-
-        start_sample: Sample to start the output cropped array
-
-        length: Final Length along the axis of the output
-
-        axis: Axis to crop
+        data (np.ndarray) : Data array to crop
+        start_sample (int) : Sample to start the output cropped array
+        length (int) : Final Length along the axis of the output
+        axis (int) : Axis to crop
 
     Returns:
-
-        Cropped array
+        np.ndarray: Cropped array
 
     """
     if data.shape[axis] > start_sample + length:
@@ -104,18 +88,14 @@ def pad_along_axis(array: np.ndarray, target_length, loc='end', axis=0, **kwargs
     Pads data along the required axis on the input array to reach a target size
 
     Args:
-
-        array: Input array to pad
-
-        target_length: Required length of the axis
-
-        loc: Location to pad: start: pad in beginning, end: pad in end, else: pad equally on both sides
-
-        axis: Axis to pad along
+        array (np.ndarray) : Input array to pad
+        target_length (int) : Required length of the axis
+        loc (int) : Location to pad: start: pad in beginning, end: pad in end, else: pad equally on both sides
+        axis (int) : Axis to pad along
+        **kwargs: args for np.pad
 
     Returns:
-
-        Padded array
+        np.ndarray: Padded array
 
     """
     pad_size = target_length - array.shape[axis]

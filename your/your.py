@@ -16,21 +16,15 @@ class Your(PsrfitsFile, SigprocFile):
     Your class.
 
     Args:
-
         file : String or a list of files. It can either filterbank or psrfits files.
 
     Examples:
-
         your_object = your.Your("/path/to/filterbank.fil")
-
         your_object = your.Your(["puppi_58763_B1919+21_0292_0001.fits","puppi_58763_B1919+21_0292_0002.fits"]
 
     Attributes:
-
         isfits (bool): your object made from fits files
-
         isfil (bool) : your object makde from filterbank file
-
         your_header : instance of the Header class
 
     """
@@ -84,18 +78,15 @@ class Your(PsrfitsFile, SigprocFile):
     @property
     def chan_freqs(self):
         """
-
         Returns: numpy array of channel frequencies
-
         """
         return self.fch1 + np.arange(self.nchans) * self.foff
 
     @property
     def native_tsamp(self):
         """
-
-        Returns: Native sampling time of the data in seconds
-
+        Returns:
+            Native sampling time of the data in seconds
         """
         if self.isfil:
             return SigprocFile.native_tsamp(self)
@@ -105,9 +96,8 @@ class Your(PsrfitsFile, SigprocFile):
     @property
     def native_foff(self):
         """
-
-        Returns: Native channel bandwidth of the data in MHz
-
+        Returns:
+            Native channel bandwidth of the data in MHz
         """
         if self.isfil:
             return SigprocFile.native_foff(self)
@@ -117,9 +107,8 @@ class Your(PsrfitsFile, SigprocFile):
     @property
     def native_nchans(self):
         """
-
-        Returns: Native number of channels in the data
-
+        Returns:
+            Native number of channels in the data
         """
         if self.isfil:
             return SigprocFile.native_nchans(self)
@@ -129,9 +118,8 @@ class Your(PsrfitsFile, SigprocFile):
     @property
     def native_nspectra(self):
         """
-
-        Returns: Native number of spectra in the data.
-
+        Returns:
+            Native number of spectra in the data.
         """
         if self.isfil:
             return SigprocFile.native_nspectra(self)
@@ -141,10 +129,8 @@ class Your(PsrfitsFile, SigprocFile):
     @property
     def tend(self):
         """
-
         Returns:
-            end MJD of the data
-
+            End MJD of the data
         """
         return self.your_header.tstart + self.your_header.nspectra * self.your_header.tsamp / 86400.0
 
@@ -153,12 +139,9 @@ class Your(PsrfitsFile, SigprocFile):
         Create the bandpass of the file
 
         Args:
-
             nspectra (int): Number of spectra to create bandpass from.
 
-
         Returns:
-
             numpy.ndarray: bandpass array
 
         """
@@ -181,23 +164,16 @@ class Your(PsrfitsFile, SigprocFile):
         Read data from files
 
         Args:
-
             nstart (int): start sample
-
             nsamp (int): number of samples to read
-
             time_decimation_factor (int): decimate in time with this factor
-
             frequency_decimation_factor (int): decimate in frequency with this factor
-
             pol (int): which polarization to chose
 
         Note:
-
             Both decimation factors should exactly device the nsamp or nchans
 
         Returns:
-
             numpy.ndarray: 2D numpy array of data
 
 
@@ -269,13 +245,10 @@ class Your(PsrfitsFile, SigprocFile):
         Calculate the dispersion delay in seconds for the given configuration
 
         Args:
-
             dms: DM or a list of DM values
 
         Returns:
-
             Dispersion delay in seconds.
-
         """
         return 4148808.0 * dms * (
                 1 / np.min(self.chan_freqs) ** 2 - 1 / np.max(self.chan_freqs) ** 2) / 1000
@@ -287,50 +260,28 @@ class Header:
     Your Header class, it contains all the relevant metadata.
 
     Args:
-
         Your object
 
     Attributes:
-
         filelist: List of files used to make the your object
-
         filename (str) : Name of the first file used to make the object
-
         basename (str): Base name of file
-
         source_name (str): Source Name
-
         ra_deg (float): RA of the source in degrees
-
         dec_deg (float): Dec of the source in degrees
-
         bw (float): bandwidth of the data
-
         center_freq (float): Center frequency of the data.
-
         time_decimation_factor (int): Number of time samples to average
-
         frequency_decimation_factor (int): Number of frequency channels to average
-
         native_tsamp (float): Sampling time of the data pre decimation (seconds)
-
         native_foff (float): Channel bandwidth of the data pre decimation (MHz)
-
         native_nchans : Number of channels in the data pre decimation
-
         native_nspectra: Number of spectra in the data pre decimation
-
         dtype: dtype of the (read) data
-
         nbits (int): Number of bits in the data
-
         tstart (float): Start MJD of the data
-
         fch1 (float): Frequency of the first channel (MHz)
-
         npol (int) : Number of polarisations in the data
-
-
     """
 
     def __init__(self, your):

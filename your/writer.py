@@ -19,32 +19,19 @@ class Writer:
     Writer class
 
     Args:
-
         your_object: Your object
-
-        nstart: Start sample to read from
-
-        nsamp: Number of samples to write
-
-        c_min: Starting channel index (default: 0)
-
-        c_max: End channel index (default: total number of frequencies)
-
-        outdir: Output directory for file
-
-        outname: Name of the file to write to (without the file extension)
-
-        progress: Turn on/off progress bar
-
-        flag_rfi: To turn on RFI flagging
-
-        sk_sig: Sigma for spectral kurtosis filter
-
-        sg_fw: Filter window for savgol filter
-
-        sg_sig: Sigma for savgol filter
-
-        zero_dm_subt: Enable zero DM rfi excision
+        nstart (int) : Start sample to read from
+        nsamp (int) : Number of samples to write
+        c_min (float) : Starting channel index (default: 0)
+        c_max (float) : End channel index (default: total number of frequencies)
+        outdir (str) : Output directory for file
+        outname (str) : Name of the file to write to (without the file extension)
+        progress (bool) : Turn on/off progress bar
+        flag_rfi (bool) : To turn on RFI flagging
+        sk_sig (float) : Sigma for spectral kurtosis filter
+        sg_fw (float) : Filter window for savgol filter
+        sg_sig (float) : Sigma for savgol filter
+        zero_dm_subt (bool) : Enable zero DM rfi excision
 
     """
 
@@ -120,10 +107,8 @@ class Writer:
         Optionally perform RFI filtering and zero-DM subtraction
 
         Args:
-
-            start_sample: Start sample number to read from
-
-            nsamp: Number of samples to read
+            start_sample (int) : Start sample number to read from
+            nsamp (int) : Number of samples to read
 
         """
         data = self.your_obj.get_data(start_sample, nsamp)
@@ -192,8 +177,7 @@ class Writer:
         Writes out a PSRFITS file
 
         Args:
-
-            npsub: number of spectra per subint
+            npsub (int) : number of spectra per subint
 
         """
 

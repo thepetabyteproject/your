@@ -20,11 +20,8 @@ class DadaManager:
     A manager class for `psrdada` writer.
 
     Args:
-
         size (int): size of each buffer (in bytes)
-
         key (hex): hexadecimal dada key
-
         n_readers (int): Number of dada readers.
     """
 
@@ -56,7 +53,6 @@ class DadaManager:
         Dump the data to the buffer
 
         Args:
-
             data_input (numpy.ndarray): Numpy array of the data.
 
         """
@@ -92,7 +88,6 @@ class YourDada:
     Linker class between `psrdada` and `your`.
 
     Args:
-
         your_object: your object
 
     """
@@ -144,7 +139,6 @@ class YourDada:
         Make dada header from `your_header`.
 
         Returns:
-
             dict: dada header as a python dictionary.
 
         """
@@ -168,7 +162,6 @@ class YourDada:
         Dump the data to the dada buffer
 
         Args:
-
             progress: if `False` will not show the progress bar.
 
         """
