@@ -79,7 +79,7 @@ Args:
 
     pol (int): which polarization to chose
 
-Note:
+!!! note
 
     Both decimation factors should exactly device the nsamp or nchans
 

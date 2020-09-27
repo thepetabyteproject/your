@@ -119,7 +119,7 @@ Candidate.dedisperse(dms=None, target="CPU")
 
 Dedisperse a chunk of data. Saves the dedispersed chunk in `self.dedispersed`.
 
-Note:
+!!! note
 
     Our method rolls the data around while dedispersing it.
 
@@ -144,7 +144,7 @@ Candidate.dedispersets(dms=None)
 
 Create a dedispersed time series
 
-Note:
+!!! note
 
     Our method rolls the data around while dedispersing it.
 
@@ -170,7 +170,7 @@ Candidate.dmtime(dmsteps=256, target="CPU")
 
 Generates DM-time array of the candidate by dedispersing at adjacent DM values. Saves the data in `self.dmt`.
 
-Note:
+!!! note
 
     Our method rolls the data around while dedispersing it.
 
@@ -218,7 +218,7 @@ Candidate.optimize_dm()
 
 Calculate more precise value of the DM by interpolating between DM values to maximise the SNR
 
-Note:
+!!! note
 
     This function has not been fully tested.
 

@@ -166,29 +166,6 @@ Returns:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/psrfits.py#L29)</span>
-
-### unpack_2bit
-
-
-```python
-your.formats.psrfits.unpack_2bit(data)
-```
-
-
-Unpack 2-bit data that has been read in as bytes.
-
-Args:
-
-    data: array of unsigned 2-bit ints packed into an array of bytes.
-
-Returns:
-
-    unpacked array. The size of this array will be four times the size of the input data.
-
-
-----
-
 <span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/psrfits.py#L49)</span>
 
 ### unpack_4bit
