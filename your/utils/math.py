@@ -118,7 +118,7 @@ def smad_plotter(freq_time, sigma=5.0, clip=True):
         np.ndarray: clipped/flagged data
     """
     medians = np.median(freq_time, axis=0)
-    sigs = 1.4826 * sigma * stats.median_absolute_deviation(freq_time, axis=0)
+    sigs = 1.4826 * sigma * stats.median_abs_deviation(freq_time, axis=0)
     if clip:
         return np.clip(freq_time, a_min=medians - sigs, a_max=medians + sigs)
     else:
