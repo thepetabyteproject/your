@@ -69,7 +69,7 @@ def sk_filter(data, channel_bandwidth, nchans, tsamp, N=None, d=1, sigma=5):
 
     """
     if not N:
-        N = calc_N(channel_bandwidth, nchans, tsamp)
+        N = calc_N(channel_bandwidth, tsamp)
     sk = spectral_kurtosis(data, d=d, N=N)
     nan_mask = np.isnan(sk)
     sk[nan_mask] = np.nan
@@ -95,7 +95,7 @@ def calc_N(channel_bandwidth, tsamp):
 
     """
 
-    tn = np.abs(1 / (2 * channel_bandwidth * 10 ** 6))
+    tn = np.abs(1 / (channel_bandwidth * 10 ** 6))
     return np.round(tsamp / tn)
 
 
