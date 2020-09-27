@@ -59,7 +59,6 @@ pages = {
         "your.formats.psrfits.PsrfitsFile.get_data",
         "your.formats.psrfits.SpectraInfo",
         "your.formats.psrfits.unpack_2bit",
-        "your.formats.psrfits.unpack_2bit",
         "your.formats.psrfits.unpack_4bit",
     ],
     "formats/filwriter.md": [
@@ -148,8 +147,20 @@ for files in glob.glob("sources/bin/*md"):
     file_link = "bin/" + os.path.basename(files)
     link = f"[{file_name}]({file_link})"
     list_of_strings.extend([link, description])
+
 mdFile.new_line()
 mdFile.new_table(
     columns=2, rows=len(list_of_strings) // 2, text=list_of_strings, text_align="left"
 )
 mdFile.create_md_file()
+
+# Convert all note tabs so that it looks cooler with the material theme
+for dname, dirs, files in os.walk("sources"):
+    for fname in files:
+        fpath = os.path.join(dname, fname)
+        with open(fpath) as f:
+            s = f.read()
+        s = s.replace("Note:", "!!! note")
+        s = s.replace("**Note**:", "!!! note")
+        with open(fpath, "w") as f:
+            f.write(s)
