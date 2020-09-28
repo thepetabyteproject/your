@@ -95,7 +95,7 @@ class YourDada:
     def __init__(self, your_object):
 
         self.your_object = your_object
-        if self.your_object.isfits:
+        if self.your_object.your_header.format == 'fits':
             logger.debug(f'Calculating dada size and data step for the fits files')
             self.list_of_subints = self.your_object.specinfo.num_subint.astype('int')
             if len(self.list_of_subints) > 1:
@@ -113,7 +113,11 @@ class YourDada:
                 self.dada_size = self.your_object.your_header.nspectra * self.your_object.your_header.nchans * self.your_object.your_header.nbits / 8  # bytes
                 self.data_step = int(self.your_object.your_header.nspectra)
             else:
-                self.data_step = int(closest_divisor(self.your_object.your_header.nspectra, nsamp_gulp))
+                p = np.sort(primes(self.your_object.your_header.nspectra))[::-1]
+                cumprods = np.cumprod(p)
+                idx = np.where(cumprods > 2**18)[0][0]
+                self.data_step = cumprods[idx]
+                # self.data_step = int(closest_divisor(self.your_object.your_header.nspectra, nsamp_gulp))
                 self.dada_size = self.data_step * self.your_object.your_header.nchans * self.your_object.your_header.nbits / 8  # bytes
         self.dada_key = hex(np.random.randint(0, 16 ** 4))
 

@@ -8,6 +8,7 @@ logger = logging.getLogger(__name__)
 from skimage.transform import resize
 
 import json
+import os
 
 
 def _decimate(data, decimate_factor, axis, pad=False, **kwargs):
@@ -114,6 +115,22 @@ def pad_along_axis(array: np.ndarray, target_length, loc='end', axis=0, **kwargs
         npad[axis] = (int(pad_size // 2), int(pad_size // 2))
 
     return np.pad(array, pad_width=npad, **kwargs)
+
+
+def check_file_exist(file):
+    """
+
+    Args:
+        file: Path of file to check
+
+    Returns:
+
+    """
+    try:
+        assert os.path.isfile(file)
+    except AssertionError as err:
+        logger.exception(f"File {file} not found ")
+        raise err
 
 
 class MyEncoder(json.JSONEncoder):

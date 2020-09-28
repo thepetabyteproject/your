@@ -52,3 +52,4 @@ Here are some [tutorial notebooks](https://github.com/devanshkv/your/tree/master
 # Code Contributions
 We welcome all types of code contribution. Please have a look at our [guideline](CONTRIBUTING.md) and [code of conduct](CODE_OF_CONDUCT.md).
 
+![your flowchart](https://github.com/thepetabyteproject/your/blob/types/your_flow.svg)
