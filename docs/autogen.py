@@ -31,6 +31,9 @@ pages = {
         "your.writer.Writer",
         "your.writer.Writer.to_fil",
         "your.writer.Writer.to_fits",
+        "your.writer.Writer.dada_header",
+        "your.writer.Writer.setup_dada",
+        "your.writer.Writer.to_dada",
     ],
     "formats/psrdada.md": [
         "your.formats.dada.DadaManager",
@@ -40,11 +43,6 @@ pages = {
         "your.formats.dada.DadaManager.mark_filled",
         "your.formats.dada.DadaManager.eod",
         "your.formats.dada.DadaManager.teardown",
-        "your.formats.dada.YourDada",
-        "your.formats.dada.YourDada.setup",
-        "your.formats.dada.YourDada.teardown",
-        "your.formats.dada.YourDada.your_dada_header",
-        "your.formats.dada.YourDada.to_dada",
     ],
     "formats/pysigproc.md": [
         "your.formats.pysigproc.SigprocFile",
