@@ -10,11 +10,11 @@ from multiprocessing import Process
 import numpy as np
 
 from your import Your
-from your.formats import dada
 from your.utils.heimdall import HeimdallManager
 from your.utils.misc import MyEncoder
 from your.utils.plotter import save_bandpass
 from your.utils.rfi import savgol_filter
+from your.writer import Writer
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='your_heimdall.py', description="Your Heimdall Fetch FRB",
@@ -67,10 +67,13 @@ if __name__ == "__main__":
     logging.info(f"Max Dispersion delay = {max_delay} s")
     logging.info(f"Max Dispersion delay = {dispersion_delay_samples} samples")
 
-    nsamps_gulp = int(np.max([(2 ** np.ceil(np.log2(dispersion_delay_samples))), 2 ** 18]))
+    if your_object.your_header.nspectra < 2 ** 18:
+        nsamps_gulp = your_object.your_header.nspectra
+    else:
+        nsamps_gulp = int(np.max([(2 ** np.ceil(np.log2(dispersion_delay_samples))), 2 ** 18]))
 
-    your_dada = dada.YourDada(your_object)
-    your_dada.setup()
+    your_dada_writer = Writer(your_object=your_object, progress=args.no_progress)
+    your_dada_writer.setup_dada()  # need to run the set up inorder to get the dada key
 
     if args.apply_savgol:
         bandpass = your_object.bandpass(nspectra=8192)
@@ -99,7 +102,8 @@ if __name__ == "__main__":
         logging.info('No RFI flagging done.')
         bad_chans = None
 
-    HM = HeimdallManager(dm=args.dm, dada_key=your_dada.dada_key, boxcar_max=int(32e-3 / your_object.your_header.tsamp),
+    HM = HeimdallManager(dm=args.dm, dada_key=your_dada_writer.dada_key,
+                         boxcar_max=int(32e-3 / your_object.your_header.tsamp),
                          verbosity='v', nsamps_gulp=nsamps_gulp, gpu_id=args.gpu_id, output_dir=args.output_dir,
                          zap_chans=bad_chans, rfi_no_broad=args.rfi_no_broad, rfi_no_narrow=args.rfi_no_narrow,
                          dm_tol=args.dm_tol)
@@ -107,7 +111,7 @@ if __name__ == "__main__":
     with open(args.output_dir + '/' + your_object.your_header.basename + '_heimdall_inputs.json', 'w') as fp:
         json.dump(HM.__dict__, fp, cls=MyEncoder, indent=4)
 
-    dada_process = Process(name='To dada', target=your_dada.to_dada, args=(args.no_progress,))
+    dada_process = Process(name='To dada', target=your_dada_writer.to_dada)
     heimdall_process = Process(name='Heimdall', target=HM.run)
 
     dada_process.start()
@@ -120,5 +124,5 @@ if __name__ == "__main__":
         heimdall_process.terminate()
         dada_process.terminate()
 
-    your_dada.teardown()
+    your_dada_writer.DM.teardown()
     logging.info("Destroyed dada buffers")
