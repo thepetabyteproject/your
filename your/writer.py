@@ -104,6 +104,10 @@ class Writer:
     def nchans(self):
         return len(self.chan_freqs)
 
+    @property
+    def tstart(self):
+        return self.your_object.your_header.tstart + self.nstart * self.your_object.your_header.tsamp / (60 * 60 * 24)
+
     def get_data_to_write(self, start_sample, nsamp):
         """
 
@@ -267,15 +271,14 @@ class Writer:
         header = dict()
         header["BW"] = str(self.nchans * self.your_object.your_header.foff)
         header["FREQ"] = str((self.chan_freqs[0] + self.chan_freqs[-1]) / 2)
-        header["MJD_START"] = str(
-            self.your_object.your_header.tstart + self.nstart * self.your_object.your_header.tsamp / (60 * 60 * 24))
+        tstart = Time(self.tstart, format='mjd')
+        header["MJD_START"] = str(self.tstart)
         header["NBIT"] = str(self.your_object.your_header.nbits)
         header["TSAMP"] = str(self.your_object.your_header.tsamp * 1e6)
         header["HDR_SIZE"] = "4096"
         header["NCHAN"] = str(self.nchans)
         header["OBS_OFFSET"] = str(0)
         header["NPOL"] = str(1)  # self.your_object.your_header.npol)
-        tstart = Time(self.your_object.your_header.tstart, format='mjd')
         header["UTC_START"] = str(tstart.utc.iso.replace(' ', '-'))
         return header
 
