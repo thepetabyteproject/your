@@ -244,10 +244,10 @@ class Header:
     Your Header class, it contains all the relevant metadata.
 
     Args:
-        Your object
+        your: Your object
 
     Attributes:
-        filelist: List of files used to make the your object
+        filelist (list): List of files used to make the your object
         filename (str) : Name of the first file used to make the object
         basename (str): Base name of file
         source_name (str): Source Name

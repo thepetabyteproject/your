@@ -27,8 +27,7 @@ class Candidate(Your):
         kill_mask (numpy.ndarray): Boolean mask of channels to kill
     """
 
-    def __init__(self, fp=None, dm=None, tcand=0, width=0, label=-1, snr=0, min_samp=256, device=0,
-                 kill_mask=None):
+    def __init__(self, fp=None, dm=None, tcand=0, width=0, label=-1, snr=0, min_samp=256, device=0, kill_mask=None):
         Your.__init__(self, fp)
         self.dm = dm
         self.tcand = tcand
@@ -258,7 +257,6 @@ class Candidate(Your):
 
         Args:
             dmsteps (int) : Number of DMs to dedisperse at.
-
             target (str): 'CPU' to run the code on the CPU or 'GPU' to run it on a GPU.
 
         """
