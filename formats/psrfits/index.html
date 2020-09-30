@@ -1,7 +1,4 @@
 
-
-
-
 <!doctype html>
 <html lang="en" class="no-js">
   <head>
@@ -16,7 +13,7 @@
         <meta name="author" content="Devansh Agarwal, Kshitij Agarwal">
       
       <link rel="shortcut icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.5.14">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.0.1">
     
     
       
@@ -24,19 +21,21 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.d3202873.min.css">
-      
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ff0a5ce4.min.css">
-      
+      <link rel="stylesheet" href="../../assets/stylesheets/main.38780c08.min.css">
       
         
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.3f72e892.min.css">
         
-        <meta name="theme-color" content="#000000">
+          
+          
+          <meta name="theme-color" content="#000000">
+        
       
     
     
     
       
+        
         <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
         <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
@@ -58,9 +57,11 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="">
-  
     
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="">
+      
+  
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
@@ -150,8 +151,6 @@
 </header>
     
     <div class="md-container" data-md-component="container">
-      
-        
       
       
         
@@ -844,12 +843,9 @@
                   </a>
                 
                 
-                  
-                
-                
                   <h1>Psrfits</h1>
                 
-                <p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/formats/psrfits.py#L67">[source]</a></span></p>
+                <p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/formats/psrfits.py#L66">[source]</a></span></p>
 <h3 id="psrfitsfile">PsrfitsFile</h3>
 <div class="highlight"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">formats</span><span class="o">.</span><span class="n">psrfits</span><span class="o">.</span><span class="n">PsrfitsFile</span><span class="p">(</span><span class="n">psrfitslist</span><span class="p">)</span>
 </code></pre></div>
@@ -857,146 +853,121 @@
 <p>Simple functions for reading psrfits files from python. Not all possible features are implemented.</p>
 <p>Original Source from Scott Ransom's
 <a href="https://github.com/scottransom/presto/blob/master/python/presto/psrfits.py">psrfits</a>.</p>
-<p>Args:</p>
+<p>Args: </p>
 <div class="codehilite"><pre><span></span><code><span class="err">psrfitslist (str): list of files</span>
 </code></pre></div>
 
 
-<p>Attributes:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">filename</span> <span class="p">(</span><span class="n">str</span><span class="p">):</span> <span class="n">Name</span> <span class="k">of</span> <span class="n">the</span> <span class="k">first</span> <span class="n">file</span>
-
-<span class="n">filelist</span> <span class="p">(</span><span class="n">list</span><span class="p">):</span> <span class="n">List</span> <span class="k">of</span> <span class="n">files</span>
-
-<span class="n">fileid</span> <span class="p">(</span><span class="nb">int</span><span class="p">):</span> <span class="k">Index</span> <span class="k">of</span> <span class="n">the</span> <span class="k">current</span> <span class="n">file</span>
-
-<span class="n">fits</span> <span class="p">(</span><span class="n">obj</span><span class="p">):</span> <span class="n">fits</span> <span class="k">object</span> <span class="k">of</span> <span class="n">the</span> <span class="k">current</span> <span class="n">file</span> <span class="k">read</span>
-
-<span class="n">specinfo</span> <span class="p">(</span><span class="n">obj</span><span class="p">):</span> <span class="k">Object</span> <span class="k">of</span> <span class="k">class</span> <span class="n">SpectraInfo</span> <span class="k">for</span> <span class="n">the</span> <span class="n">given</span> <span class="n">file</span> <span class="n">list</span>
-
-<span class="n">header</span> <span class="p">(</span><span class="n">list</span><span class="p">):</span> <span class="n">Header</span> <span class="k">of</span> <span class="n">the</span> <span class="n">fits</span> <span class="n">file</span>
-
-<span class="n">source_name</span> <span class="p">(</span><span class="n">str</span><span class="p">):</span> <span class="k">Source</span> <span class="n">Name</span>
-
-<span class="n">machine_id</span> <span class="p">(</span><span class="nb">int</span><span class="p">)</span> <span class="p">:</span> <span class="n">Machine</span> <span class="n">ID</span>
-
-<span class="n">barycentric</span> <span class="p">(</span><span class="nb">int</span><span class="p">):</span> <span class="k">If</span> <span class="mi">1</span> <span class="n">the</span> <span class="k">data</span> <span class="k">is</span> <span class="n">barycentered</span>
-
-<span class="n">pulsarcentric</span> <span class="p">(</span><span class="nb">int</span><span class="p">):</span> <span class="k">Is</span> <span class="n">the</span> <span class="k">data</span> <span class="k">in</span> <span class="n">pulsar</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">frame</span> <span class="k">of</span> <span class="n">reference</span><span class="o">?</span>
-
-<span class="n">src_raj</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="n">RA</span> <span class="k">of</span> <span class="n">the</span> <span class="k">source</span> <span class="p">(</span><span class="n">HHMMSS</span><span class="p">.</span><span class="n">SS</span><span class="p">)</span>
-
-<span class="n">src_deg</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="nb">Dec</span> <span class="k">of</span> <span class="n">the</span> <span class="k">source</span> <span class="p">(</span><span class="n">DDMMSS</span><span class="p">.</span><span class="n">SS</span><span class="p">)</span>
-
-<span class="n">az_start</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="n">Telescope</span> <span class="n">Azimuth</span> <span class="p">(</span><span class="n">degrees</span><span class="p">)</span>
-
-<span class="n">za_start</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="n">Telescope</span> <span class="n">Zenith</span> <span class="n">Angle</span> <span class="p">(</span><span class="n">degrees</span><span class="p">)</span>
-
-<span class="n">fch1</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="n">Frequency</span> <span class="k">of</span> <span class="k">first</span> <span class="n">channel</span> <span class="p">(</span><span class="n">MHz</span><span class="p">))</span>
-
-<span class="n">foff</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="n">Channel</span> <span class="n">bandwidth</span> <span class="p">(</span><span class="n">MHz</span><span class="p">)</span>
-
-<span class="n">nchans</span> <span class="p">(</span><span class="nb">int</span><span class="p">):</span> <span class="nb">Number</span> <span class="k">of</span> <span class="n">channels</span>
-
-<span class="n">nbeams</span> <span class="p">(</span><span class="nb">int</span><span class="p">):</span> <span class="nb">Number</span> <span class="k">of</span> <span class="n">beams</span> <span class="k">in</span> <span class="n">the</span> <span class="n">rcvr</span><span class="p">.</span>
-
-<span class="n">ibeam</span> <span class="p">(</span><span class="nb">int</span><span class="p">):</span> <span class="n">Beam</span> <span class="nb">number</span>
-
-<span class="n">nbits</span> <span class="p">(</span><span class="nb">int</span><span class="p">):</span> <span class="nb">Number</span> <span class="k">of</span> <span class="n">bits</span> <span class="n">the</span> <span class="k">data</span> <span class="k">are</span> <span class="n">recorded</span> <span class="k">in</span><span class="p">.</span>
-
-<span class="n">tstart</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="k">Start</span> <span class="n">MJD</span> <span class="k">of</span> <span class="n">the</span> <span class="k">data</span>
-
-<span class="n">tsamp</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="n">Sampling</span> <span class="nb">interval</span> <span class="p">(</span><span class="n">seconds</span><span class="p">)</span>
-
-<span class="n">nifs</span> <span class="p">(</span><span class="nb">int</span><span class="p">):</span> <span class="nb">Number</span> <span class="k">of</span> <span class="n">IFs</span> <span class="k">in</span> <span class="n">the</span> <span class="k">data</span><span class="p">.</span>
+<p>Attributes: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">filename (str): Name of the first file</span>
+<span class="err">filelist (list): List of files</span>
+<span class="err">fileid (int): Index of the current file</span>
+<span class="err">fits (obj): fits object of the current file read</span>
+<span class="err">specinfo (obj): Object of class SpectraInfo for the given file list</span>
+<span class="err">header (list): Header of the fits file</span>
+<span class="err">source_name (str): Source Name</span>
+<span class="err">machine_id (int) : Machine ID</span>
+<span class="err">barycentric (int): If 1 the data is barycentered</span>
+<span class="err">pulsarcentric (int): Is the data in pulsar&#39;s frame of reference?</span>
+<span class="err">src_raj (float): RA of the source (HHMMSS.SS)</span>
+<span class="err">src_deg (float): Dec of the source (DDMMSS.SS)</span>
+<span class="err">az_start (float): Telescope Azimuth (degrees)</span>
+<span class="err">za_start (float): Telescope Zenith Angle (degrees)</span>
+<span class="err">fch1 (float): Frequency of first channel (MHz))</span>
+<span class="err">foff (float): Channel bandwidth (MHz)</span>
+<span class="err">nchans (int): Number of channels</span>
+<span class="err">nbeams (int): Number of beams in the rcvr.</span>
+<span class="err">ibeam (int): Beam number</span>
+<span class="err">nbits (int): Number of bits the data are recorded in.</span>
+<span class="err">tstart (float): Start MJD of the data</span>
+<span class="err">tsamp (float): Sampling interval (seconds)</span>
+<span class="err">nifs (int): Number of IFs in the data.</span>
 </code></pre></div>
 
 
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/formats/psrfits.py#L220">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/formats/psrfits.py#L191">[source]</a></span></p>
 <h3 id="read_subint">read_subint</h3>
 <div class="highlight"><pre><span></span><code><span class="n">PsrfitsFile</span><span class="o">.</span><span class="n">read_subint</span><span class="p">(</span><span class="n">isub</span><span class="p">,</span> <span class="n">apply_weights</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">apply_scales</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">apply_offsets</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pol</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </code></pre></div>
 
 <p>Read a PSRFITS subint from a open pyfits file object.
 Applys scales, weights, and offsets to the data.</p>
-<p>Args:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">isub</span><span class="o">:</span> <span class="n">index</span> <span class="n">of</span> <span class="n">subint</span> <span class="o">(</span><span class="n">first</span> <span class="n">subint</span> <span class="k">is</span> <span class="mi">0</span><span class="o">)</span>
-
-<span class="n">apply_weights</span><span class="o">:</span> <span class="n">If</span> <span class="n">True</span><span class="o">,</span> <span class="n">apply</span> <span class="n">weights</span><span class="o">.</span> <span class="o">(</span><span class="n">Default</span><span class="o">:</span> <span class="n">apply</span> <span class="n">weights</span><span class="o">)</span>
-
-<span class="n">apply_scales</span><span class="o">:</span> <span class="n">If</span> <span class="n">True</span><span class="o">,</span> <span class="n">apply</span> <span class="n">scales</span><span class="o">.</span> <span class="o">(</span><span class="n">Default</span><span class="o">:</span> <span class="n">apply</span> <span class="n">scales</span><span class="o">)</span>
-
-<span class="n">apply_offsets</span><span class="o">:</span> <span class="n">If</span> <span class="n">True</span><span class="o">,</span> <span class="n">apply</span> <span class="n">offsets</span><span class="o">.</span> <span class="o">(</span><span class="n">Default</span><span class="o">:</span> <span class="n">apply</span> <span class="n">offsets</span><span class="o">)</span>
+<p>Args: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">isub (int) : index of subint (first subint is 0)</span>
+<span class="err">apply_weights (bool) : If True, apply weights. (Default: apply weights)</span>
+<span class="err">apply_scales (bool) : If True, apply scales. (Default: apply scales)</span>
+<span class="err">apply_offsets (bool) : If True, apply offsets. (Default: apply offsets)</span>
 </code></pre></div>
 
 
-<p>Returns:</p>
-<div class="codehilite"><pre><span></span><code><span class="err">Subint data with scales, weights, and offsets applied in float32 dtype with shape (nsamps,nchan).</span>
+<p>Returns: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">np.ndarray : Subint data with scales, weights, and offsets applied in float32 dtype with shape (nsamps,nchan).</span>
 </code></pre></div>
 
 
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/formats/psrfits.py#L344">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/formats/psrfits.py#L307">[source]</a></span></p>
 <h3 id="get_data">get_data</h3>
 <div class="highlight"><pre><span></span><code><span class="n">PsrfitsFile</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">nstart</span><span class="p">,</span> <span class="n">nsamp</span><span class="p">,</span> <span class="n">pol</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </code></pre></div>
 
 <p>Return 2D array of data from PSRFITS files.</p>
-<p>Args:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">nstart</span><span class="o">:</span> <span class="n">Starting</span> <span class="n">sample</span>
-
-<span class="n">nsamp</span><span class="o">:</span> <span class="n">number</span> <span class="n">of</span> <span class="n">samples</span> <span class="n">to</span> <span class="n">read</span>
+<p>Args: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">nstart (int) : Starting sample</span>
+<span class="err">nsamp (int) : number of samples to read</span>
+<span class="err">pol (int) : which polarization to return</span>
 </code></pre></div>
 
 
-<p>Returns:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">data</span><span class="o">:</span> <span class="n">Time</span><span class="o">-</span><span class="n">Frequency</span> <span class="n">numpy</span> <span class="n">array</span>
+<p>Returns: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">np.ndarray : Time-Frequency numpy array</span>
 </code></pre></div>
 
 
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/formats/psrfits.py#L450">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/formats/psrfits.py#L417">[source]</a></span></p>
 <h3 id="spectrainfo">SpectraInfo</h3>
 <div class="highlight"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">formats</span><span class="o">.</span><span class="n">psrfits</span><span class="o">.</span><span class="n">SpectraInfo</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span>
 </code></pre></div>
 
 <p>Class to read the header of fits files</p>
-<p>Args:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">filenames</span><span class="o">:</span> <span class="n">list</span> <span class="n">of</span> <span class="n">fits</span> <span class="n">files</span>
+<p>Args: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">filenames (list) : list of fits files</span>
 </code></pre></div>
 
 
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/formats/psrfits.py#L29">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/formats/psrfits.py#L32">[source]</a></span></p>
 <h3 id="unpack_2bit">unpack_2bit</h3>
 <div class="highlight"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">formats</span><span class="o">.</span><span class="n">psrfits</span><span class="o">.</span><span class="n">unpack_2bit</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div>
 
 <p>Unpack 2-bit data that has been read in as bytes.</p>
-<p>Args:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">data</span><span class="o">:</span> <span class="n">array</span> <span class="n">of</span> <span class="n">unsigned</span> <span class="mi">2</span><span class="o">-</span><span class="n">bit</span> <span class="n">ints</span> <span class="n">packed</span> <span class="n">into</span> <span class="n">an</span> <span class="n">array</span> <span class="n">of</span> <span class="n">bytes</span><span class="o">.</span>
+<p>Args: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">data (np.ndarray) : array of unsigned 2-bit ints packed into an array of bytes.</span>
 </code></pre></div>
 
 
-<p>Returns:</p>
-<div class="codehilite"><pre><span></span><code><span class="err">unpacked array. The size of this array will be four times the size of the input data.</span>
+<p>Returns: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">np.ndarray: unpacked array. The size of this array will be four times the size of the input data.</span>
 </code></pre></div>
 
 
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/formats/psrfits.py#L49">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/formats/psrfits.py#L50">[source]</a></span></p>
 <h3 id="unpack_4bit">unpack_4bit</h3>
 <div class="highlight"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">formats</span><span class="o">.</span><span class="n">psrfits</span><span class="o">.</span><span class="n">unpack_4bit</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div>
 
 <p>Unpack 4-bit data that has been read in as bytes.</p>
-<p>Args:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">data</span><span class="o">:</span> <span class="n">array</span> <span class="n">of</span> <span class="n">unsigned</span> <span class="mi">4</span><span class="o">-</span><span class="n">bit</span> <span class="n">ints</span> <span class="n">packed</span> <span class="n">into</span> <span class="n">an</span> <span class="n">array</span> <span class="n">of</span> <span class="n">bytes</span><span class="o">.</span>
+<p>Args: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">data (np.ndarray) : array of unsigned 4-bit ints packed into an array of bytes.</span>
 </code></pre></div>
 
 
-<p>Returns:</p>
-<div class="codehilite"><pre><span></span><code><span class="err">unpacked array. The size of this array will be twice the size of the input data.</span>
+<p>Returns: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">np.ndarray: unpacked array. The size of this array will be twice the size of the input data.</span>
 </code></pre></div>
 
 
@@ -1067,15 +1038,15 @@ Applys scales, weights, and offsets to the data.</p>
       
     </div>
     
-      <script src="../../assets/javascripts/vendor.2d1db4bd.min.js"></script>
-      <script src="../../assets/javascripts/bundle.6627ddf3.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      <script src="../../assets/javascripts/vendor.77e55a48.min.js"></script>
+      <script src="../../assets/javascripts/bundle.aa3f9871.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
       
       <script>
         app = initialize({
           base: "../..",
           features: ['search.highlight'],
           search: Object.assign({
-            worker: "../../assets/javascripts/worker/search.5eca75d3.min.js"
+            worker: "../../assets/javascripts/worker/search.4ac00218.min.js"
           }, typeof search !== "undefined" && search)
         })
       </script>

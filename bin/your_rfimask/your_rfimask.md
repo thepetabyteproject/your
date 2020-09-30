@@ -10,9 +10,7 @@ Make Bad channel mask
 
 
 ```bash
-usage: your_rfimask.py [-h] [-f FILES [FILES ...]] [-sg]
-                       [-frequency_window FILTER_WINDOW [FILTER_WINDOW ...]]
-                       [-sigma SIGMA [SIGMA ...]] [-o OUTPUT_DIR]
+usage: your_rfimask.py [-h] [-f FILES [FILES ...]] [-sg] [-frequency_window FILTER_WINDOW [FILTER_WINDOW ...]] [-sigma SIGMA [SIGMA ...]] [-o OUTPUT_DIR]
 
 ```
 # Arguments

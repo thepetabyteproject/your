@@ -1,4 +1,4 @@
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L18)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L14)</span>
 
 ### DadaManager
 
@@ -10,7 +10,8 @@ your.formats.dada.DadaManager(size, key=56026, n_readers=1)
 
 A manager class for `psrdada` writer.
 
-Args:
+Args: 
+
 
     size (int): size of each buffer (in bytes)
 
@@ -21,7 +22,7 @@ Args:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L36)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L32)</span>
 
 ### setup
 
@@ -64,7 +65,8 @@ DadaManager.dump_data(data_input)
 
 Dump the data to the buffer
 
-Args:
+Args: 
+
 
     data_input (numpy.ndarray): Numpy array of the data.
 
@@ -112,93 +114,6 @@ DadaManager.teardown()
 
 
 Disconnect the writer and tear down the buffers.
-
-
-----
-
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L89)</span>
-
-### YourDada
-
-
-```python
-your.formats.dada.YourDada(your_object)
-```
-
-
-Linker class between `psrdada` and `your`.
-
-Args:
-
-    your_object: your object
-
-
-----
-
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L125)</span>
-
-### setup
-
-
-```python
-YourDada.setup()
-```
-
-
-Start the dada manager and make the header.
-
-
-----
-
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L135)</span>
-
-### teardown
-
-
-```python
-YourDada.teardown()
-```
-
-
-Tear down the dada header.
-
-
-----
-
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L142)</span>
-
-### your_dada_header
-
-
-```python
-YourDada.your_dada_header()
-```
-
-
-Make dada header from `your_header`.
-
-Returns:
-
-    dict: dada header as a python dictionary.
-
-
-----
-
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L166)</span>
-
-### to_dada
-
-
-```python
-YourDada.to_dada(progress=None)
-```
-
-
-Dump the data to the dada buffer
-
-Args:
-
-    progress: if `False` will not show the progress bar.
 
 
 ----

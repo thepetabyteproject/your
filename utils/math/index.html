@@ -1,7 +1,4 @@
 
-
-
-
 <!doctype html>
 <html lang="en" class="no-js">
   <head>
@@ -16,7 +13,7 @@
         <meta name="author" content="Devansh Agarwal, Kshitij Agarwal">
       
       <link rel="shortcut icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.5.14">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.0.1">
     
     
       
@@ -24,19 +21,21 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.d3202873.min.css">
-      
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ff0a5ce4.min.css">
-      
+      <link rel="stylesheet" href="../../assets/stylesheets/main.38780c08.min.css">
       
         
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.3f72e892.min.css">
         
-        <meta name="theme-color" content="#000000">
+          
+          
+          <meta name="theme-color" content="#000000">
+        
       
     
     
     
       
+        
         <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
         <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
@@ -58,9 +57,11 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="">
-  
     
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="">
+      
+  
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
@@ -150,8 +151,6 @@
 </header>
     
     <div class="md-container" data-md-component="container">
-      
-        
       
       
         
@@ -844,9 +843,6 @@
                   </a>
                 
                 
-                  
-                
-                
                   <h1>Math</h1>
                 
                 <p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/math.py#L8">[source]</a></span></p>
@@ -855,101 +851,101 @@
 </code></pre></div>
 
 <p>Finds the difference between the closest multiple of a smaller number with respect to a bigger number</p>
-<p>Args:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">big_num</span><span class="o">:</span> <span class="n">The</span> <span class="n">bigger</span> <span class="n">number</span> <span class="n">to</span> <span class="n">find</span> <span class="n">the</span> <span class="n">closest</span> <span class="n">of</span>
-
-<span class="n">small_num</span><span class="o">:</span> <span class="n">Number</span> <span class="n">whose</span> <span class="n">multiple</span> <span class="k">is</span> <span class="n">to</span> <span class="n">be</span> <span class="n">found</span> <span class="n">and</span> <span class="n">subtracted</span>
+<p>Args: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">big_num (int): The bigger number to find the closest of</span>
+<span class="err">small_num (int) : Number whose multiple is to be found and subtracted</span>
 </code></pre></div>
 
 
-<p>Returns:</p>
-<div class="codehilite"><pre><span></span><code><span class="err">The difference between the closest multiple of a smaller number with respect to a bigger number</span>
+<p>Returns: </p>
+<div class="codehilite"><pre><span></span><code><span class="n">int</span> <span class="o">:</span> <span class="n">The</span> <span class="n">difference</span> <span class="n">between</span> <span class="n">the</span> <span class="n">closest</span> <span class="n">multiple</span> <span class="n">of</span> <span class="n">a</span> <span class="n">smaller</span> <span class="n">number</span> <span class="k">with</span> <span class="n">respect</span> <span class="n">to</span> <span class="n">a</span> <span class="n">bigger</span> <span class="n">number</span>
 </code></pre></div>
 
 
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/math.py#L30">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/math.py#L27">[source]</a></span></p>
 <h3 id="primes">primes</h3>
 <div class="highlight"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">primes</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 </code></pre></div>
 
 <p>All the prime factors of a positive number</p>
-<p>Args:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">n</span><span class="o">:</span> <span class="n">a</span> <span class="n">positive</span> <span class="n">number</span>
+<p>Args: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">n (int) : a positive number</span>
 </code></pre></div>
 
 
-<p>Returns: primes</p>
+<p>Returns: </p>
+<div class="codehilite"><pre><span></span><code><span class="n">list</span><span class="o">:</span> <span class="n">List</span> <span class="n">of</span> <span class="n">primes</span>
+</code></pre></div>
+
+
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/math.py#L53">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/math.py#L51">[source]</a></span></p>
 <h3 id="closest_divisor">closest_divisor</h3>
 <div class="highlight"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">closest_divisor</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
 </code></pre></div>
 
 <p>Calculates the divisor of n, which is closest to (i.e bigger than) m</p>
-<p>Args:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">n</span><span class="o">:</span> <span class="n">larger</span> <span class="n">number</span> <span class="n">of</span> <span class="n">which</span> <span class="n">divisor</span> <span class="k">is</span> <span class="n">to</span> <span class="n">be</span> <span class="n">found</span>
-
-<span class="n">m</span><span class="o">:</span> <span class="n">divisor</span> <span class="n">closest</span> <span class="n">to</span> <span class="k">this</span> <span class="n">number</span>
+<p>Args: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">n (int) : larger number of which divisor is to be found</span>
+<span class="err">m (int) : divisor closest to this number</span>
 </code></pre></div>
 
 
-<p>Returns:</p>
-<div class="codehilite"><pre><span></span><code><span class="err">The divisor of n, which is closest to (i.e bigger than) m</span>
+<p>Returns: </p>
+<div class="codehilite"><pre><span></span><code><span class="n">int</span> <span class="o">:</span> <span class="n">The</span> <span class="n">divisor</span> <span class="n">of</span> <span class="n">n</span><span class="o">,</span> <span class="n">which</span> <span class="k">is</span> <span class="n">closest</span> <span class="n">to</span> <span class="o">(</span><span class="n">i</span><span class="o">.</span><span class="na">e</span> <span class="n">bigger</span> <span class="n">than</span><span class="o">)</span> <span class="n">m</span>
 </code></pre></div>
 
 
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/math.py#L79">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/math.py#L74">[source]</a></span></p>
 <h3 id="find_gcd">find_gcd</h3>
 <div class="highlight"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">find_gcd</span><span class="p">(</span><span class="n">list_of_nos</span><span class="p">)</span>
 </code></pre></div>
 
 <p>Greatest Common Divisor for a list of nos</p>
-<p>Args:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">list_of_nos</span><span class="o">:</span> <span class="n">list</span> <span class="n">of</span> <span class="n">numbers</span>
+<p>Args: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">list_of_nos (list) : list of numbers</span>
 </code></pre></div>
 
 
-<p>Returns:</p>
+<p>Returns: </p>
 <div class="codehilite"><pre><span></span><code><span class="err">GCD</span>
 </code></pre></div>
 
 
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/math.py#L96">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/math.py#L91">[source]</a></span></p>
 <h3 id="normalise">normalise</h3>
 <div class="highlight"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">normalise</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div>
 
 <p>Subtract median, divide by standard deviations</p>
-<p>Args:</p>
+<p>Args: </p>
 <div class="codehilite"><pre><span></span><code><span class="err">data (numpy.ndarray): data</span>
 </code></pre></div>
 
 
-<p>Returns:</p>
+<p>Returns: </p>
 <div class="codehilite"><pre><span></span><code><span class="err">numpy.ndarray: normalised data</span>
 </code></pre></div>
 
 
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/math.py#L115">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/math.py#L108">[source]</a></span></p>
 <h3 id="smad_plotter">smad_plotter</h3>
 <div class="highlight"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">smad_plotter</span><span class="p">(</span><span class="n">freq_time</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
 
-<p>spectal Median Absolute Deviation clipper</p>
-<p>Args:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">freq_time</span><span class="o">:</span> <span class="n">the</span> <span class="n">frequency</span> <span class="n">time</span> <span class="n">data</span>
-
-<span class="n">sigma</span> <span class="o">(</span><span class="n">float</span><span class="o">):</span> <span class="n">sigma</span> <span class="n">at</span> <span class="n">which</span> <span class="n">to</span> <span class="n">clip</span> <span class="n">data</span>
-
-<span class="n">clip</span> <span class="o">(</span><span class="n">bool</span><span class="o">):</span> <span class="k">if</span> <span class="kc">true</span> <span class="n">replaces</span> <span class="n">clips</span> <span class="n">the</span> <span class="n">data</span> <span class="k">else</span> <span class="n">replaces</span> <span class="n">it</span> <span class="k">with</span> <span class="n">zeroes</span>
+<p>Spectral Median Absolute Deviation clipper</p>
+<p>Args: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">freq_time (np.ndarray) : the frequency time data</span>
+<span class="err">sigma (float): sigma at which to clip data</span>
+<span class="err">clip (bool): if true replaces clips the data else replaces it with zeroes</span>
 </code></pre></div>
 
 
-<p>Returns:</p>
+<p>Returns: </p>
 <div class="codehilite"><pre><span></span><code><span class="err">np.ndarray: clipped/flagged data</span>
 </code></pre></div>
 
@@ -1021,15 +1017,15 @@
       
     </div>
     
-      <script src="../../assets/javascripts/vendor.2d1db4bd.min.js"></script>
-      <script src="../../assets/javascripts/bundle.6627ddf3.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      <script src="../../assets/javascripts/vendor.77e55a48.min.js"></script>
+      <script src="../../assets/javascripts/bundle.aa3f9871.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
       
       <script>
         app = initialize({
           base: "../..",
           features: ['search.highlight'],
           search: Object.assign({
-            worker: "../../assets/javascripts/worker/search.5eca75d3.min.js"
+            worker: "../../assets/javascripts/worker/search.4ac00218.min.js"
           }, typeof search !== "undefined" && search)
         })
       </script>

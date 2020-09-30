@@ -1,7 +1,4 @@
 
-
-
-
 <!doctype html>
 <html lang="en" class="no-js">
   <head>
@@ -16,7 +13,7 @@
         <meta name="author" content="Devansh Agarwal, Kshitij Agarwal">
       
       <link rel="shortcut icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.5.14">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.0.1">
     
     
       
@@ -24,19 +21,21 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.d3202873.min.css">
-      
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ff0a5ce4.min.css">
-      
+      <link rel="stylesheet" href="../../assets/stylesheets/main.38780c08.min.css">
       
         
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.3f72e892.min.css">
         
-        <meta name="theme-color" content="#000000">
+          
+          
+          <meta name="theme-color" content="#000000">
+        
       
     
     
     
       
+        
         <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
         <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
@@ -58,9 +57,11 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="">
-  
     
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="">
+      
+  
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
@@ -150,8 +151,6 @@
 </header>
     
     <div class="md-container" data-md-component="container">
-      
-        
       
       
         
@@ -830,105 +829,89 @@
                   </a>
                 
                 
-                  
-                
-                
                   <h1>RFI</h1>
                 
-                <p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/rfi.py#L9">[source]</a></span></p>
+                <p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/rfi.py#L10">[source]</a></span></p>
 <h3 id="savgol_filter">savgol_filter</h3>
 <div class="highlight"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">rfi</span><span class="o">.</span><span class="n">savgol_filter</span><span class="p">(</span><span class="n">bandpass</span><span class="p">,</span> <span class="n">channel_bandwidth</span><span class="p">,</span> <span class="n">frequency_window</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
 </code></pre></div>
 
 <p>Apply savgol filter to the data. See <a href="https://arxiv.org/abs/2003.14272">Agarwal el al. 2020</a> for details.</p>
-<p>Args:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">bandpass</span> <span class="p">(</span><span class="n">numpy</span><span class="p">.</span><span class="n">ndarray</span><span class="p">):</span> <span class="n">bandpass</span> <span class="k">of</span> <span class="n">the</span> <span class="k">data</span>
-
-<span class="n">channel_bandwidth</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="n">channel</span> <span class="n">bandwidth</span> <span class="p">(</span><span class="n">MHz</span><span class="p">)</span>
-
-<span class="n">frequency_window</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="n">frequency</span> <span class="n">window</span> <span class="p">(</span><span class="n">MHz</span><span class="p">)</span>
-
-<span class="n">sigma</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="n">sigma</span> <span class="n">value</span> <span class="k">to</span> <span class="n">apply</span> <span class="n">cutoff</span> <span class="k">on</span>
+<p>Args: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">bandpass (numpy.ndarray): bandpass of the data</span>
+<span class="err">channel_bandwidth (float): channel bandwidth (MHz)</span>
+<span class="err">frequency_window (float): frequency window (MHz)</span>
+<span class="err">sigma (float): sigma value to apply cutoff on</span>
 </code></pre></div>
 
 
-<p>Returns:</p>
+<p>Returns: </p>
 <div class="codehilite"><pre><span></span><code><span class="err">numpy.ndarray: mask for channels</span>
 </code></pre></div>
 
 
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/rfi.py#L36">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/rfi.py#L32">[source]</a></span></p>
 <h3 id="spectral_kurtosis">spectral_kurtosis</h3>
 <div class="highlight"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">rfi</span><span class="o">.</span><span class="n">spectral_kurtosis</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 
 <p>Compute spectral kurtosis. See <a href="https://doi.org/10.1109/RFINT.2016.7833535">Nita et al. (2016)</a> for details.</p>
-<p>Args:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">data</span> <span class="p">(</span><span class="n">numpy</span><span class="p">.</span><span class="n">ndarray</span><span class="p">):</span> <span class="mi">2</span><span class="n">D</span> <span class="n">frequency</span> <span class="k">time</span> <span class="k">data</span>
-
-<span class="n">N</span> <span class="p">(</span><span class="nb">int</span><span class="p">):</span> <span class="nb">Number</span> <span class="k">of</span> <span class="n">accumulations</span> <span class="k">on</span> <span class="n">the</span> <span class="n">FPGA</span>
-
-<span class="n">d</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="n">shape</span> <span class="n">factor</span>
-
+<p>Args: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">data (numpy.ndarray): 2D frequency time data</span>
+<span class="err">N (int): Number of accumulations on the FPGA</span>
+<span class="err">d (float): shape factor</span>
+</code></pre></div>
 
 
- <span class="n">numpy</span><span class="p">.</span><span class="n">ndarray</span><span class="p">:</span> <span class="n">Spectral</span> <span class="n">Kurtosis</span> <span class="n">along</span> <span class="n">frequency</span> <span class="n">axis</span>
+<p>Returns: </p>
+<div class="codehilite"><pre><span></span><code><span class="err"> numpy.ndarray: Spectral Kurtosis along frequency axis</span>
 </code></pre></div>
 
 
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/rfi.py#L62">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/rfi.py#L54">[source]</a></span></p>
 <h3 id="sk_filter">sk_filter</h3>
 <div class="highlight"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">rfi</span><span class="o">.</span><span class="n">sk_filter</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">channel_bandwidth</span><span class="p">,</span> <span class="n">nchans</span><span class="p">,</span> <span class="n">tsamp</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 </code></pre></div>
 
 <p>Apply Spectral Kurtosis filter to the data</p>
-<p>Args:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">data</span> <span class="p">(</span><span class="n">numpy</span><span class="p">.</span><span class="n">ndarray</span><span class="p">):</span> <span class="mi">2</span><span class="n">D</span> <span class="n">frequency</span> <span class="k">time</span> <span class="k">data</span>
-
-<span class="n">channel_bandwidth</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="n">channel</span> <span class="n">bandwidth</span> <span class="p">(</span><span class="n">MHz</span><span class="p">)</span>
-
-<span class="n">nchans</span> <span class="p">(</span><span class="nb">int</span><span class="p">):</span> <span class="nb">number</span> <span class="k">of</span> <span class="n">channels</span>
-
-<span class="n">tsamp</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="n">sampling</span> <span class="k">time</span> <span class="p">(</span><span class="n">seconds</span><span class="p">)</span>
-
-<span class="n">N</span> <span class="p">(</span><span class="nb">int</span><span class="p">):</span> <span class="nb">Number</span> <span class="k">of</span> <span class="n">accumulations</span> <span class="k">on</span> <span class="n">the</span> <span class="n">FPGA</span>
-
-<span class="n">d</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="n">shape</span> <span class="n">factor</span>
-
-<span class="n">sigma</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="n">sigma</span> <span class="n">value</span> <span class="k">to</span> <span class="n">apply</span> <span class="n">cutoff</span> <span class="k">on</span>
+<p>Args: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">data (numpy.ndarray): 2D frequency time data</span>
+<span class="err">channel_bandwidth (float): channel bandwidth (MHz)</span>
+<span class="err">nchans (int): number of channels</span>
+<span class="err">tsamp (float): sampling time (seconds)</span>
+<span class="err">N (int): Number of accumulations on the FPGA</span>
+<span class="err">d (float): shape factor</span>
+<span class="err">sigma (float): sigma value to apply cutoff on</span>
 </code></pre></div>
 
 
-<p>Returns:</p>
+<p>Returns: </p>
 <div class="codehilite"><pre><span></span><code><span class="err"> numpy.ndarray: mask for channels</span>
 </code></pre></div>
 
 
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/rfi.py#L101">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/rfi.py#L84">[source]</a></span></p>
 <h3 id="calc_n">calc_N</h3>
-<div class="highlight"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">rfi</span><span class="o">.</span><span class="n">calc_N</span><span class="p">(</span><span class="n">channel_bandwidth</span><span class="p">,</span> <span class="n">nchans</span><span class="p">,</span> <span class="n">tsamp</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">rfi</span><span class="o">.</span><span class="n">calc_N</span><span class="p">(</span><span class="n">channel_bandwidth</span><span class="p">,</span> <span class="n">tsamp</span><span class="p">)</span>
 </code></pre></div>
 
 <p>Calculates number of accumulations on FPGA</p>
-<p>Args:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">channel_bandwidth</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="n">channel</span> <span class="n">bandwidth</span> <span class="p">(</span><span class="n">MHz</span><span class="p">)</span>
-
-<span class="n">nchans</span> <span class="p">(</span><span class="nb">int</span><span class="p">):</span> <span class="nb">number</span> <span class="k">of</span> <span class="n">channels</span>
-
-<span class="n">tsamp</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="n">sampling</span> <span class="k">time</span> <span class="p">(</span><span class="n">seconds</span><span class="p">)</span>
+<p>Args: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">channel_bandwidth (float): channel bandwidth (MHz)</span>
+<span class="err">tsamp (float): sampling time (seconds)</span>
 </code></pre></div>
 
 
-<p>Returns:</p>
+<p>Returns: </p>
 <div class="codehilite"><pre><span></span><code><span class="n">int</span><span class="o">:</span> <span class="n">FPGA</span> <span class="n">accumulation</span> <span class="n">length</span>
 </code></pre></div>
 
 
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/rfi.py#L125">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/rfi.py#L102">[source]</a></span></p>
 <h3 id="sk_sg_filter">sk_sg_filter</h3>
 <div class="highlight"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">rfi</span><span class="o">.</span><span class="n">sk_sg_filter</span><span class="p">(</span>
     <span class="n">data</span><span class="p">,</span> <span class="n">your_object</span><span class="p">,</span> <span class="n">nchans</span><span class="p">,</span> <span class="n">spectral_kurtosis_sigma</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">savgol_frequency_window</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">savgol_sigma</span><span class="o">=</span><span class="mi">5</span>
@@ -936,22 +919,17 @@
 </code></pre></div>
 
 <p>Apply Spectral Kurtosis and Savgol filter to the data</p>
-<p>Args:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">data</span> <span class="p">(</span><span class="n">numpy</span><span class="p">.</span><span class="n">ndarray</span><span class="p">):</span> <span class="mi">2</span><span class="n">D</span> <span class="n">frequency</span> <span class="k">time</span> <span class="k">data</span>
-
-<span class="n">your_object</span><span class="p">:</span> <span class="n">Your</span> <span class="k">object</span>
-
-<span class="n">nchans</span> <span class="p">(</span><span class="nb">int</span><span class="p">):</span> <span class="nb">number</span> <span class="k">of</span> <span class="n">channels</span>
-
-<span class="n">spectral_kurtosis_sigma</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="n">sigma</span> <span class="n">value</span> <span class="k">to</span> <span class="n">apply</span> <span class="n">cutoff</span> <span class="k">on</span> <span class="k">for</span> <span class="n">SK</span> <span class="n">filter</span>
-
-<span class="n">savgol_frequency_window</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="n">frequency</span> <span class="n">window</span> <span class="k">for</span> <span class="n">savgol</span> <span class="n">filter</span><span class="p">(</span><span class="n">MHz</span><span class="p">)</span>
-
-<span class="n">savgol_sigma</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="n">sigma</span> <span class="n">value</span> <span class="k">to</span> <span class="n">apply</span> <span class="n">cutoff</span> <span class="k">on</span> <span class="k">for</span> <span class="n">savgol</span> <span class="n">filter</span>
+<p>Args: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">data (numpy.ndarray): 2D frequency time data</span>
+<span class="c">your_object: Your object</span>
+<span class="err">nchans (int): number of channels</span>
+<span class="err">spectral_kurtosis_sigma (float): sigma value to apply cutoff on for SK filter</span>
+<span class="err">savgol_frequency_window (float): frequency window for savgol filter(MHz)</span>
+<span class="err">savgol_sigma (float): sigma value to apply cutoff on for savgol filter</span>
 </code></pre></div>
 
 
-<p>Returns:</p>
+<p>Returns: </p>
 <div class="codehilite"><pre><span></span><code><span class="err"> numpy.ndarray: mask for channels</span>
 </code></pre></div>
 
@@ -1023,15 +1001,15 @@
       
     </div>
     
-      <script src="../../assets/javascripts/vendor.2d1db4bd.min.js"></script>
-      <script src="../../assets/javascripts/bundle.6627ddf3.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      <script src="../../assets/javascripts/vendor.77e55a48.min.js"></script>
+      <script src="../../assets/javascripts/bundle.aa3f9871.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
       
       <script>
         app = initialize({
           base: "../..",
           features: ['search.highlight'],
           search: Object.assign({
-            worker: "../../assets/javascripts/worker/search.5eca75d3.min.js"
+            worker: "../../assets/javascripts/worker/search.4ac00218.min.js"
           }, typeof search !== "undefined" && search)
         })
       </script>

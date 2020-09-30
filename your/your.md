@@ -1,4 +1,4 @@
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L14)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L19)</span>
 
 ### Your
 
@@ -10,28 +10,23 @@ your.Your(file)
 
 Your class.
 
-Args:
+Args: 
 
     file : String or a list of files. It can either filterbank or psrfits files.
 
-Examples:
+Examples: 
 
     your_object = your.Your("/path/to/filterbank.fil")
-
     your_object = your.Your(["puppi_58763_B1919+21_0292_0001.fits","puppi_58763_B1919+21_0292_0002.fits"]
 
-Attributes:
-
-    isfits (bool): your object made from fits files
-
-    isfil (bool) : your object makde from filterbank file
+Attributes: 
 
     your_header : instance of the Header class
 
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L151)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L134)</span>
 
 ### bandpass
 
@@ -43,19 +38,18 @@ Your.bandpass(nspectra=None)
 
 Create the bandpass of the file
 
-Args:
+Args: 
 
     nspectra (int): Number of spectra to create bandpass from.
 
-
-Returns:
+Returns: 
 
     numpy.ndarray: bandpass array
 
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L178)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L162)</span>
 
 ### get_data
 
@@ -67,30 +61,25 @@ Your.get_data(nstart, nsamp, time_decimation_factor=None, frequency_decimation_f
 
 Read data from files
 
-Args:
+Args: 
 
     nstart (int): start sample
-
     nsamp (int): number of samples to read
-
     time_decimation_factor (int): decimate in time with this factor
-
     frequency_decimation_factor (int): decimate in frequency with this factor
-
     pol (int): which polarization to chose
 
 !!! note
-
     Both decimation factors should exactly device the nsamp or nchans
 
-Returns:
+Returns: 
 
     numpy.ndarray: 2D numpy array of data
 
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L267)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L269)</span>
 
 ### dispersion_delay
 
@@ -102,18 +91,18 @@ Your.dispersion_delay(dms=5000)
 
 Calculate the dispersion delay in seconds for the given configuration
 
-Args:
+Args: 
 
     dms: DM or a list of DM values
 
-Returns:
+Returns: 
 
     Dispersion delay in seconds.
 
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L284)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L287)</span>
 
 ### Header
 
@@ -125,48 +114,30 @@ your.Header(your)
 
 Your Header class, it contains all the relevant metadata.
 
-Args:
+Args: 
 
     Your object
 
-Attributes:
+Attributes: 
 
     filelist: List of files used to make the your object
-
     filename (str) : Name of the first file used to make the object
-
     basename (str): Base name of file
-
     source_name (str): Source Name
-
     ra_deg (float): RA of the source in degrees
-
     dec_deg (float): Dec of the source in degrees
-
     bw (float): bandwidth of the data
-
     center_freq (float): Center frequency of the data.
-
     time_decimation_factor (int): Number of time samples to average
-
     frequency_decimation_factor (int): Number of frequency channels to average
-
     native_tsamp (float): Sampling time of the data pre decimation (seconds)
-
     native_foff (float): Channel bandwidth of the data pre decimation (MHz)
-
     native_nchans : Number of channels in the data pre decimation
-
     native_nspectra: Number of spectra in the data pre decimation
-
     dtype: dtype of the (read) data
-
     nbits (int): Number of bits in the data
-
     tstart (float): Start MJD of the data
-
     fch1 (float): Frequency of the first channel (MHz)
-
     npol (int) : Number of polarisations in the data
 
 

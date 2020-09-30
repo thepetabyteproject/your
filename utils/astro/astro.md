@@ -10,14 +10,14 @@ your.utils.astro.dec2deg(src_dej)
 
 Convert the SIGPROC-style DDMMSS.SSSS declination to degrees
 
-Args:
+Args: 
 
     src_dej (float): Source dec
 
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/astro.py#L25)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/astro.py#L24)</span>
 
 ### ra2deg
 
@@ -29,7 +29,7 @@ your.utils.astro.ra2deg(src_raj)
 
 Convert the SIGPROC-style HHMMSS.SSSS right ascension to degrees
 
-Args:
+Args: 
 
     src_raj (float): Source RA
 

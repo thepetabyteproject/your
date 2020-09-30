@@ -1,7 +1,4 @@
 
-
-
-
 <!doctype html>
 <html lang="en" class="no-js">
   <head>
@@ -16,7 +13,7 @@
         <meta name="author" content="Devansh Agarwal, Kshitij Agarwal">
       
       <link rel="shortcut icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.5.14">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.0.1">
     
     
       
@@ -24,19 +21,21 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.d3202873.min.css">
-      
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ff0a5ce4.min.css">
-      
+      <link rel="stylesheet" href="../../assets/stylesheets/main.38780c08.min.css">
       
         
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.3f72e892.min.css">
         
-        <meta name="theme-color" content="#000000">
+          
+          
+          <meta name="theme-color" content="#000000">
+        
       
     
     
     
       
+        
         <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
         <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
@@ -58,9 +57,11 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="">
-  
     
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="">
+      
+  
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
@@ -150,8 +151,6 @@
 </header>
     
     <div class="md-container" data-md-component="container">
-      
-        
       
       
         
@@ -816,9 +815,6 @@
                   </a>
                 
                 
-                  
-                
-                
                   <h1>Plotter</h1>
                 
                 <p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/plotter.py#L17">[source]</a></span></p>
@@ -827,39 +823,37 @@
 </code></pre></div>
 
 <p>Create figure size either a full page or a half page figure</p>
-<p>Args:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">scale</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="mi">0</span><span class="p">.</span><span class="mi">5</span> <span class="k">for</span> <span class="n">half</span> <span class="n">page</span> <span class="n">figure</span><span class="p">,</span> <span class="mi">1</span> <span class="k">for</span> <span class="k">full</span> <span class="n">page</span>
-
-<span class="n">width_by_height_ratio</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="n">ratio</span> <span class="k">of</span> <span class="n">width</span> <span class="k">to</span> <span class="n">height</span> <span class="k">for</span> <span class="n">the</span> <span class="n">figure</span>
+<p>Args: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">scale (float): 0.5 for half page figure, 1 for full page</span>
+<span class="err">width_by_height_ratio (float): ratio of width to height for the figure</span>
 </code></pre></div>
 
 
-<p>Returns:</p>
+<p>Returns: </p>
 <div class="codehilite"><pre><span></span><code><span class="n">list</span><span class="o">:</span> <span class="n">list</span> <span class="n">of</span> <span class="n">width</span> <span class="n">and</span> <span class="n">height</span>
 </code></pre></div>
 
 
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/plotter.py#L41">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/plotter.py#L39">[source]</a></span></p>
 <h3 id="get_params">get_params</h3>
 <div class="highlight"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">plotter</span><span class="o">.</span><span class="n">get_params</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">width_by_height_ratio</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div>
 
 <p>Create a dictionary for pretty plotting</p>
-<p>Args:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">scale</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="mi">0</span><span class="p">.</span><span class="mi">5</span> <span class="k">for</span> <span class="n">half</span> <span class="n">page</span> <span class="n">figure</span><span class="p">,</span> <span class="mi">1</span> <span class="k">for</span> <span class="k">full</span> <span class="n">page</span>
-
-<span class="n">width_by_height_ratio</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="n">ratio</span> <span class="k">of</span> <span class="n">width</span> <span class="k">to</span> <span class="n">height</span> <span class="k">for</span> <span class="n">the</span> <span class="n">figure</span>
+<p>Args: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">scale (float): 0.5 for half page figure, 1 for full page</span>
+<span class="err">width_by_height_ratio (float): ratio of width to height for the figure</span>
 </code></pre></div>
 
 
-<p>Returns:</p>
+<p>Returns: </p>
 <div class="codehilite"><pre><span></span><code><span class="n">dict</span><span class="o">:</span> <span class="n">dictionary</span> <span class="n">of</span> <span class="n">parameters</span>
 </code></pre></div>
 
 
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/plotter.py#L83">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/plotter.py#L82">[source]</a></span></p>
 <h3 id="plot_h5">plot_h5</h3>
 <div class="highlight"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">plotter</span><span class="o">.</span><span class="n">plot_h5</span><span class="p">(</span>
     <span class="n">h5_file</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">detrend_ft</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">publication</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mad_filter</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">outdir</span><span class="o">=</span><span class="kc">None</span>
@@ -867,28 +861,23 @@
 </code></pre></div>
 
 <p>Plot the h5 candidates</p>
-<p>Args:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">mad_filter</span> <span class="p">(</span><span class="nb">int</span><span class="p">):</span> <span class="n">use</span> <span class="n">MAD</span> <span class="n">filter</span> <span class="k">to</span> <span class="n">clip</span> <span class="k">data</span>
-
-<span class="n">h5_file</span> <span class="p">(</span><span class="n">str</span><span class="p">):</span> <span class="n">Name</span> <span class="k">of</span> <span class="n">the</span> <span class="n">h5</span> <span class="n">file</span>
-
-<span class="n">save</span> <span class="p">(</span><span class="n">bool</span><span class="p">):</span> <span class="n">Save</span> <span class="n">the</span> <span class="n">file</span> <span class="k">as</span> <span class="n">a</span> <span class="n">png</span>
-
-<span class="n">detrend_ft</span> <span class="p">(</span><span class="n">bool</span><span class="p">):</span> <span class="n">detrend</span> <span class="n">the</span> <span class="n">frequency</span> <span class="k">time</span> <span class="n">plot</span>
-
-<span class="n">publication</span> <span class="p">(</span><span class="n">bool</span><span class="p">):</span> <span class="n">make</span> <span class="n">publication</span> <span class="n">quality</span> <span class="n">plot</span>
-
-<span class="n">outdir</span> <span class="p">(</span><span class="n">str</span><span class="p">):</span> <span class="n">Path</span> <span class="k">to</span> <span class="n">the</span> <span class="n">save</span> <span class="n">the</span> <span class="n">files</span> <span class="k">into</span><span class="p">.</span>
+<p>Args: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">mad_filter (int): use MAD filter to clip data</span>
+<span class="err">h5_file (str): Name of the h5 file</span>
+<span class="err">save (bool): Save the file as a png</span>
+<span class="err">detrend_ft (bool): detrend the frequency time plot</span>
+<span class="err">publication (bool): make publication quality plot</span>
+<span class="err">outdir (str): Path to the save the files into.</span>
 </code></pre></div>
 
 
-<p>Returns:</p>
+<p>Returns: </p>
 <div class="codehilite"><pre><span></span><code><span class="err">None</span>
 </code></pre></div>
 
 
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/plotter.py#L181">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/plotter.py#L197">[source]</a></span></p>
 <h3 id="save_bandpass">save_bandpass</h3>
 <div class="highlight"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">plotter</span><span class="o">.</span><span class="n">save_bandpass</span><span class="p">(</span>
     <span class="n">your_object</span><span class="p">,</span> <span class="n">bandpass</span><span class="p">,</span> <span class="n">chan_nos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outdir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outname</span><span class="o">=</span><span class="kc">None</span>
@@ -896,17 +885,12 @@
 </code></pre></div>
 
 <p>Plots and saves the bandpass</p>
-<p>Args:</p>
+<p>Args: </p>
 <div class="codehilite"><pre><span></span><code><span class="n">your_object</span><span class="o">:</span> <span class="n">Your</span> <span class="n">object</span>
-
 <span class="n">bandpass</span> <span class="o">(</span><span class="n">np</span><span class="o">.</span><span class="na">ndarray</span><span class="o">):</span> <span class="n">Bandpass</span> <span class="n">of</span> <span class="n">the</span> <span class="n">data</span>
-
 <span class="n">chan_nos</span> <span class="o">(</span><span class="n">np</span><span class="o">.</span><span class="na">ndarray</span><span class="o">):</span> <span class="n">Array</span> <span class="n">of</span> <span class="n">channel</span> <span class="n">numbers</span>
-
 <span class="n">mask</span> <span class="o">(</span><span class="n">np</span><span class="o">.</span><span class="na">ndarray</span><span class="o">):</span> <span class="n">Boolean</span> <span class="n">Array</span> <span class="n">of</span> <span class="n">channel</span> <span class="n">mask</span>
-
 <span class="n">outdir</span> <span class="o">(</span><span class="n">str</span><span class="o">)</span> <span class="o">:</span> <span class="n">Output</span> <span class="n">directory</span> <span class="n">to</span> <span class="n">save</span> <span class="n">the</span> <span class="n">plot</span>
-
 <span class="n">outname</span> <span class="o">(</span><span class="n">str</span><span class="o">):</span> <span class="n">Name</span> <span class="n">of</span> <span class="n">the</span> <span class="n">bandpass</span> <span class="n">file</span>
 </code></pre></div>
 
@@ -978,15 +962,15 @@
       
     </div>
     
-      <script src="../../assets/javascripts/vendor.2d1db4bd.min.js"></script>
-      <script src="../../assets/javascripts/bundle.6627ddf3.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      <script src="../../assets/javascripts/vendor.77e55a48.min.js"></script>
+      <script src="../../assets/javascripts/bundle.aa3f9871.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
       
       <script>
         app = initialize({
           base: "../..",
           features: ['search.highlight'],
           search: Object.assign({
-            worker: "../../assets/javascripts/worker/search.5eca75d3.min.js"
+            worker: "../../assets/javascripts/worker/search.4ac00218.min.js"
           }, typeof search !== "undefined" && search)
         })
       </script>

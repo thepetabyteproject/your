@@ -10,11 +10,7 @@ Your Heimdall Fetch FRB
 
 
 ```bash
-usage: your_heimdall.py [-h] [-v] [-p PROBABILITY] [-f FILES [FILES ...]]
-                        [-dm DM DM] [-g GPU_ID] [-sg]
-                        [-frequency_window FILTER_WINDOW] [-sigma SIGMA]
-                        [-m MASK] [-dm_tol DM_TOL] [-rfi_no_narrow]
-                        [-rfi_no_broad] [-o OUTPUT_DIR] [--no_progress]
+usage: your_heimdall.py [-h] [-v] [-p PROBABILITY] [-f FILES [FILES ...]] [-dm DM DM] [-g GPU_ID] [-sg] [-frequency_window FILTER_WINDOW] [-sigma SIGMA] [-m MASK] [-dm_tol DM_TOL] [-rfi_no_narrow] [-rfi_no_broad] [-o OUTPUT_DIR] [--no_progress]
 
 ```
 # Arguments

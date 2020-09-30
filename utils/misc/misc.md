@@ -10,24 +10,21 @@ your.utils.misc.crop(data, start_sample, length, axis)
 
 Crops the input array to a required size
 
-Args:
+Args: 
 
-    data: Data array to crop
+    data (np.ndarray) : Data array to crop
+    start_sample (int) : Sample to start the output cropped array
+    length (int) : Final Length along the axis of the output
+    axis (int) : Axis to crop
 
-    start_sample: Sample to start the output cropped array
+Returns: 
 
-    length: Final Length along the axis of the output
-
-    axis: Axis to crop
-
-Returns:
-
-    Cropped array
+    np.ndarray: Cropped array
 
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/misc.py#L102)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/misc.py#L97)</span>
 
 ### pad_along_axis
 
@@ -39,24 +36,22 @@ your.utils.misc.pad_along_axis(array, target_length, loc="end", axis=0, **kwargs
 
 Pads data along the required axis on the input array to reach a target size
 
-Args:
+Args: 
 
-    array: Input array to pad
+    array (np.ndarray) : Input array to pad
+    target_length (int) : Required length of the axis
+    loc (int) : Location to pad: start: pad in beginning, end: pad in end, else: pad equally on both sides
+    axis (int) : Axis to pad along
+    **kwargs: args for np.pad
 
-    target_length: Required length of the axis
+Returns: 
 
-    loc: Location to pad: start: pad in beginning, end: pad in end, else: pad equally on both sides
-
-    axis: Axis to pad along
-
-Returns:
-
-    Padded array
+    np.ndarray: Padded array
 
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/misc.py#L139)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/misc.py#L146)</span>
 
 ### MyEncoder
 

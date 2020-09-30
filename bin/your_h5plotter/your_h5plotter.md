@@ -10,10 +10,7 @@ Plot candidate h5 files
 
 
 ```bash
-usage: your_h5plotter.py [-h] [-v] [-f FILES [FILES ...]] [-c RESULTS_CSV]
-                         [--publish] [--no_detrend_ft] [--no_save]
-                         [-o OUT_DIR] [-mad [MAD_FILTER]] [-n NPROC]
-                         [--no_progress]
+usage: your_h5plotter.py [-h] [-v] [-f FILES [FILES ...]] [-c RESULTS_CSV] [--publish] [--no_detrend_ft] [--no_save] [-o OUT_DIR] [-mad [MAD_FILTER]] [-n NPROC] [--no_progress]
 
 ```
 # Arguments

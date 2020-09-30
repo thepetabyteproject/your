@@ -1,7 +1,4 @@
 
-
-
-
 <!doctype html>
 <html lang="en" class="no-js">
   <head>
@@ -16,7 +13,7 @@
         <meta name="author" content="Devansh Agarwal, Kshitij Agarwal">
       
       <link rel="shortcut icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.5.14">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.0.1">
     
     
       
@@ -24,19 +21,21 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.d3202873.min.css">
-      
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ff0a5ce4.min.css">
-      
+      <link rel="stylesheet" href="../../assets/stylesheets/main.38780c08.min.css">
       
         
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.3f72e892.min.css">
         
-        <meta name="theme-color" content="#000000">
+          
+          
+          <meta name="theme-color" content="#000000">
+        
       
     
     
     
       
+        
         <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
         <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
@@ -58,9 +57,11 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="">
-  
     
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="">
+      
+  
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
@@ -150,8 +151,6 @@
 </header>
     
     <div class="md-container" data-md-component="container">
-      
-        
       
       
         
@@ -788,12 +787,9 @@
                   </a>
                 
                 
-                  
-                
-                
                   <h1>Heimdall</h1>
                 
-                <p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/heimdall.py#L50">[source]</a></span></p>
+                <p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/heimdall.py#L52">[source]</a></span></p>
 <h3 id="heimdallmanager">HeimdallManager</h3>
 <div class="highlight"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">heimdall</span><span class="o">.</span><span class="n">HeimdallManager</span><span class="p">(</span>
     <span class="n">dada_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -820,51 +816,32 @@
 </code></pre></div>
 
 <p>So you want to run heimdall, here is wrapper class which will allow you to do just that.</p>
-<p>Args:</p>
+<p>Args: </p>
 <div class="codehilite"><pre><span></span><code><span class="n">dada_key</span> <span class="p">(</span><span class="n">hex</span><span class="p">):</span> <span class="n">use</span> <span class="n">PSRDADA</span> <span class="n">hexidecimal</span> <span class="n">key</span>
-
 <span class="n">filename</span> <span class="p">(</span><span class="nb">str</span><span class="p">):</span> <span class="n">process</span> <span class="n">specified</span> <span class="n">SIGPROC</span> <span class="n">filterbank</span> <span class="n">file</span>
-
 <span class="n">verbosity</span> <span class="p">(</span><span class="nb">str</span><span class="p">):</span> <span class="n">v</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">G</span> <span class="n">increase</span> <span class="n">verbosity</span> <span class="n">level</span>
-
 <span class="n">nsamps_gulp</span> <span class="p">(</span><span class="nb nb-Type">int</span><span class="p">):</span> <span class="n">number</span> <span class="n">of</span> <span class="n">samples</span> <span class="n">to</span> <span class="n">be</span> <span class="n">read</span> <span class="n">at</span> <span class="n">a</span> <span class="n">time</span>
-
 <span class="n">beam</span> <span class="p">(</span><span class="nb nb-Type">int</span><span class="p">)</span> <span class="p">:</span> <span class="n">over</span><span class="o">-</span><span class="n">ride</span> <span class="n">beam</span> <span class="n">number</span>
-
 <span class="n">baseline_length</span> <span class="p">(</span><span class="nb nb-Type">float</span><span class="p">):</span> <span class="n">number</span> <span class="n">of</span> <span class="n">seconds</span> <span class="n">over</span> <span class="n">which</span> <span class="n">to</span> <span class="n">smooth</span> <span class="n">the</span> <span class="n">baseline</span>
-
 <span class="n">output_dir</span> <span class="p">(</span><span class="nb">str</span><span class="p">)</span> <span class="p">:</span> <span class="n">create</span> <span class="n">all</span> <span class="n">output</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">specified</span> <span class="n">path</span>
-
 <span class="n">dm</span> <span class="p">(</span><span class="n">list</span><span class="p">):</span> <span class="nb">min</span> <span class="ow">and</span> <span class="nb">max</span> <span class="n">DM</span>
-
 <span class="n">dm_tol</span> <span class="p">(</span><span class="nb nb-Type">float</span><span class="p">):</span> <span class="n">SNR</span> <span class="n">loss</span> <span class="n">tolerance</span> <span class="n">between</span> <span class="n">each</span> <span class="n">DM</span> <span class="n">trial</span>
-
 <span class="n">zap_chans</span> <span class="p">(</span><span class="nb nb-Type">int</span><span class="p">):</span> <span class="n">zap</span> <span class="n">all</span> <span class="n">channels</span> <span class="n">between</span> <span class="n">start</span> <span class="ow">and</span> <span class="n">end</span> <span class="n">channels</span> <span class="n">inclusive</span>
-
 <span class="n">max_giant_rate</span> <span class="p">(</span><span class="nb nb-Type">int</span><span class="p">):</span> <span class="n">limit</span> <span class="n">the</span> <span class="n">maximum</span> <span class="n">number</span> <span class="n">of</span> <span class="n">individual</span> <span class="n">detections</span> <span class="n">per</span> <span class="n">minute</span> <span class="n">to</span> <span class="n">nevents</span>
-
 <span class="n">dm_nbits</span> <span class="p">(</span><span class="nb nb-Type">int</span><span class="p">):</span> <span class="n">number</span> <span class="n">of</span> <span class="n">bits</span> <span class="n">per</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">dedispersed</span> <span class="n">time</span> <span class="n">series</span>
-
 <span class="n">gpu_id</span> <span class="p">(</span><span class="nb nb-Type">int</span><span class="p">):</span> <span class="n">run</span> <span class="n">on</span> <span class="n">specified</span> <span class="n">GPU</span>
-
 <span class="n">no_scrunching</span> <span class="p">(</span><span class="nb nb-Type">bool</span><span class="p">):</span> <span class="n">don</span><span class="s1">&#39;t use an adaptive time scrunching during dedispersion</span>
-
 <span class="n">rfi_tol</span> <span class="p">(</span><span class="nb nb-Type">float</span><span class="p">):</span> <span class="n">RFI</span> <span class="n">exicision</span> <span class="n">threshold</span> <span class="n">limits</span>
-
 <span class="n">rfi_no_narrow</span> <span class="p">(</span><span class="nb nb-Type">bool</span><span class="p">):</span> <span class="n">disable</span> <span class="n">narrow</span> <span class="n">band</span> <span class="n">RFI</span> <span class="n">excision</span>
-
 <span class="n">rfi_no_broad</span> <span class="p">(</span><span class="nb nb-Type">bool</span><span class="p">):</span> <span class="n">disable</span> <span class="mi">0</span><span class="o">-</span><span class="n">DM</span> <span class="n">RFI</span> <span class="n">excision</span>
-
 <span class="n">boxcar_max</span> <span class="p">(</span><span class="nb nb-Type">int</span><span class="p">):</span> <span class="n">maximum</span> <span class="n">boxcar</span> <span class="n">width</span> <span class="ow">in</span> <span class="n">samples</span>
-
 <span class="n">fswap</span> <span class="p">(</span><span class="nb nb-Type">bool</span><span class="p">):</span> <span class="n">swap</span> <span class="n">channel</span> <span class="n">ordering</span> <span class="k">for</span> <span class="n">negative</span> <span class="n">DM</span> <span class="o">-</span> <span class="n">SIGPROC</span> <span class="mi">2</span><span class="p">,</span><span class="mi">4</span> <span class="ow">or</span> <span class="mi">8</span> <span class="n">bit</span> <span class="n">only</span>
-
 <span class="n">min_tscrunch_width</span><span class="p">:</span> <span class="n">vary</span> <span class="n">between</span> <span class="n">high</span> <span class="n">quality</span> <span class="p">(</span><span class="n">large</span> <span class="n">value</span><span class="p">)</span> <span class="ow">and</span> <span class="n">high</span> <span class="n">performance</span> <span class="p">(</span><span class="n">low</span> <span class="n">value</span><span class="p">)</span>
 </code></pre></div>
 
 
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/heimdall.py#L127">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/heimdall.py#L128">[source]</a></span></p>
 <h3 id="run">run</h3>
 <div class="highlight"><pre><span></span><code><span class="n">HeimdallManager</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </code></pre></div>
@@ -937,15 +914,15 @@
       
     </div>
     
-      <script src="../../assets/javascripts/vendor.2d1db4bd.min.js"></script>
-      <script src="../../assets/javascripts/bundle.6627ddf3.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      <script src="../../assets/javascripts/vendor.77e55a48.min.js"></script>
+      <script src="../../assets/javascripts/bundle.aa3f9871.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
       
       <script>
         app = initialize({
           base: "../..",
           features: ['search.highlight'],
           search: Object.assign({
-            worker: "../../assets/javascripts/worker/search.5eca75d3.min.js"
+            worker: "../../assets/javascripts/worker/search.4ac00218.min.js"
           }, typeof search !== "undefined" && search)
         })
       </script>

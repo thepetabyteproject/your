@@ -1,7 +1,4 @@
 
-
-
-
 <!doctype html>
 <html lang="en" class="no-js">
   <head>
@@ -16,7 +13,7 @@
         <meta name="author" content="Devansh Agarwal, Kshitij Agarwal">
       
       <link rel="shortcut icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.5.14">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.0.1">
     
     
       
@@ -24,19 +21,21 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.d3202873.min.css">
-      
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ff0a5ce4.min.css">
-      
+      <link rel="stylesheet" href="../../assets/stylesheets/main.38780c08.min.css">
       
         
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.3f72e892.min.css">
         
-        <meta name="theme-color" content="#000000">
+          
+          
+          <meta name="theme-color" content="#000000">
+        
       
     
     
     
       
+        
         <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
         <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
@@ -58,9 +57,11 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="">
-  
     
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="">
+      
+  
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
@@ -150,8 +151,6 @@
 </header>
     
     <div class="md-container" data-md-component="container">
-      
-        
       
       
         
@@ -802,9 +801,6 @@
                   </a>
                 
                 
-                  
-                
-                
                   <h1>Misc</h1>
                 
                 <p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/misc.py#L72">[source]</a></span></p>
@@ -813,47 +809,42 @@
 </code></pre></div>
 
 <p>Crops the input array to a required size</p>
-<p>Args:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">data</span><span class="o">:</span> <span class="n">Data</span> <span class="n">array</span> <span class="n">to</span> <span class="n">crop</span>
-
-<span class="n">start_sample</span><span class="o">:</span> <span class="n">Sample</span> <span class="n">to</span> <span class="n">start</span> <span class="n">the</span> <span class="n">output</span> <span class="n">cropped</span> <span class="n">array</span>
-
-<span class="n">length</span><span class="o">:</span> <span class="n">Final</span> <span class="n">Length</span> <span class="n">along</span> <span class="n">the</span> <span class="n">axis</span> <span class="n">of</span> <span class="n">the</span> <span class="n">output</span>
-
-<span class="n">axis</span><span class="o">:</span> <span class="n">Axis</span> <span class="n">to</span> <span class="n">crop</span>
+<p>Args: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">data (np.ndarray) : Data array to crop</span>
+<span class="err">start_sample (int) : Sample to start the output cropped array</span>
+<span class="err">length (int) : Final Length along the axis of the output</span>
+<span class="err">axis (int) : Axis to crop</span>
 </code></pre></div>
 
 
-<p>Returns:</p>
-<div class="codehilite"><pre><span></span><code><span class="err">Cropped array</span>
+<p>Returns: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">np.ndarray: Cropped array</span>
 </code></pre></div>
 
 
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/misc.py#L102">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/misc.py#L97">[source]</a></span></p>
 <h3 id="pad_along_axis">pad_along_axis</h3>
 <div class="highlight"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">misc</span><span class="o">.</span><span class="n">pad_along_axis</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">target_length</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;end&quot;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </code></pre></div>
 
 <p>Pads data along the required axis on the input array to reach a target size</p>
-<p>Args:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">array</span><span class="o">:</span> <span class="n">Input</span> <span class="n">array</span> <span class="n">to</span> <span class="n">pad</span>
-
-<span class="n">target_length</span><span class="o">:</span> <span class="n">Required</span> <span class="n">length</span> <span class="n">of</span> <span class="n">the</span> <span class="n">axis</span>
-
-<span class="n">loc</span><span class="o">:</span> <span class="n">Location</span> <span class="n">to</span> <span class="n">pad</span><span class="o">:</span> <span class="n">start</span><span class="o">:</span> <span class="n">pad</span> <span class="k">in</span> <span class="n">beginning</span><span class="o">,</span> <span class="n">end</span><span class="o">:</span> <span class="n">pad</span> <span class="k">in</span> <span class="n">end</span><span class="o">,</span> <span class="k">else</span><span class="o">:</span> <span class="n">pad</span> <span class="n">equally</span> <span class="n">on</span> <span class="n">both</span> <span class="n">sides</span>
-
-<span class="n">axis</span><span class="o">:</span> <span class="n">Axis</span> <span class="n">to</span> <span class="n">pad</span> <span class="n">along</span>
+<p>Args: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">array (np.ndarray) : Input array to pad</span>
+<span class="err">target_length (int) : Required length of the axis</span>
+<span class="err">loc (int) : Location to pad: start: pad in beginning, end: pad in end, else: pad equally on both sides</span>
+<span class="err">axis (int) : Axis to pad along</span>
+<span class="err">**kwargs: args for np.pad</span>
 </code></pre></div>
 
 
-<p>Returns:</p>
-<div class="codehilite"><pre><span></span><code><span class="err">Padded array</span>
+<p>Returns: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">np.ndarray: Padded array</span>
 </code></pre></div>
 
 
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/misc.py#L139">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/misc.py#L146">[source]</a></span></p>
 <h3 id="myencoder">MyEncoder</h3>
 <div class="highlight"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">misc</span><span class="o">.</span><span class="n">MyEncoder</span><span class="p">(</span>
     <span class="o">*</span><span class="p">,</span>
@@ -936,15 +927,15 @@
       
     </div>
     
-      <script src="../../assets/javascripts/vendor.2d1db4bd.min.js"></script>
-      <script src="../../assets/javascripts/bundle.6627ddf3.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      <script src="../../assets/javascripts/vendor.77e55a48.min.js"></script>
+      <script src="../../assets/javascripts/bundle.aa3f9871.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
       
       <script>
         app = initialize({
           base: "../..",
           features: ['search.highlight'],
           search: Object.assign({
-            worker: "../../assets/javascripts/worker/search.5eca75d3.min.js"
+            worker: "../../assets/javascripts/worker/search.4ac00218.min.js"
           }, typeof search !== "undefined" && search)
         })
       </script>

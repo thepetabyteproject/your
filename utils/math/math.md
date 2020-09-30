@@ -10,20 +10,19 @@ your.utils.math.closest_number(big_num, small_num)
 
 Finds the difference between the closest multiple of a smaller number with respect to a bigger number
 
-Args:
+Args: 
 
-    big_num: The bigger number to find the closest of
+    big_num (int): The bigger number to find the closest of
+    small_num (int) : Number whose multiple is to be found and subtracted
 
-    small_num: Number whose multiple is to be found and subtracted
+Returns: 
 
-Returns:
-
-    The difference between the closest multiple of a smaller number with respect to a bigger number
+    int : The difference between the closest multiple of a smaller number with respect to a bigger number
 
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/math.py#L30)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/math.py#L27)</span>
 
 ### primes
 
@@ -35,16 +34,19 @@ your.utils.math.primes(n)
 
 All the prime factors of a positive number
 
-Args:
+Args: 
 
-    n: a positive number
 
-Returns: primes
+    n (int) : a positive number
+
+Returns: 
+
+    list: List of primes
 
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/math.py#L53)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/math.py#L51)</span>
 
 ### closest_divisor
 
@@ -56,21 +58,20 @@ your.utils.math.closest_divisor(n, m)
 
 Calculates the divisor of n, which is closest to (i.e bigger than) m
 
-Args:
+Args: 
 
-    n: larger number of which divisor is to be found
+    n (int) : larger number of which divisor is to be found
+    m (int) : divisor closest to this number
 
-    m: divisor closest to this number
 
+Returns: 
 
-Returns:
-
-    The divisor of n, which is closest to (i.e bigger than) m
+    int : The divisor of n, which is closest to (i.e bigger than) m
 
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/math.py#L79)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/math.py#L74)</span>
 
 ### find_gcd
 
@@ -82,18 +83,20 @@ your.utils.math.find_gcd(list_of_nos)
 
 Greatest Common Divisor for a list of nos
 
-Args:
+Args: 
 
-    list_of_nos: list of numbers
 
-Returns:
+    list_of_nos (list) : list of numbers
+
+Returns: 
+
 
     GCD
 
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/math.py#L96)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/math.py#L91)</span>
 
 ### normalise
 
@@ -105,18 +108,18 @@ your.utils.math.normalise(data)
 
 Subtract median, divide by standard deviations
 
-Args:
+Args: 
 
     data (numpy.ndarray): data
 
-Returns:
+Returns: 
 
     numpy.ndarray: normalised data
 
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/math.py#L115)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/math.py#L108)</span>
 
 ### smad_plotter
 
@@ -126,17 +129,15 @@ your.utils.math.smad_plotter(freq_time, sigma=5.0, clip=True)
 ```
 
 
-spectal Median Absolute Deviation clipper
+Spectral Median Absolute Deviation clipper
 
-Args:
-    
-    freq_time: the frequency time data
+Args: 
 
+    freq_time (np.ndarray) : the frequency time data
     sigma (float): sigma at which to clip data
-
     clip (bool): if true replaces clips the data else replaces it with zeroes
 
-Returns:
+Returns: 
 
     np.ndarray: clipped/flagged data
 

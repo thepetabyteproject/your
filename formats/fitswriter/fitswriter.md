@@ -1,4 +1,4 @@
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/fitswriter.py#L190)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/fitswriter.py#L252)</span>
 
 ### initialize_psrfits
 
@@ -13,18 +13,13 @@ your.formats.fitswriter.initialize_psrfits(
 Set up a PSRFITS file with everything set up EXCEPT
 the DATA.
 
-Args:
+Args: 
 
     outfile: path to the output fits file to write to
-
     your_object: your object with the input Filterbank file
-
     npsub: number of spectra in a subint
-
     nstart: start sample to read from (for the input file)
-
     nsamp: number of spectra to read
-
     chan_freqs: array with frequencies of all the channels
 
 

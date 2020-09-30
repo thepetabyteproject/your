@@ -1,7 +1,4 @@
 
-
-
-
 <!doctype html>
 <html lang="en" class="no-js">
   <head>
@@ -16,7 +13,7 @@
         <meta name="author" content="Devansh Agarwal, Kshitij Agarwal">
       
       <link rel="shortcut icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.5.14">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.0.1">
     
     
       
@@ -24,19 +21,21 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.d3202873.min.css">
-      
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ff0a5ce4.min.css">
-      
+      <link rel="stylesheet" href="../../assets/stylesheets/main.38780c08.min.css">
       
         
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.3f72e892.min.css">
         
-        <meta name="theme-color" content="#000000">
+          
+          
+          <meta name="theme-color" content="#000000">
+        
       
     
     
     
       
+        
         <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
         <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
@@ -58,9 +57,11 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="">
-  
     
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="black" data-md-color-accent="">
+      
+  
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
@@ -150,8 +151,6 @@
 </header>
     
     <div class="md-container" data-md-component="container">
-      
-        
       
       
         
@@ -830,129 +829,103 @@
                   </a>
                 
                 
-                  
-                
-                
                   <h1>Filterbank</h1>
                 
-                <p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/formats/pysigproc.py#L12">[source]</a></span></p>
+                <p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/formats/pysigproc.py#L14">[source]</a></span></p>
 <h3 id="sigprocfile">SigprocFile</h3>
 <div class="highlight"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">formats</span><span class="o">.</span><span class="n">pysigproc</span><span class="o">.</span><span class="n">SigprocFile</span><span class="p">(</span><span class="n">fp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">copy_hdr</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 
 <p>Simple functions for reading sigproc filterbank files from python. Not all possible features are implemented.</p>
 <p>Original Source from Paul Demorest's <a href="https://github.com/demorest/pysigproc/blob/master/pysigproc.py">pysigproc.py</a>.</p>
-<p>Args:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">fp</span> <span class="p">(</span><span class="n">str</span><span class="p">):</span> <span class="n">file</span> <span class="n">name</span>
-
-<span class="n">copy_hdr</span> <span class="p">(</span><span class="n">bool</span><span class="p">):</span> <span class="k">copy</span> <span class="n">header</span> <span class="k">from</span> <span class="n">another</span> <span class="n">SigprocFile</span> <span class="k">class</span> <span class="k">object</span>
+<p>Args: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">fp (str): file name</span>
+<span class="err">copy_hdr (bool): copy header from another SigprocFile class object</span>
 </code></pre></div>
 
 
-<p>Attributes:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">rawdatafile</span> <span class="p">(</span><span class="n">str</span><span class="p">):</span> <span class="n">Raw</span> <span class="k">data</span> <span class="n">file</span>
-
-<span class="n">source_name</span> <span class="p">(</span><span class="n">str</span><span class="p">):</span> <span class="k">Source</span> <span class="n">Name</span>
-
-<span class="n">machine_id</span> <span class="p">(</span><span class="nb">int</span><span class="p">)</span> <span class="p">:</span> <span class="n">Machine</span> <span class="n">ID</span>
-
-<span class="n">barycentric</span> <span class="p">(</span><span class="nb">int</span><span class="p">):</span> <span class="k">If</span> <span class="mi">1</span> <span class="n">the</span> <span class="k">data</span> <span class="k">is</span> <span class="n">barycentered</span>
-
-<span class="n">pulsarcentric</span> <span class="p">(</span><span class="nb">int</span><span class="p">):</span> <span class="k">Is</span> <span class="n">the</span> <span class="k">data</span> <span class="k">in</span> <span class="n">pulsar</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">frame</span> <span class="k">of</span> <span class="n">reference</span><span class="o">?</span>
-
-<span class="n">src_raj</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="n">RA</span> <span class="k">of</span> <span class="n">the</span> <span class="k">source</span> <span class="p">(</span><span class="n">HHMMSS</span><span class="p">.</span><span class="n">SS</span><span class="p">)</span>
-
-<span class="n">src_deg</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="nb">Dec</span> <span class="k">of</span> <span class="n">the</span> <span class="k">source</span> <span class="p">(</span><span class="n">DDMMSS</span><span class="p">.</span><span class="n">SS</span><span class="p">)</span>
-
-<span class="n">az_start</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="n">Telescope</span> <span class="n">Azimuth</span> <span class="p">(</span><span class="n">degrees</span><span class="p">)</span>
-
-<span class="n">za_start</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="n">Telescope</span> <span class="n">Zenith</span> <span class="n">Angle</span> <span class="p">(</span><span class="n">degrees</span><span class="p">)</span>
-
-<span class="n">fch1</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="n">Frequency</span> <span class="k">of</span> <span class="k">first</span> <span class="n">channel</span> <span class="p">(</span><span class="n">MHz</span><span class="p">))</span>
-
-<span class="n">foff</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="n">Channel</span> <span class="n">bandwidth</span> <span class="p">(</span><span class="n">MHz</span><span class="p">)</span>
-
-<span class="n">nchans</span> <span class="p">(</span><span class="nb">int</span><span class="p">):</span> <span class="nb">Number</span> <span class="k">of</span> <span class="n">channels</span>
-
-<span class="n">nbeams</span> <span class="p">(</span><span class="nb">int</span><span class="p">):</span> <span class="nb">Number</span> <span class="k">of</span> <span class="n">beams</span> <span class="k">in</span> <span class="n">the</span> <span class="n">rcvr</span><span class="p">.</span>
-
-<span class="n">ibeam</span> <span class="p">(</span><span class="nb">int</span><span class="p">):</span> <span class="n">Beam</span> <span class="nb">number</span>
-
-<span class="n">nbits</span> <span class="p">(</span><span class="nb">int</span><span class="p">):</span> <span class="nb">Number</span> <span class="k">of</span> <span class="n">bits</span> <span class="n">the</span> <span class="k">data</span> <span class="k">are</span> <span class="n">recorded</span> <span class="k">in</span><span class="p">.</span>
-
-<span class="n">tstart</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="k">Start</span> <span class="n">MJD</span> <span class="k">of</span> <span class="n">the</span> <span class="k">data</span>
-
-<span class="n">tsamp</span> <span class="p">(</span><span class="nb">float</span><span class="p">):</span> <span class="n">Sampling</span> <span class="nb">interval</span> <span class="p">(</span><span class="n">seconds</span><span class="p">)</span>
-
-<span class="n">nifs</span> <span class="p">(</span><span class="nb">int</span><span class="p">):</span> <span class="nb">Number</span> <span class="k">of</span> <span class="n">IFs</span> <span class="k">in</span> <span class="n">the</span> <span class="k">data</span><span class="p">.</span>
+<p>Attributes: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">rawdatafile (str): Raw data file</span>
+<span class="err">source_name (str): Source Name</span>
+<span class="err">machine_id (int) : Machine ID</span>
+<span class="err">barycentric (int): If 1 the data is barycentered</span>
+<span class="err">pulsarcentric (int): Is the data in pulsar&#39;s frame of reference?</span>
+<span class="err">src_raj (float): RA of the source (HHMMSS.SS)</span>
+<span class="err">src_deg (float): Dec of the source (DDMMSS.SS)</span>
+<span class="err">az_start (float): Telescope Azimuth (degrees)</span>
+<span class="err">za_start (float): Telescope Zenith Angle (degrees)</span>
+<span class="err">fch1 (float): Frequency of first channel (MHz))</span>
+<span class="err">foff (float): Channel bandwidth (MHz)</span>
+<span class="err">nchans (int): Number of channels</span>
+<span class="err">nbeams (int): Number of beams in the rcvr.</span>
+<span class="err">ibeam (int): Beam number</span>
+<span class="err">nbits (int): Number of bits the data are recorded in.</span>
+<span class="err">tstart (float): Start MJD of the data</span>
+<span class="err">tsamp (float): Sampling interval (seconds)</span>
+<span class="err">nifs (int): Number of IFs in the data.</span>
 </code></pre></div>
 
 
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/formats/pysigproc.py#L269">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/formats/pysigproc.py#L255">[source]</a></span></p>
 <h3 id="get_data">get_data</h3>
 <div class="highlight"><pre><span></span><code><span class="n">SigprocFile</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">nstart</span><span class="p">,</span> <span class="n">nsamp</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">pol</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </code></pre></div>
 
 <p>Return nsamp time slices starting at nstart.</p>
-<p>Args:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">nstart</span> <span class="p">(</span><span class="nb">int</span><span class="p">):</span> <span class="n">Starting</span> <span class="n">spectra</span> <span class="nb">number</span> <span class="k">to</span> <span class="k">start</span> <span class="n">reading</span> <span class="k">from</span><span class="p">.</span>
-
-<span class="n">nsamp</span> <span class="p">(</span><span class="nb">int</span><span class="p">):</span> <span class="nb">Number</span> <span class="k">of</span> <span class="n">spectra</span> <span class="k">to</span> <span class="k">read</span><span class="p">.</span>
-
-<span class="k">offset</span> <span class="p">(</span><span class="nb">int</span><span class="p">):</span> <span class="n">Can</span> <span class="n">be</span> <span class="n">used</span> <span class="k">to</span> <span class="k">offset</span> <span class="n">reading</span> <span class="k">from</span><span class="p">.</span>
-
-<span class="n">pol</span> <span class="p">(</span><span class="nb">int</span><span class="p">):</span> <span class="n">Which</span> <span class="n">polarisation</span> <span class="k">to</span> <span class="k">read</span><span class="p">.</span>
+<p>Args: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">nstart (int): Starting spectra number to start reading from.</span>
+<span class="err">nsamp (int): Number of spectra to read.</span>
+<span class="err">offset (int): Can be used to offset reading from.</span>
+<span class="err">pol (int): Which polarisation to read.</span>
 </code></pre></div>
 
 
-<p>Returns:</p>
+<p>Returns: </p>
 <div class="codehilite"><pre><span></span><code><span class="err">numpy.ndarray: data.</span>
 </code></pre></div>
 
 
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/formats/pysigproc.py#L304">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/formats/pysigproc.py#L286">[source]</a></span></p>
 <h3 id="unpack">unpack</h3>
 <div class="highlight"><pre><span></span><code><span class="n">SigprocFile</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">nstart</span><span class="p">,</span> <span class="n">nsamp</span><span class="p">)</span>
 </code></pre></div>
 
 <p>Unpack nsamp time slices starting at nstart to 32-bit floats.</p>
-<p>Args:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">nstart</span> <span class="p">(</span><span class="nb">int</span><span class="p">):</span> <span class="n">Starting</span> <span class="n">spectra</span> <span class="nb">number</span> <span class="k">to</span> <span class="k">start</span> <span class="n">reading</span> <span class="k">from</span><span class="p">.</span>
-
-<span class="n">nsamp</span> <span class="p">(</span><span class="nb">int</span><span class="p">):</span> <span class="nb">Number</span> <span class="k">of</span> <span class="n">spectra</span> <span class="k">to</span> <span class="k">read</span><span class="p">.</span>
+<p>Args: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">nstart (int): Starting spectra number to start reading from.</span>
+<span class="err">nsamp (int): Number of spectra to read.</span>
 </code></pre></div>
 
 
-<p>Returns:</p>
+<p>Returns: </p>
 <div class="codehilite"><pre><span></span><code><span class="err">numpy.ndarray: Data</span>
 </code></pre></div>
 
 
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/formats/pysigproc.py#L370">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/formats/pysigproc.py#L345">[source]</a></span></p>
 <h3 id="write_header">write_header</h3>
 <div class="highlight"><pre><span></span><code><span class="n">SigprocFile</span><span class="o">.</span><span class="n">write_header</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 </code></pre></div>
 
 <p>Write the filterbank header</p>
-<p>Args:</p>
+<p>Args: </p>
 <div class="codehilite"><pre><span></span><code><span class="err">filename (str): name of the filterbank file</span>
 </code></pre></div>
 
 
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/formats/pysigproc.py#L383">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/formats/pysigproc.py#L357">[source]</a></span></p>
 <h3 id="append_spectra">append_spectra</h3>
 <div class="highlight"><pre><span></span><code><span class="n">SigprocFile</span><span class="o">.</span><span class="n">append_spectra</span><span class="p">(</span><span class="n">spectra</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
 </code></pre></div>
 
 <p>Append spectra to the end of the file</p>
-<p>Args:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">spectra</span> <span class="p">(</span><span class="n">numpy</span><span class="p">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="p">:</span> <span class="n">numpy</span> <span class="nb">array</span> <span class="k">of</span> <span class="n">the</span> <span class="k">data</span> <span class="k">to</span> <span class="n">be</span> <span class="n">dumped</span> <span class="k">into</span> <span class="n">the</span> <span class="n">filterbank</span> <span class="n">file</span>
-
-<span class="n">filename</span> <span class="p">(</span><span class="n">str</span><span class="p">):</span> <span class="n">name</span> <span class="k">of</span> <span class="n">the</span> <span class="n">filterbank</span> <span class="n">file</span>
+<p>Args: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">spectra (numpy.ndarray) : numpy array of the data to be dumped into the filterbank file</span>
+<span class="err">filename (str): name of the filterbank file</span>
 </code></pre></div>
 
 
@@ -1023,15 +996,15 @@
       
     </div>
     
-      <script src="../../assets/javascripts/vendor.2d1db4bd.min.js"></script>
-      <script src="../../assets/javascripts/bundle.6627ddf3.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      <script src="../../assets/javascripts/vendor.77e55a48.min.js"></script>
+      <script src="../../assets/javascripts/bundle.aa3f9871.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
       
       <script>
         app = initialize({
           base: "../..",
           features: ['search.highlight'],
           search: Object.assign({
-            worker: "../../assets/javascripts/worker/search.5eca75d3.min.js"
+            worker: "../../assets/javascripts/worker/search.4ac00218.min.js"
           }, typeof search !== "undefined" && search)
         })
       </script>

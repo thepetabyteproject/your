@@ -10,8 +10,7 @@ Read fits/fil file and show the data
 
 
 ```bash
-usage: your_viewer.py [-h] [-f FILES [FILES ...]] [-s START] [-g GULP] [-e]
-                      [-d width height] [-v]
+usage: your_viewer.py [-h] [-f FILES [FILES ...]] [-s START] [-g GULP] [-e] [-d width height] [-v]
 
 ```
 # Arguments
