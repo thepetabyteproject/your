@@ -91,7 +91,7 @@ def cand2h5(cand_val):
         kill_mask[kill_chans] = True
         cand.kill_mask = kill_mask
     cand.get_chunk(for_preprocessing=True)
-    if cand.isfil:
+    if cand.format == 'fil':
         cand.fp.close()
 
     logger.info('Got Chunk')
