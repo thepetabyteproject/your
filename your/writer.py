@@ -64,7 +64,7 @@ class Writer:
         self.data = None
         self.dada_is_set = False
 
-        if gulp is None:
+        if gulp is not None:
             self.gulp = gulp
         else:
             p = np.sort(primes(self.nsamp))[::-1]
