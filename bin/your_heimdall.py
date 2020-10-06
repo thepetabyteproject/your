@@ -19,7 +19,7 @@ from your.writer import Writer
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='your_heimdall.py', description="Your Heimdall Fetch FRB",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('-v', '--verbose', help='Be verbose', action='store_true')
+    parser.add_argument('-v', '--verbose', help='Be verbose', action='count', default=0)
     parser.add_argument('-p', '--probability', help='Detection threshold', default=0.5, type=float)
     parser.add_argument('-f', '--files', help='filterbank or psrfits', nargs='+')
     parser.add_argument('-dm', '--dm', help='DM (eg -dm 10 1000)', type=float, nargs=2, default=[10, 1000])
@@ -40,6 +40,10 @@ if __name__ == "__main__":
                         action='store_true', default=False)
     parser.add_argument('-o', '--output_dir', help='Output dir for heimdall candidates', type=str, required=False,
                         default=None)
+    parser.add_argument('-fs', '--channel_start', help='Start channel for sub band search', type=int, required=False,
+                        default=0)
+    parser.add_argument('-fe', '--channel_end', help='End channel for sub band search', type=int, required=False,
+                        default=-1)
     parser.add_argument('--no_progress', help='Do not show the tqdm bar', action='store_true', default=None)
     args = parser.parse_args()
 
@@ -51,7 +55,7 @@ if __name__ == "__main__":
     logging_format = '%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s'
     log_filename = args.output_dir + '/' + datetime.utcnow().strftime('your_heimdall_%Y_%m_%d_%H_%M_%S_%f.log')
 
-    if args.verbose:
+    if args.verbose > 0:
         logging.basicConfig(filename=log_filename, level=logging.DEBUG, format=logging_format)
         logging.debug("Using debug mode")
     else:
@@ -72,7 +76,12 @@ if __name__ == "__main__":
     else:
         nsamps_gulp = int(np.max([(2 ** np.ceil(np.log2(dispersion_delay_samples))), 2 ** 18]))
 
-    your_dada_writer = Writer(your_object=your_object, progress=args.no_progress)
+    if args.channel_end > 0:
+        c_max = args.channel_end
+    else:
+        c_max = None
+
+    your_dada_writer = Writer(your_object=your_object, progress=args.no_progress, c_min=args.channel_start, c_max=c_max)
     your_dada_writer.setup_dada()  # need to run the set up inorder to get the dada key
 
     if args.apply_savgol:
@@ -102,9 +111,19 @@ if __name__ == "__main__":
         logging.info('No RFI flagging done.')
         bad_chans = None
 
+    if args.verbose < 1:
+        heimdall_verbosity = 'v'
+    elif args.verbose == 2:
+        heimdall_verbosity = 'V'
+    elif args.verbose == 3:
+        heimdall_verbosity = 'g'
+    else:
+        heimdall_verbosity = 'G'
+
     HM = HeimdallManager(dm=args.dm, dada_key=your_dada_writer.dada_key,
                          boxcar_max=int(32e-3 / your_object.your_header.tsamp),
-                         verbosity='v', nsamps_gulp=nsamps_gulp, gpu_id=args.gpu_id, output_dir=args.output_dir,
+                         verbosity=heimdall_verbosity, nsamps_gulp=nsamps_gulp, gpu_id=args.gpu_id,
+                         output_dir=args.output_dir,
                          zap_chans=bad_chans, rfi_no_broad=args.rfi_no_broad, rfi_no_narrow=args.rfi_no_narrow,
                          dm_tol=args.dm_tol)
 
