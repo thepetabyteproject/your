@@ -8,7 +8,7 @@ import tqdm
 from astropy.io import fits
 from astropy.time import Time
 
-from your.formats.filwriter import write_fil
+from your.formats.filwriter import sigproc_object_from_writer
 from your.formats.fitswriter import initialize_psrfits
 from your.utils.math import primes
 from your.utils.rfi import sk_sg_filter
@@ -34,13 +34,14 @@ class Writer:
         spectral_kurtosis_sigma (float) : Sigma for spectral kurtosis filter
         savgol_frequency_window (float) : Filter window for savgol filter
         savgol_sigma (float) : Sigma for savgol filter
+        gulp (int) : Gulp size for the data
         zero_dm_subt (bool) : Enable zero DM rfi excision
 
     """
 
     def __init__(self, your_object, nstart=0, nsamp=None, c_min=None, c_max=None, outdir=None, outname=None,
-                 flag_rfi=False, progress=None, spectral_kurtosis_sigma=4, savgol_frequency_window=15, savgol_sigma=4,
-                 zero_dm_subt=False):
+                 flag_rfi=False, progress=True, spectral_kurtosis_sigma=4, savgol_frequency_window=15, savgol_sigma=4,
+                 gulp=None, zero_dm_subt=False):
 
         self.your_object = your_object
         self.nstart = nstart
@@ -62,6 +63,16 @@ class Writer:
         self.zero_dm_subt = zero_dm_subt
         self.data = None
         self.dada_is_set = False
+
+        if gulp is None:
+            self.gulp = gulp
+        else:
+            p = np.sort(primes(self.nsamp))[::-1]
+            cumprods = np.cumprod(p)
+            self.gulp = int(cumprods[len(cumprods) // 2])
+
+        if self.gulp > self.nsamp:
+            self.gulp = self.nsamp
 
         original_dir, orig_basename = os.path.split(self.your_object.your_header.filename)
         if not self.outname:
@@ -144,37 +155,36 @@ class Writer:
 
         """
 
-        # Calculate loop of spectra
-        if not self.nsamp:
-            self.nsamp = self.your_object.your_header.native_nspectra
+        self.outname += '.fil'
+        with tqdm.tqdm(total=self.nsamp, disable=~self.progress) as pbar:
+            # create the header
+            sigproc_object = sigproc_object_from_writer(self)
 
-        interval = 4096 * 24
-        if self.nsamp < interval:
-            interval = self.nsamp
+            # write the header
+            sigproc_object.write_header(filename=self.outname)
 
-        if self.nsamp > interval:
-            nloops = 1 + self.nsamp // interval
-        else:
-            nloops = 1
-        nstarts = np.arange(self.nstart, self.nstart + interval * nloops, interval, dtype=int)
-        nsamps = np.full(nloops, interval)
-        if nsamps % interval != 0:
-            nsamps = np.append(nsamps, [nsamps % interval])
+            # make sure header got written
+            if not os.path.isfile(self.outname):
+                raise IOError("Failed to write the filterbank file")
 
-        logging.debug(f'nstarts is {nstarts}, nsamps is {nsamps}, nloops is {nloops}, interval is {interval}, '
-                      f'nstart is {self.nstart}')
-        # Read data
-        for st, samp in tqdm.tqdm(zip(nstarts, nsamps), total=len(nstarts), disable=self.progress):
-            logger.debug(f'Reading spectra {st}-{st + samp} in file {self.your_object.your_header.filename}')
-            self.get_data_to_write(st, samp)
-            logger.info(
-                f'Writing data from spectra {st}-{st + samp} in the frequency channel range {self.chan_min}-{self.chan_max} '
-                f'to filterbank')
-            write_fil(self.data, self.your_object, nchans=self.nchans, chan_freq=self.chan_freqs, outdir=self.outdir,
-                      filename=self.outname + '.fil', nstart=self.nstart)
-            logger.debug(f'Successfully written data from spectra {st}-{st + samp} to filterbank')
+            # get the nstart and number of samples to write
+            start_sample = self.nstart
+            samples_left = self.nsamp
 
-        logging.debug(f'Read all the necessary spectra')
+            # open the file
+            with open(self.outname, 'ab') as f:
+                # read till there are spectra to read
+                while samples_left > 0:
+                    self.get_data_to_write(start_sample, self.gulp)
+                    start_sample += self.gulp
+                    samples_left -= self.gulp
+                    # goto the end of the file and dump
+                    f.seek(0, os.SEEK_END)
+                    f.write(self.data.ravel())
+                    pbar.update(self.gulp)
+                    logger.debug(f'Wrote from spectra {start_sample}-{start_sample + self.gulp} to filterbank')
+
+        logging.debug(f'Wrote all the necessary spectra')
 
     def to_fits(self, npsub=-1):
         """
@@ -215,7 +225,7 @@ class Writer:
         logger.info(f'Number of subints to write {nsubints}')
 
         st = self.nstart
-        for istart in tqdm.tqdm(np.arange(0, nsubints, n_read_subints), disable=self.progress):
+        for istart in tqdm.tqdm(np.arange(0, nsubints, n_read_subints), disable=~self.progress):
             istop = istart + n_read_subints
             if istop > nsubints:
                 istop = nsubints
@@ -298,9 +308,7 @@ class Writer:
         if data_step is not None:
             self.data_step = data_step
         else:
-            p = np.sort(primes(self.nsamp))[::-1]
-            cumprods = np.cumprod(p)
-            self.data_step = int(cumprods[len(cumprods) // 2])
+            self.data_step = self.gulp
 
         self.dada_size = int(self.data_step * self.nchans * self.your_object.your_header.nbits / 8)
         logger.debug(f"Setting up DadaManager with key: {self.dada_key} and page size {self.dada_size} bytes")
@@ -317,7 +325,7 @@ class Writer:
             self.setup_dada()
 
         header = self.dada_header()
-        for data_read in tqdm.trange(self.nstart, self.nstart + self.nsamp, self.data_step, disable=self.progress):
+        for data_read in tqdm.trange(self.nstart, self.nstart + self.nsamp, self.data_step, disable=~self.progress):
             logger.debug(f"Data read is {data_read}, Data step is {self.data_step}")
             self.get_data_to_write(data_read, self.data_step)
             self.DM.dump_header(header)
