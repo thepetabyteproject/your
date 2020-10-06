@@ -67,9 +67,13 @@ class Writer:
         if gulp is not None:
             self.gulp = gulp
         else:
+            # this logic fails if the number of samples is a prime number.
             p = np.sort(primes(self.nsamp))[::-1]
-            cumprods = np.cumprod(p)
-            self.gulp = int(cumprods[len(cumprods) // 2])
+            if len(p) > 1:
+                cumprods = np.cumprod(p)
+                self.gulp = int(cumprods[len(cumprods) // 2])
+            else:
+                self.gulp = self.nsamp
 
         if self.gulp > self.nsamp:
             self.gulp = self.nsamp
