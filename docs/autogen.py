@@ -31,6 +31,8 @@ pages = {
         "your.writer.Writer",
         "your.writer.Writer.to_fil",
         "your.writer.Writer.to_fits",
+        "your.writer.Writer.get_data_to_write",
+
         "your.writer.Writer.dada_header",
         "your.writer.Writer.setup_dada",
         "your.writer.Writer.to_dada",
@@ -60,8 +62,8 @@ pages = {
         "your.formats.psrfits.unpack_4bit",
     ],
     "formats/filwriter.md": [
+        "your.formats.filwriter.sigproc_object_from_writer",
         "your.formats.filwriter.make_sigproc_obj",
-        "your.formats.filwriter.write_fil",
     ],
     "formats/fitswriter.md": [
         "your.formats.fitswriter.initialize_psrfits",
