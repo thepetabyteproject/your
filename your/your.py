@@ -11,9 +11,8 @@ from your.utils.misc import check_file_exist, MyEncoder
 
 logger = logging.getLogger(__name__)
 
-formats = {}
-formats['fil'] = SigprocFile
-formats['fits'] = PsrfitsFile
+FORMATS = {'fil': SigprocFile, 'fits': PsrfitsFile}
+
 
 class Your(PsrfitsFile, SigprocFile):
     """
@@ -65,7 +64,7 @@ class Your(PsrfitsFile, SigprocFile):
                 'file should be a string of input file path or a list of strings with relevant file paths.')
 
         logger.debug(f'Reading the file(s): {self.your_file}')
-        self.formatclass = formats[self.format]
+        self.formatclass = FORMATS[self.format]
         self.formatclass.__init__(self, self.your_file)
         if not self.source_name:
             logger.info(f'Source name not present in the file. Setting source name to TEMP')
