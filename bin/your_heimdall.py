@@ -8,6 +8,7 @@ from datetime import datetime
 from multiprocessing import Process
 
 import numpy as np
+from rich.logging import RichHandler
 
 from your import Your
 from your.utils.heimdall import HeimdallManager
@@ -98,7 +99,7 @@ if __name__ == "__main__":
         "--mask",
         help="File containting channel numbers to kill",
         required=False,
-        type=str
+        type=str,
     )
     parser.add_argument(
         "-o",
@@ -125,9 +126,10 @@ if __name__ == "__main__":
         default=-1,
     )
     parser.add_argument(
-        "--no_progress",
-        help="Do not show the tqdm bar",
-        action="store_false",
+        "--no_progress", help="Do not show the tqdm bar", action="store_false",
+    )
+    parser.add_argument(
+        "--no_log_file", help="Do not write a log file", action="store_true"
     )
     args = parser.parse_args()
 
@@ -140,21 +142,25 @@ if __name__ == "__main__":
     logging_format = (
         "%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s"
     )
-    log_filename = (
-            args.output_dir
-            + "/"
-            + datetime.utcnow().strftime("your_heimdall_%Y_%m_%d_%H_%M_%S_%f.log")
-    )
 
     if args.verbose > 0:
-        logging.basicConfig(
-            filename=log_filename, level=logging.DEBUG, format=logging_format
-        )
-        logging.debug("Using debug mode")
+        logging.basicConfig(level=logging.DEBUG, format=logging_format)
     else:
-        logging.basicConfig(
-            filename=log_filename, level=logging.INFO, format=logging_format
+        logging.basicConfig(level=logging.INFO, format=logging_format)
+
+    if args.no_log_file:
+        log_filename = (
+                args.output_dir
+                + "/"
+                + datetime.utcnow().strftime("your_heimdall_%Y_%m_%d_%H_%M_%S_%f.log")
         )
+
+        fileHandler = logging.FileHandler(log_filename)
+        fileHandler.setFormatter(logging.Formatter(logging_format))
+        logging.getLogger().addHandler(fileHandler)
+    else:
+        rich_handler = RichHandler(rich_tracebacks=True)
+        logging.getLogger().addHandler(rich_handler)
 
     logging.info("Input Arguments:-")
     for arg, value in sorted(vars(args).items()):
@@ -180,7 +186,7 @@ if __name__ == "__main__":
 
     your_dada_writer = Writer(
         your_object=your_object,
-        progress=args.no_progress,
+        progress=~args.no_progress,
         c_min=args.channel_start,
         c_max=c_max,
         savgol_sigma=args.savgol_sigma,
@@ -204,7 +210,7 @@ if __name__ == "__main__":
         logging.info("No RFI flagging done.")
         bad_chans = None
 
-    if args.verbose < 1:
+    if args.verbose <= 1:
         heimdall_verbosity = "v"
     elif args.verbose == 2:
         heimdall_verbosity = "V"

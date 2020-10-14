@@ -16,6 +16,7 @@ from your import Your
 
 # based on https://steemit.com/utopian-io/@hadif66/tutorial-embeding-scipy-matplotlib-with-tkinter-to-work-on-images-in-a-gui-framework
 
+
 class Paint(Frame):
     """
     Class for plotting object
@@ -94,13 +95,13 @@ class Paint(Frame):
         Gets meta data from data file and give the data to nice_print() to print to user
         """
         dic = vars(self.your_obj.your_header)
-        dic['tsamp'] = self.your_obj.your_header.tsamp
-        dic['nchans'] = self.your_obj.your_header.nchans
-        dic['foff'] = self.your_obj.your_header.foff
-        dic['nspectra'] = self.your_obj.your_header.nspectra
+        dic["tsamp"] = self.your_obj.your_header.tsamp
+        dic["nchans"] = self.your_obj.your_header.nchans
+        dic["foff"] = self.your_obj.your_header.foff
+        dic["nspectra"] = self.your_obj.your_header.nspectra
         self.nice_print(dic)
 
-    def load_file(self, file_name=[''], start_samp=0, gulp_size=1024, chan_std=False):
+    def load_file(self, file_name=[""], start_samp=0, gulp_size=1024, chan_std=False):
         """
         Loads data from a file:
 
@@ -114,56 +115,73 @@ class Paint(Frame):
         self.chan_std = chan_std
 
         if len(file_name) == 0:
-            file_name = filedialog.askopenfilename(filetypes=(("fits/fil files", "*.fil *.fits")
-                                                              , ("All files", "*.*")))
+            file_name = filedialog.askopenfilename(
+                filetypes=(("fits/fil files", "*.fil *.fits"), ("All files", "*.*"))
+            )
         self.file_name = file_name
 
-        logging.info(f'Reading file {file_name}.')
+        logging.info(f"Reading file {file_name}.")
         self.your_obj = Your(file_name)
         self.master.title(self.your_obj.your_header.basename)
-        logging.info(f'Printing Header parameters')
+        logging.info(f"Printing Header parameters")
         self.get_header()
         self.read_data()
 
         # create three plots, for ax1=time_series, ax2=dynamic spectra, ax4=bandpass
-        self.gs = gridspec.GridSpec(2, 2, width_ratios=[4, 1], height_ratios=[1, 4], wspace=0.02, hspace=0.03)
+        self.gs = gridspec.GridSpec(
+            2, 2, width_ratios=[4, 1], height_ratios=[1, 4], wspace=0.02, hspace=0.03
+        )
         ax1 = plt.subplot(self.gs[0, 0])
         ax2 = plt.subplot(self.gs[1, 0])
         ax3 = plt.subplot(self.gs[0, 1])
         ax4 = plt.subplot(self.gs[1, 1])
-        ax3.axis('off')
+        ax3.axis("off")
         ax1.set_xticks([])
         ax4.set_yticks([])
 
         # get the min and max image values to that we can see the typical values well
         self.vmax = min(np.max(self.data), np.median(self.data) + 5 * np.std(self.data))
         self.vmin = max(np.min(self.data), np.median(self.data) - 5 * np.std(self.data))
-        self.im_ft = ax2.imshow(self.data, aspect='auto', vmin=self.vmin, vmax=self.vmax)
+        self.im_ft = ax2.imshow(
+            self.data, aspect="auto", vmin=self.vmin, vmax=self.vmax
+        )
 
         # make bandpass
         bp_std = np.std(self.data, axis=1)
         bp_y = np.linspace(self.your_obj.your_header.nchans, 0, len(self.bandpass))
-        self.im_bandpass, = ax4.plot(self.bandpass, bp_y, label='Bandpass')
+        (self.im_bandpass,) = ax4.plot(self.bandpass, bp_y, label="Bandpass")
         if self.chan_std:
-            self.im_bp_fill = ax4.fill_betweenx(x1=self.bandpass - bp_std, x2=self.bandpass + bp_std, y=bp_y,
-                                                interpolate=False, alpha=0.25, color='r', label='1 STD')
+            self.im_bp_fill = ax4.fill_betweenx(
+                x1=self.bandpass - bp_std,
+                x2=self.bandpass + bp_std,
+                y=bp_y,
+                interpolate=False,
+                alpha=0.25,
+                color="r",
+                label="1 STD",
+            )
             ax4.legend()
         ax4.set_ylim([-1, len(self.bandpass) + 1])
-        ax4.set_xlabel('Avg. Arb. Flux')
+        ax4.set_xlabel("Avg. Arb. Flux")
 
         # make time series
-        ax4.set_xlabel('Avg. Arb. Flux')
-        self.im_time, = ax1.plot(self.time_series)
+        ax4.set_xlabel("Avg. Arb. Flux")
+        (self.im_time,) = ax1.plot(self.time_series)
         ax1.set_xlim(-1, len(self.time_series + 1))
-        ax1.set_ylabel('Avg. Arb. Flux')
+        ax1.set_ylabel("Avg. Arb. Flux")
 
-        plt.colorbar(self.im_ft, orientation='vertical', pad=0.01, aspect=30)
+        plt.colorbar(self.im_ft, orientation="vertical", pad=0.01, aspect=30)
 
         ax = self.im_ft.axes
-        ax.set_xlabel('Time [sec]')
-        ax.set_ylabel('Frequency [MHz]')
+        ax.set_xlabel("Time [sec]")
+        ax.set_ylabel("Frequency [MHz]")
         ax.set_yticks(np.linspace(0, self.your_obj.your_header.nchans, 8))
-        yticks = [str(int(j)) for j in np.linspace(self.your_obj.chan_freqs[0], self.your_obj.chan_freqs[-1], 8)]
+        yticks = [
+            str(int(j))
+            for j in np.linspace(
+                self.your_obj.chan_freqs[0], self.your_obj.chan_freqs[-1], 8
+            )
+        ]
         ax.set_yticklabels(yticks)
         self.set_x_axis()
 
@@ -186,8 +204,10 @@ class Paint(Frame):
         # check if there is a enough data to fill plt
         proposed_end = self.start_samp + self.gulp_size
         if proposed_end > self.your_obj.your_header.nspectra:
-            self.start_samp = self.start_samp - (proposed_end - self.your_obj.your_header.nspectra)
-            logging.info('End of file.')
+            self.start_samp = self.start_samp - (
+                    proposed_end - self.your_obj.your_header.nspectra
+            )
+            logging.info("End of file.")
         self.update_plot()
 
     def prev_gulp(self):
@@ -206,17 +226,27 @@ class Paint(Frame):
         self.im_bandpass.set_xdata(self.bandpass)
         if self.chan_std:
             self.fill_bp()
-        self.im_bandpass.axes.set_xlim(np.min(self.bandpass) * 0.97, np.max(self.bandpass) * 1.03)
+        self.im_bandpass.axes.set_xlim(
+            np.min(self.bandpass) * 0.97, np.max(self.bandpass) * 1.03
+        )
         self.im_time.set_ydata(np.mean(self.data, axis=0))
-        self.im_time.axes.set_ylim(np.min(self.time_series) * 0.97, np.max(self.time_series) * 1.03)
+        self.im_time.axes.set_ylim(
+            np.min(self.time_series) * 0.97, np.max(self.time_series) * 1.03
+        )
         self.canvas.draw()
 
     def fill_bp(self):
         self.im_bp_fill.remove()
         bp_std = np.std(self.data, axis=1)
         bp_y = self.im_bandpass.get_ydata()
-        self.im_bp_fill = self.im_bandpass.axes.fill_betweenx(x1=self.bandpass - bp_std, x2=self.bandpass + bp_std,
-                                                              y=bp_y, interpolate=False, alpha=0.25, color='r')
+        self.im_bp_fill = self.im_bandpass.axes.fill_betweenx(
+            x1=self.bandpass - bp_std,
+            x2=self.bandpass + bp_std,
+            y=bp_y,
+            interpolate=False,
+            alpha=0.25,
+            color="r",
+        )
 
     def read_data(self):
         """
@@ -230,8 +260,9 @@ class Paint(Frame):
         self.bandpass = np.mean(self.data, axis=1)
         self.time_series = np.mean(self.data, axis=0)
         logging.info(
-            f'Displaying {self.gulp_size} samples from sample {self.start_samp} i.e {ts:.2f}-{te:.2f}s - gulp mean: '
-            f'{np.mean(self.data):.3f}, std: {np.std(self.data):.3f}')
+            f"Displaying {self.gulp_size} samples from sample {self.start_samp} i.e {ts:.2f}-{te:.2f}s - gulp mean: "
+            f"{np.mean(self.data):.3f}, std: {np.std(self.data):.3f}"
+        )
 
     def set_x_axis(self):
         """
@@ -239,53 +270,84 @@ class Paint(Frame):
         """
         ax = self.im_ft.axes
         xticks = ax.get_xticks()
-        logging.debug(f'x-axis ticks are {xticks}')
+        logging.debug(f"x-axis ticks are {xticks}")
         xtick_labels = (xticks + self.start_samp) * self.your_obj.your_header.tsamp
-        logging.debug(f'Setting x-axis tick labels to {xtick_labels}')
+        logging.debug(f"Setting x-axis tick labels to {xtick_labels}")
         ax.set_xticklabels([f"{j:.2f}" for j in xtick_labels])
 
     def save_figure(self):
         """
         Saves the canvas image
         """
-        img_name = os.path.splitext(os.path.basename(self.file_name))[
-                       0] + f'_samp_{self.start_samp}_{self.start_samp + self.gulp_size}.png'
-        logging.info(f'Saving figure: {img_name}')
+        img_name = (
+                os.path.splitext(os.path.basename(self.file_name))[0]
+                + f"_samp_{self.start_samp}_{self.start_samp + self.gulp_size}.png"
+        )
+        logging.info(f"Saving figure: {img_name}")
         self.im_ft.figure.savefig(img_name, dpi=300)
-        logging.info(f'Saved figure: {img_name}')
+        logging.info(f"Saved figure: {img_name}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     logger = logging.getLogger()
-    logging_format = '%(asctime)s - %(funcName)s - %(name)s - %(levelname)s - %(message)s'
+    logging_format = (
+        "%(asctime)s - %(funcName)s - %(name)s - %(levelname)s - %(message)s"
+    )
 
-    parser = argparse.ArgumentParser(prog='your_viewer.py',
-                                     description="Read fits/fil file and show the data",
-                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('-f', '--files',
-                        help='Fits or filterbank files to view.',
-                        required=False, default=[''], nargs='+')
-    parser.add_argument('-s', '--start',
-                        help='Start index', type=int,
-                        required=False, default=0)
-    parser.add_argument('-g', '--gulp',
-                        help='Gulp size', type=int,
-                        required=False, default=4096)
-    parser.add_argument('-e', '--chan_std',
-                        help='Show 1 standard devation per channel in bandpass',
-                        required=False, default=False, action='store_true')
-    parser.add_argument('-d', '--display',
-                        help='Display size for the plot', type=int, nargs=2, required=False,
-                        metavar=('width', 'height'), default=[1024, 640])
-    parser.add_argument('-v', '--verbose', help='Be verbose', action='store_true')
+    parser = argparse.ArgumentParser(
+        prog="your_viewer.py",
+        description="Read fits/fil file and show the data",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    parser.add_argument(
+        "-f",
+        "--files",
+        help="Fits or filterbank files to view.",
+        required=False,
+        default=[""],
+        nargs="+",
+    )
+    parser.add_argument(
+        "-s", "--start", help="Start index", type=int, required=False, default=0
+    )
+    parser.add_argument(
+        "-g", "--gulp", help="Gulp size", type=int, required=False, default=4096
+    )
+    parser.add_argument(
+        "-e",
+        "--chan_std",
+        help="Show 1 standard devation per channel in bandpass",
+        required=False,
+        default=False,
+        action="store_true",
+    )
+    parser.add_argument(
+        "-d",
+        "--display",
+        help="Display size for the plot",
+        type=int,
+        nargs=2,
+        required=False,
+        metavar=("width", "height"),
+        default=[1024, 640],
+    )
+    parser.add_argument("-v", "--verbose", help="Be verbose", action="store_true")
     values = parser.parse_args()
 
     if values.verbose:
-        logging.basicConfig(level=logging.DEBUG, format=logging_format, handlers=[RichHandler()])
+        logging.basicConfig(
+            level=logging.DEBUG,
+            format=logging_format,
+            handlers=[RichHandler(rich_tracebacks=True)],
+        )
     else:
-        logging.basicConfig(level=logging.INFO, format=logging_format, handlers=[RichHandler()])
+        logging.basicConfig(
+            level=logging.INFO,
+            format=logging_format,
+            handlers=[RichHandler(rich_tracebacks=True)],
+        )
 
-    matplotlib_logger = logging.getLogger('matplotlib')
+    matplotlib_logger = logging.getLogger("matplotlib")
     matplotlib_logger.setLevel(logging.INFO)
 
     # root window created.
@@ -293,5 +355,7 @@ if __name__ == '__main__':
     root.geometry(f"{values.display[0]}x{values.display[1]}")
     # creation of an instance
     app = Paint(root)
-    app.load_file(values.files, values.start, values.gulp, values.chan_std)  # load file with user params
+    app.load_file(
+        values.files, values.start, values.gulp, values.chan_std
+    )  # load file with user params
     root.mainloop()
