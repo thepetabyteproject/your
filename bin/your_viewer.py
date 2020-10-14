@@ -9,6 +9,7 @@ import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from rich.logging import RichHandler
 
 from your import Your
 
@@ -280,9 +281,9 @@ if __name__ == '__main__':
     values = parser.parse_args()
 
     if values.verbose:
-        logging.basicConfig(level=logging.DEBUG, format=logging_format)
+        logging.basicConfig(level=logging.DEBUG, format=logging_format, handlers=[RichHandler()])
     else:
-        logging.basicConfig(level=logging.INFO, format=logging_format)
+        logging.basicConfig(level=logging.INFO, format=logging_format, handlers=[RichHandler()])
 
     matplotlib_logger = logging.getLogger('matplotlib')
     matplotlib_logger.setLevel(logging.INFO)
