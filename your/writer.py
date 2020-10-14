@@ -4,9 +4,9 @@ import logging
 import os
 
 import numpy as np
-import tqdm
 from astropy.io import fits
 from astropy.time import Time
+from rich.progress import Progress
 
 from your.formats.filwriter import sigproc_object_from_writer
 from your.formats.fitswriter import initialize_psrfits
@@ -29,7 +29,7 @@ class Writer:
         c_max (int) : End channel index (default: total number of frequencies)
         outdir (str) : Output directory for file
         outname (str) : Name of the file to write to (without the file extension)
-        progress: Turn on/off progress bar
+        progress (bool) : Set to it to false to disable progress bars
         flag_rfi (bool) : To turn on RFI flagging
         spectral_kurtosis_sigma (float) : Sigma for spectral kurtosis filter
         savgol_frequency_window (float) : Filter window for savgol filter
@@ -39,9 +39,23 @@ class Writer:
 
     """
 
-    def __init__(self, your_object, nstart=0, nsamp=None, c_min=None, c_max=None, outdir=None, outname=None,
-                 flag_rfi=False, progress=True, spectral_kurtosis_sigma=4, savgol_frequency_window=15, savgol_sigma=4,
-                 gulp=None, zero_dm_subt=False):
+    def __init__(
+            self,
+            your_object,
+            nstart=0,
+            nsamp=None,
+            c_min=None,
+            c_max=None,
+            outdir=None,
+            outname=None,
+            flag_rfi=False,
+            progress=True,
+            spectral_kurtosis_sigma=4,
+            savgol_frequency_window=15,
+            savgol_sigma=4,
+            gulp=None,
+            zero_dm_subt=False,
+    ):
 
         self.your_object = your_object
         self.nstart = nstart
@@ -78,17 +92,19 @@ class Writer:
         if self.gulp > self.nsamp:
             self.gulp = self.nsamp
 
-        original_dir, orig_basename = os.path.split(self.your_object.your_header.filename)
+        original_dir, orig_basename = os.path.split(
+            self.your_object.your_header.filename
+        )
         if not self.outname:
             name, ext = os.path.splitext(orig_basename)
-            if ext == '.fits':
-                temp = name.split('_')
+            if ext == ".fits":
+                temp = name.split("_")
                 if len(temp) > 1:
-                    self.outname = '_'.join(temp[:-1]) + '_converted'
+                    self.outname = "_".join(temp[:-1]) + "_converted"
                 else:
-                    self.outname = name + '_converted'
+                    self.outname = name + "_converted"
             else:
-                self.outname = name + '_converted'
+                self.outname = name + "_converted"
 
         if not self.outdir:
             self.outdir = original_dir
@@ -113,7 +129,7 @@ class Writer:
 
     @property
     def chan_freqs(self):
-        return self.your_object.chan_freqs[self.chan_min:self.chan_max]
+        return self.your_object.chan_freqs[self.chan_min: self.chan_max]
 
     @property
     def nchans(self):
@@ -121,7 +137,10 @@ class Writer:
 
     @property
     def tstart(self):
-        return self.your_object.your_header.tstart + self.nstart * self.your_object.your_header.tsamp / (60 * 60 * 24)
+        return (
+                self.your_object.your_header.tstart
+                + self.nstart * self.your_object.your_header.tsamp / (60 * 60 * 24)
+        )
 
     def get_data_to_write(self, start_sample, nsamp):
         """
@@ -136,9 +155,16 @@ class Writer:
 
         """
         data = self.your_object.get_data(start_sample, nsamp)
-        data = data[:, self.chan_min:self.chan_max]
+        data = data[:, self.chan_min: self.chan_max]
         if self.flag_rfi:
-            mask = sk_sg_filter(data, self.your_object, self.nchans, self.sk_sig, self.sg_fw, self.sg_sig)
+            mask = sk_sg_filter(
+                data,
+                self.your_object,
+                self.nchans,
+                self.sk_sig,
+                self.sg_fw,
+                self.sg_sig,
+            )
 
             if self.your_object.your_header.dtype == np.uint8:
                 data[:, mask] = np.around(np.mean(data[:, ~mask]))
@@ -146,7 +172,7 @@ class Writer:
                 data[:, mask] = np.mean(data[:, ~mask])
 
         if self.zero_dm_subt:
-            logger.debug('Subtracting 0-DM time series from the data')
+            logger.debug("Subtracting 0-DM time series from the data")
             data = data - data.mean(1)[:, None]
 
         data = data.astype(self.your_object.your_header.dtype)
@@ -159,8 +185,12 @@ class Writer:
 
         """
 
-        self.outname += '.fil'
-        with tqdm.tqdm(total=self.nsamp, disable=~self.progress) as pbar:
+        self.outname += ".fil"
+        with Progress() as progress:
+            if not self.progress:
+                task = progress.add_task("[green]Writing...", total=self.nsamp, visible=False)
+            else:
+                task = progress.add_task("[green]Writing...", total=self.nsamp)
             # create the header
             sigproc_object = sigproc_object_from_writer(self)
 
@@ -176,7 +206,7 @@ class Writer:
             samples_left = self.nsamp
 
             # open the file
-            with open(self.outname, 'ab') as f:
+            with open(self.outname, "ab") as f:
                 # read till there are spectra to read
                 while samples_left > 0:
                     self.get_data_to_write(start_sample, self.gulp)
@@ -185,10 +215,12 @@ class Writer:
                     # goto the end of the file and dump
                     f.seek(0, os.SEEK_END)
                     f.write(self.data.ravel())
-                    pbar.update(self.gulp)
-                    logger.debug(f'Wrote from spectra {start_sample}-{start_sample + self.gulp} to filterbank')
+                    progress.update(task, advance=self.gulp)
+                    logger.debug(
+                        f"Wrote from spectra {start_sample}-{start_sample + self.gulp} to filterbank"
+                    )
 
-        logging.debug(f'Wrote all the necessary spectra')
+        logging.debug(f"Wrote all the necessary spectra")
 
     def to_fits(self, npsub=-1):
         """
@@ -210,67 +242,84 @@ class Writer:
             if self.nsamp < npsub:
                 npsub = self.nsamp
 
-        outfile = self.outdir + '/' + self.outname + '.fits'
+        outfile = self.outdir + "/" + self.outname + ".fits"
 
-        initialize_psrfits(outfile=outfile, your_object=self.your_object, npsub=npsub, nstart=self.nstart,
-                           nsamp=self.nsamp, chan_freqs=self.chan_freqs)
+        initialize_psrfits(
+            outfile=outfile,
+            your_object=self.your_object,
+            npsub=npsub,
+            nstart=self.nstart,
+            nsamp=self.nsamp,
+            chan_freqs=self.chan_freqs,
+        )
 
         nifs = self.your_object.your_header.npol
 
         logger.info("Filling PSRFITS file with data")
 
         # Open PSRFITS file
-        hdulist = fits.open(outfile, mode='update')
+        hdulist = fits.open(outfile, mode="update")
         hdu = hdulist[1]
-        nsubints = len(hdu.data[:]['data'])
+        nsubints = len(hdu.data[:]["data"])
 
         # Loop through chunks of data to write to PSRFITS
         n_read_subints = 10
-        logger.info(f'Number of subints to write {nsubints}')
+        logger.info(f"Number of subints to write {nsubints}")
 
         st = self.nstart
-        for istart in tqdm.tqdm(np.arange(0, nsubints, n_read_subints), disable=~self.progress):
-            istop = istart + n_read_subints
-            if istop > nsubints:
-                istop = nsubints
+        with Progress() as progress:
+            if not self.progress:
+                task = progress.add_task("[green]Writing...", total=nsubints, visible=False)
             else:
-                pass
-            isub = istop - istart
+                task = progress.add_task("[green]Writing...", total=nsubints)
 
-            logger.info(f"Writing data to {outfile} from subint = {istart} to {istop}.")
+            for istart in np.arange(0, nsubints, n_read_subints):
+                istop = istart + n_read_subints
+                if istop > nsubints:
+                    istop = nsubints
+                else:
+                    pass
+                isub = istop - istart
 
-            # Read in nread samples from filfile
-            nread = isub * npsub
-            self.get_data_to_write(st, nread)
-            data = self.data
-            st += nread
+                logger.info(f"Writing data to {outfile} from subint = {istart} to {istop}.")
 
-            nvals = isub * npsub * nifs
-            if data.shape[0] < nvals:
-                logger.debug(f'nspectra in this chunk ({data.shape[0]}) < nsubints * npsub * nifs ({nvals})')
-                logger.debug(f'Appending zeros at the end to fill the subint')
-                pad_back = np.zeros((nvals - data.shape[0], data.shape[1]))
-                data = np.vstack((data, pad_back))
-            else:
-                pass
+                # Read in nread samples from filfile
+                nread = isub * npsub
+                self.get_data_to_write(st, nread)
+                progress.update(task, advance=n_read_subints)
+                data = self.data
+                st += nread
 
-            data = np.reshape(data, (isub, npsub, nifs, self.nchans))
+                nvals = isub * npsub * nifs
+                if data.shape[0] < nvals:
+                    logger.debug(
+                        f"nspectra in this chunk ({data.shape[0]}) < nsubints * npsub * nifs ({nvals})"
+                    )
+                    logger.debug(f"Appending zeros at the end to fill the subint")
+                    pad_back = np.zeros((nvals - data.shape[0], data.shape[1]))
+                    data = np.vstack((data, pad_back))
+                else:
+                    pass
 
-            # If channel_bandwidth is negative, we need to flip the freq axis
-            #            if channel_bandwidth < 0:
-            #                logger.debug(f"Flipping band as {channel_bandwidth} < 0")
-            #                data = data[:, :, :, ::-1]
-            #            else:
-            #                pass
+                data = np.reshape(data, (isub, npsub, nifs, self.nchans))
 
-            # Put data in hdu data array
-            logger.debug(f'Writing data of shape {data.shape} to {outfile}.')
-            hdu.data[istart:istop]['data'][:, :, :, :] = data[:].astype(self.your_object.your_header.dtype)
+                # If channel_bandwidth is negative, we need to flip the freq axis
+                #            if channel_bandwidth < 0:
+                #                logger.debug(f"Flipping band as {channel_bandwidth} < 0")
+                #                data = data[:, :, :, ::-1]
+                #            else:
+                #                pass
+
+                # Put data in hdu data array
+                logger.debug(f"Writing data of shape {data.shape} to {outfile}.")
+                hdu.data[istart:istop]["data"][:, :, :, :] = data[:].astype(
+                    self.your_object.your_header.dtype
+                )
 
             # Write to file
             hdulist.flush()
 
-        logger.info(f'All spectra written to {outfile}')
+        logger.info(f"All spectra written to {outfile}")
         # Close open FITS file
         hdulist.close()
 
@@ -285,7 +334,7 @@ class Writer:
         header = dict()
         header["BW"] = str(self.nchans * self.your_object.your_header.foff)
         header["FREQ"] = str((self.chan_freqs[0] + self.chan_freqs[-1]) / 2)
-        tstart = Time(self.tstart, format='mjd')
+        tstart = Time(self.tstart, format="mjd")
         header["MJD_START"] = str(self.tstart)
         header["NBIT"] = str(self.your_object.your_header.nbits)
         header["TSAMP"] = str(self.your_object.your_header.tsamp * 1e6)
@@ -293,7 +342,7 @@ class Writer:
         header["NCHAN"] = str(self.nchans)
         header["OBS_OFFSET"] = str(0)
         header["NPOL"] = str(1)  # self.your_object.your_header.npol)
-        header["UTC_START"] = str(tstart.utc.iso.replace(' ', '-'))
+        header["UTC_START"] = str(tstart.utc.iso.replace(" ", "-"))
         return header
 
     def setup_dada(self, dada_key=None, data_step=None):
@@ -306,6 +355,7 @@ class Writer:
 
         """
         from your.formats.dada import DadaManager
+
         if dada_key is None:
             self.dada_key = hex(np.random.randint(0, 16 ** 4))
 
@@ -314,8 +364,12 @@ class Writer:
         else:
             self.data_step = self.gulp
 
-        self.dada_size = int(self.data_step * self.nchans * self.your_object.your_header.nbits / 8)
-        logger.debug(f"Setting up DadaManager with key: {self.dada_key} and page size {self.dada_size} bytes")
+        self.dada_size = int(
+            self.data_step * self.nchans * self.your_object.your_header.nbits / 8
+        )
+        logger.debug(
+            f"Setting up DadaManager with key: {self.dada_key} and page size {self.dada_size} bytes"
+        )
         self.DM = DadaManager(size=self.dada_size, key=self.dada_key)
         self.DM.setup()
 
@@ -329,13 +383,23 @@ class Writer:
             self.setup_dada()
 
         header = self.dada_header()
-        for data_read in tqdm.trange(self.nstart, self.nstart + self.nsamp, self.data_step, disable=~self.progress):
-            logger.debug(f"Data read is {data_read}, Data step is {self.data_step}")
-            self.get_data_to_write(data_read, self.data_step)
-            self.DM.dump_header(header)
-            self.DM.dump_data(self.data.flatten())
-            if data_read == self.nsamp - self.data_step:
-                logger.info("Marked the end of data")
-                self.DM.eod()
+        with Progress() as progress:
+            if not self.progress:
+                task = progress.add_task("[green]Reading...", total=self.nsamp, visible=False)
             else:
-                self.DM.mark_filled()
+                task = progress.add_task("[green]Reading...", total=self.nsamp)
+
+            for data_read in range(
+                    self.nstart, self.nstart + self.nsamp, self.data_step
+            ):
+                logger.debug(f"Data read is {data_read}, Data step is {self.data_step}")
+                self.get_data_to_write(data_read, self.data_step)
+                self.DM.dump_header(header)
+                self.DM.dump_data(self.data.flatten())
+                progress.update(task, advance=self.data_step)
+                if data_read == self.nsamp - self.data_step:
+                    logger.info("Marked the end of data")
+                    self.DM.eod()
+                else:
+                    self.DM.mark_filled()
+        return None
