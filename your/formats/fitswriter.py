@@ -334,11 +334,11 @@ def initialize_psrfits(outfile, your_object, npsub=-1, nstart=None, nsamp=None, 
     dtype = your_object.your_header.dtype
     if dtype == np.uint8:
         data_format = 'B'
-    elif dtype == np.uint16:
+    elif dtype == np.int16:
         data_format = 'I'
-    elif dtype == np.uint32:
+    elif dtype == np.int32:
         data_format = 'J'
-    elif dtype == np.uint64:
+    elif dtype == np.int64:
         data_format = 'K'
     elif dtype == np.float32:
         data_format = 'E'
