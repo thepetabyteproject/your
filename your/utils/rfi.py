@@ -74,7 +74,7 @@ def sk_filter(data, channel_bandwidth, nchans, tsamp, N=None, d=1, sigma=5):
     nan_mask = np.isnan(sk)
     sk[nan_mask] = np.nan
     sk_c = sk[~nan_mask]
-    std = 1.4826 * stats.median_absolute_deviation(sk_c)
+    std = stats.median_abs_deviation(sk_c)
     h = np.median(sk_c) + sigma * std
     l = np.median(sk_c) - sigma * std
     mask = (sk < h) & (sk > l)
