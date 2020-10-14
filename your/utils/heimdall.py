@@ -108,8 +108,8 @@ class HeimdallManager:
                     if attribute == 'zap_chans':
                         for chans in value:
                             cmd += ' -zap_chans '
-                            cmd += str(chans) + ' '
-                            cmd += str(chans)
+                            cmd += str(int(chans)) + ' '
+                            cmd += str(int(chans))
                     else:
                         cmd += str(f' -{attribute} ')
                         cmd += ' '.join(map(str, value))
