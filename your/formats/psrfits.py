@@ -760,10 +760,9 @@ def DATEOBS_to_MJD(dateobs):
     """
     # Parse string using regular expression defined at top of file
     m = date_obs_re.match(dateobs)
-    mjd_fracday = (float(m.group("hour")) + (float(m.group("min")) + \
-                                             (float(m.group("sec")) / 60.0)) / 60.0) / 24.0
-    mjd_day = aptime.Time("%d-%d-%d" % (float(m.group("year")), \
-                                        float(m.group("month")), float(m.group("day"))), format="iso").mjd
+    mjd_fracday = (float(m.group("hour")) + (float(m.group("min")) + (float(m.group("sec")) / 60.0)) / 60.0) / 24.0
+    mjd_day = aptime.Time("%d-%d-%d" % (float(m.group("year")), float(m.group("month")), float(m.group("day"))),
+                          format="iso").mjd
     return mjd_day, mjd_fracday
 
 
@@ -777,8 +776,7 @@ def is_PSRFITS(filename):
         primary = hdus['PRIMARY'].header
 
         try:
-            isPSRFITS = ((primary['FITSTYPE'] == "PSRFITS") and \
-                         (primary['OBS_MODE'] == "SEARCH"))
+            isPSRFITS = ((primary['FITSTYPE'] == "PSRFITS") and (primary['OBS_MODE'] == "SEARCH"))
         except KeyError:
             isPSRFITS = False
 
