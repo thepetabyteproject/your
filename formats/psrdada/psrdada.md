@@ -38,7 +38,7 @@ Set up the dada buffers and connect to a writer.
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L48)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L50)</span>
 
 ### dump_header
 
@@ -53,7 +53,7 @@ Set the psrdada header
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L54)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L56)</span>
 
 ### dump_data
 
@@ -73,7 +73,7 @@ Args:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L68)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L70)</span>
 
 ### mark_filled
 
@@ -88,7 +88,7 @@ Mark that data is filled in the buffer page.
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L74)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L76)</span>
 
 ### eod
 
@@ -103,7 +103,7 @@ Mark the end of data.
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L80)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L82)</span>
 
 ### teardown
 

@@ -1,4 +1,4 @@
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L19)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L17)</span>
 
 ### Your
 
@@ -26,7 +26,7 @@ Attributes:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L134)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L132)</span>
 
 ### bandpass
 
@@ -49,7 +49,7 @@ Returns:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L162)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L160)</span>
 
 ### get_data
 
@@ -79,7 +79,7 @@ Returns:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L269)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L267)</span>
 
 ### dispersion_delay
 
@@ -102,7 +102,7 @@ Returns:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L287)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L285)</span>
 
 ### Header
 
@@ -116,11 +116,11 @@ Your Header class, it contains all the relevant metadata.
 
 Args: 
 
-    Your object
+    your: Your object
 
 Attributes: 
 
-    filelist: List of files used to make the your object
+    filelist (list): List of files used to make the your object
     filename (str) : Name of the first file used to make the object
     basename (str): Base name of file
     source_name (str): Source Name

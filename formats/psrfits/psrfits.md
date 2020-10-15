@@ -42,6 +42,7 @@ Attributes:
     tstart (float): Start MJD of the data
     tsamp (float): Sampling interval (seconds)
     nifs (int): Number of IFs in the data.
+    
 
 
 ----

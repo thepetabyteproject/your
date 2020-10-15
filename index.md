@@ -6,13 +6,16 @@
 [![GitHub stars](https://img.shields.io/github/stars/thepetabyteproject/your?style=flat-square)](https://github.com/thepetabyteproject/your/stargazers)
 [![GitHub license](https://img.shields.io/github/license/thepetabyteproject/your?style=flat-square)](https://github.com/thepetabyteproject/your/blob/master/LICENSE)
 [![HitCount](http://hits.dwyl.com/devanshkv/your.svg)](http://hits.dwyl.com/devanshkv/your)
-![Python package](https://github.com/thepetabyteproject/your/workflows/Python%20package/badge.svg?style=flat-square)
-[![codecov](https://codecov.io/gh/thepetabyteproject/your/branch/master/graph/badge.svg?style=flat-square)](https://codecov.io/gh/thepetabyteproject/your)
-
-
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/your?style=flat-square)
 ![PyPI](https://img.shields.io/pypi/v/your?style=flat-square)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/your?style=flat-square)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg?style=flat-square)](https://github.com/psf/black)
+
+[![codecov](https://codecov.io/gh/thepetabyteproject/your/branch/master/graph/badge.svg?style=flat-square)](https://codecov.io/gh/thepetabyteproject/your)
+![Python package](https://github.com/thepetabyteproject/your/workflows/Python%20package/badge.svg?style=flat-square)
+[![status](https://joss.theoj.org/papers/798844ebd352f563de28bb75515da674/status.svg?style=flat-square)](https://joss.theoj.org/papers/798844ebd352f563de28bb75515da674)
+
+
   
 
 

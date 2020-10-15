@@ -10,7 +10,8 @@ Your Heimdall Fetch FRB
 
 
 ```bash
-usage: your_heimdall.py [-h] [-v] [-p PROBABILITY] [-f FILES [FILES ...]] [-dm DM DM] [-g GPU_ID] [-sg] [-frequency_window FILTER_WINDOW] [-sigma SIGMA] [-m MASK] [-dm_tol DM_TOL] [-rfi_no_narrow] [-rfi_no_broad] [-o OUTPUT_DIR] [--no_progress]
+usage: your_heimdall.py [-h] [-v] [-f FILES [FILES ...]] [-dm DM DM] [-g GPU_ID] [-rfi_your] [-sk_sigma SPECTRAL_KURTOSIS_SIGMA] [-sg_sigma SAVGOL_SIGMA] [-sg_frequency SAVGOL_FREQUENCY_WINDOW]
+                        [-dm_tol DM_TOL] [-rfi_no_narrow] [-rfi_no_broad] [-mask MASK] [-o OUTPUT_DIR] [-fs CHANNEL_START] [-fe CHANNEL_END] [--no_progress] [--no_log_file]
 
 ```
 # Arguments
@@ -18,17 +19,20 @@ usage: your_heimdall.py [-h] [-v] [-p PROBABILITY] [-f FILES [FILES ...]] [-dm D
 |short|long|default|help|
 | :---: | :---: | :---: | :---: |
 |`-h`|`--help`||show this help message and exit|
-|`-v`|`--verbose`||Be verbose|
-|`-p`|`--probability`|`0.5`|Detection threshold|
+|`-v`|`--verbose`|`0`|Be verbose|
 |`-f`|`--files`|`None`|filterbank or psrfits|
 |`-dm`|`--dm`|`[10, 1000]`|DM (eg -dm 10 1000)|
 |`-g`|`--gpu_id`|`0`|GPU ID to run heimdall on|
-|`-sg`|`--apply_savgol`||Apply savgol filter to zap bad channels|
-|`-frequency_window`|`--filter_window`|`15`|Window size (MHz) for savgol filter|
-|`-sigma`|`--sigma`|`6`|Sigma for the savgol filter|
-|`-m`|`--mask`|`None`|Input RFI mask (could be 1-D bad channel mask or 2-D FT mask)|
+|`-rfi_your`|`--rfi_your`||Use your to flag RFI|
+|`-sk_sigma`|`--spectral_kurtosis_sigma`|`4`|Sigma for spectral kurtosis based RFI mitigation, only applied if -rfi_flag is used.|
+|`-sg_sigma`|`--savgol_sigma`|`4`|Sigma for Savgol filter for RFI mitigation, only applied if -rfi_flag is used.|
+|`-sg_frequency`|`--savgol_frequency_window`|`15`|Filter window for savgol filter (in MHz), only applied if -rfi_flag is used.|
 |`-dm_tol`|`--dm_tol`|`1.25`|SNR loss tolerance between DM trials|
 |`-rfi_no_narrow`|`--rfi_no_narrow`||disable narrow band RFI excision|
 |`-rfi_no_broad`|`--rfi_no_broad`||disable 0-DM RFI excision|
+|`-mask`|`--mask`|`None`|File containting channel numbers to kill|
 |`-o`|`--output_dir`|`None`|Output dir for heimdall candidates|
-||`--no_progress`|`None`|Do not show the tqdm bar|
+|`-fs`|`--channel_start`|`0`|Start channel for sub band search|
+|`-fe`|`--channel_end`|`-1`|End channel for sub band search|
+||`--no_progress`||Do not show the tqdm bar|
+||`--no_log_file`||Do not write a log file|

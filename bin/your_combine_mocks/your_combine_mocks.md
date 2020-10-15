@@ -10,7 +10,7 @@ Combine two bands from mock spectrometer to a filterbank file.
 
 
 ```bash
-usage: your_combine_mocks.py [-h] [-v] [-f1 FIRST_BAND] [-f2 SECOND_BAND] [-s NSTART] [-n NSAMP] [-o OUTDIR] [-fil FIL_NAME] [-a ALL_FILES]
+usage: your_combine_mocks.py [-h] [-v] [-f1 FIRST_BAND] [-f2 SECOND_BAND] [-s NSTART] [-n NSAMP] [-o OUTDIR] [-fil FIL_NAME] [-a ALL_FILES] [--no_log_file]
 
 ```
 # Arguments
@@ -26,3 +26,4 @@ usage: your_combine_mocks.py [-h] [-v] [-f1 FIRST_BAND] [-f2 SECOND_BAND] [-s NS
 |`-o`|`--outdir`|`.`|Output directory for Filterbank file|
 |`-fil`|`--fil_name`|`None`|Output name of the Filterbank file|
 |`-a`|`--all_files`|`None`|Process all files in the given directory|
+||`--no_log_file`||Do not write a log file|

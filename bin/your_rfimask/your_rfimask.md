@@ -10,7 +10,7 @@ Make Bad channel mask
 
 
 ```bash
-usage: your_rfimask.py [-h] [-f FILES [FILES ...]] [-sg] [-frequency_window FILTER_WINDOW [FILTER_WINDOW ...]] [-sigma SIGMA [SIGMA ...]] [-o OUTPUT_DIR]
+usage: your_rfimask.py [-h] [-f FILES [FILES ...]] [-sg] [-frequency_window FILTER_WINDOW [FILTER_WINDOW ...]] [-sigma SIGMA [SIGMA ...]] [-o OUTPUT_DIR] [--no_log_file]
 
 ```
 # Arguments
@@ -23,3 +23,4 @@ usage: your_rfimask.py [-h] [-f FILES [FILES ...]] [-sg] [-frequency_window FILT
 |`-frequency_window`|`--filter_window`|`[15]`|Window size (MHz) for savgol filter|
 |`-sigma`|`--sigma`|`[6]`|Sigma for the savgol filter|
 |`-o`|`--output_dir`|`.`|Output dir for heimdall candidates|
+||`--no_log_file`||Do not write a log file|

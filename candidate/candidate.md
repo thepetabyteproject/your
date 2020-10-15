@@ -163,13 +163,12 @@ Generates DM-time array of the candidate by dedispersing at adjacent DM values. 
 Args: 
 
     dmsteps (int) : Number of DMs to dedisperse at.
-
     target (str): 'CPU' to run the code on the CPU or 'GPU' to run it on a GPU.
 
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L330)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L329)</span>
 
 ### get_snr
 
@@ -192,7 +191,7 @@ Returns:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L353)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L352)</span>
 
 ### optimize_dm
 
@@ -214,7 +213,7 @@ Returns:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L383)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L382)</span>
 
 ### decimate
 
@@ -240,7 +239,7 @@ Args:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L421)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L420)</span>
 
 ### resize
 

@@ -10,7 +10,7 @@ Read header from fits/fil files and print the your header
 
 
 ```bash
-usage: your_header.py [-h] -f FILES [FILES ...]
+usage: your_header.py [-h] -f FILES [FILES ...] [-v]
 
 ```
 # Arguments
@@ -19,3 +19,4 @@ usage: your_header.py [-h] -f FILES [FILES ...]
 | :---: | :---: | :---: | :---: |
 |`-h`|`--help`||show this help message and exit|
 |`-f`|`--files`|`None`|Fits or filterbank files to read header.|
+|`-v`|`--verbose`||Be verbose|

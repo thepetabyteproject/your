@@ -13,10 +13,11 @@ your.writer.Writer(
     outdir=None,
     outname=None,
     flag_rfi=False,
-    progress=None,
+    progress=True,
     spectral_kurtosis_sigma=4,
     savgol_frequency_window=15,
     savgol_sigma=4,
+    gulp=None,
     zero_dm_subt=False,
 )
 ```
@@ -34,17 +35,18 @@ Args:
     c_max (int) : End channel index (default: total number of frequencies)
     outdir (str) : Output directory for file
     outname (str) : Name of the file to write to (without the file extension)
-    progress: Turn on/off progress bar
+    progress (bool) : Set to it to false to disable progress bars
     flag_rfi (bool) : To turn on RFI flagging
     spectral_kurtosis_sigma (float) : Sigma for spectral kurtosis filter
     savgol_frequency_window (float) : Filter window for savgol filter
     savgol_sigma (float) : Sigma for savgol filter
+    gulp (int) : Gulp size for the data
     zero_dm_subt (bool) : Enable zero DM rfi excision
 
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L158)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L181)</span>
 
 ### to_fil
 
@@ -59,7 +61,7 @@ Writes out a Filterbank File.
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L215)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L227)</span>
 
 ### to_fits
 
@@ -78,7 +80,29 @@ Args:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L310)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L145)</span>
+
+### get_data_to_write
+
+
+```python
+Writer.get_data_to_write(start_sample, nsamp)
+```
+
+
+Read data to self.data, selects channels
+Optionally perform RFI filtering and zero-DM subtraction
+
+Args: 
+
+
+    start_sample (int) : Start sample number to read from
+    nsamp (int): Number of samples to read
+
+
+----
+
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L332)</span>
 
 ### dada_header
 
@@ -97,7 +121,7 @@ Returns:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L335)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L354)</span>
 
 ### setup_dada
 
@@ -117,7 +141,7 @@ Args:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L367)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L384)</span>
 
 ### to_dada
 
