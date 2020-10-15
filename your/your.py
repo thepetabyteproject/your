@@ -288,17 +288,23 @@ class Header:
         self.bw = your.bw
         self.center_freq = your.cfreq
         self.nbits = your.nbits
+        self.format = your.format
 
         if self.nbits <= 8:
             self.dtype = np.uint8
         elif self.nbits == 16:
-            self.dtype = np.uint16
+            if self.format == 'fits':
+                self.dtype = np.int16
+            else:
+                self.dtype = np.uint16
         elif self.nbits == 32:
-            self.dtype = np.float32
+            if self.format == 'fits':
+                self.dtype = np.int32
+            else:
+                self.dtype = np.float32
         else:
             raise ValueError(f"Unsupported number of bits {self.nbits}")
 
-        self.format = your.format
         self.time_decimation_factor = 1
         self.frequency_decimation_factor = 1
         self.native_tsamp = your.native_tsamp
