@@ -173,7 +173,7 @@ if __name__ == "__main__":
             )
 
     logging.info("Input Arguments:-")
-    for arg, value in sorted(vars(args).items()):
+    for arg, value in sorted(vars(values).items()):
         logging.info("%s: %r", arg, value)
 
     your_object = Your(file=values.files)

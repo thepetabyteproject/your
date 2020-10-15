@@ -2,6 +2,7 @@
 
 import argparse
 import logging
+from datetime import datetime
 
 import numpy as np
 from rich.logging import RichHandler
