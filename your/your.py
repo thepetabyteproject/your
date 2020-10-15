@@ -11,7 +11,7 @@ from your.utils.misc import check_file_exist, MyEncoder
 
 logger = logging.getLogger(__name__)
 
-FORMATS = {'fil': SigprocFile, 'fits': PsrfitsFile}
+FORMATS = {"fil": SigprocFile, "fits": PsrfitsFile}
 
 
 class Your(PsrfitsFile, SigprocFile):
@@ -36,17 +36,20 @@ class Your(PsrfitsFile, SigprocFile):
             ext = os.path.splitext(self.your_file)[1]
             check_file_exist(self.your_file)
             if ext == ".fits" or ext == ".sf":
-                self.format = 'fits'
+                self.format = "fits"
                 self.your_file = [self.your_file]
             elif ext == ".fil":
-                self.format = 'fil'
+                self.format = "fil"
             else:
-                raise TypeError(f'Filetype {ext} not supported')
+                raise TypeError(f"Filetype {ext} not supported")
         elif isinstance(self.your_file, list):
             if len(self.your_file) == 0:
-                raise ValueError('Filelist is empty. Please check the input')
-            if len(self.your_file) == 1 and os.path.splitext(*self.your_file)[1] == ".fil":
-                self.format = 'fil'
+                raise ValueError("Filelist is empty. Please check the input")
+            if (
+                    len(self.your_file) == 1
+                    and os.path.splitext(*self.your_file)[1] == ".fil"
+            ):
+                self.format = "fil"
                 self.your_file = self.your_file[0]
                 check_file_exist(self.your_file)
             else:
@@ -56,19 +59,24 @@ class Your(PsrfitsFile, SigprocFile):
                     if ext == ".fits" or ext == ".sf":
                         pass
                     else:
-                        raise TypeError("Can only work with a list of fits file or an individual filterbank file")
+                        raise TypeError(
+                            "Can only work with a list of fits file or an individual filterbank file"
+                        )
                 self.your_file.sort()
-                self.format = 'fits'
+                self.format = "fits"
         else:
             raise ValueError(
-                'file should be a string of input file path or a list of strings with relevant file paths.')
+                "file should be a string of input file path or a list of strings with relevant file paths."
+            )
 
-        logger.debug(f'Reading the file(s): {self.your_file}')
+        logger.debug(f"Reading the file(s): {self.your_file}")
         self.formatclass = FORMATS[self.format]
         self.formatclass.__init__(self, self.your_file)
         if not self.source_name:
-            logger.info(f'Source name not present in the file. Setting source name to TEMP')
-            self.source_name = 'TEMP'
+            logger.info(
+                f"Source name not present in the file. Setting source name to TEMP"
+            )
+            self.source_name = "TEMP"
         self.your_header = Header(self)
 
     @property
@@ -116,7 +124,10 @@ class Your(PsrfitsFile, SigprocFile):
         Returns:
             End MJD of the data
         """
-        return self.your_header.tstart + self.your_header.nspectra * self.your_header.tsamp / 86400.0
+        return (
+                self.your_header.tstart
+                + self.your_header.nspectra * self.your_header.tsamp / 86400.0
+        )
 
     def bandpass(self, nspectra=None):
         """
@@ -134,17 +145,26 @@ class Your(PsrfitsFile, SigprocFile):
                 ns = nspectra
             else:
                 logger.info(
-                    f'nspectra > number of spectra in file, generating bandpass using all available spectra.')
+                    f"nspectra > number of spectra in file, generating bandpass using all available spectra."
+                )
                 ns = self.your_header.native_nspectra
         else:
-            logger.warning(f'This will read all the data in the RAM. Might be slow as well.')
+            logger.warning(
+                f"This will read all the data in the RAM. Might be slow as well."
+            )
             ns = self.your_header.native_nspectra
 
-        logger.debug(f'Generating bandpass using {ns} spectra.')
+        logger.debug(f"Generating bandpass using {ns} spectra.")
         return self.get_data(nstart=0, nsamp=int(ns)).mean(0)
 
-    def get_data(self, nstart: int, nsamp: int, time_decimation_factor=None,
-                 frequency_decimation_factor=None, pol: int = 0):
+    def get_data(
+            self,
+            nstart: int,
+            nsamp: int,
+            time_decimation_factor=None,
+            frequency_decimation_factor=None,
+            pol: int = 0,
+    ):
         """
         Read data from files
 
@@ -166,49 +186,69 @@ class Your(PsrfitsFile, SigprocFile):
         logger.debug(f"Reading {nsamp} samples from sample {nstart}")
 
         if self.your_header.time_decimation_factor != 1:
-            logger.warning(f"Setting Time decimation factor to {self.your_header.time_decimation_factor},"
-                           f"this will change the properties of the class")
+            logger.warning(
+                f"Setting Time decimation factor to {self.your_header.time_decimation_factor},"
+                f"this will change the properties of the class"
+            )
 
         if self.your_header.frequency_decimation_factor != 1:
-            logger.warning(f"Setting frequency decimation factor to {self.your_header.frequency_decimation_factor},"
-                           f"this will change the properties of the class")
+            logger.warning(
+                f"Setting frequency decimation factor to {self.your_header.frequency_decimation_factor},"
+                f"this will change the properties of the class"
+            )
 
         if time_decimation_factor is not None:
             self.your_header.time_decimation_factor = time_decimation_factor
         if frequency_decimation_factor is not None:
             self.your_header.frequency_decimation_factor = frequency_decimation_factor
 
-        logger.debug(f"time_decimation_factor: {self.your_header.time_decimation_factor}")
-        logger.debug(f"frequency_decimation_factor: {self.your_header.frequency_decimation_factor}")
+        logger.debug(
+            f"time_decimation_factor: {self.your_header.time_decimation_factor}"
+        )
+        logger.debug(
+            f"frequency_decimation_factor: {self.your_header.frequency_decimation_factor}"
+        )
 
         if nsamp % self.your_header.time_decimation_factor != 0:
             raise ValueError(
-                f"time_decimation_factor: {self.your_header.time_decimation_factor} should be a divisor of nsamp: {nsamp}")
+                f"time_decimation_factor: {self.your_header.time_decimation_factor} should be a divisor of nsamp: {nsamp}"
+            )
 
         if self.nchans % self.your_header.frequency_decimation_factor != 0:
             raise ValueError(
-                f"frequency_decimation_factor: {self.your_header.frequency_decimation_factor} should be a divisor or nchans:{self.nchans}")
+                f"frequency_decimation_factor: {self.your_header.frequency_decimation_factor} should be a divisor or nchans:{self.nchans}"
+            )
 
         if pol not in [0, 1, 2, 3, 4]:
-            raise ValueError(f"pol: {pol} can only be one of 0 (Intensity), 1 (Right Circular), 2 (Left Circular), "
-                             "3 (Horizontal Linear), 4 (Vertical Linear)")
+            raise ValueError(
+                f"pol: {pol} can only be one of 0 (Intensity), 1 (Right Circular), 2 (Left Circular), "
+                "3 (Horizontal Linear), 4 (Vertical Linear)"
+            )
 
-        if self.format == 'fil':
+        if self.format == "fil":
             if pol > 0:
                 logging.warning(f"pol > 0 not tested for Filterbank files.")
                 if self.your_header.npol == 0:
-                    logging.warning(f"Data contains only one polarisation. Setting pol to 0")
+                    logging.warning(
+                        f"Data contains only one polarisation. Setting pol to 0"
+                    )
                     pol = 0
                 else:
-                    logging.warning(f'pol: {pol}, Assuming IQUV polarisation data in Filterbank file')
+                    logging.warning(
+                        f"pol: {pol}, Assuming IQUV polarisation data in Filterbank file"
+                    )
         data = self.formatclass.get_data(self, nstart, nsamp, pol=pol)[:, 0, :]
 
-        if (self.your_header.time_decimation_factor > 1) or (self.your_header.frequency_decimation_factor > 1):
+        if (self.your_header.time_decimation_factor > 1) or (
+                self.your_header.frequency_decimation_factor > 1
+        ):
             nt, nf = data.shape
-            data = data.reshape(self.your_header.time_decimation_factor,
-                                nt // self.your_header.time_decimation_factor,
-                                nf // self.your_header.frequency_decimation_factor,
-                                self.your_header.frequency_decimation_factor)
+            data = data.reshape(
+                self.your_header.time_decimation_factor,
+                nt // self.your_header.time_decimation_factor,
+                nf // self.your_header.frequency_decimation_factor,
+                self.your_header.frequency_decimation_factor,
+            )
             data = data.astype(np.float32)
             data = data.mean(axis=0)
             data = data.mean(axis=-1)
@@ -234,8 +274,13 @@ class Your(PsrfitsFile, SigprocFile):
         Returns:
             Dispersion delay in seconds.
         """
-        return 4148808.0 * dms * (
-                1 / np.min(self.chan_freqs) ** 2 - 1 / np.max(self.chan_freqs) ** 2) / 1000
+        return (
+                4148808.0
+                * dms
+                * (1 / np.min(self.chan_freqs) ** 2 - 1 / np.max(self.chan_freqs) ** 2)
+                / 1000
+        )
+
 
 class Header:
     # TODO: add nbeams, ibeam, data_type, az_start, za_start, telescope, backend
@@ -278,7 +323,7 @@ class Header:
             raise IOError("Unknown type")
 
         self.basename = os.path.basename(os.path.splitext(self.filename)[0])
-        logger.debug(f'Generating unified header for file {self.basename}')
+        logger.debug(f"Generating unified header for file {self.basename}")
         if isinstance(your.source_name, str):
             self.source_name = your.source_name
         else:
@@ -293,12 +338,12 @@ class Header:
         if self.nbits <= 8:
             self.dtype = np.uint8
         elif self.nbits == 16:
-            if self.format == 'fits':
+            if self.format == "fits":
                 self.dtype = np.int16
             else:
                 self.dtype = np.uint16
         elif self.nbits == 32:
-            if self.format == 'fits':
+            if self.format == "fits":
                 self.dtype = np.int32
             else:
                 self.dtype = np.float32
@@ -315,8 +360,9 @@ class Header:
         self.npol = your.nifs
         self.tstart = your.tstart
         from astropy.coordinates import SkyCoord
+
         if self.ra_deg and self.dec_deg:
-            loc = SkyCoord(self.ra_deg, self.dec_deg, unit='deg')
+            loc = SkyCoord(self.ra_deg, self.dec_deg, unit="deg")
             self.gl = loc.galactic.l.value - 180
             self.gb = loc.galactic.b.value
         else:
@@ -325,10 +371,11 @@ class Header:
             self.gb = None
 
         from astropy.time import Time
-        ts = Time(your.tstart, format='mjd')
+
+        ts = Time(your.tstart, format="mjd")
         self.tstart_utc = ts.utc.isot
 
-        logger.debug(f'Successfully generated unified header for file {self.filename}')
+        logger.debug(f"Successfully generated unified header for file {self.filename}")
 
     @property
     def tsamp(self):
@@ -347,9 +394,11 @@ class Header:
         return int(self.native_nspectra // self.time_decimation_factor)
 
     def __repr__(self):
-        property_names = [p for p in dir(self) if not p.startswith('__')]
+        property_names = [p for p in dir(self) if not p.startswith("__")]
         d = {}
         for prop in property_names:
             d[prop] = getattr(self, prop)
-        d['dtype'] = d['dtype'].__name__
-        return 'Unified Header:' + json.dumps(d, cls=MyEncoder, indent=2)[1:-1].replace(",", "")
+        d["dtype"] = d["dtype"].__name__
+        return "Unified Header:" + json.dumps(d, cls=MyEncoder, indent=2)[1:-1].replace(
+            ",", ""
+        )

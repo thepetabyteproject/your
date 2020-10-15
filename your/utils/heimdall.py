@@ -3,8 +3,16 @@ import math
 import os
 
 
-def generate_dm_list(dm_start: float, dm_end: float, dt: float, ti: float, f0: float, df: float, nchans: int,
-                     tol: float) -> list:
+def generate_dm_list(
+        dm_start: float,
+        dm_end: float,
+        dt: float,
+        ti: float,
+        f0: float,
+        df: float,
+        nchans: int,
+        tol: float,
+) -> list:
     """
     Code to generate Heimdall's DM list. Taken from [dedisp](https://github.com/ajameson/dedisp/blob/master/src/kernels.cuh#L56)
 
@@ -33,7 +41,10 @@ def generate_dm_list(dm_start: float, dm_end: float, dt: float, ti: float, f0: f
     dm_list.append(dm_start)
     while dm_list[-1] < dm_end:
         k = c + tol ** 2 * a ** 2 * dm_list[-1] ** 2
-        dm = (b * dm_list[-1] + math.sqrt(-a ** 2 * b * dm_list[-1] ** 2 + (a ** 2 + b) * k)) / (a ** 2 + b)
+        dm = (
+                     b * dm_list[-1]
+                     + math.sqrt(-(a ** 2) * b * dm_list[-1] ** 2 + (a ** 2 + b) * k)
+             ) / (a ** 2 + b)
         dm_list.append(dm)
     return dm_list
 
@@ -66,10 +77,29 @@ class HeimdallManager:
 
     """
 
-    def __init__(self, dada_key=None, filename=None, verbosity=None, nsamps_gulp=262144, beam=None, baseline_length=2,
-                 output_dir=None, dm=None, dm_tol=1.25, zap_chans=None, max_giant_rate=None, dm_nbits=32, gpu_id=None,
-                 no_scrunching=False, rfi_tol=5, rfi_no_narrow=False, rfi_no_broad=False, boxcar_max=4096, fswap=None,
-                 min_tscrunch_width=None):
+    def __init__(
+            self,
+            dada_key=None,
+            filename=None,
+            verbosity=None,
+            nsamps_gulp=262144,
+            beam=None,
+            baseline_length=2,
+            output_dir=None,
+            dm=None,
+            dm_tol=1.25,
+            zap_chans=None,
+            max_giant_rate=None,
+            dm_nbits=32,
+            gpu_id=None,
+            no_scrunching=False,
+            rfi_tol=5,
+            rfi_no_narrow=False,
+            rfi_no_broad=False,
+            boxcar_max=4096,
+            fswap=None,
+            min_tscrunch_width=None,
+    ):
 
         self.k = dada_key
         self.f = filename
@@ -101,30 +131,34 @@ class HeimdallManager:
         Make the heimdall command and run it.
 
         """
-        cmd = 'heimdall '
+        cmd = "heimdall "
         for attribute, value in self.__dict__.items():
             if value is not None:
                 if isinstance(value, list):
-                    if attribute == 'zap_chans':
+                    if attribute == "zap_chans":
                         for chans in value:
-                            cmd += ' -zap_chans '
-                            cmd += str(int(chans)) + ' '
+                            cmd += " -zap_chans "
+                            cmd += str(int(chans)) + " "
                             cmd += str(int(chans))
                     else:
-                        cmd += str(f' -{attribute} ')
-                        cmd += ' '.join(map(str, value))
-                elif attribute == 'verbosity':
-                    if value in ['V', 'v', 'g', 'G']:
-                        cmd += str(f' -{value} ')
+                        cmd += str(f" -{attribute} ")
+                        cmd += " ".join(map(str, value))
+                elif attribute == "verbosity":
+                    if value in ["V", "v", "g", "G"]:
+                        cmd += str(f" -{value} ")
                     else:
                         logging.warning(f"Allowed verbosity is v,V,g,G")
                         logging.warning(f"Using v for now!")
                         cmd += f" -v "
-                elif attribute == 'no_scrunching' or attribute == 'rfi_no_narrow' or attribute == 'rfi_no_broad':
+                elif (
+                        attribute == "no_scrunching"
+                        or attribute == "rfi_no_narrow"
+                        or attribute == "rfi_no_broad"
+                ):
                     if value:
-                        cmd += str(f' -{attribute}')
+                        cmd += str(f" -{attribute}")
                 else:
-                    cmd += str(f' -{attribute} {value}')
+                    cmd += str(f" -{attribute} {value}")
 
         logging.info(f"Using cmd: \n{cmd}")
         os.system(cmd)

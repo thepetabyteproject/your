@@ -7,8 +7,9 @@ import sys
 from collections import OrderedDict
 
 import numpy
-from your.utils.astro import ra2deg
+
 from your.utils.astro import dec2deg
+from your.utils.astro import ra2deg
 
 
 class SigprocFile(object):
@@ -44,28 +45,29 @@ class SigprocFile(object):
         nifs (int): Number of IFs in the data.
 
     """
+
     # List of types
     _type = OrderedDict()
-    _type['rawdatafile'] = 'string'
-    _type['source_name'] = 'string'
-    _type['machine_id'] = 'int'
-    _type['barycentric'] = 'int'
-    _type['pulsarcentric'] = 'int'
-    _type['telescope_id'] = 'int'
-    _type['src_raj'] = 'double'
-    _type['src_dej'] = 'double'
-    _type['az_start'] = 'double'
-    _type['za_start'] = 'double'
-    _type['data_type'] = 'int'
-    _type['fch1'] = 'double'
-    _type['foff'] = 'double'
-    _type['nchans'] = 'int'
-    _type['nbeams'] = 'int'
-    _type['ibeam'] = 'int'
-    _type['nbits'] = 'int'
-    _type['tstart'] = 'double'
-    _type['tsamp'] = 'double'
-    _type['nifs'] = 'int'
+    _type["rawdatafile"] = "string"
+    _type["source_name"] = "string"
+    _type["machine_id"] = "int"
+    _type["barycentric"] = "int"
+    _type["pulsarcentric"] = "int"
+    _type["telescope_id"] = "int"
+    _type["src_raj"] = "double"
+    _type["src_dej"] = "double"
+    _type["az_start"] = "double"
+    _type["za_start"] = "double"
+    _type["data_type"] = "int"
+    _type["fch1"] = "double"
+    _type["foff"] = "double"
+    _type["nchans"] = "int"
+    _type["nbeams"] = "int"
+    _type["ibeam"] = "int"
+    _type["nbits"] = "int"
+    _type["tstart"] = "double"
+    _type["tsamp"] = "double"
+    _type["nifs"] = "int"
 
     def __init__(self, fp=None, copy_hdr=None):
         # init all items to None
@@ -76,12 +78,13 @@ class SigprocFile(object):
                 setattr(self, k, getattr(copy_hdr, k))
         if fp is not None:
             try:
-                self.fp = open(fp, 'rb')
+                self.fp = open(fp, "rb")
             except TypeError:
                 self.fp = fp
             self.read_header(self.fp)
-            self._mmdata = mmap.mmap(self.fp.fileno(), 0, mmap.MAP_PRIVATE,
-                                     mmap.PROT_READ)
+            self._mmdata = mmap.mmap(
+                self.fp.fileno(), 0, mmap.MAP_PRIVATE, mmap.PROT_READ
+            )
 
             self.bw = self.nchans * self.foff
             self.cfreq = self.fch1 + self.bw / 2
@@ -104,7 +107,7 @@ class SigprocFile(object):
             f: file object to write the value into
         """
         val = val.encode()
-        f.write(struct.pack('i', len(val)))
+        f.write(struct.pack("i", len(val)))
         f.write(val)
 
     def send_num(self, name, val, f=sys.stdout):
@@ -130,9 +133,11 @@ class SigprocFile(object):
             f: file object to encode the value into
 
         """
-        if not hasattr(self, name): return
-        if getattr(self, name) is None: return
-        if self._type[name] == 'string':
+        if not hasattr(self, name):
+            return
+        if getattr(self, name) is None:
+            return
+        if self._type[name] == "string":
             self.send_string(name, f)
             self.send_string(getattr(self, name), f)
         else:
@@ -165,7 +170,7 @@ class SigprocFile(object):
             fp: file object to read stuff from.
 
         """
-        nchar = struct.unpack('i', fp.read(4))[0]
+        nchar = struct.unpack("i", fp.read(4))[0]
         if nchar > 80 or nchar < 1:
             return None, 0
         out = fp.read(nchar)
@@ -179,10 +184,11 @@ class SigprocFile(object):
             fp: file object to read stuff from.
 
         """
-        if fp is not None: self.fp = fp
+        if fp is not None:
+            self.fp = fp
         self.hdrbytes = 0
         (s, n) = self.get_string(self.fp)
-        if s != b'HEADER_START':
+        if s != b"HEADER_START":
             self.hdrbytes = 0
             return None
         self.hdrbytes += n
@@ -190,8 +196,9 @@ class SigprocFile(object):
             (s, n) = self.get_string(self.fp)
             s = s.decode()
             self.hdrbytes += n
-            if s == 'HEADER_END': return
-            if self._type[s] == 'string':
+            if s == "HEADER_END":
+                return
+            if self._type[s] == "string":
                 (v, n) = self.get_string(self.fp)
                 self.hdrbytes += n
                 setattr(self, s, v)
@@ -216,7 +223,7 @@ class SigprocFile(object):
         elif self.nbits == 32:
             return numpy.float32
         else:
-            raise RuntimeError('nbits=%d not supported' % self.nbits)
+            raise RuntimeError("nbits=%d not supported" % self.nbits)
 
     @property
     def bytes_per_spectrum(self):
@@ -264,8 +271,9 @@ class SigprocFile(object):
         b0 = self.hdrbytes + bstart + (offset * self.bytes_per_spectrum)
         b1 = b0 + nbytes
 
-        data = numpy.frombuffer(self._mmdata[int(b0):int(b1)],
-                                dtype=self.dtype).reshape((-1, self.nifs, self.nchans))
+        data = numpy.frombuffer(
+            self._mmdata[int(b0): int(b1)], dtype=self.dtype
+        ).reshape((-1, self.nifs, self.nchans))
         if self.nifs == 1:
             return data
         else:
@@ -295,11 +303,10 @@ class SigprocFile(object):
         b1 = b0 + nbytes
         # reshape with the frequency axis reduced by packing factor
         fac = 8 / self.nbits
-        d = numpy.frombuffer(self._mmdata[b0:b1],
-                             dtype=numpy.uint8).reshape(
-            (nsamp, self.nifs, self.nchans / fac))
-        unpacked = numpy.empty((nsamp, self.nifs, self.nchans),
-                               dtype=numpy.float32)
+        d = numpy.frombuffer(self._mmdata[b0:b1], dtype=numpy.uint8).reshape(
+            (nsamp, self.nifs, self.nchans / fac)
+        )
+        unpacked = numpy.empty((nsamp, self.nifs, self.nchans), dtype=numpy.float32)
         for i in range(fac):
             mask = 2 ** (self.nbits * i) * (2 ** self.nbits - 1)
             unpacked[..., i::fac] = (d & mask) / 2 ** (i * self.nbits)
@@ -344,7 +351,7 @@ class SigprocFile(object):
             filename (str): name of the filterbank file
 
         """
-        with open(filename, 'wb') as f:
+        with open(filename, "wb") as f:
             self.filterbank_header(fout=f)
         return None
 
@@ -357,6 +364,6 @@ class SigprocFile(object):
             spectra (numpy.ndarray) : numpy array of the data to be dumped into the filterbank file
             filename (str): name of the filterbank file
         """
-        with open(filename, 'ab') as f:
+        with open(filename, "ab") as f:
             f.seek(0, os.SEEK_END)
             f.write(spectra.flatten().astype(spectra.dtype))

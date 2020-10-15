@@ -27,16 +27,26 @@ def _decimate(data, decimate_factor, axis, pad=False, **kwargs):
 
     """
     if data.shape[axis] % decimate_factor and pad is True:
-        logger.info(f'padding along axis {axis}')
+        logger.info(f"padding along axis {axis}")
         pad_width = closest_number(data.shape[axis], decimate_factor)
         data = pad_along_axis(data, data.shape[axis] + pad_width, axis=axis, **kwargs)
     elif data.shape[axis] % decimate_factor and pad is False:
-        raise AttributeError('Axis length should be a multiple of decimate_factor. Use pad=True to force decimation')
+        raise AttributeError(
+            "Axis length should be a multiple of decimate_factor. Use pad=True to force decimation"
+        )
 
     if axis:
-        return data.reshape(int(data.shape[0]), int(data.shape[1] // decimate_factor), int(decimate_factor)).mean(2)
+        return data.reshape(
+            int(data.shape[0]),
+            int(data.shape[1] // decimate_factor),
+            int(decimate_factor),
+        ).mean(2)
     else:
-        return data.reshape(int(data.shape[0] // decimate_factor), int(decimate_factor), int(data.shape[1])).mean(1)
+        return data.reshape(
+            int(data.shape[0] // decimate_factor),
+            int(decimate_factor),
+            int(data.shape[1]),
+        ).mean(1)
 
 
 def _resize(data, size, axis, **kwargs):
@@ -75,16 +85,16 @@ def crop(data, start_sample, length, axis):
     """
     if data.shape[axis] > start_sample + length:
         if axis:
-            return data[:, start_sample:start_sample + length]
+            return data[:, start_sample: start_sample + length]
         else:
-            return data[start_sample:start_sample + length, :]
+            return data[start_sample: start_sample + length, :]
     elif data.shape[axis] == length:
         return data
     else:
-        raise OverflowError('Specified length exceeds the size of data')
+        raise OverflowError("Specified length exceeds the size of data")
 
 
-def pad_along_axis(array: np.ndarray, target_length, loc='end', axis=0, **kwargs):
+def pad_along_axis(array: np.ndarray, target_length, loc="end", axis=0, **kwargs):
     """
     Pads data along the required axis on the input array to reach a target size
 
@@ -107,9 +117,9 @@ def pad_along_axis(array: np.ndarray, target_length, loc='end', axis=0, **kwargs
 
     npad = [(0, 0) for x in range(axis_nb)]
 
-    if loc == 'start':
+    if loc == "start":
         npad[axis] = (int(pad_size), 0)
-    elif loc == 'end':
+    elif loc == "end":
         npad[axis] = (0, int(pad_size))
     else:
         npad[axis] = (int(pad_size // 2), int(pad_size // 2))

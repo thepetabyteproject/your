@@ -3,7 +3,7 @@ import os
 
 import matplotlib
 
-matplotlib.use('Agg')
+matplotlib.use("Agg")
 
 import h5py
 import numpy as np
@@ -25,7 +25,9 @@ def figsize(scale, width_by_height_ratio):
     Returns:
         list: list of width and height
     """
-    fig_width_pt = 513.17  # 469.755                  # Get this from LaTeX using \the\textwidth
+    fig_width_pt = (
+        513.17  # 469.755                  # Get this from LaTeX using \the\textwidth
+    )
     inches_per_pt = 1.0 / 72.27  # Convert pt to inch
     golden_mean = (np.sqrt(5.0) - 1.0) / 2.0  # Aesthetic ratio (you could change this)
     fig_width = fig_width_pt * inches_per_pt * scale  # width in inches
@@ -45,34 +47,46 @@ def get_params(scale=0.5, width_by_height_ratio=1):
     Returns:
         dict: dictionary of parameters
     """
-    params = {'backend': 'pdf',
-              'axes.labelsize': 10,
-              'lines.markersize': 4,
-              'font.size': 10,
-              'xtick.major.size': 6,
-              'xtick.minor.size': 3,
-              'ytick.major.size': 6,
-              'ytick.minor.size': 3,
-              'xtick.major.width': 0.5,
-              'ytick.major.width': 0.5,
-              'xtick.minor.width': 0.5,
-              'ytick.minor.width': 0.5,
-              'lines.markeredgewidth': 1,
-              'axes.linewidth': 1.2,
-              'legend.fontsize': 7,
-              'xtick.labelsize': 10,
-              'ytick.labelsize': 10,
-              'savefig.dpi': 200,
-              'path.simplify': True,
-              'font.family': 'serif',
-              'font.serif': 'Times',
-              'text.latex.preamble': [r'\usepackage{amsmath}', r'\usepackage{amsbsy}',
-                                      r'\DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}'],
-              'figure.figsize': figsize(scale, width_by_height_ratio)}
+    params = {
+        "backend": "pdf",
+        "axes.labelsize": 10,
+        "lines.markersize": 4,
+        "font.size": 10,
+        "xtick.major.size": 6,
+        "xtick.minor.size": 3,
+        "ytick.major.size": 6,
+        "ytick.minor.size": 3,
+        "xtick.major.width": 0.5,
+        "ytick.major.width": 0.5,
+        "xtick.minor.width": 0.5,
+        "ytick.minor.width": 0.5,
+        "lines.markeredgewidth": 1,
+        "axes.linewidth": 1.2,
+        "legend.fontsize": 7,
+        "xtick.labelsize": 10,
+        "ytick.labelsize": 10,
+        "savefig.dpi": 200,
+        "path.simplify": True,
+        "font.family": "serif",
+        "font.serif": "Times",
+        "text.latex.preamble": [
+            r"\usepackage{amsmath}",
+            r"\usepackage{amsbsy}",
+            r"\DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}",
+        ],
+        "figure.figsize": figsize(scale, width_by_height_ratio),
+    }
     return params
 
 
-def plot_h5(h5_file, save=True, detrend_ft=True, publication=False, mad_filter=False, outdir=None):
+def plot_h5(
+        h5_file,
+        save=True,
+        detrend_ft=True,
+        publication=False,
+        mad_filter=False,
+        outdir=None,
+):
     """
     Plot the h5 candidates
 
@@ -88,26 +102,33 @@ def plot_h5(h5_file, save=True, detrend_ft=True, publication=False, mad_filter=F
         None
 
     """
-    with h5py.File(h5_file, 'r') as f:
-        dm_time = np.array(f['data_dm_time'])
+    with h5py.File(h5_file, "r") as f:
+        dm_time = np.array(f["data_dm_time"])
         if detrend_ft:
-            freq_time = detrend(np.array(f['data_freq_time'])[:, ::-1].T)
+            freq_time = detrend(np.array(f["data_freq_time"])[:, ::-1].T)
         else:
-            freq_time = np.array(f['data_freq_time'])[:, ::-1].T
+            freq_time = np.array(f["data_freq_time"])[:, ::-1].T
         dm_time[dm_time != dm_time] = 0
         freq_time[freq_time != freq_time] = 0
         freq_time -= np.median(freq_time)
         freq_time /= np.std(freq_time)
-        fch1, foff, nchan, dm, cand_id, tsamp, dm_opt, snr, snr_opt, width = f.attrs['fch1'], \
-                                                                             f.attrs['foff'], f.attrs[
-                                                                                 'nchans'], \
-                                                                             f.attrs['dm'], f.attrs['cand_id'], \
-                                                                             f.attrs['tsamp'], f.attrs['dm_opt'], \
-                                                                             f.attrs['snr'], f.attrs['snr_opt'], \
-                                                                             f.attrs['width']
+        fch1, foff, nchan, dm, cand_id, tsamp, dm_opt, snr, snr_opt, width = (
+            f.attrs["fch1"],
+            f.attrs["foff"],
+            f.attrs["nchans"],
+            f.attrs["dm"],
+            f.attrs["cand_id"],
+            f.attrs["tsamp"],
+            f.attrs["dm_opt"],
+            f.attrs["snr"],
+            f.attrs["snr_opt"],
+            f.attrs["width"],
+        )
         tlen = freq_time.shape[1]
         if tlen != 256:
-            logging.warning('Lengh of time axis is not 256. This data is probably not pre-processed.')
+            logging.warning(
+                "Lengh of time axis is not 256. This data is probably not pre-processed."
+            )
         l = np.linspace(-tlen // 2, tlen // 2, tlen)
         if width > 1:
             ts = l * tsamp * width * 1000 / 2
@@ -120,7 +141,7 @@ def plot_h5(h5_file, save=True, detrend_ft=True, publication=False, mad_filter=F
         plt.clf()
 
         if publication:
-            fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(5, 7), sharex='col')
+            fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(5, 7), sharex="col")
 
         else:
             fig = plt.figure(figsize=(15, 10))
@@ -131,39 +152,51 @@ def plot_h5(h5_file, save=True, detrend_ft=True, publication=False, mad_filter=F
             ax4 = plt.subplot(gs[:, 1])
             to_print = []
             for key in f.attrs.keys():
-                if 'filelist' in key:
+                if "filelist" in key:
                     pass
-                elif 'filename' in key:
-                    to_print.append(f'filename : {os.path.basename(f.attrs[key])}\n')
-                    to_print.append(f'filepath : {os.path.dirname(f.attrs[key])}\n')
+                elif "filename" in key:
+                    to_print.append(f"filename : {os.path.basename(f.attrs[key])}\n")
+                    to_print.append(f"filepath : {os.path.dirname(f.attrs[key])}\n")
                 else:
-                    to_print.append(f'{key} : {f.attrs[key]}\n')
-            str_print = ''.join(to_print)
-            ax4.text(0.2, 0, str_print, fontsize=14, ha='left', va='bottom', wrap=True)
-            ax4.axis('off')
+                    to_print.append(f"{key} : {f.attrs[key]}\n")
+            str_print = "".join(to_print)
+            ax4.text(0.2, 0, str_print, fontsize=14, ha="left", va="bottom", wrap=True)
+            ax4.axis("off")
 
-        ax1.plot(ts, freq_time.sum(0), 'k-')
-        ax1.set_ylabel('Flux (Arb. Units)')
-        ax2.imshow(freq_time, aspect='auto', extent=[ts[0], ts[-1], fch1, fch1 + (nchan * foff)], interpolation='none')
-        ax2.set_ylabel('Frequency (MHz)')
-        ax3.imshow(dm_time, aspect='auto', extent=[ts[0], ts[-1], 2 * dm, 0], interpolation='none')
-        ax3.set_ylabel(r'DM (pc cm$^{-3}$)')
-        ax3.set_xlabel('Time (ms)')
+        ax1.plot(ts, freq_time.sum(0), "k-")
+        ax1.set_ylabel("Flux (Arb. Units)")
+        ax2.imshow(
+            freq_time,
+            aspect="auto",
+            extent=[ts[0], ts[-1], fch1, fch1 + (nchan * foff)],
+            interpolation="none",
+        )
+        ax2.set_ylabel("Frequency (MHz)")
+        ax3.imshow(
+            dm_time,
+            aspect="auto",
+            extent=[ts[0], ts[-1], 2 * dm, 0],
+            interpolation="none",
+        )
+        ax3.set_ylabel(r"DM (pc cm$^{-3}$)")
+        ax3.set_xlabel("Time (ms)")
 
         plt.tight_layout()
         if save:
             if outdir:
-                filename = outdir + os.path.basename(h5_file)[:-3] + '.png'
+                filename = outdir + os.path.basename(h5_file)[:-3] + ".png"
             else:
-                filename = h5_file[:-3] + '.png'
-            plt.savefig(filename, bbox_inches='tight')
+                filename = h5_file[:-3] + ".png"
+            plt.savefig(filename, bbox_inches="tight")
         else:
             plt.close()
 
         return None
 
 
-def save_bandpass(your_object, bandpass, chan_nos=None, mask=None, outdir=None, outname=None):
+def save_bandpass(
+        your_object, bandpass, chan_nos=None, mask=None, outdir=None, outname=None
+):
     """
     Plots and saves the bandpass
 
@@ -184,13 +217,13 @@ def save_bandpass(your_object, bandpass, chan_nos=None, mask=None, outdir=None, 
     plt.rcParams.update(params)
 
     if not outdir:
-        outdir = './'
+        outdir = "./"
 
     if chan_nos is None:
         chan_nos = np.arange(0, bandpass.shape[0])
 
     if not outname:
-        bp_plot = outdir + your_object.your_header.basename + '_bandpass.png'
+        bp_plot = outdir + your_object.your_header.basename + "_bandpass.png"
     else:
         bp_plot = outname
 
@@ -199,11 +232,11 @@ def save_bandpass(your_object, bandpass, chan_nos=None, mask=None, outdir=None, 
     if foff < 0:
         ax11.invert_xaxis()
 
-    ax11.plot(freqs, bandpass, 'k-', label="Bandpass")
+    ax11.plot(freqs, bandpass, "k-", label="Bandpass")
     if mask is not None:
         if mask.sum():
-            logging.info('Flagged %d channels', mask.sum())
-            ax11.plot(freqs[mask], bandpass[mask], 'ro', label="Flagged Channels")
+            logging.info("Flagged %d channels", mask.sum())
+            ax11.plot(freqs[mask], bandpass[mask], "ro", label="Flagged Channels")
     ax11.set_xlabel("Frequency (MHz)")
     ax11.set_ylabel("Arb. Units")
     ax11.legend()
@@ -212,4 +245,4 @@ def save_bandpass(your_object, bandpass, chan_nos=None, mask=None, outdir=None, 
     ax21.plot(chan_nos, bandpass, alpha=0)
     ax21.set_xlabel("Channel Numbers")
 
-    return plt.savefig(bp_plot, bbox_inches='tight')
+    return plt.savefig(bp_plot, bbox_inches="tight")
