@@ -42,7 +42,7 @@ def spectral_kurtosis(data, N=1, d=None):
          numpy.ndarray: Spectral Kurtosis along frequency axis
 
     """
-    data = data.astype('float32')
+    data = data.astype("float32")
     S1 = data.sum(0)
     S2 = (data ** 2).sum(0)
     M = data.shape[0]
@@ -74,7 +74,7 @@ def sk_filter(data, channel_bandwidth, nchans, tsamp, N=None, d=1, sigma=5):
     nan_mask = np.isnan(sk)
     sk[nan_mask] = np.nan
     sk_c = sk[~nan_mask]
-    std = stats.median_abs_deviation(sk_c)
+    std = 1.4826 * stats.median_abs_deviation(sk_c)
     h = np.median(sk_c) + sigma * std
     l = np.median(sk_c) - sigma * std
     mask = (sk < h) & (sk > l)
@@ -99,7 +99,14 @@ def calc_N(channel_bandwidth, tsamp):
     return np.round(tsamp / tn)
 
 
-def sk_sg_filter(data, your_object, nchans, spectral_kurtosis_sigma=6, savgol_frequency_window=15, savgol_sigma=5):
+def sk_sg_filter(
+        data,
+        your_object,
+        nchans,
+        spectral_kurtosis_sigma=6,
+        savgol_frequency_window=15,
+        savgol_sigma=5,
+):
     """
 
     Apply Spectral Kurtosis and Savgol filter to the data
@@ -117,14 +124,27 @@ def sk_sg_filter(data, your_object, nchans, spectral_kurtosis_sigma=6, savgol_fr
          numpy.ndarray: mask for channels
 
     """
-    
-    logger.info(f'Applying spectral kurtosis filter with sigma={spectral_kurtosis_sigma}')
-    sk_mask = sk_filter(data=data, channel_bandwidth=your_object.your_header.foff, nchans=nchans, tsamp=your_object.your_header.tsamp,
-                        sigma=spectral_kurtosis_sigma)
+
+    logger.info(
+        f"Applying spectral kurtosis filter with sigma={spectral_kurtosis_sigma}"
+    )
+    sk_mask = sk_filter(
+        data=data,
+        channel_bandwidth=your_object.your_header.foff,
+        nchans=nchans,
+        tsamp=your_object.your_header.tsamp,
+        sigma=spectral_kurtosis_sigma,
+    )
     bp = data.sum(0)[~sk_mask]
-    logger.info(f'Applying savgol filter with frequency_window={savgol_frequency_window} and sigma={savgol_sigma}')
-    sg_mask = savgol_filter(bandpass=bp, channel_bandwidth=your_object.your_header.foff, frequency_window=savgol_frequency_window,
-                            sigma=savgol_sigma)
+    logger.info(
+        f"Applying savgol filter with frequency_window={savgol_frequency_window} and sigma={savgol_sigma}"
+    )
+    sg_mask = savgol_filter(
+        bandpass=bp,
+        channel_bandwidth=your_object.your_header.foff,
+        frequency_window=savgol_frequency_window,
+        sigma=savgol_sigma,
+    )
     mask = np.zeros(data.shape[1], dtype=np.bool)
     mask[sk_mask] = True
     mask[np.where(mask == False)[0][sg_mask]] = True
