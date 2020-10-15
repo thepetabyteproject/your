@@ -209,9 +209,6 @@ if __name__ == "__main__":
     parser.add_argument(
         "--no_log_file", help="Do not write a log file", action="store_true"
     )
-    parser.add_argument(
-        "--show_logs", help="Display logs on screen", action="store_false"
-    )
     values = parser.parse_args()
 
     logging_format = (
