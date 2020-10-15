@@ -54,6 +54,13 @@ class Candidate(Your):
         self.dm_opt = -1
         self.snr_opt = -1
         self.kill_mask = kill_mask
+        logger.debug(
+            f"Initiated a cand object with"
+            f"dm: {self.dm}"
+            f"snr: {self.snr}"
+            f"width:{self.width}"
+            f"tcand: {self.tcand}"
+        )
 
     def save_h5(self, out_dir=None, fnout=None):
         """
@@ -162,6 +169,8 @@ class Candidate(Your):
             tstop = (
                     self.tcand + self.dispersion_delay() + self.width * self.native_tsamp
             )
+        logger.debug(f"tstart is {tstart}")
+        logger.debug(f"tstop is {tstop}")
 
         nstart = int(tstart / self.native_tsamp)
         nsamp = int((tstop - tstart) / self.native_tsamp)
@@ -169,7 +178,8 @@ class Candidate(Your):
 
         if for_preprocessing:
             if self.width > 2 and nsamp_read // (self.width // 2) < self.min_samp:
-                nsamp_read *= self.width // 2
+                nsamp_read = self.min_samp * self.width // 2
+                nstart_read = nstart - (nsamp_read - nsamp) // 2
             if nsamp_read < self.min_samp:
                 nsamp_read = self.min_samp
                 nstart_read = nstart - (nsamp_read - nsamp) // 2
@@ -179,50 +189,70 @@ class Candidate(Your):
             nstart_read = nstart
         logging.debug(
             f"nstart_read is {nstart_read}, nsamp_read is {nsamp_read},"
-            f" nstart is {nstart}, nsamp is {nsamp}"
+            f"nstart is {nstart}, nsamp is {nsamp}"
         )
 
         nspectra = int(self.your_header.nspectra)
         if nstart_read >= 0 and nstart_read + nsamp_read <= nspectra:
             logging.debug(
-                f"nstart_read({nstart_read})>=0 and "
+                f"All the data available in the file, no need to pad. \n"
+                f"nstart_read({nstart_read})>=0 and \n"
                 f"nstart_read({nstart_read})+nsamp_read({nsamp_read})<=nspectra({nspectra})"
             )
             data = self.get_data(nstart=nstart_read, nsamp=nsamp_read)
         elif nstart_read < 0:
             if nstart_read + nsamp_read <= nspectra:
                 logging.debug(
-                    f"nstart_read({nstart_read})<0 and nstart_read({nstart_read})"
+                    f"nstart_read({nstart_read})<0 and nstart_read({nstart_read})\n"
                     f"+nsamp_read({nsamp_read})<=nspectra({nspectra})"
                 )
-                logging.debug("Padding with median in the beginning")
+                logging.info("Padding with median in the beginning")
                 d = self.get_data(nstart=0, nsamp=nsamp_read + nstart_read)
                 dmedian = np.median(d, axis=0)
-                data = np.ones((nsamp_read, self.your_header.nchans)) * dmedian[None, :]
+                data = (
+                        np.ones(
+                            (nsamp_read, self.your_header.nchans),
+                            dtype=self.your_header.dtype,
+                        )
+                        * dmedian[None, :]
+                )
                 data[-nstart_read:, :] = d
             else:
                 logging.debug(
                     f"nstart_read({nstart_read})<0 and nstart_read({nstart_read})"
                     f"+nsamp_read({nsamp_read})>nspectra({nspectra})"
                 )
-                logging.debug("Padding with median in the beginning and the end")
+                logging.info("Padding with median in the beginning and the end")
                 d = self.get_data(nstart=0, nsamp=nspectra)
                 dmedian = np.median(d, axis=0)
-                data = np.ones((nsamp_read, self.your_header.nchans)) * dmedian[None, :]
+                data = (
+                        np.ones(
+                            (nsamp_read, self.your_header.nchans),
+                            dtype=self.your_header.dtype,
+                        )
+                        * dmedian[None, :]
+                )
                 data[-nstart_read: -nstart_read + nspectra, :] = d
         else:
             logging.debug(
                 f"nstart_read({nstart_read})>=0 and nstart_read({nstart_read})"
                 f"+nsamp_read({nsamp_read})>nspectra({nspectra})"
             )
-            logging.debug("Padding with median in the end")
+            logging.info("Padding with median in the end")
             d = self.get_data(nstart=nstart_read, nsamp=nspectra - nstart_read)
             dmedian = np.median(d, axis=0)
-            data = np.ones((nsamp_read, self.your_header.nchans)) * dmedian[None, :]
+            data = (
+                    np.ones(
+                        (nsamp_read, self.your_header.nchans), dtype=self.your_header.dtype
+                    )
+                    * dmedian[None, :]
+            )
             data[: nspectra - nstart_read, :] = d
 
-        self.data = data
+        self.data = data.astype(self.your_header.dtype)
+
         if self.kill_mask is not None:
+            logger.info("Applying the kill mask")
             assert len(self.kill_mask) == self.data.shape[1]
             data_copy = self.data.copy()
             data_copy[:, self.kill_mask] = 0
