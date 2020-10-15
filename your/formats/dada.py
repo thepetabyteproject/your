@@ -41,7 +41,9 @@ class DadaManager:
         logger.info(
             f"Creating new buffers using dada_db -b {self.size} -k {self.key} -r {self.n_readers}"
         )
-        os.system(f"dada_db -b {self.size} -k {self.key} -r {self.n_readers} -n 8 -l -p")
+        os.system(
+            f"dada_db -b {self.size} -k {self.key} -r {self.n_readers} -n 8 -l -p"
+        )
         self.writer = Writer()
         self.writer.connect(int(self.key, 16))
 
