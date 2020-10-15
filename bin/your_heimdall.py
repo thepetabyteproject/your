@@ -131,43 +131,57 @@ if __name__ == "__main__":
     parser.add_argument(
         "--no_log_file", help="Do not write a log file", action="store_true"
     )
-    args = parser.parse_args()
+    values = parser.parse_args()
 
-    if args.output_dir is None:
-        args.output_dir = "{0}/{1}".format(
-            os.getcwd(), (".").join(os.path.basename(args.files[0]).split(".")[:-1])
+    if values.output_dir is None:
+        values.output_dir = "{0}/{1}".format(
+            os.getcwd(), (".").join(os.path.basename(values.files[0]).split(".")[:-1])
         )
-        os.makedirs(args.output_dir, exist_ok=True)
+        os.makedirs(values.output_dir, exist_ok=True)
 
     logging_format = (
         "%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s"
     )
 
-    if args.verbose > 0:
-        logging.basicConfig(level=logging.DEBUG, format=logging_format)
-    else:
-        logging.basicConfig(level=logging.INFO, format=logging_format)
+    log_filename = (
+            values.output_dir
+            + "/"
+            + datetime.utcnow().strftime("your_heimdall_%Y_%m_%d_%H_%M_%S_%f.log")
+    )
 
-    if args.no_log_file:
-        log_filename = (
-                args.output_dir
-                + "/"
-                + datetime.utcnow().strftime("your_heimdall_%Y_%m_%d_%H_%M_%S_%f.log")
-        )
-
-        fileHandler = logging.FileHandler(log_filename)
-        fileHandler.setFormatter(logging.Formatter(logging_format))
-        logging.getLogger().addHandler(fileHandler)
+    if not values.no_log_file:
+        if values.verbose:
+            logging.basicConfig(
+                filename=log_filename,
+                level=logging.DEBUG,
+                format=logging_format,
+            )
+        else:
+            logging.basicConfig(
+                filename=log_filename,
+                level=logging.INFO,
+                format=logging_format
+            )
     else:
-        rich_handler = RichHandler(rich_tracebacks=True)
-        logging.getLogger().addHandler(rich_handler)
+        if values.verbose:
+            logging.basicConfig(
+                level=logging.DEBUG,
+                format=logging_format,
+                handlers=[RichHandler(rich_tracebacks=True)],
+            )
+        else:
+            logging.basicConfig(
+                level=logging.INFO,
+                format=logging_format,
+                handlers=[RichHandler(rich_tracebacks=True)],
+            )
 
     logging.info("Input Arguments:-")
     for arg, value in sorted(vars(args).items()):
         logging.info("%s: %r", arg, value)
 
-    your_object = Your(file=args.files)
-    max_delay = your_object.dispersion_delay(dms=np.max(args.dm))
+    your_object = Your(file=values.files)
+    max_delay = your_object.dispersion_delay(dms=np.max(values.dm))
     dispersion_delay_samples = np.ceil(max_delay / your_object.your_header.tsamp)
     logging.info(f"Max Dispersion delay = {max_delay} s")
     logging.info(f"Max Dispersion delay = {dispersion_delay_samples} samples")
@@ -179,26 +193,26 @@ if __name__ == "__main__":
             np.max([(2 ** np.ceil(np.log2(dispersion_delay_samples))), 2 ** 18])
         )
 
-    if args.channel_end > 0:
-        c_max = args.channel_end
+    if values.channel_end > 0:
+        c_max = values.channel_end
     else:
         c_max = None
 
     your_dada_writer = Writer(
         your_object=your_object,
-        progress=~args.no_progress,
-        c_min=args.channel_start,
+        progress=~values.no_progress,
+        c_min=values.channel_start,
         c_max=c_max,
-        savgol_sigma=args.savgol_sigma,
-        spectral_kurtosis_sigma=args.spectral_kurtosis_sigma,
-        savgol_frequency_window=args.savgol_frequency_window,
-        flag_rfi=args.rfi_your,
+        savgol_sigma=values.savgol_sigma,
+        spectral_kurtosis_sigma=values.spectral_kurtosis_sigma,
+        savgol_frequency_window=values.savgol_frequency_window,
+        flag_rfi=values.rfi_your,
     )
     your_dada_writer.setup_dada()  # need to run the set up inorder to get the dada key
 
-    if args.mask:
-        logging.info(f"Reading RFI mask from {args.mask}")
-        mask = np.loadtxt(args.mask)
+    if values.mask:
+        logging.info(f"Reading RFI mask from {values.mask}")
+        mask = np.loadtxt(values.mask)
         if len(mask.shape) == 1:
             bad_chans = list(mask)
         else:
@@ -210,31 +224,31 @@ if __name__ == "__main__":
         logging.info("No RFI flagging done.")
         bad_chans = None
 
-    if args.verbose <= 1:
+    if values.verbose <= 1:
         heimdall_verbosity = "v"
-    elif args.verbose == 2:
+    elif values.verbose == 2:
         heimdall_verbosity = "V"
-    elif args.verbose == 3:
+    elif values.verbose == 3:
         heimdall_verbosity = "g"
     else:
         heimdall_verbosity = "G"
 
     HM = HeimdallManager(
-        dm=args.dm,
+        dm=values.dm,
         dada_key=your_dada_writer.dada_key,
         boxcar_max=int(50e-3 / your_object.your_header.tsamp),
         verbosity=heimdall_verbosity,
         nsamps_gulp=nsamps_gulp,
-        gpu_id=args.gpu_id,
-        output_dir=args.output_dir,
+        gpu_id=values.gpu_id,
+        output_dir=values.output_dir,
         zap_chans=bad_chans,
-        rfi_no_broad=args.rfi_no_broad,
-        rfi_no_narrow=args.rfi_no_narrow,
-        dm_tol=args.dm_tol,
+        rfi_no_broad=values.rfi_no_broad,
+        rfi_no_narrow=values.rfi_no_narrow,
+        dm_tol=values.dm_tol,
     )
 
     with open(
-            args.output_dir
+            values.output_dir
             + "/"
             + your_object.your_header.basename
             + "_heimdall_inputs.json",

@@ -3,6 +3,9 @@
 Print your header
 """
 import argparse
+import logging
+
+from rich.logging import RichHandler
 
 from your import Your
 
@@ -35,6 +38,23 @@ if __name__ == "__main__":
         required=True,
         nargs="+",
     )
+    parser.add_argument("-v", "--verbose", help="Be verbose", action="store_true")
     values = parser.parse_args()
+    logging_format = (
+        "%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s"
+    )
+
+    if values.verbose:
+        logging.basicConfig(
+            level=logging.DEBUG,
+            format=logging_format,
+            handlers=[RichHandler(rich_tracebacks=True)],
+        )
+    else:
+        logging.basicConfig(
+            level=logging.INFO,
+            format=logging_format,
+            handlers=[RichHandler(rich_tracebacks=True)],
+        )
 
     read_header(values.files)

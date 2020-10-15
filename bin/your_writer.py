@@ -76,9 +76,8 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--no_progress",
-        help="Do not show the tqdm bar",
-        action="store_true",
-        default=None,
+        help="Do not show the progress bar",
+        action="store_false",
     )
     parser.add_argument(
         "-r",
@@ -126,25 +125,37 @@ if __name__ == "__main__":
     logging_format = (
         "%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s"
     )
-
-    if args.verbose:
-        logging.basicConfig(level=logging.DEBUG, format=logging_format)
+    log_filename = (
+            values.outdir
+            + "/"
+            + datetime.utcnow().strftime("your_writer_%Y_%m_%d_%H_%M_%S_%f.log")
+    )
+    if not values.no_log_file:
+        if values.verbose:
+            logging.basicConfig(
+                filename=log_filename,
+                level=logging.DEBUG,
+                format=logging_format,
+            )
+        else:
+            logging.basicConfig(
+                filename=log_filename,
+                level=logging.INFO,
+                format=logging_format
+            )
     else:
-        logging.basicConfig(level=logging.INFO, format=logging_format)
-
-    if values.no_log_file:
-        log_filename = (
-                values.outdir
-                + "/"
-                + datetime.utcnow().strftime("your_writer_%Y_%m_%d_%H_%M_%S_%f.log")
-        )
-
-        fileHandler = logging.FileHandler(log_filename)
-        fileHandler.setFormatter(logging.Formatter(logging_format))
-        logging.getLogger().addHandler(fileHandler)
-    else:
-        rich_handler = RichHandler(rich_tracebacks=True)
-        logging.getLogger().addHandler(rich_handler)
+        if values.verbose:
+            logging.basicConfig(
+                level=logging.DEBUG,
+                format=logging_format,
+                handlers=[RichHandler(rich_tracebacks=True)],
+            )
+        else:
+            logging.basicConfig(
+                level=logging.INFO,
+                format=logging_format,
+                handlers=[RichHandler(rich_tracebacks=True)],
+            )
 
     logging.info("Input Arguments:-")
     for arg, value in sorted(vars(values).items()):

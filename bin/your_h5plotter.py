@@ -94,14 +94,16 @@ if __name__ == "__main__":
             format=logging_format,
             handlers=[RichHandler(rich_tracebacks=True)],
         )
-        matplotlib_logger = logging.getLogger("matplotlib")
-        matplotlib_logger.setLevel(logging.INFO)
+
     else:
         logging.basicConfig(
             level=logging.INFO,
             format=logging_format,
             handlers=[RichHandler(rich_tracebacks=True)],
         )
+
+    matplotlib_logger = logging.getLogger("matplotlib")
+    matplotlib_logger.setLevel(logging.INFO)
 
     if values.files:
         h5_files = values.files

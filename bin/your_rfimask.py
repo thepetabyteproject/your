@@ -56,50 +56,62 @@ if __name__ == "__main__":
         "--no_log_file", help="Do not write a log file", action="store_true"
     )
 
-    args = parser.parse_args()
+    values = parser.parse_args()
 
     logging_format = (
         "%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s"
     )
 
-    if args.verbose:
-        logging.basicConfig(level=logging.DEBUG, format=logging_format)
+    log_filename = (
+            values.output_dir
+            + "/"
+            + datetime.utcnow().strftime("your_rfimask_%Y_%m_%d_%H_%M_%S_%f.log")
+    )
+    if not values.no_log_file:
+        if values.verbose:
+            logging.basicConfig(
+                filename=log_filename,
+                level=logging.DEBUG,
+                format=logging_format,
+            )
+        else:
+            logging.basicConfig(
+                filename=log_filename,
+                level=logging.INFO,
+                format=logging_format
+            )
     else:
-        logging.basicConfig(level=logging.INFO, format=logging_formatx)
+        if values.verbose:
+            logging.basicConfig(
+                level=logging.DEBUG,
+                format=logging_format,
+                handlers=[RichHandler(rich_tracebacks=True)],
+            )
+        else:
+            logging.basicConfig(
+                level=logging.INFO,
+                format=logging_format,
+                handlers=[RichHandler(rich_tracebacks=True)],
+            )
 
-    if values.no_log_file:
-        log_filename = (
-                values.outoutput_dir
-                + "/"
-                + datetime.utcnow().strftime("your_rfimask_%Y_%m_%d_%H_%M_%S_%f.log")
-        )
+    your_object = Your(file=values.files)
 
-        fileHandler = logging.FileHandler(log_filename)
-        fileHandler.setFormatter(logging.Formatter(logging_format))
-        logging.getLogger().addHandler(fileHandler)
-
-    else:
-        rich_handler = RichHandler(rich_tracebacks=True)
-        logging.getLogger().addHandler(rich_handler)
-
-    your_object = Your(file=args.files)
-
-    if args.apply_savgol:
+    if values.apply_savgol:
         bandpass = your_object.bandpass(nspectra=8192)
         chan_nos = np.arange(0, bandpass.shape[0], dtype=np.int)
-        for fw, sig in zip(args.filter_window, args.sigma):
+        for fw, sig in zip(values.filter_window, values.sigma):
             mask = savgol_filter(
                 bandpass, your_object.your_header.foff, frequency_window=fw, sigma=sig
             )
             basename = (
-                f"{args.output_dir}/{your_object.your_header.basename}_w{fw}_sig{sig}"
+                f"{values.output_dir}/{your_object.your_header.basename}_w{fw}_sig{sig}"
             )
             save_bandpass(
                 your_object,
                 bandpass,
                 chan_nos=chan_nos,
                 mask=mask,
-                outdir=args.output_dir + "/",
+                outdir=values.output_dir + "/",
                 outname=f"{basename}_bandpass.png",
             )
             kill_mask_file = f"{basename}.bad_chans"
