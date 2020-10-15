@@ -188,7 +188,9 @@ class Writer:
         self.outname += ".fil"
         with Progress() as progress:
             if not self.progress:
-                task = progress.add_task("[green]Writing...", total=self.nsamp, visible=False)
+                task = progress.add_task(
+                    "[green]Writing...", total=self.nsamp, visible=False
+                )
             else:
                 task = progress.add_task("[green]Writing...", total=self.nsamp)
             # create the header
@@ -269,7 +271,9 @@ class Writer:
         st = self.nstart
         with Progress() as progress:
             if not self.progress:
-                task = progress.add_task("[green]Writing...", total=nsubints, visible=False)
+                task = progress.add_task(
+                    "[green]Writing...", total=nsubints, visible=False
+                )
             else:
                 task = progress.add_task("[green]Writing...", total=nsubints)
 
@@ -281,7 +285,9 @@ class Writer:
                     pass
                 isub = istop - istart
 
-                logger.info(f"Writing data to {outfile} from subint = {istart} to {istop}.")
+                logger.info(
+                    f"Writing data to {outfile} from subint = {istart} to {istop}."
+                )
 
                 # Read in nread samples from filfile
                 nread = isub * npsub
@@ -385,7 +391,9 @@ class Writer:
         header = self.dada_header()
         with Progress() as progress:
             if not self.progress:
-                task = progress.add_task("[green]Reading...", total=self.nsamp, visible=False)
+                task = progress.add_task(
+                    "[green]Reading...", total=self.nsamp, visible=False
+                )
             else:
                 task = progress.add_task("[green]Reading...", total=self.nsamp)
 
