@@ -226,28 +226,25 @@ if __name__ == "__main__":
     if not values.no_log_file:
         if values.verbose:
             logging.basicConfig(
-                filename=log_filename,
-                level=logging.DEBUG,
-                format=logging_format,
+                filename=log_filename, level=logging.DEBUG, format=logging_format,
             )
         else:
             logging.basicConfig(
-                filename=log_filename,
-                level=logging.INFO,
-                format=logging_format
+                filename=log_filename, level=logging.INFO, format=logging_format
             )
     else:
         if values.verbose:
             logging.basicConfig(
                 level=logging.DEBUG,
                 format=logging_format,
-                handlers=[RichHandler(rich_tracebacks=True)]
+                handlers=[RichHandler(rich_tracebacks=True)],
             )
         else:
             logging.basicConfig(
                 level=logging.INFO,
                 format=logging_format,
-                handlers=[RichHandler(rich_tracebacks=True)])
+                handlers=[RichHandler(rich_tracebacks=True)],
+            )
 
     if -1 not in values.gpu_id:
         from numba.cuda.cudadrv.driver import CudaAPIError
