@@ -308,7 +308,7 @@ if __name__ == "__main__":
         nargs="+",
     )
     parser.add_argument(
-        "-s", "--start", help="Start index", type=int, required=False, default=0
+        "-s", "--start", help="Start index", type=float, required=False, default=0
     )
     parser.add_argument(
         "-g", "--gulp", help="Gulp size", type=int, required=False, default=4096
