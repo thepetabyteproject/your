@@ -63,8 +63,7 @@ def cpu_dedisp_dmt(cand, args):
     logger.info(
         f"Decimated DM-Time to dmsize: {cand.dmt.shape[0]} and tsize: {cand.dmt.shape[1]}"
     )
-    del cand
-    return None
+    return cand
 
 
 def cand2h5(cand_val):
