@@ -253,7 +253,13 @@ class PsrfitsFile(object):
                     data = data + ((sdata[:, 0, :] - sdata[:, 1, :]) / 2).squeeze()
                 else:
                     raise ValueError(f"pol={pol} value not supported.")
-
+            elif len(shp) == 4 and shp[-1] == 2 and self.poln_order == 'IQUV':
+                logger.warning("Data is packed as two uint8 arrays. Concatenating them to get uint16.")
+                logger.warning("Polarization is IQUV. Just using Stokes I.")
+                data = np.zeros((self.nsamp_per_subint, self.nchan), dtype=np.float32)
+                data1 = sdata[:, 0, :, 0].astype(np.uint16)
+                data2 = sdata[:, 0, :, 1].astype(np.uint16)
+                data += np.left_shift(data2, 8) + data1
             else:
                 data = np.asarray(sdata)
         data = data.reshape((self.nsamp_per_subint, self.nchan)).astype(np.float32)

@@ -338,7 +338,7 @@ class Header:
         if self.nbits <= 8:
             self.dtype = np.uint8
         elif self.nbits == 16:
-            if self.format == "fits":
+            if self.format == "fits" and int(your.fits['SUBINT'].header['TDIM17'][1]) == 1:
                 self.dtype = np.int16
             else:
                 self.dtype = np.uint16
