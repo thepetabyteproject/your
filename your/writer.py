@@ -40,21 +40,21 @@ class Writer:
     """
 
     def __init__(
-            self,
-            your_object,
-            nstart=0,
-            nsamp=None,
-            c_min=None,
-            c_max=None,
-            outdir=None,
-            outname=None,
-            flag_rfi=False,
-            progress=True,
-            spectral_kurtosis_sigma=4,
-            savgol_frequency_window=15,
-            savgol_sigma=4,
-            gulp=None,
-            zero_dm_subt=False,
+        self,
+        your_object,
+        nstart=0,
+        nsamp=None,
+        c_min=None,
+        c_max=None,
+        outdir=None,
+        outname=None,
+        flag_rfi=False,
+        progress=True,
+        spectral_kurtosis_sigma=4,
+        savgol_frequency_window=15,
+        savgol_sigma=4,
+        gulp=None,
+        zero_dm_subt=False,
     ):
 
         self.your_object = your_object
@@ -129,7 +129,7 @@ class Writer:
 
     @property
     def chan_freqs(self):
-        return self.your_object.chan_freqs[self.chan_min: self.chan_max]
+        return self.your_object.chan_freqs[self.chan_min : self.chan_max]
 
     @property
     def nchans(self):
@@ -138,8 +138,8 @@ class Writer:
     @property
     def tstart(self):
         return (
-                self.your_object.your_header.tstart
-                + self.nstart * self.your_object.your_header.tsamp / (60 * 60 * 24)
+            self.your_object.your_header.tstart
+            + self.nstart * self.your_object.your_header.tsamp / (60 * 60 * 24)
         )
 
     def get_data_to_write(self, start_sample, nsamp):
@@ -155,7 +155,7 @@ class Writer:
 
         """
         data = self.your_object.get_data(start_sample, nsamp)
-        data = data[:, self.chan_min: self.chan_max]
+        data = data[:, self.chan_min : self.chan_max]
         if self.flag_rfi:
             mask = sk_sg_filter(
                 data,
@@ -398,7 +398,7 @@ class Writer:
                 task = progress.add_task("[green]Reading...", total=self.nsamp)
 
             for data_read in range(
-                    self.nstart, self.nstart + self.nsamp, self.data_step
+                self.nstart, self.nstart + self.nsamp, self.data_step
             ):
                 logger.debug(f"Data read is {data_read}, Data step is {self.data_step}")
                 self.get_data_to_write(data_read, self.data_step)

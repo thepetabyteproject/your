@@ -64,9 +64,9 @@ if __name__ == "__main__":
     )
 
     log_filename = (
-            values.output_dir
-            + "/"
-            + datetime.utcnow().strftime("your_rfimask_%Y_%m_%d_%H_%M_%S_%f.log")
+        values.output_dir
+        + "/"
+        + datetime.utcnow().strftime("your_rfimask_%Y_%m_%d_%H_%M_%S_%f.log")
     )
     if not values.no_log_file:
         if values.verbose:

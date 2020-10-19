@@ -100,12 +100,12 @@ def calc_N(channel_bandwidth, tsamp):
 
 
 def sk_sg_filter(
-        data,
-        your_object,
-        nchans,
-        spectral_kurtosis_sigma=6,
-        savgol_frequency_window=15,
-        savgol_sigma=5,
+    data,
+    your_object,
+    nchans,
+    spectral_kurtosis_sigma=6,
+    savgol_frequency_window=15,
+    savgol_sigma=5,
 ):
     """
 

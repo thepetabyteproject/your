@@ -273,15 +273,15 @@ def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
     up_header = vars(upband_obj.your_header)
     for key in low_header.keys():
         if (
-                key == "filelist"
-                or key == "filename"
-                or key == "center_freq"
-                or key == "fch1"
+            key == "filelist"
+            or key == "filename"
+            or key == "center_freq"
+            or key == "fch1"
         ):
             continue
         elif key == "ra_deg" or key == "dec_deg" or key == "gl" or key == "gb":
             hpbw = (
-                    57.3 * 3 * 10 ** 8 / (low_header["center_freq"] * 10 ** 6 * 200)
+                57.3 * 3 * 10 ** 8 / (low_header["center_freq"] * 10 ** 6 * 200)
             )  # deg
             if np.abs(low_header[key] - up_header[key]) > 0.1 * hpbw:
                 raise ValueError(
@@ -454,43 +454,43 @@ def all_files(direct, nstart, nsamp, outdir):
         base_name = os.path.basename(af)
         split = base_name.split(".")
         file_one = (
-                direct
-                + split[0]
-                + "."
-                + split[1]
-                + "."
-                + split[2]
-                + "."
-                + split[3][0:2]
-                + "s0"
-                + split[3][4:6]
-                + ".*.fits"
+            direct
+            + split[0]
+            + "."
+            + split[1]
+            + "."
+            + split[2]
+            + "."
+            + split[3][0:2]
+            + "s0"
+            + split[3][4:6]
+            + ".*.fits"
         )
         file_two = (
-                direct
-                + split[0]
-                + "."
-                + split[1]
-                + "."
-                + split[2]
-                + "."
-                + split[3][0:2]
-                + "s1"
-                + split[3][4:6]
-                + ".*.fits"
+            direct
+            + split[0]
+            + "."
+            + split[1]
+            + "."
+            + split[2]
+            + "."
+            + split[3][0:2]
+            + "s1"
+            + split[3][4:6]
+            + ".*.fits"
         )
         out_file = (
-                split[0]
-                + "."
-                + split[1]
-                + "."
-                + split[2]
-                + "."
-                + split[1]
-                + "."
-                + split[3][0:2]
-                + split[3][4:6]
-                + ".fil"
+            split[0]
+            + "."
+            + split[1]
+            + "."
+            + split[2]
+            + "."
+            + split[1]
+            + "."
+            + split[3][0:2]
+            + split[3][4:6]
+            + ".fil"
         )
         names[out_file] = [file_one, file_two]
     logger.info(f"Found {len(names.keys())} file pairs, combing.")
@@ -570,9 +570,9 @@ if __name__ == "__main__":
         "%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s"
     )
     log_filename = (
-            values.outdir
-            + "/"
-            + datetime.utcnow().strftime("your_combine_mocks_%Y_%m_%d_%H_%M_%S_%f.log")
+        values.outdir
+        + "/"
+        + datetime.utcnow().strftime("your_combine_mocks_%Y_%m_%d_%H_%M_%S_%f.log")
     )
 
     if not values.no_log_file:

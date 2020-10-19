@@ -87,9 +87,9 @@ def gpu_dmt(cand, device=0):
     def gpu_dmt(cand_data_in, chan_freqs, dms, cand_data_out, tsamp):
         ii, jj, kk = cuda.grid(3)
         if (
-                ii < cand_data_in.shape[0]
-                and jj < cand_data_in.shape[1]
-                and kk < dms.shape[0]
+            ii < cand_data_in.shape[0]
+            and jj < cand_data_in.shape[1]
+            and kk < dms.shape[0]
         ):
             disp_time = int(
                 -1
@@ -194,13 +194,13 @@ def gpu_dedisp_and_dmt_crop(cand, device=0):
 
     @cuda.jit
     def gpu_dedisp(
-            cand_data_in,
-            chan_freqs,
-            dm,
-            cand_data_out,
-            tsamp,
-            time_decimation_factor,
-            frequency_decimation_factor,
+        cand_data_in,
+        chan_freqs,
+        dm,
+        cand_data_out,
+        tsamp,
+        time_decimation_factor,
+        frequency_decimation_factor,
     ):
         ii, jj = cuda.grid(2)
         if ii < cand_data_in.shape[0] and jj < cand_data_in.shape[1]:
@@ -270,9 +270,9 @@ def gpu_dedisp_and_dmt_crop(cand, device=0):
     def gpu_dmt(cand_data_in, all_delays, dms, cand_data_out, time_decimation_factor):
         ii, jj, kk = cuda.grid(3)
         if (
-                ii < cand_data_in.shape[0]
-                and jj < cand_data_in.shape[1]
-                and kk < dms.shape[0]
+            ii < cand_data_in.shape[0]
+            and jj < cand_data_in.shape[1]
+            and kk < dms.shape[0]
         ):
             cuda.atomic.add(
                 cand_data_out,

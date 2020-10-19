@@ -144,9 +144,9 @@ if __name__ == "__main__":
     )
 
     log_filename = (
-            values.output_dir
-            + "/"
-            + datetime.utcnow().strftime("your_heimdall_%Y_%m_%d_%H_%M_%S_%f.log")
+        values.output_dir
+        + "/"
+        + datetime.utcnow().strftime("your_heimdall_%Y_%m_%d_%H_%M_%S_%f.log")
     )
 
     if not values.no_log_file:
@@ -244,11 +244,11 @@ if __name__ == "__main__":
     )
 
     with open(
-            values.output_dir
-            + "/"
-            + your_object.your_header.basename
-            + "_heimdall_inputs.json",
-            "w",
+        values.output_dir
+        + "/"
+        + your_object.your_header.basename
+        + "_heimdall_inputs.json",
+        "w",
     ) as fp:
         json.dump(HM.__dict__, fp, cls=MyEncoder, indent=4)
 

@@ -272,7 +272,7 @@ class SigprocFile(object):
         b1 = b0 + nbytes
 
         data = numpy.frombuffer(
-            self._mmdata[int(b0): int(b1)], dtype=self.dtype
+            self._mmdata[int(b0) : int(b1)], dtype=self.dtype
         ).reshape((-1, self.nifs, self.nchans))
         if self.nifs == 1:
             return data

@@ -7,17 +7,17 @@ from your import Your
 _install_dir = os.path.abspath(os.path.dirname(__file__))
 
 
-@pytest.fixture(scope='session', autouse=True)
+@pytest.fixture(scope="session", autouse=True)
 def fil_file():
-    return os.path.join(_install_dir, 'data/28.fil')
+    return os.path.join(_install_dir, "data/28.fil")
 
 
-@pytest.fixture(scope='session', autouse=True)
+@pytest.fixture(scope="session", autouse=True)
 def fits_file():
-    return os.path.join(_install_dir, 'data/28.fits')
+    return os.path.join(_install_dir, "data/28.fits")
 
 
-@pytest.fixture(scope='function', autouse=True)
+@pytest.fixture(scope="function", autouse=True)
 def y(fil_file):
     return Your(fil_file)
 
@@ -48,15 +48,15 @@ def test_your_no_file():
 
 def test_unsupported_file():
     with pytest.raises(TypeError):
-        Your(os.path.join(_install_dir, 'data/some.blah'))
+        Your(os.path.join(_install_dir, "data/some.blah"))
 
     with pytest.raises(TypeError):
-        Your([os.path.join(_install_dir, 'data/some.blah')])
+        Your([os.path.join(_install_dir, "data/some.blah")])
 
 
 def test_paths():
     with pytest.raises(ValueError):
-        Your(bytearray("data/28.fil", 'utf-8'))
+        Your(bytearray("data/28.fil", "utf-8"))
 
 
 def test_your_header(fits_file):

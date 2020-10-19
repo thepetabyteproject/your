@@ -28,16 +28,16 @@ class Candidate(Your):
     """
 
     def __init__(
-            self,
-            fp=None,
-            dm=None,
-            tcand=0,
-            width=0,
-            label=-1,
-            snr=0,
-            min_samp=256,
-            device=0,
-            kill_mask=None,
+        self,
+        fp=None,
+        dm=None,
+        tcand=0,
+        width=0,
+        label=-1,
+        snr=0,
+        min_samp=256,
+        device=0,
+        kill_mask=None,
     ):
         Your.__init__(self, fp)
         self.dm = dm
@@ -144,10 +144,10 @@ class Candidate(Your):
             dms = self.dm
 
         return (
-                4148808.0
-                * dms
-                * (1 / np.min(self.chan_freqs) ** 2 - 1 / np.max(self.chan_freqs) ** 2)
-                / 1000
+            4148808.0
+            * dms
+            * (1 / np.min(self.chan_freqs) ** 2 - 1 / np.max(self.chan_freqs) ** 2)
+            / 1000
         )
 
     def get_chunk(self, tstart=None, tstop=None, for_preprocessing=True):
@@ -163,11 +163,11 @@ class Candidate(Your):
         """
         if tstart is None:
             tstart = (
-                    self.tcand - self.dispersion_delay() - self.width * self.native_tsamp
+                self.tcand - self.dispersion_delay() - self.width * self.native_tsamp
             )
         if tstop is None:
             tstop = (
-                    self.tcand + self.dispersion_delay() + self.width * self.native_tsamp
+                self.tcand + self.dispersion_delay() + self.width * self.native_tsamp
             )
         logger.debug(f"tstart is {tstart}")
         logger.debug(f"tstop is {tstop}")
@@ -210,11 +210,11 @@ class Candidate(Your):
                 d = self.get_data(nstart=0, nsamp=nsamp_read + nstart_read)
                 dmedian = np.median(d, axis=0)
                 data = (
-                        np.ones(
-                            (nsamp_read, self.your_header.nchans),
-                            dtype=self.your_header.dtype,
-                        )
-                        * dmedian[None, :]
+                    np.ones(
+                        (nsamp_read, self.your_header.nchans),
+                        dtype=self.your_header.dtype,
+                    )
+                    * dmedian[None, :]
                 )
                 data[-nstart_read:, :] = d
             else:
@@ -226,13 +226,13 @@ class Candidate(Your):
                 d = self.get_data(nstart=0, nsamp=nspectra)
                 dmedian = np.median(d, axis=0)
                 data = (
-                        np.ones(
-                            (nsamp_read, self.your_header.nchans),
-                            dtype=self.your_header.dtype,
-                        )
-                        * dmedian[None, :]
+                    np.ones(
+                        (nsamp_read, self.your_header.nchans),
+                        dtype=self.your_header.dtype,
+                    )
+                    * dmedian[None, :]
                 )
-                data[-nstart_read: -nstart_read + nspectra, :] = d
+                data[-nstart_read : -nstart_read + nspectra, :] = d
         else:
             logging.debug(
                 f"nstart_read({nstart_read})>=0 and nstart_read({nstart_read})"
@@ -242,10 +242,10 @@ class Candidate(Your):
             d = self.get_data(nstart=nstart_read, nsamp=nspectra - nstart_read)
             dmedian = np.median(d, axis=0)
             data = (
-                    np.ones(
-                        (nsamp_read, self.your_header.nchans), dtype=self.your_header.dtype
-                    )
-                    * dmedian[None, :]
+                np.ones(
+                    (nsamp_read, self.your_header.nchans), dtype=self.your_header.dtype
+                )
+                * dmedian[None, :]
             )
             data[: nspectra - nstart_read, :] = d
 
@@ -280,17 +280,17 @@ class Candidate(Your):
                 nt, nf = self.data.shape
                 assert nf == len(self.chan_freqs)
                 delay_time = (
-                        4148808.0
-                        * dms
-                        * (1 / (self.chan_freqs[0]) ** 2 - 1 / (self.chan_freqs) ** 2)
-                        / 1000
+                    4148808.0
+                    * dms
+                    * (1 / (self.chan_freqs[0]) ** 2 - 1 / (self.chan_freqs) ** 2)
+                    / 1000
                 )
                 delay_bins = np.round(delay_time / self.native_tsamp).astype("int64")
                 self.dedispersed = np.zeros(self.data.shape, dtype=np.float32)
                 for ii in range(nf):
                     self.dedispersed[:, ii] = np.concatenate(
                         [
-                            self.data[-delay_bins[ii]:, ii],
+                            self.data[-delay_bins[ii] :, ii],
                             self.data[: -delay_bins[ii], ii],
                         ]
                     )
@@ -321,16 +321,16 @@ class Candidate(Your):
             nt, nf = self.data.shape
             assert nf == len(self.chan_freqs)
             delay_time = (
-                    4148808.0
-                    * dms
-                    * (1 / (self.chan_freqs[0]) ** 2 - 1 / (self.chan_freqs) ** 2)
-                    / 1000
+                4148808.0
+                * dms
+                * (1 / (self.chan_freqs[0]) ** 2 - 1 / (self.chan_freqs) ** 2)
+                / 1000
             )
             delay_bins = np.round(delay_time / self.native_tsamp).astype("int64")
             ts = np.zeros(nt, dtype=np.float32)
             for ii in range(nf):
                 ts += np.concatenate(
-                    [self.data[-delay_bins[ii]:, ii], self.data[: -delay_bins[ii], ii]]
+                    [self.data[-delay_bins[ii] :, ii], self.data[: -delay_bins[ii], ii]]
                 )
             return ts
 
@@ -374,7 +374,7 @@ class Candidate(Your):
             x = time_series
         argmax = np.argmax(x)
         mask = np.ones(len(x), dtype=np.bool)
-        mask[argmax - self.width // 2: argmax + self.width // 2] = 0
+        mask[argmax - self.width // 2 : argmax + self.width // 2] = 0
         x -= x[mask].mean()
         std = np.std(x[mask])
         return x.max() / std

@@ -250,7 +250,7 @@ class ObsInfo(object):
 
 
 def initialize_psrfits(
-        outfile, your_object, npsub=-1, nstart=None, nsamp=None, chan_freqs=None
+    outfile, your_object, npsub=-1, nstart=None, nsamp=None, chan_freqs=None
 ):
     """
     Set up a PSRFITS file with everything set up EXCEPT

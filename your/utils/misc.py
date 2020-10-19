@@ -85,9 +85,9 @@ def crop(data, start_sample, length, axis):
     """
     if data.shape[axis] > start_sample + length:
         if axis:
-            return data[:, start_sample: start_sample + length]
+            return data[:, start_sample : start_sample + length]
         else:
-            return data[start_sample: start_sample + length, :]
+            return data[start_sample : start_sample + length, :]
     elif data.shape[axis] == length:
         return data
     else:

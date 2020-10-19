@@ -124,9 +124,9 @@ if __name__ == "__main__":
         "%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s"
     )
     log_filename = (
-            values.outdir
-            + "/"
-            + datetime.utcnow().strftime("your_writer_%Y_%m_%d_%H_%M_%S_%f.log")
+        values.outdir
+        + "/"
+        + datetime.utcnow().strftime("your_writer_%Y_%m_%d_%H_%M_%S_%f.log")
     )
     if not values.no_log_file:
         if values.verbose:

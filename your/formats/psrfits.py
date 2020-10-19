@@ -189,7 +189,7 @@ class PsrfitsFile(object):
         return self.nchan
 
     def read_subint(
-            self, isub, apply_weights=True, apply_scales=True, apply_offsets=True, pol=0
+        self, isub, apply_weights=True, apply_scales=True, apply_offsets=True, pol=0
     ):
         """
         Read a PSRFITS subint from a open pyfits file object.
@@ -210,12 +210,12 @@ class PsrfitsFile(object):
 
         if pol > 0:
             assert (
-                    self.poln_order == "IQUV"
+                self.poln_order == "IQUV"
             ), "Polarisation order in the file should be IQUV with pol=1 or pol=2"
 
         if self.nbits < 8:  # Unpack the bytes data
             if (shp[0] != self.nsamp_per_subint) and (
-                    shp[1] != self.nchan * self.nbits / 8
+                shp[1] != self.nchan * self.nbits / 8
             ):
                 sdata = sdata.reshape(
                     self.nsamp_per_subint, int(self.nchan * self.nbits / 8)
@@ -253,8 +253,10 @@ class PsrfitsFile(object):
                     data = data + ((sdata[:, 0, :] - sdata[:, 1, :]) / 2).squeeze()
                 else:
                     raise ValueError(f"pol={pol} value not supported.")
-            elif len(shp) == 4 and shp[-1] == 2 and self.poln_order == 'IQUV':
-                logger.warning("Data is packed as two uint8 arrays. Concatenating them to get uint16.")
+            elif len(shp) == 4 and shp[-1] == 2 and self.poln_order == "IQUV":
+                logger.warning(
+                    "Data is packed as two uint8 arrays. Concatenating them to get uint16."
+                )
                 logger.warning("Polarization is IQUV. Just using Stokes I.")
                 data = np.zeros((self.nsamp_per_subint, self.nchan), dtype=np.float32)
                 data1 = sdata[:, 0, :, 0].astype(np.uint16)
@@ -497,8 +499,8 @@ class SpectraInfo:
                     self.chan_dm = primary["CHAN_DM"]
 
                 self.start_MJD[ii] = (
-                        primary["STT_IMJD"]
-                        + (primary["STT_SMJD"] + primary["STT_OFFS"]) / SECPERDAY
+                    primary["STT_IMJD"]
+                    + (primary["STT_SMJD"] + primary["STT_OFFS"]) / SECPERDAY
                 )
 
                 # Are we tracking
@@ -703,8 +705,8 @@ class SpectraInfo:
             self.bytes_per_spectra = self.samples_per_spectra
         else:
             self.bytes_per_spectra = (
-                                             self.bits_per_sample * self.samples_per_spectra
-                                     ) / 8
+                self.bits_per_sample * self.samples_per_spectra
+            ) / 8
         self.samples_per_subint = self.samples_per_spectra * self.spectra_per_subint
         self.bytes_per_subint = self.bytes_per_spectra * self.spectra_per_subint
 
@@ -809,9 +811,9 @@ def DATEOBS_to_MJD(dateobs):
     # Parse string using regular expression defined at top of file
     m = date_obs_re.match(dateobs)
     mjd_fracday = (
-                          float(m.group("hour"))
-                          + (float(m.group("min")) + (float(m.group("sec")) / 60.0)) / 60.0
-                  ) / 24.0
+        float(m.group("hour"))
+        + (float(m.group("min")) + (float(m.group("sec")) / 60.0)) / 60.0
+    ) / 24.0
     mjd_day = aptime.Time(
         "%d-%d-%d"
         % (float(m.group("year")), float(m.group("month")), float(m.group("day"))),
@@ -831,7 +833,7 @@ def is_PSRFITS(filename):
 
         try:
             isPSRFITS = (primary["FITSTYPE"] == "PSRFITS") and (
-                    primary["OBS_MODE"] == "SEARCH"
+                primary["OBS_MODE"] == "SEARCH"
             )
         except KeyError:
             isPSRFITS = False

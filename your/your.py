@@ -46,8 +46,8 @@ class Your(PsrfitsFile, SigprocFile):
             if len(self.your_file) == 0:
                 raise ValueError("Filelist is empty. Please check the input")
             if (
-                    len(self.your_file) == 1
-                    and os.path.splitext(*self.your_file)[1] == ".fil"
+                len(self.your_file) == 1
+                and os.path.splitext(*self.your_file)[1] == ".fil"
             ):
                 self.format = "fil"
                 self.your_file = self.your_file[0]
@@ -125,8 +125,8 @@ class Your(PsrfitsFile, SigprocFile):
             End MJD of the data
         """
         return (
-                self.your_header.tstart
-                + self.your_header.nspectra * self.your_header.tsamp / 86400.0
+            self.your_header.tstart
+            + self.your_header.nspectra * self.your_header.tsamp / 86400.0
         )
 
     def bandpass(self, nspectra=None):
@@ -158,12 +158,12 @@ class Your(PsrfitsFile, SigprocFile):
         return self.get_data(nstart=0, nsamp=int(ns)).mean(0)
 
     def get_data(
-            self,
-            nstart: int,
-            nsamp: int,
-            time_decimation_factor=None,
-            frequency_decimation_factor=None,
-            pol: int = 0,
+        self,
+        nstart: int,
+        nsamp: int,
+        time_decimation_factor=None,
+        frequency_decimation_factor=None,
+        pol: int = 0,
     ):
         """
         Read data from files
@@ -240,7 +240,7 @@ class Your(PsrfitsFile, SigprocFile):
         data = self.formatclass.get_data(self, nstart, nsamp, pol=pol)[:, 0, :]
 
         if (self.your_header.time_decimation_factor > 1) or (
-                self.your_header.frequency_decimation_factor > 1
+            self.your_header.frequency_decimation_factor > 1
         ):
             nt, nf = data.shape
             data = data.reshape(
@@ -275,10 +275,10 @@ class Your(PsrfitsFile, SigprocFile):
             Dispersion delay in seconds.
         """
         return (
-                4148808.0
-                * dms
-                * (1 / np.min(self.chan_freqs) ** 2 - 1 / np.max(self.chan_freqs) ** 2)
-                / 1000
+            4148808.0
+            * dms
+            * (1 / np.min(self.chan_freqs) ** 2 - 1 / np.max(self.chan_freqs) ** 2)
+            / 1000
         )
 
 
@@ -338,7 +338,10 @@ class Header:
         if self.nbits <= 8:
             self.dtype = np.uint8
         elif self.nbits == 16:
-            if self.format == "fits" and int(your.fits['SUBINT'].header['TDIM17'][1]) == 1:
+            if (
+                self.format == "fits"
+                and int(your.fits["SUBINT"].header["TDIM17"][1]) == 1
+            ):
                 self.dtype = np.int16
             else:
                 self.dtype = np.uint16

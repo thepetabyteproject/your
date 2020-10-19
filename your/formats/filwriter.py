@@ -40,8 +40,8 @@ def sigproc_object_from_writer(your_writer):
     fil_obj.nifs = 1  # Only use Intensity values
 
     if (
-            your_writer.your_object.your_header.ra_deg
-            and your_writer.your_object.your_header.dec_deg
+        your_writer.your_object.your_header.ra_deg
+        and your_writer.your_object.your_header.dec_deg
     ):
         ra = your_writer.your_object.your_header.ra_deg
         dec = your_writer.your_object.your_header.dec_deg
@@ -69,26 +69,26 @@ def sigproc_object_from_writer(your_writer):
 
 
 def make_sigproc_object(
-        rawdatafile: str,
-        source_name: str,
-        nchans: int,
-        foff: float,
-        fch1: float,
-        tsamp: float,
-        tstart: float,
-        src_raj: float = 112233.44,
-        src_dej: float = 112233.44,
-        machine_id: int = 0,
-        nbeams: int = 0,
-        ibeam: int = 0,
-        nbits: int = 8,
-        nifs: int = 1,
-        barycentric: int = 0,
-        pulsarcentric: int = 0,
-        telescope_id: int = 6,
-        data_type: int = 0,
-        az_start: float = -1,
-        za_start: float = -1,
+    rawdatafile: str,
+    source_name: str,
+    nchans: int,
+    foff: float,
+    fch1: float,
+    tsamp: float,
+    tstart: float,
+    src_raj: float = 112233.44,
+    src_dej: float = 112233.44,
+    machine_id: int = 0,
+    nbeams: int = 0,
+    ibeam: int = 0,
+    nbits: int = 8,
+    nifs: int = 1,
+    barycentric: int = 0,
+    pulsarcentric: int = 0,
+    telescope_id: int = 6,
+    data_type: int = 0,
+    az_start: float = -1,
+    za_start: float = -1,
 ):
     """
     Create a Sigprocfile from scratch.

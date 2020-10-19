@@ -80,12 +80,12 @@ def get_params(scale=0.5, width_by_height_ratio=1):
 
 
 def plot_h5(
-        h5_file,
-        save=True,
-        detrend_ft=True,
-        publication=False,
-        mad_filter=False,
-        outdir=None,
+    h5_file,
+    save=True,
+    detrend_ft=True,
+    publication=False,
+    mad_filter=False,
+    outdir=None,
 ):
     """
     Plot the h5 candidates
@@ -195,7 +195,7 @@ def plot_h5(
 
 
 def save_bandpass(
-        your_object, bandpass, chan_nos=None, mask=None, outdir=None, outname=None
+    your_object, bandpass, chan_nos=None, mask=None, outdir=None, outname=None
 ):
     """
     Plots and saves the bandpass

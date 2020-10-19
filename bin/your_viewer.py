@@ -205,7 +205,7 @@ class Paint(Frame):
         proposed_end = self.start_samp + self.gulp_size
         if proposed_end > self.your_obj.your_header.nspectra:
             self.start_samp = self.start_samp - (
-                    proposed_end - self.your_obj.your_header.nspectra
+                proposed_end - self.your_obj.your_header.nspectra
             )
             logging.info("End of file.")
         self.update_plot()
@@ -280,8 +280,8 @@ class Paint(Frame):
         Saves the canvas image
         """
         img_name = (
-                os.path.splitext(os.path.basename(self.file_name))[0]
-                + f"_samp_{self.start_samp}_{self.start_samp + self.gulp_size}.png"
+            os.path.splitext(os.path.basename(self.file_name))[0]
+            + f"_samp_{self.start_samp}_{self.start_samp + self.gulp_size}.png"
         )
         logging.info(f"Saving figure: {img_name}")
         self.im_ft.figure.savefig(img_name, dpi=300)
