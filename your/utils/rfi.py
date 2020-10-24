@@ -51,14 +51,13 @@ def spectral_kurtosis(data, N=1, d=None):
     return ((M * d * N) + 1) * ((M * S2 / (S1 ** 2)) - 1) / (M - 1)
 
 
-def sk_filter(data, channel_bandwidth, nchans, tsamp, N=None, d=1, sigma=5):
+def sk_filter(data, channel_bandwidth, tsamp, N=None, d=None, sigma=5):
     """
     Apply Spectral Kurtosis filter to the data
 
     Args:
         data (numpy.ndarray): 2D frequency time data
         channel_bandwidth (float): channel bandwidth (MHz)
-        nchans (int): number of channels
         tsamp (float): sampling time (seconds)
         N (int): Number of accumulations on the FPGA
         d (float): shape factor
