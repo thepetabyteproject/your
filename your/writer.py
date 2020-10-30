@@ -55,6 +55,8 @@ class Writer:
         savgol_sigma=4,
         gulp=None,
         zero_dm_subt=False,
+        time_decimation_factor=1,
+        frequency_decimation_factor=1
     ):
 
         self.your_object = your_object
@@ -66,6 +68,15 @@ class Writer:
 
         self.c_min = c_min
         self.c_max = c_max
+
+        self.time_decimation_factor = time_decimation_factor
+        self.frequency_decimation_factor = frequency_decimation_factor
+
+        if self.time_decimation_factor > 1:
+            raise NotImplementedError("We have not implemented this feature yet.")
+
+        if self.frequency_decimation_factor > 1:
+            raise NotImplementedError("We have not implemented this feature yet.")
 
         self.outdir = outdir
         self.outname = outname

@@ -116,6 +116,22 @@ if __name__ == "__main__":
         default=False,
     )
     parser.add_argument(
+        "-td",
+        "--time_decimation_factor",
+        help="Time Decimation Factor",
+        required=False,
+        type=int,
+        default=1
+    )
+    parser.add_argument(
+        "-fd",
+        "--frequency_decimation_factor",
+        help="Frequency Decimation Factor",
+        required=False,
+        type=int,
+        default=1
+    )
+    parser.add_argument(
         "--no_log_file", help="Do not write a log file", action="store_true"
     )
     values = parser.parse_args()
@@ -169,6 +185,8 @@ if __name__ == "__main__":
         savgol_frequency_window=values.savgol_frequency_window,
         savgol_sigma=values.savgol_sigma,
         zero_dm_subt=values.zero_dm_subt,
+        time_decimation_factor=values.time_decimation_factor,
+        frequency_decimation_factor=values.frequency_decimation_factor
     )
 
     if values.type == "fits":
