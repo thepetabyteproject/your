@@ -63,7 +63,7 @@ pages = {
     ],
     "formats/filwriter.md": [
         "your.formats.filwriter.sigproc_object_from_writer",
-        "your.formats.filwriter.make_sigproc_obj",
+        "your.formats.filwriter.make_sigproc_object",
     ],
     "formats/fitswriter.md": [
         "your.formats.fitswriter.initialize_psrfits",
@@ -77,8 +77,6 @@ pages = {
         "your.utils.rfi.sk_sg_filter",
     ],
     "utils/plotter.md": [
-        "your.utils.plotter.figsize",
-        "your.utils.plotter.get_params",
         "your.utils.plotter.plot_h5",
         "your.utils.plotter.save_bandpass",
     ],
@@ -105,6 +103,7 @@ pages = {
         "your.utils.misc.crop",
         "your.utils.misc.pad_along_axis",
         "your.utils.misc.MyEncoder",
+        "your.utils.misc.YourArgparseFormatter"
     ],
 }
 
