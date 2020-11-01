@@ -121,7 +121,7 @@ if __name__ == "__main__":
         help="Time Decimation Factor",
         required=False,
         type=int,
-        default=1
+        default=1,
     )
     parser.add_argument(
         "-fd",
@@ -129,7 +129,7 @@ if __name__ == "__main__":
         help="Frequency Decimation Factor",
         required=False,
         type=int,
-        default=1
+        default=1,
     )
     parser.add_argument(
         "--no_log_file", help="Do not write a log file", action="store_true"
@@ -186,7 +186,7 @@ if __name__ == "__main__":
         savgol_sigma=values.savgol_sigma,
         zero_dm_subt=values.zero_dm_subt,
         time_decimation_factor=values.time_decimation_factor,
-        frequency_decimation_factor=values.frequency_decimation_factor
+        frequency_decimation_factor=values.frequency_decimation_factor,
     )
 
     if values.type == "fits":
