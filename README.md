@@ -19,7 +19,7 @@
   
 
 
-`your` stands for Your Unified Reader. This library can read data in sigproc filterbanks, psrfits, and psrdada formats in a unified way and can go from one format to another.
+`your` stands for Your Unified Reader. This library can read data in [Sigproc Filterbank](http://sigproc.sourceforge.net), [PSRFITS](https://www.atnf.csiro.au/research/pulsar/psrfits_definition/Psrfits.html), and [PSRDADA](http://psrdada.sourceforge.net) formats in a unified way and can convert from one format to another.
 
 | Format        | Read                     | Write               |
 | ------------- |:-------------:           | -----:              |
