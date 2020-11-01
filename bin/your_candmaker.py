@@ -23,6 +23,7 @@ import pandas as pd
 
 from your.candidate import Candidate, crop
 from your.utils.gpu import gpu_dedisp_and_dmt_crop
+from your.utils.misc import YourArgparseFormatter
 
 logger = logging.getLogger()
 
@@ -154,7 +155,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         prog="your_candmaker.py",
         description="Your candmaker! Make h5 candidates from the candidate csv files",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        formatter_class=YourArgparseFormatter,
     )
     parser.add_argument("-v", "--verbose", help="Be verbose", action="store_true")
     parser.add_argument(

@@ -8,10 +8,10 @@ from multiprocessing import Pool
 
 import matplotlib
 import pandas as pd
-import pylab as plt
 from rich.logging import RichHandler
 from rich.progress import Progress
 
+from your.utils.misc import YourArgparseFormatter
 from your.utils.plotter import plot_h5
 
 os.environ["HDF5_USE_FILE_LOCKING"] = "FALSE"
@@ -34,7 +34,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         prog="your_h5plotter.py",
         description="Plot candidate h5 files",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        formatter_class=YourArgparseFormatter,
     )
     parser.add_argument("-v", "--verbose", help="Be verbose", action="store_true")
     parser.add_argument(

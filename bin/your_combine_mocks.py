@@ -19,6 +19,7 @@ from rich.progress import track
 
 from your import Your
 from your.formats.pysigproc import SigprocFile
+from your.utils.misc import YourArgparseFormatter
 
 logger = logging.getLogger(__name__)
 
@@ -509,7 +510,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         prog="your_combine_mocks.py",
         description="Combine two bands from mock spectrometer to a filterbank file.",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        formatter_class=YourArgparseFormatter,
     )
     parser.add_argument("-v", "--verbose", help="Be verbose", action="store_true")
     parser.add_argument(

@@ -8,6 +8,7 @@ import logging
 from rich.logging import RichHandler
 
 from your import Your
+from your.utils.misc import YourArgparseFormatter
 
 
 def nice_print(dic):
@@ -29,7 +30,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         prog="your_header.py",
         description="Read header from fits/fil files and print the your header",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        formatter_class=YourArgparseFormatter,
     )
     parser.add_argument(
         "-f",

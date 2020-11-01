@@ -4,6 +4,7 @@ import argparse
 import json
 import logging
 import os
+import textwrap
 from datetime import datetime
 from multiprocessing import Process
 
@@ -12,14 +13,23 @@ from rich.logging import RichHandler
 
 from your import Your
 from your.utils.heimdall import HeimdallManager
-from your.utils.misc import MyEncoder
+from your.utils.misc import MyEncoder, YourArgparseFormatter
 from your.writer import Writer
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         prog="your_heimdall.py",
         description="Your Heimdall Fetch FRB",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        formatter_class=YourArgparseFormatter,
+        epilog=textwrap.dedent(
+            """\
+        `your_heimdall.py` allows you to run heimdall with a few extra things listed here.
+         - Use data in PSRFITS format, just run `your_heimdall.py -f *.fits`.
+         - Use the RFI mitigation algorithms provided in `your` by adding `rfi_your` to the command.
+         - Do sub-banded search with `--channel_start` and `--channel_end`.
+         - Give a channel mask as a text file using `--mask`.
+         """
+        ),
     )
     parser.add_argument("-v", "--verbose", help="Be verbose", action="count", default=0)
     parser.add_argument("-f", "--files", help="filterbank or psrfits", nargs="+")

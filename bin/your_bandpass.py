@@ -5,6 +5,7 @@ Generate bandpass of data
 import argparse
 
 from your import Your
+from your.utils.misc import YourArgparseFormatter
 from your.utils.plotter import save_bandpass
 
 
@@ -33,7 +34,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         prog="your_bandpass.py",
         description="Generate bandpass of data",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        formatter_class=YourArgparseFormatter,
     )
     parser.add_argument(
         "-f",

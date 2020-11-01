@@ -12,6 +12,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from rich.logging import RichHandler
 
 from your import Your
+from your.utils.misc import YourArgparseFormatter
 
 
 # based on https://steemit.com/utopian-io/@hadif66/tutorial-embeding-scipy-matplotlib-with-tkinter-to-work-on-images-in-a-gui-framework
@@ -297,7 +298,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         prog="your_viewer.py",
         description="Read fits/fil file and show the data",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        formatter_class=YourArgparseFormatter,
     )
     parser.add_argument(
         "-f",

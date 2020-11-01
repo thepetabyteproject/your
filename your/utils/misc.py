@@ -7,6 +7,7 @@ from your.utils.math import closest_number
 logger = logging.getLogger(__name__)
 from skimage.transform import resize
 
+import argparse
 import json
 import os
 
@@ -158,3 +159,12 @@ class MyEncoder(json.JSONEncoder):
             return obj.tolist()
         else:
             return super(MyEncoder, self).default(obj)
+
+class YourArgparseFormatter(
+    argparse.ArgumentDefaultsHelpFormatter,
+    argparse.RawTextHelpFormatter
+):
+    """
+    Allows both Raw Text Formatting and Default Args
+    """
+    pass

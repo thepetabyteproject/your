@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 
 import argparse
-import logging
 from datetime import datetime
 
-import numpy as np
 from rich.logging import RichHandler
 
 from your import Your
+from your.utils.misc import YourArgparseFormatter
 from your.utils.plotter import save_bandpass
 from your.utils.rfi import *
 
@@ -15,7 +14,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         prog="your_rfimask.py",
         description="Make Bad channel mask",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        formatter_class=YourArgparseFormatter,
     )
     parser.add_argument("-f", "--files", help="filterbank or psrfits", nargs="+")
     parser.add_argument(
