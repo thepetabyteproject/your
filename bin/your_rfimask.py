@@ -9,10 +9,7 @@ from rich.logging import RichHandler
 
 from your import Your
 from your.utils.plotter import save_bandpass
-from your.utils.rfi import savgol_filter
-
-logging_format = "%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s"
-logging.basicConfig(level=logging.INFO, format=logging_format)
+from your.utils.rfi import *
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -22,33 +19,41 @@ if __name__ == "__main__":
     )
     parser.add_argument("-f", "--files", help="filterbank or psrfits", nargs="+")
     parser.add_argument(
-        "-sg",
-        "--apply_savgol",
-        help="Apply savgol filter to zap bad channels",
-        action="store_true",
+        "-n",
+        "--nspectra",
+        help="Number of spectra to read and apply filters to",
+        required=False,
+        type=int,
+        default=8192,
     )
     parser.add_argument(
-        "-frequency_window",
-        "--filter_window",
-        help="Window size (MHz) for savgol filter",
+        "-sk_sigma",
+        "--spectral_kurtosis_sigma",
+        help="Sigma for spectral kurtosis based RFI mitigation, if set to 0 this method will not be used.",
         required=False,
-        default=[15],
+        default=0,
         type=float,
-        nargs="+",
     )
     parser.add_argument(
-        "-sigma",
-        "--sigma",
-        help="Sigma for the savgol filter",
-        required=False,
-        default=[6],
+        "-sg_sigma",
+        "--savgol_sigma",
+        help="Sigma for Savgol filter for RFI mitigation, if set to 0 this method will not be used.",
+        default=0,
         type=float,
-        nargs="+",
+        required=False,
+    )
+    parser.add_argument(
+        "-sg_frequency",
+        "--savgol_frequency_window",
+        help="Filter window for savgol filter (in MHz), only applied if -rfi_flag is used.",
+        default=15,
+        required=False,
+        type=float,
     )
     parser.add_argument(
         "-o",
         "--output_dir",
-        help="Output dir for heimdall candidates",
+        help="Output dir for saving the mask",
         type=str,
         required=False,
         default=".",
@@ -56,6 +61,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--no_log_file", help="Do not write a log file", action="store_true"
     )
+    parser.add_argument("-v", "--verbose", help="Be verbose", action="store_true")
 
     values = parser.parse_args()
 
@@ -91,29 +97,56 @@ if __name__ == "__main__":
                 handlers=[RichHandler(rich_tracebacks=True)],
             )
 
-    your_object = Your(file=values.files)
-
-    if values.apply_savgol:
-        bandpass = your_object.bandpass(nspectra=8192)
-        chan_nos = np.arange(0, bandpass.shape[0], dtype=np.int)
-        for fw, sig in zip(values.filter_window, values.sigma):
-            mask = savgol_filter(
-                bandpass, your_object.your_header.foff, frequency_window=fw, sigma=sig
-            )
-            basename = (
-                f"{values.output_dir}/{your_object.your_header.basename}_w{fw}_sig{sig}"
-            )
-            save_bandpass(
-                your_object,
-                bandpass,
-                chan_nos=chan_nos,
-                mask=mask,
-                outdir=values.output_dir + "/",
-                outname=f"{basename}_bandpass.png",
-            )
-            kill_mask_file = f"{basename}.bad_chans"
-            with open(kill_mask_file, "w") as f:
-                np.savetxt(f, chan_nos[mask], fmt="%d", delimiter=" ", newline=" ")
+    if values.savgol_sigma == 0 and values.spectral_kurtosis_sigma == 0:
+        raise ValueError("All sigma values cannot be zero.")
 
     else:
-        raise ValueError(f"No RFI method selected.")
+        your_object = Your(file=values.files)
+        bandpass = your_object.bandpass(values.nspectra)
+
+    if values.savgol_sigma > 0 and values.spectral_kurtosis_sigma == 0:
+        logging.info("Applying Savgol")
+        mask = savgol_filter(
+            bandpass=bandpass,
+            channel_bandwidth=your_object.your_header.foff,
+            frequency_window=values.savgol_frequency_window,
+            sigma=values.savgol_sigma,
+        )
+
+    elif values.savgol_sigma == 0 and values.spectral_kurtosis_sigma > 0:
+        logging.info("Applying Spectral Kurtosis")
+        mask = sk_filter(
+            data=your_object.get_data(0, values.nspectra),
+            channel_bandwidth=your_object.your_header.foff,
+            tsamp=your_object.your_header.tsamp,
+            N=None,
+            d=None,
+            sigma=values.spectral_kurtosis_sigma,
+        )
+
+    else:
+        logging.info("Applying both Spectral Kurtosis and Savgol")
+        mask = sk_sg_filter(
+            data=your_object.get_data(0, values.nspectra),
+            your_object=your_object,
+            nchans=your_object.your_header.nchans,
+            spectral_kurtosis_sigma=values.spectral_kurtosis_sigma,
+            savgol_frequency_window=values.savgol_frequency_window,
+            savgol_sigma=values.savgol_sigma,
+        )
+
+    basename = f"{values.output_dir}/{your_object.your_header.basename}_your_rfi_mask"
+    chan_nos = np.array(range(your_object.your_header.nchans), dtype=int)
+    save_bandpass(
+        your_object,
+        bandpass,
+        chan_nos=chan_nos,
+        mask=mask,
+        outdir=values.output_dir + "/",
+        outname=f"{basename}_bandpass.png",
+    )
+    kill_mask_file = f"{basename}.bad_chans"
+
+
+    with open(kill_mask_file, "w") as f:
+        np.savetxt(f, chan_nos[mask], fmt="%d", delimiter=" ", newline=" ")
