@@ -19,11 +19,11 @@
 
 * Suggest your change using the [feature request tempelate](https://github.com/thepetabyteproject/your/blob/master/.github/ISSUE_TEMPLATE/feature_request.md) and start writing code.
 
-* Make sure you write appropritate documentation (we use Google Docstrings) and corresponding tests (using pytest).
+* Make sure you write appropriate documentation (we use Google Docstrings) and corresponding tests (using pytest).
 
 #### **Do you have questions about the source code?**
 
-* Ask any question about how to use your [here](https://github.com/thepetabyteproject/your/issues/new).
+* Ask any question about how to use `your` [here](https://github.com/thepetabyteproject/your/issues/new).
 
 
 Your is a volunteer effort. We encourage you to pitch in and [join the team](https://github.com/thepetabyteproject/your/graphs/contributors)!
