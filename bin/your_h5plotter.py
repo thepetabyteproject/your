@@ -12,7 +12,7 @@ import pylab as plt
 from rich.logging import RichHandler
 from rich.progress import Progress
 
-from your.utils.plotter import get_params, plot_h5
+from your.utils.plotter import plot_h5
 
 os.environ["HDF5_USE_FILE_LOCKING"] = "FALSE"
 matplotlib.use("Agg")
@@ -112,10 +112,6 @@ if __name__ == "__main__":
         h5_files = list(df["candidate"][df["label"] == 1])
     else:
         raise ValueError(f"Need either --files or --results_csv argument.")
-
-    params = get_params()
-
-    plt.rcParams.update(params)
 
     with Pool(processes=values.nproc) as p:
         max_ = len(h5_files)
