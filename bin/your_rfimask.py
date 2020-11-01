@@ -147,6 +147,5 @@ if __name__ == "__main__":
     )
     kill_mask_file = f"{basename}.bad_chans"
 
-
     with open(kill_mask_file, "w") as f:
         np.savetxt(f, chan_nos[mask], fmt="%d", delimiter=" ", newline=" ")

@@ -130,7 +130,6 @@ def sk_sg_filter(
     sk_mask = sk_filter(
         data=data,
         channel_bandwidth=your_object.your_header.foff,
-        nchans=nchans,
         tsamp=your_object.your_header.tsamp,
         sigma=spectral_kurtosis_sigma,
     )
