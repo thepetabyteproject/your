@@ -29,13 +29,13 @@ def read_header(f):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         prog="your_header.py",
-        description="Read header from fits/fil files and print the your header",
+        description="Read header from psrfits/filterbank files and print the unified header",
         formatter_class=YourArgparseFormatter,
     )
     parser.add_argument(
         "-f",
         "--files",
-        help="Fits or filterbank files to read header.",
+        help="psrfits or filterbank files to read header.",
         required=True,
         nargs="+",
     )

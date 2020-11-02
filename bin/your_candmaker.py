@@ -24,6 +24,7 @@ import pandas as pd
 from your.candidate import Candidate, crop
 from your.utils.gpu import gpu_dedisp_and_dmt_crop
 from your.utils.misc import YourArgparseFormatter
+import textwrap
 
 logger = logging.getLogger()
 
@@ -156,6 +157,24 @@ if __name__ == "__main__":
         prog="your_candmaker.py",
         description="Your candmaker! Make h5 candidates from the candidate csv files",
         formatter_class=YourArgparseFormatter,
+        epilog=textwrap.dedent(
+            """\
+            `your_candmaker.py` can be used to make candidate cutout files. These files are generated 
+            in HDF file format. The output candidates have been preprocessed and consists of Dedispersed Frequency-Time 
+            and DM-Time information of the candidate. The input should be a csv file containing the parameters of the candidates. 
+            The input csv file should contain the following fields: 
+            - file: Filterbank or PSRFITs file containing the data. In case of multiple files, this should contain the 
+            name of first file. 
+            - snr: Signal to Noise of the candidate.
+            - width: Width of candidate as log2(number of samples). 
+            - dm: DM of candidate
+            - label: Label of candidate (can be just set to 0, if not known)
+            - stime: Start time (seconds) of the candidate.
+            - chan_mask_path: Path of the channel mask file. 
+            - num_files: Number of files. 
+            """
+        ),
+
     )
     parser.add_argument("-v", "--verbose", help="Be verbose", action="store_true")
     parser.add_argument(

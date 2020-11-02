@@ -23,11 +23,12 @@ if __name__ == "__main__":
         formatter_class=YourArgparseFormatter,
         epilog=textwrap.dedent(
             """\
-        `your_heimdall.py` allows you to run heimdall with a few extra things listed here.
-         - Use data in PSRFITS format, just run `your_heimdall.py -f *.fits`.
-         - Use the RFI mitigation algorithms provided in `your` by adding `rfi_your` to the command.
-         - Do sub-banded search with `--channel_start` and `--channel_end`.
+        `your_heimdall.py` runs Heimdall on Dada buffers for given file(s). Here are some additional notes for this script.
+         - To use data present in multiple contiguous PSRFITS format files, just use `-f *.fits`.
+         - Use the RFI mitigation algorithms provided in `your` by adding `-flag_rfi` to the command.
+         - Do sub-banded search with `--channel_start` and `--channel_end` to specify the channel range to use.
          - Give a channel mask as a text file using `--mask`.
+         - All the relevant Heimdall inputs can be set using various command line arguments.
          """
         ),
     )
@@ -50,8 +51,8 @@ if __name__ == "__main__":
         default=0,
     )
     parser.add_argument(
-        "-rfi_your",
-        "--rfi_your",
+        "-flag_rfi",
+        "--flag_rfi",
         help="Use your to flag RFI",
         required=False,
         action="store_true",
@@ -59,7 +60,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-sk_sigma",
         "--spectral_kurtosis_sigma",
-        help="Sigma for spectral kurtosis based RFI mitigation, only applied if -rfi_flag is used.",
+        help="Sigma for spectral kurtosis based RFI mitigation, only applied if -flag_rfi is used.",
         required=False,
         default=4,
         type=float,
@@ -67,7 +68,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-sg_sigma",
         "--savgol_sigma",
-        help="Sigma for Savgol filter for RFI mitigation, only applied if -rfi_flag is used.",
+        help="Sigma for Savgol filter for RFI mitigation, only applied if -flag_rfi is used.",
         default=4,
         type=float,
         required=False,
@@ -75,7 +76,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-sg_frequency",
         "--savgol_frequency_window",
-        help="Filter window for savgol filter (in MHz), only applied if -rfi_flag is used.",
+        help="Filter window for savgol filter (in MHz), only applied if -flag_rfi is used.",
         default=15,
         required=False,
         type=float,
@@ -107,7 +108,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-mask",
         "--mask",
-        help="File containting channel numbers to kill",
+        help="File containing channel numbers to flag",
         required=False,
         type=str,
     )
@@ -212,7 +213,7 @@ if __name__ == "__main__":
         savgol_sigma=values.savgol_sigma,
         spectral_kurtosis_sigma=values.spectral_kurtosis_sigma,
         savgol_frequency_window=values.savgol_frequency_window,
-        flag_rfi=values.rfi_your,
+        flag_rfi=values.flag_rfi,
     )
     your_dada_writer.setup_dada()  # need to run the set up inorder to get the dada key
 

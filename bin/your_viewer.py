@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from rich.logging import RichHandler
+import textwrap
 
 from your import Your
 from your.utils.misc import YourArgparseFormatter
@@ -297,8 +298,14 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
         prog="your_viewer.py",
-        description="Read fits/fil file and show the data",
+        description="Read psrfits/filterbank files and show the data",
         formatter_class=YourArgparseFormatter,
+        epilog=textwrap.dedent(
+            """\
+            This script can be used to visualize the data (Frequency-Time, bandpass and time series). 
+            It also reports some basic statistics of the data. 
+            """
+        )
     )
     parser.add_argument(
         "-f",
