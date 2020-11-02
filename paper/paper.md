@@ -51,7 +51,7 @@ bibliography: paper.bib
 
 
 # Summary
-The understanding of fast radio transients like pulsars, rotating radio transients (RRATs), and especially Fast Radio Bursts (FRBs) 
+The understanding of fast radio transients like pulsar single pulses, rotating radio transients (RRATs), and especially Fast Radio Bursts (FRBs) 
 has evolved rapidly over the last decade. This is primarily due to dedicated campaigns by sensitive radio telescopes to 
 search for transients. 
 The advancement in signal processing and GPU processing systems has enabled new transient detectors at various 
@@ -72,7 +72,7 @@ candidates in real-time or near-real-time. Typically the data output from the te
 used formats. `Your` was conceived initially to perform data ingestion for The Petabyte FRB search Project (TPP), which 
 will uniformly search a large number of datasets from telescopes around the world for FRBs. As this 
 project is going to process data in different formats from multiple telescopes worldwide, a unified reader was 
-required to streamline the pipeline. `Your` implements a user-friendly interface to read and write in the data format 
+required to streamline the search pipeline. `Your` implements a user-friendly interface to read and write in the data format 
 of choice. It also generates unified metadata corresponding to the input data file for a quick 
 understanding of observation parameters and provides utilities to perform common data analysis operations. `Your` also 
 provides several state-of-the-art radio frequency interference mitigation (RFI) algorithms [@agarwal2020; @nita2010], which 
@@ -84,7 +84,7 @@ analysis. It also enables online processing like RFI flagging, decimation, subba
 of these are already available in `Your`. It can also be used to perform analysis of individual candidate events (using 
 `Candidate` class): generate candidate data cutouts, create publication-ready visualizations, and perform GPU accelerated 
 pre-processing for candidate classification [@fetch2020]. It also consists of functions to run commonly used single-pulse search 
-software [`Heimdall`](https://sourceforge.net/projects/heimdall-astro/) [@barsdell2012] on any input data format.
+software [`Heimdall`](https://sourceforge.net/projects/heimdall-astro/) [@barsdell2012heimdall] on any input data format.
 
 `Your` will not only benefit experienced researchers but also new undergraduate and graduate students who otherwise 
 have to face a significant bottleneck to understand various data formats and develop custom tools
@@ -97,7 +97,7 @@ commonly used language within Astronomy. It also comes with comprehensive
 `Your` uses the matplotlib library [@Hunter:2007] for plotting, and also makes use of various 
 numpy [@oliphant2006guide; @van2011numpy], scipy [@2020SciPy], scikit-image [@van2014scikit], numba [@numba] and 
 Pandas [@reback2020pandas; @pandas2010] functions. `Your` also leverages several functions in the 
-Astropy package [@astropy:2013; astropy:2018]: fits (astropy.io.fits), units (astropy.units), 
+Astropy package [@astropy:2013; @astropy:2018]: fits (astropy.io.fits), units (astropy.units), 
 coordinates (astropy.coordinates) and time (astropy.time). 
 
 
