@@ -37,9 +37,7 @@ def plot_h5(
         None
 
     """
-    with h5py.File(h5_file, "r") as f, plt.style.context(
-        [ "no-latex"]
-    ):
+    with h5py.File(h5_file, "r") as f:
         dm_time = np.array(f["data_dm_time"])
         if detrend_ft:
             freq_time = detrend(np.array(f["data_freq_time"])[:, ::-1].T)
@@ -160,23 +158,22 @@ def save_bandpass(
     else:
         bp_plot = outname
 
-    with plt.style.context(["no-latex"]):
-        fig = plt.figure()
-        ax11 = fig.add_subplot(111)
-        if foff < 0:
-            ax11.invert_xaxis()
+    fig = plt.figure()
+    ax11 = fig.add_subplot(111)
+    if foff < 0:
+        ax11.invert_xaxis()
 
-        ax11.plot(freqs, bandpass, "k-", label="Bandpass")
-        if mask is not None:
-            if mask.sum():
-                logging.info("Flagged %d channels", mask.sum())
-                ax11.plot(freqs[mask], bandpass[mask], "r.", label="Flagged Channels")
-        ax11.set_xlabel("Frequency (MHz)")
-        ax11.set_ylabel("Arb. Units")
-        ax11.legend()
+    ax11.plot(freqs, bandpass, "k-", label="Bandpass")
+    if mask is not None:
+        if mask.sum():
+            logging.info("Flagged %d channels", mask.sum())
+            ax11.plot(freqs[mask], bandpass[mask], "r.", label="Flagged Channels")
+    ax11.set_xlabel("Frequency (MHz)")
+    ax11.set_ylabel("Arb. Units")
+    ax11.legend()
 
-        ax21 = ax11.twiny()
-        ax21.plot(chan_nos, bandpass, alpha=0)
-        ax21.set_xlabel("Channel Numbers")
+    ax21 = ax11.twiny()
+    ax21.plot(chan_nos, bandpass, alpha=0)
+    ax21.set_xlabel("Channel Numbers")
 
     return plt.savefig(bp_plot, bbox_inches="tight", dpi=300)
