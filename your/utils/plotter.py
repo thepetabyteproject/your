@@ -38,7 +38,7 @@ def plot_h5(
 
     """
     with h5py.File(h5_file, "r") as f, plt.style.context(
-        ["science", "no-latex", "ieee"]
+        [ "no-latex"]
     ):
         dm_time = np.array(f["data_dm_time"])
         if detrend_ft:
@@ -160,7 +160,7 @@ def save_bandpass(
     else:
         bp_plot = outname
 
-    with plt.style.context(["science", "no-latex"]):
+    with plt.style.context(["no-latex"]):
         fig = plt.figure()
         ax11 = fig.add_subplot(111)
         if foff < 0:

@@ -1,9 +1,7 @@
 import glob
 import re
-import os
 from setuptools import setup, find_packages
 
-os.environ['MPLCONFIGDIR'] = '.'
 
 with open("requirements.txt") as f:
     required = f.read().splitlines()
@@ -24,7 +22,7 @@ setup(
     author="Devansh Agarwal, Kshitij Aggarwal",
     scripts=glob.glob("bin/*"),
     tests_require=["pytest", "pytest-cov"],
-    install_requires=required+['SciencePlots>=1.0.6'],
+    install_requires=required,
     long_description=long_description,
     long_description_content_type="text/markdown",
     author_email="da0017@mix.wvu.edu, ka0064@mix.wvu.edu",
