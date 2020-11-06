@@ -52,10 +52,17 @@ Or if you want to try out the lastest stuff,
 pip install git+https://github.com/thepetabyteproject/your.git
 ```
 
-
+or you can do: 
+```bash
+git clone https://github.com/thepetabyteproject/your.git
+cd your
+pip install -r requirements.txt
+python setup.py install
+``` 
 
 **Note**:
     To use the `psrdada` format, you would need to install [psrdada-python](https://github.com/AA-ALERT/psrdada-python). [`your_heimdall.py`](https://thepetabyteproject.github.io/your/bin/your_heimdall/) requires [Heimdall](https://sourceforge.net/projects/heimdall-astro/) and [psrdada-python](https://github.com/AA-ALERT/psrdada-python). 
+    To run the tests you would need to install `pytest`. 
 
 
 # Documentation
@@ -63,6 +70,9 @@ Have a look at our [docs](https://thepetabyteproject.github.io/your/) for the do
 
 # Tutorials
 Here are some [tutorial notebooks](https://github.com/devanshkv/your/tree/master/examples) to get you started.
+
+**Note**: 
+    To run the tutorial notebooks you would need to install `jupyter`. 
 
 # Code Contributions
 We welcome all types of code contribution. Please have a look at our [guideline](CONTRIBUTING.md) and [code of conduct](CODE_OF_CONDUCT.md).
