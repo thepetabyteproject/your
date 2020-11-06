@@ -27,7 +27,7 @@ Args:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L58)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L65)</span>
 
 ### save_h5
 
@@ -51,7 +51,7 @@ Returns:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L125)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L132)</span>
 
 ### dispersion_delay
 
@@ -74,7 +74,7 @@ Returns:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L146)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L153)</span>
 
 ### get_chunk
 
@@ -96,7 +96,7 @@ Args:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L233)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L263)</span>
 
 ### dedisperse
 
@@ -119,7 +119,7 @@ Args:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L274)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L304)</span>
 
 ### dedispersets
 
@@ -145,7 +145,7 @@ Returns:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L307)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L337)</span>
 
 ### dmtime
 
@@ -168,7 +168,7 @@ Args:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L329)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L359)</span>
 
 ### get_snr
 
@@ -191,7 +191,7 @@ Returns:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L352)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L382)</span>
 
 ### optimize_dm
 
@@ -213,7 +213,7 @@ Returns:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L382)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L412)</span>
 
 ### decimate
 
@@ -239,7 +239,7 @@ Args:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L420)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L450)</span>
 
 ### resize
 

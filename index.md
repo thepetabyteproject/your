@@ -16,16 +16,28 @@
 [![status](https://joss.theoj.org/papers/798844ebd352f563de28bb75515da674/status.svg?style=flat-square)](https://joss.theoj.org/papers/798844ebd352f563de28bb75515da674)
 
 
-  
 
+`your` stands for Your Unified Reader. This library can read data in [Sigproc Filterbank](http://sigproc.sourceforge.net), 
+[PSRFITS](https://www.atnf.csiro.au/research/pulsar/psrfits_definition/Psrfits.html), 
+and [PSRDADA](http://psrdada.sourceforge.net) formats in a unified way and can convert from one format to another. 
 
-`your` stands for Your Unified Reader. This library can read data in sigproc filterbanks, psrfits, and psrdada formats in a unified way and can go from one format to another.
 
 | Format        | Read                     | Write               |
 | ------------- |:-------------:           | -----:              |
 | filterbank    | :white_check_mark:       | :white_check_mark:  |
 | psrfits       | :white_check_mark:       | :white_check_mark:  |
 | psrdada       | :x:                      | :white_check_mark:  |
+
+`your` implements a user-friendly interface to read and write in the data format of choice. It also generates unified 
+metadata corresponding to the input data file for a quick understanding of observation parameters and provides 
+utilities to perform common data analysis operations. `your` can be used at the data ingestion step of any transient 
+search pipeline and can provide data and observation parameters in a format-independent manner. Generic tools can thus 
+be used to perform the search and further data analysis. It also enables online processing like RFI flagging, 
+decimation, subband search, etc.; functions for some of these are already available in `your`.
+
+`your` will not only be useful to experienced researchers but also new undergraduate and graduate students who otherwise 
+have to face a significant bottleneck to understand various data formats and develop custom tools to access the data 
+before any analysis can be done on it. 
 
 The inspiration for the name comes from the introduction of every [Daily Dose of Internet](https://www.youtube.com/channel/UCdC0An4ZPNr_YiFiYoVbwaw) video.
 
@@ -40,10 +52,17 @@ Or if you want to try out the lastest stuff,
 pip install git+https://github.com/thepetabyteproject/your.git
 ```
 
-
+or you can do: 
+```bash
+git clone https://github.com/thepetabyteproject/your.git
+cd your
+pip install -r requirements.txt
+python setup.py install
+``` 
 
 !!! note
     To use the `psrdada` format, you would need to install [psrdada-python](https://github.com/AA-ALERT/psrdada-python). [`your_heimdall.py`](https://thepetabyteproject.github.io/your/bin/your_heimdall/) requires [Heimdall](https://sourceforge.net/projects/heimdall-astro/) and [psrdada-python](https://github.com/AA-ALERT/psrdada-python). 
+    To run the tests you would need to install `pytest`. 
 
 
 # Documentation
@@ -51,6 +70,9 @@ Have a look at our [docs](https://thepetabyteproject.github.io/your/) for the do
 
 # Tutorials
 Here are some [tutorial notebooks](https://github.com/devanshkv/your/tree/master/examples) to get you started.
+
+!!! note 
+    To run the tutorial notebooks you would need to install `jupyter`. 
 
 # Code Contributions
 We welcome all types of code contribution. Please have a look at our [guideline](CONTRIBUTING.md) and [code of conduct](CODE_OF_CONDUCT.md).

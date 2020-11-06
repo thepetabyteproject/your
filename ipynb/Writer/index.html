@@ -10,10 +10,11 @@
       
       
       
+      
         <meta name="author" content="Devansh Agarwal, Kshitij Agarwal">
       
       <link rel="shortcut icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.0.2">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.1.3">
     
     
       
@@ -21,10 +22,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.38780c08.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.2cb7adb3.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.3f72e892.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.f0267088.min.css">
         
           
           
@@ -77,7 +78,9 @@
       
     </div>
     
-      <header class="md-header" data-md-component="header">
+      
+
+<header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid" aria-label="Header">
     <a href="../.." title="Your Documentation" class="md-header-nav__button md-logo" aria-label="Your Documentation">
       
@@ -162,7 +165,9 @@
               <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
-                    <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+                    
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="Your Documentation" class="md-nav__button md-logo" aria-label="Your Documentation">
       
@@ -793,10 +798,10 @@
 <div class="notebook-content">
 <style type="text/css">
     pre { line-height: 125%; margin: 0; }
-td.linenos pre { color: #000000; background-color: #f0f0f0; padding: 0 5px 0 5px; }
-span.linenos { color: #000000; background-color: #f0f0f0; padding: 0 5px 0 5px; }
-td.linenos pre.special { color: #000000; background-color: #ffffc0; padding: 0 5px 0 5px; }
-span.linenos.special { color: #000000; background-color: #ffffc0; padding: 0 5px 0 5px; }
+td.linenos pre { color: #000000; background-color: #f0f0f0; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #000000; background-color: #f0f0f0; padding-left: 5px; padding-right: 5px; }
+td.linenos pre.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
 .highlight .hll { background-color: var(--jp-cell-editor-active-background) }
 .highlight { background: var(--jp-cell-editor-background); color: var(--jp-mirror-editor-variable-color) }
 .highlight .c { color: var(--jp-mirror-editor-comment-color); font-style: italic } /* Comment */
@@ -15191,6 +15196,8 @@ h1:hover .anchor-link, h2:hover .anchor-link, h3:hover .anchor-link {
     <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="kn">from</span> <span class="nn">your</span> <span class="kn">import</span> <span class="n">Your</span><span class="p">,</span> <span class="n">Writer</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlretrieve</span>
 </pre></div>
 
         </div>
@@ -15225,7 +15232,7 @@ h1:hover .anchor-link, h2:hover .anchor-link, h3:hover .anchor-link {
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>We can write + convert files using the <a href="https://thepetabyteproject.github.io/your/writer/#writer">Writer</a> class in <a href="https://thepetabyteproject.github.io/your/your/#your">Your</a>. Let's read a PSRFITS file and write out a PSRFITS and a filterbank file</p>
+<p>We can write + convert files using the <a href="https://thepetabyteproject.github.io/your/writer/#writer">Writer</a> class in <a href="https://thepetabyteproject.github.io/your/your/#your">Your</a>. Let's read a Filterbank file and write out a PSRFITS and a Filterbank file</p>
 
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
@@ -15236,8 +15243,14 @@ h1:hover .anchor-link, h2:hover .anchor-link, h3:hover .anchor-link {
         
         
         <div class="CodeMirror cm-s-jupyter">
-    <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="n">fits_file</span> <span class="o">=</span> <span class="s2">&quot;../tests/data/28.fits&quot;</span>
-<span class="n">your_original_file</span> <span class="o">=</span> <span class="n">Your</span><span class="p">(</span><span class="n">fits_file</span><span class="p">)</span>
+    <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="n">temp_dir</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span>
+<span class="n">download_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">temp_dir</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/FRB180417.fil&quot;</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://zenodo.org/record/3905426/files/FRB180417.fil&quot;</span>
+<span class="n">urlretrieve</span><span class="p">(</span>
+    <span class="n">url</span><span class="p">,</span> <span class="n">download_path</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">fil_file</span> <span class="o">=</span> <span class="n">download_path</span>
+<span class="n">your_original_file</span> <span class="o">=</span> <span class="n">Your</span><span class="p">(</span><span class="n">fil_file</span><span class="p">)</span>
 </pre></div>
 
         </div>
@@ -15267,7 +15280,7 @@ h1:hover .anchor-link, h2:hover .anchor-link, h3:hover .anchor-link {
     <span class="n">c_min</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
     <span class="n">c_max</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
     <span class="n">outdir</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span>
-    <span class="n">outname</span><span class="o">=</span><span class="s2">&quot;filfromfits_28&quot;</span><span class="p">,</span>
+    <span class="n">outname</span><span class="o">=</span><span class="s2">&quot;filfromfil&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 
@@ -15311,14 +15324,64 @@ h1:hover .anchor-link, h2:hover .anchor-link, h3:hover .anchor-link {
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
 
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr">
-<pre>2020-08-26 20:02:54,109 - your.writer - MainThread - INFO - Writing data from spectra 0-10 in the frequency channel range 10-100 to filterbank
-2020-08-26 20:02:54,112 - your.formats.filwriter - MainThread - INFO - Trying to write data to filterbank file: ./filfromfits_28.fil
-2020-08-26 20:02:54,118 - your.formats.filwriter - MainThread - INFO - Output file does not already exist. Creating a new Filterbank file.
-2020-08-26 20:02:54,157 - your.formats.filwriter - MainThread - INFO - Writing 10 spectra to file: ./filfromfits_28.fil
-2020-08-26 20:02:54,159 - your.formats.filwriter - MainThread - INFO - Successfully written data to Filterbank file: ./filfromfits_28.fil
-</pre>
+
+
+
+
+
+<div id="b371a5fa-13e5-40f7-9832-5bab90475b0b" class="jupyter-widgets jp-OutputArea-output ">
+<script type="text/javascript">
+var element = document.getElementById('b371a5fa-13e5-40f7-9832-5bab90475b0b');
+</script>
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id": "b568dfd9ad7c43dd996a56a417ee4e55", "version_major": 2, "version_minor": 0}
+</script>
 </div>
+
+</div>
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output " data-mime-type="text/html">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
+
+</div>
+
+</div>
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output " data-mime-type="text/html">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="color: #008000">Writing...</span> <span style="color: #3a3a3a">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span> <span style="color: #800080">  0%</span> <span style="color: #008080">-:--:--</span>
+</pre>
+
+</div>
+
+</div>
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output " data-mime-type="text/html">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="color: #008000">Writing...</span> <span style="color: #729c1f">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span> <span style="color: #800080">100%</span> <span style="color: #008080">0:00:00</span>
+</pre>
+
+</div>
+
 </div>
 
 </div>
@@ -15339,7 +15402,7 @@ h1:hover .anchor-link, h2:hover .anchor-link, h3:hover .anchor-link {
         
         
         <div class="CodeMirror cm-s-jupyter">
-    <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="n">your_written_filterbank</span> <span class="o">=</span> <span class="n">Your</span><span class="p">(</span><span class="s2">&quot;filfromfits_28.fil&quot;</span><span class="p">)</span>
+    <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="n">your_written_filterbank</span> <span class="o">=</span> <span class="n">Your</span><span class="p">(</span><span class="s2">&quot;filfromfil.fil&quot;</span><span class="p">)</span>
 <span class="n">your_written_filterbank</span><span class="o">.</span><span class="n">your_header</span>
 </pre></div>
 
@@ -15364,22 +15427,21 @@ h1:hover .anchor-link, h2:hover .anchor-link, h3:hover .anchor-link {
 
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
 <pre>Unified Header:
-  &#34;basename&#34;: &#34;filfromfits_28&#34;
+  &#34;basename&#34;: &#34;filfromfil&#34;
   &#34;bw&#34;: -90.0
   &#34;center_freq&#34;: 1410.0
   &#34;dec_deg&#34;: 13.964475555555554
   &#34;dtype&#34;: &#34;uint8&#34;
   &#34;fch1&#34;: 1455.0
   &#34;filelist&#34;: [
-    &#34;filfromfits_28.fil&#34;
+    &#34;filfromfil.fil&#34;
   ]
-  &#34;filename&#34;: &#34;filfromfits_28.fil&#34;
+  &#34;filename&#34;: &#34;filfromfil.fil&#34;
   &#34;foff&#34;: -1.0
+  &#34;format&#34;: &#34;fil&#34;
   &#34;frequency_decimation_factor&#34;: 1
   &#34;gb&#34;: 75.61933243565039
   &#34;gl&#34;: 97.96004079061271
-  &#34;isfil&#34;: true
-  &#34;isfits&#34;: false
   &#34;native_foff&#34;: -1.0
   &#34;native_nchans&#34;: 90
   &#34;native_nspectra&#34;: 10.0
@@ -15387,7 +15449,7 @@ h1:hover .anchor-link, h2:hover .anchor-link, h3:hover .anchor-link {
   &#34;nbits&#34;: 8
   &#34;nchans&#34;: 90
   &#34;npol&#34;: 1
-  &#34;nspectra&#34;: 10.0
+  &#34;nspectra&#34;: 10
   &#34;ra_deg&#34;: 186.65681708333335
   &#34;source_name&#34;: &#34;src1&#34;
   &#34;time_decimation_factor&#34;: 1
@@ -15489,7 +15551,7 @@ and select some channels</p>
     <span class="n">c_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
     <span class="n">c_max</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
     <span class="n">outdir</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span>
-    <span class="n">outname</span><span class="o">=</span><span class="s2">&quot;fitsfromfits_28&quot;</span><span class="p">,</span>
+    <span class="n">outname</span><span class="o">=</span><span class="s2">&quot;fitsfromfil&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 
@@ -15507,7 +15569,7 @@ and select some channels</p>
         
         
         <div class="CodeMirror cm-s-jupyter">
-    <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="n">writer_object</span><span class="o">.</span><span class="n">outname</span> <span class="o">=</span> <span class="s2">&quot;fitsfromfits_28&quot;</span>
+    <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="n">writer_object</span><span class="o">.</span><span class="n">outname</span> <span class="o">=</span> <span class="s2">&quot;fitsfromfil&quot;</span>
 <span class="n">writer_object</span><span class="o">.</span><span class="n">c_min</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">writer_object</span><span class="o">.</span><span class="n">c_max</span> <span class="o">=</span> <span class="mi">100</span>
 </pre></div>
@@ -15553,8 +15615,8 @@ and select some channels</p>
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr">
-<pre>2020-08-26 20:02:54,342 - root - MainThread - INFO - ObsInfo updated with relevant parameters
-2020-08-26 20:02:54,357 - your.formats.fitswriter - MainThread - INFO - Setting the following info to be written in ./fitsfromfits_28.fits 
+<pre>2020-11-02 13:29:04,530 - root - MainThread - INFO - ObsInfo updated with relevant parameters
+2020-11-02 13:29:04,531 - your.formats.fitswriter - MainThread - INFO - Setting the following info to be written in ./fitsfromfil.fits 
  {
     &#34;ant_x&#34;: -1601185.63,
     &#34;ant_y&#34;: -5041978.15,
@@ -15567,7 +15629,7 @@ and select some channels</p>
     &#34;dec_str&#34;: &#34;13:57:52.1120&#34;,
     &#34;dt&#34;: 0.00126646875,
     &#34;fcenter&#34;: 1415.0,
-    &#34;file_date&#34;: &#34;2020-08-27T00:02:54&#34;,
+    &#34;file_date&#34;: &#34;2020-11-02T18:29:04&#34;,
     &#34;longitude&#34;: -107.61833443381258,
     &#34;nbits&#34;: 8,
     &#34;nchan&#34;: 100,
@@ -15585,13 +15647,101 @@ and select some channels</p>
     &#34;stt_smjd&#34;: 53595,
     &#34;telescope&#34;: &#34;VLA&#34;
 }
-2020-08-26 20:02:54,378 - root - MainThread - INFO - Building the PSRFITS table
-2020-08-26 20:02:54,461 - root - MainThread - INFO - Writing PSRFITS table to file: ./fitsfromfits_28.fits
-2020-08-26 20:02:54,530 - root - MainThread - INFO - Header information written in ./fitsfromfits_28.fits
-2020-08-26 20:02:54,532 - your.writer - MainThread - INFO - Filling PSRFITS file with data
-2020-08-26 20:02:54,605 - your.writer - MainThread - INFO - Number of subints to write 1
-2020-08-26 20:02:54,623 - your.writer - MainThread - INFO - Writing data to ./fitsfromfits_28.fits from subint = 0 to 1.
-2020-08-26 20:02:55,469 - your.writer - MainThread - INFO - All spectra written to ./fitsfromfits_28.fits
+2020-11-02 13:29:04,542 - root - MainThread - INFO - Building the PSRFITS table
+2020-11-02 13:29:04,569 - root - MainThread - INFO - Writing PSRFITS table to file: ./fitsfromfil.fits
+2020-11-02 13:29:04,657 - root - MainThread - INFO - Header information written in ./fitsfromfil.fits
+2020-11-02 13:29:04,658 - your.writer - MainThread - INFO - Filling PSRFITS file with data
+2020-11-02 13:29:04,678 - your.writer - MainThread - INFO - Number of subints to write 1
+</pre>
+</div>
+</div>
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+
+
+
+
+<div id="4addded3-f668-44ad-9f6a-0fb42d1d2bc7" class="jupyter-widgets jp-OutputArea-output ">
+<script type="text/javascript">
+var element = document.getElementById('4addded3-f668-44ad-9f6a-0fb42d1d2bc7');
+</script>
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id": "84eba871dedb4e47816c680668d8a420", "version_major": 2, "version_minor": 0}
+</script>
+</div>
+
+</div>
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output " data-mime-type="text/html">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
+
+</div>
+
+</div>
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output " data-mime-type="text/html">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="color: #008000">Writing...</span> <span style="color: #3a3a3a">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span> <span style="color: #800080">  0%</span> <span style="color: #008080">-:--:--</span>
+</pre>
+
+</div>
+
+</div>
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr">
+<pre>2020-11-02 13:29:04,701 - your.writer - MainThread - INFO - Writing data to ./fitsfromfil.fits from subint = 0 to 1.
+</pre>
+</div>
+</div>
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output " data-mime-type="text/html">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="color: #008000">Writing...</span> <span style="color: #729c1f">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span> <span style="color: #800080">100%</span> <span style="color: #008080">0:00:00</span>
+</pre>
+
+</div>
+
+</div>
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr">
+<pre>2020-11-02 13:29:05,464 - your.writer - MainThread - INFO - All spectra written to ./fitsfromfil.fits
 </pre>
 </div>
 </div>
@@ -15678,8 +15828,8 @@ and select some channels</p>
       
     </div>
     
-      <script src="../../assets/javascripts/vendor.77e55a48.min.js"></script>
-      <script src="../../assets/javascripts/bundle.9554a270.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      <script src="../../assets/javascripts/vendor.7e0ee788.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c1ccee15.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
       
       <script>
         app = initialize({

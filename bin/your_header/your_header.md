@@ -5,7 +5,7 @@ your_header.py
 # Description
 
 
-Read header from fits/fil files and print the your header
+Read header from psrfits/filterbank files and print the unified header
 # Usage:
 
 
@@ -18,5 +18,5 @@ usage: your_header.py [-h] -f FILES [FILES ...] [-v]
 |short|long|default|help|
 | :---: | :---: | :---: | :---: |
 |`-h`|`--help`||show this help message and exit|
-|`-f`|`--files`|`None`|Fits or filterbank files to read header.|
+|`-f`|`--files`|`None`|psrfits or filterbank files to read header.|
 |`-v`|`--verbose`||Be verbose|

@@ -5,12 +5,20 @@ your_viewer.py
 # Description
 
 
-Read fits/fil file and show the data
+Read psrfits/filterbank files and show the data
+# Epilog
+
+
+
+This script can be used to visualize the data (Frequency-Time, bandpass and time series). It also reports some basic statistics of the data. 
+
+
 # Usage:
 
 
 ```bash
-usage: your_viewer.py [-h] [-f FILES [FILES ...]] [-s START] [-g GULP] [-e] [-d width height] [-v]
+usage: your_viewer.py [-h] [-f FILES [FILES ...]] [-s START] [-g GULP] [-e]
+                      [-d width height] [-v]
 
 ```
 # Arguments

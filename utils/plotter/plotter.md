@@ -1,53 +1,5 @@
 <span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/plotter.py#L17)</span>
 
-### figsize
-
-
-```python
-your.utils.plotter.figsize(scale, width_by_height_ratio)
-```
-
-
-Create figure size either a full page or a half page figure
-
-Args: 
-
-    scale (float): 0.5 for half page figure, 1 for full page
-    width_by_height_ratio (float): ratio of width to height for the figure
-
-Returns: 
-
-    list: list of width and height
-
-
-----
-
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/plotter.py#L39)</span>
-
-### get_params
-
-
-```python
-your.utils.plotter.get_params(scale=0.5, width_by_height_ratio=1)
-```
-
-
-Create a dictionary for pretty plotting
-
-Args: 
-
-    scale (float): 0.5 for half page figure, 1 for full page
-    width_by_height_ratio (float): ratio of width to height for the figure
-
-Returns: 
-
-    dict: dictionary of parameters
-
-
-----
-
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/plotter.py#L82)</span>
-
 ### plot_h5
 
 
@@ -76,7 +28,7 @@ Returns:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/plotter.py#L197)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/plotter.py#L132)</span>
 
 ### save_bandpass
 

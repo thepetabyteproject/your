@@ -10,7 +10,8 @@ Generate bandpass of data
 
 
 ```bash
-usage: your_bandpass.py [-h] -f FILES [FILES ...] [-n NSPECTRA] [-t TIME] [-b NAME]
+usage: your_bandpass.py [-h] -f FILES [FILES ...] [-n NSPECTRA] [-t TIME]
+                        [-b NAME]
 
 ```
 # Arguments

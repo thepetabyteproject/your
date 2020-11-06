@@ -74,7 +74,7 @@ Returns:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/psrfits.py#L307)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/psrfits.py#L315)</span>
 
 ### get_data
 
@@ -99,7 +99,7 @@ Returns:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/psrfits.py#L417)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/psrfits.py#L425)</span>
 
 ### SpectraInfo
 

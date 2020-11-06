@@ -55,7 +55,7 @@ Returns:
 
 
 ```python
-your.utils.rfi.sk_filter(data, channel_bandwidth, nchans, tsamp, N=None, d=1, sigma=5)
+your.utils.rfi.sk_filter(data, channel_bandwidth, tsamp, N=None, d=None, sigma=5)
 ```
 
 
@@ -65,7 +65,6 @@ Args:
 
     data (numpy.ndarray): 2D frequency time data
     channel_bandwidth (float): channel bandwidth (MHz)
-    nchans (int): number of channels
     tsamp (float): sampling time (seconds)
     N (int): Number of accumulations on the FPGA
     d (float): shape factor
@@ -78,7 +77,7 @@ Returns:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/rfi.py#L84)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/rfi.py#L83)</span>
 
 ### calc_N
 
@@ -102,7 +101,7 @@ Returns:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/rfi.py#L102)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/rfi.py#L101)</span>
 
 ### sk_sg_filter
 

@@ -10,10 +10,11 @@
       
       
       
+      
         <meta name="author" content="Devansh Agarwal, Kshitij Agarwal">
       
       <link rel="shortcut icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.0.2">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.1.3">
     
     
       
@@ -21,10 +22,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.38780c08.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.2cb7adb3.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.3f72e892.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.f0267088.min.css">
         
           
           
@@ -77,7 +78,9 @@
       
     </div>
     
-      <header class="md-header" data-md-component="header">
+      
+
+<header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid" aria-label="Header">
     <a href="../.." title="Your Documentation" class="md-header-nav__button md-logo" aria-label="Your Documentation">
       
@@ -162,7 +165,9 @@
               <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
-                    <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+                    
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="Your Documentation" class="md-nav__button md-logo" aria-label="Your Documentation">
       
@@ -739,9 +744,12 @@
 <h1 id="description">Description</h1>
 <p>Make Bad channel mask</p>
 <h1 id="usage">Usage:</h1>
-<div class="highlight"><pre><span></span><code>usage: your_rfimask.py <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-f FILES <span class="o">[</span>FILES ...<span class="o">]]</span> <span class="o">[</span>-sg<span class="o">]</span> <span class="o">[</span>-frequency_window FILTER_WINDOW <span class="o">[</span>FILTER_WINDOW ...<span class="o">]]</span> <span class="o">[</span>-sigma SIGMA <span class="o">[</span>SIGMA ...<span class="o">]]</span> <span class="o">[</span>-o OUTPUT_DIR<span class="o">]</span> <span class="o">[</span>--no_log_file<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>usage: your_rfimask.py <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-f FILES <span class="o">[</span>FILES ...<span class="o">]]</span> <span class="o">[</span>-n NSPECTRA<span class="o">]</span>
+                       <span class="o">[</span>-sk_sigma SPECTRAL_KURTOSIS_SIGMA<span class="o">]</span>
+                       <span class="o">[</span>-sg_sigma SAVGOL_SIGMA<span class="o">]</span>
+                       <span class="o">[</span>-sg_frequency SAVGOL_FREQUENCY_WINDOW<span class="o">]</span> <span class="o">[</span>-o OUTPUT_DIR<span class="o">]</span>
+                       <span class="o">[</span>--no_log_file<span class="o">]</span> <span class="o">[</span>-v<span class="o">]</span>
 </code></pre></div>
-
 <h1 id="arguments">Arguments</h1>
 <table>
 <thead>
@@ -766,34 +774,46 @@
 <td align="center">filterbank or psrfits</td>
 </tr>
 <tr>
-<td align="center"><code>-sg</code></td>
-<td align="center"><code>--apply_savgol</code></td>
-<td align="center"></td>
-<td align="center">Apply savgol filter to zap bad channels</td>
+<td align="center"><code>-n</code></td>
+<td align="center"><code>--nspectra</code></td>
+<td align="center"><code>8192</code></td>
+<td align="center">Number of spectra to read and apply filters to</td>
 </tr>
 <tr>
-<td align="center"><code>-frequency_window</code></td>
-<td align="center"><code>--filter_window</code></td>
-<td align="center"><code>[15]</code></td>
-<td align="center">Window size (MHz) for savgol filter</td>
+<td align="center"><code>-sk_sigma</code></td>
+<td align="center"><code>--spectral_kurtosis_sigma</code></td>
+<td align="center"><code>0</code></td>
+<td align="center">Sigma for spectral kurtosis based RFI mitigation, if set to 0 this method will not be used.</td>
 </tr>
 <tr>
-<td align="center"><code>-sigma</code></td>
-<td align="center"><code>--sigma</code></td>
-<td align="center"><code>[6]</code></td>
-<td align="center">Sigma for the savgol filter</td>
+<td align="center"><code>-sg_sigma</code></td>
+<td align="center"><code>--savgol_sigma</code></td>
+<td align="center"><code>0</code></td>
+<td align="center">Sigma for Savgol filter for RFI mitigation, if set to 0 this method will not be used.</td>
+</tr>
+<tr>
+<td align="center"><code>-sg_frequency</code></td>
+<td align="center"><code>--savgol_frequency_window</code></td>
+<td align="center"><code>15</code></td>
+<td align="center">Filter window for savgol filter (in MHz), only applied if -rfi_flag is used.</td>
 </tr>
 <tr>
 <td align="center"><code>-o</code></td>
 <td align="center"><code>--output_dir</code></td>
 <td align="center"><code>.</code></td>
-<td align="center">Output dir for heimdall candidates</td>
+<td align="center">Output dir for saving the mask</td>
 </tr>
 <tr>
 <td align="center"></td>
 <td align="center"><code>--no_log_file</code></td>
 <td align="center"></td>
 <td align="center">Do not write a log file</td>
+</tr>
+<tr>
+<td align="center"><code>-v</code></td>
+<td align="center"><code>--verbose</code></td>
+<td align="center"></td>
+<td align="center">Be verbose</td>
 </tr>
 </tbody>
 </table>
@@ -863,8 +883,8 @@
       
     </div>
     
-      <script src="../../assets/javascripts/vendor.77e55a48.min.js"></script>
-      <script src="../../assets/javascripts/bundle.9554a270.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      <script src="../../assets/javascripts/vendor.7e0ee788.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c1ccee15.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
       
       <script>
         app = initialize({

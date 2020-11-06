@@ -10,10 +10,11 @@
       
       
       
+      
         <meta name="author" content="Devansh Agarwal, Kshitij Agarwal">
       
       <link rel="shortcut icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.0.2">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.1.3">
     
     
       
@@ -21,10 +22,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.38780c08.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.2cb7adb3.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.3f72e892.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.f0267088.min.css">
         
           
           
@@ -77,7 +78,9 @@
       
     </div>
     
-      <header class="md-header" data-md-component="header">
+      
+
+<header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid" aria-label="Header">
     <a href="../.." title="Your Documentation" class="md-header-nav__button md-logo" aria-label="Your Documentation">
       
@@ -162,7 +165,9 @@
               <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
-                    <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+                    
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="Your Documentation" class="md-nav__button md-logo" aria-label="Your Documentation">
       
@@ -821,71 +826,59 @@
 <h3 id="gpu_dedisperse">gpu_dedisperse</h3>
 <div class="highlight"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">gpu</span><span class="o">.</span><span class="n">gpu_dedisperse</span><span class="p">(</span><span class="n">cand</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </code></pre></div>
-
 <p>GPU dedispersion (by rolling the array)</p>
 <p>Args: </p>
 <div class="codehilite"><pre><span></span><code><span class="n">cand</span><span class="o">:</span> <span class="n">Candidate</span> <span class="n">instance</span>
 <span class="n">device</span> <span class="o">(</span><span class="n">int</span><span class="o">):</span> <span class="n">GPU</span> <span class="n">ID</span>
 </code></pre></div>
 
-
 <p>Returns: </p>
 <div class="codehilite"><pre><span></span><code><span class="err">candidate object</span>
 </code></pre></div>
-
 
 <hr />
 <p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/gpu.py#L67">[source]</a></span></p>
 <h3 id="gpu_dmt">gpu_dmt</h3>
 <div class="highlight"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">gpu</span><span class="o">.</span><span class="n">gpu_dmt</span><span class="p">(</span><span class="n">cand</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </code></pre></div>
-
 <p>GPU DM-Time bow-tie (by rolling the array)</p>
 <p>Args: </p>
 <div class="codehilite"><pre><span></span><code><span class="n">cand</span><span class="o">:</span> <span class="n">Candidate</span> <span class="n">instance</span>
 <span class="n">device</span> <span class="o">(</span><span class="n">int</span><span class="o">):</span> <span class="n">GPU</span> <span class="n">ID</span>
 </code></pre></div>
 
-
 <p>Returns: </p>
 <div class="codehilite"><pre><span></span><code><span class="err">candidate object</span>
 </code></pre></div>
-
 
 <hr />
 <p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/gpu.py#L126">[source]</a></span></p>
 <h3 id="gpu_dedisp_and_dmt_crop">gpu_dedisp_and_dmt_crop</h3>
 <div class="highlight"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">gpu</span><span class="o">.</span><span class="n">gpu_dedisp_and_dmt_crop</span><span class="p">(</span><span class="n">cand</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </code></pre></div>
-
 <p>GPU based dedispersion, DM time bow-time plot and crop it to 256x256 shaped arrays (by rolling the array)</p>
 <p>Args: </p>
 <div class="codehilite"><pre><span></span><code><span class="n">cand</span><span class="o">:</span> <span class="n">Candidate</span> <span class="n">instance</span>
 <span class="n">device</span> <span class="o">(</span><span class="n">int</span><span class="o">):</span> <span class="n">GPU</span> <span class="n">ID</span>
 </code></pre></div>
 
-
 <p>Returns: </p>
 <div class="codehilite"><pre><span></span><code><span class="err">candidate object</span>
 </code></pre></div>
-
 
 <hr />
 <p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/utils/gpu.py#L308">[source]</a></span></p>
 <h3 id="get_gpu_memory_map">get_gpu_memory_map</h3>
 <div class="highlight"><pre><span></span><code><span class="n">your</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">gpu</span><span class="o">.</span><span class="n">get_gpu_memory_map</span><span class="p">(</span><span class="n">gpu_id</span><span class="p">)</span>
 </code></pre></div>
-
 <p>Get the current gpu free memory</p>
 <p>Args: </p>
 <div class="codehilite"><pre><span></span><code><span class="err">gpu_id (int): GPU id</span>
 </code></pre></div>
 
-
 <p>Returns: </p>
 <div class="codehilite"><pre><span></span><code><span class="n">int</span><span class="o">:</span> <span class="n">amount</span> <span class="n">of</span> <span class="n">free</span> <span class="n">GPU</span> <span class="n">RAM</span>
 </code></pre></div>
-
 
 <hr />
                 
@@ -954,8 +947,8 @@
       
     </div>
     
-      <script src="../../assets/javascripts/vendor.77e55a48.min.js"></script>
-      <script src="../../assets/javascripts/bundle.9554a270.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      <script src="../../assets/javascripts/vendor.7e0ee788.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c1ccee15.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
       
       <script>
         app = initialize({

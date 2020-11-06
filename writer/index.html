@@ -10,10 +10,11 @@
       
       
       
+      
         <meta name="author" content="Devansh Agarwal, Kshitij Agarwal">
       
       <link rel="shortcut icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.0.2">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.1.3">
     
     
       
@@ -21,10 +22,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.38780c08.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.2cb7adb3.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.3f72e892.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.f0267088.min.css">
         
           
           
@@ -77,7 +78,9 @@
       
     </div>
     
-      <header class="md-header" data-md-component="header">
+      
+
+<header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid" aria-label="Header">
     <a href=".." title="Your Documentation" class="md-header-nav__button md-logo" aria-label="Your Documentation">
       
@@ -162,7 +165,9 @@
               <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
-                    <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+                    
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href=".." title="Your Documentation" class="md-nav__button md-logo" aria-label="Your Documentation">
       
@@ -876,9 +881,10 @@
     <span class="n">savgol_sigma</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
     <span class="n">gulp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">zero_dm_subt</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">time_decimation_factor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">frequency_decimation_factor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
 <span class="p">)</span>
 </code></pre></div>
-
 <p>The unified writer class.</p>
 <p>Args: </p>
 <div class="codehilite"><pre><span></span><code><span class="n">your_object</span><span class="o">:</span> <span class="n">Your</span> <span class="n">object</span>
@@ -897,32 +903,27 @@
 <span class="n">zero_dm_subt</span> <span class="o">(</span><span class="n">bool</span><span class="o">)</span> <span class="o">:</span> <span class="n">Enable</span> <span class="n">zero</span> <span class="n">DM</span> <span class="n">rfi</span> <span class="n">excision</span>
 </code></pre></div>
 
-
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L181">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L192">[source]</a></span></p>
 <h3 id="to_fil">to_fil</h3>
 <div class="highlight"><pre><span></span><code><span class="n">Writer</span><span class="o">.</span><span class="n">to_fil</span><span class="p">()</span>
 </code></pre></div>
-
 <p>Writes out a Filterbank File.</p>
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L227">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L238">[source]</a></span></p>
 <h3 id="to_fits">to_fits</h3>
 <div class="highlight"><pre><span></span><code><span class="n">Writer</span><span class="o">.</span><span class="n">to_fits</span><span class="p">(</span><span class="n">npsub</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div>
-
 <p>Writes out a PSRFITS file</p>
 <p>Args: </p>
 <div class="codehilite"><pre><span></span><code><span class="err">npsub (int) : number of spectra per subint</span>
 </code></pre></div>
 
-
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L145">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L156">[source]</a></span></p>
 <h3 id="get_data_to_write">get_data_to_write</h3>
 <div class="highlight"><pre><span></span><code><span class="n">Writer</span><span class="o">.</span><span class="n">get_data_to_write</span><span class="p">(</span><span class="n">start_sample</span><span class="p">,</span> <span class="n">nsamp</span><span class="p">)</span>
 </code></pre></div>
-
 <p>Read data to self.data, selects channels
 Optionally perform RFI filtering and zero-DM subtraction</p>
 <p>Args: </p>
@@ -930,38 +931,32 @@ Optionally perform RFI filtering and zero-DM subtraction</p>
 <span class="err">nsamp (int): Number of samples to read</span>
 </code></pre></div>
 
-
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L332">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L343">[source]</a></span></p>
 <h3 id="dada_header">dada_header</h3>
 <div class="highlight"><pre><span></span><code><span class="n">Writer</span><span class="o">.</span><span class="n">dada_header</span><span class="p">()</span>
 </code></pre></div>
-
 <p>Create the psrdada header dictionary</p>
 <p>Returns: </p>
 <div class="codehilite"><pre><span></span><code><span class="n">dict</span><span class="o">:</span> <span class="n">psrdada</span> <span class="n">header</span> <span class="n">dictionary</span>
 </code></pre></div>
 
-
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L354">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L365">[source]</a></span></p>
 <h3 id="setup_dada">setup_dada</h3>
 <div class="highlight"><pre><span></span><code><span class="n">Writer</span><span class="o">.</span><span class="n">setup_dada</span><span class="p">(</span><span class="n">dada_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">data_step</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-
 <p>Set up the psrdada buffers.</p>
 <p>Args: </p>
 <div class="codehilite"><pre><span></span><code><span class="err">dada_key (hex): hex key, if left None, key would be chosen randomly</span>
 <span class="err">data_step (int): size of each page in the ring buffer in bytes</span>
 </code></pre></div>
 
-
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L384">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L395">[source]</a></span></p>
 <h3 id="to_dada">to_dada</h3>
 <div class="highlight"><pre><span></span><code><span class="n">Writer</span><span class="o">.</span><span class="n">to_dada</span><span class="p">()</span>
 </code></pre></div>
-
 <p>Start the process of dumping data to the dada buffers till the EOF.</p>
 <hr />
                 
@@ -1030,8 +1025,8 @@ Optionally perform RFI filtering and zero-DM subtraction</p>
       
     </div>
     
-      <script src="../assets/javascripts/vendor.77e55a48.min.js"></script>
-      <script src="../assets/javascripts/bundle.9554a270.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      <script src="../assets/javascripts/vendor.7e0ee788.min.js"></script>
+      <script src="../assets/javascripts/bundle.c1ccee15.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
       
       <script>
         app = initialize({

@@ -1,4 +1,4 @@
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/misc.py#L72)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/misc.py#L73)</span>
 
 ### crop
 
@@ -24,7 +24,7 @@ Returns:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/misc.py#L97)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/misc.py#L98)</span>
 
 ### pad_along_axis
 
@@ -51,7 +51,7 @@ Returns:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/misc.py#L146)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/misc.py#L147)</span>
 
 ### MyEncoder
 
@@ -72,6 +72,21 @@ your.utils.misc.MyEncoder(
 
 
 Custom Encoder Class to convert any class to a JSON serializable object
+
+
+----
+
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/misc.py#L163)</span>
+
+### YourArgparseFormatter
+
+
+```python
+your.utils.misc.YourArgparseFormatter(prog, indent_increment=2, max_help_position=24, width=None)
+```
+
+
+Allows both Raw Text Formatting and Default Args
 
 
 ----

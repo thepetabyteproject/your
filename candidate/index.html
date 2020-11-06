@@ -10,10 +10,11 @@
       
       
       
+      
         <meta name="author" content="Devansh Agarwal, Kshitij Agarwal">
       
       <link rel="shortcut icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.0.2">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.1.3">
     
     
       
@@ -21,10 +22,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.38780c08.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.2cb7adb3.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.3f72e892.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.f0267088.min.css">
         
           
           
@@ -77,7 +78,9 @@
       
     </div>
     
-      <header class="md-header" data-md-component="header">
+      
+
+<header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid" aria-label="Header">
     <a href=".." title="Your Documentation" class="md-header-nav__button md-logo" aria-label="Your Documentation">
       
@@ -162,7 +165,9 @@
               <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
-                    <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+                    
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href=".." title="Your Documentation" class="md-nav__button md-logo" aria-label="Your Documentation">
       
@@ -921,7 +926,6 @@
     <span class="n">fp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tcand</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">label</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">snr</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">min_samp</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kill_mask</span><span class="o">=</span><span class="kc">None</span>
 <span class="p">)</span>
 </code></pre></div>
-
 <p>Candidate Class</p>
 <p>Args: </p>
 <div class="codehilite"><pre><span></span><code><span class="err">fp Union[str, List]: String or a list of files. It can either filterbank or psrfits files.</span>
@@ -935,48 +939,40 @@
 <span class="err">kill_mask (numpy.ndarray): Boolean mask of channels to kill</span>
 </code></pre></div>
 
-
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L58">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L65">[source]</a></span></p>
 <h3 id="save_h5">save_h5</h3>
 <div class="highlight"><pre><span></span><code><span class="n">Candidate</span><span class="o">.</span><span class="n">save_h5</span><span class="p">(</span><span class="n">out_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fnout</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-
 <p>Save the candidate to a hdf5 file</p>
 <p>Args: </p>
 <div class="codehilite"><pre><span></span><code><span class="err">out_dir (str): path to the output directory</span>
 <span class="err">fnout (str): output name of the file</span>
 </code></pre></div>
 
-
 <p>Returns: </p>
 <div class="codehilite"><pre><span></span><code><span class="n">str</span><span class="o">:</span> <span class="n">output</span> <span class="n">name</span> <span class="n">of</span> <span class="n">the</span> <span class="n">file</span>
 </code></pre></div>
 
-
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L125">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L132">[source]</a></span></p>
 <h3 id="dispersion_delay">dispersion_delay</h3>
 <div class="highlight"><pre><span></span><code><span class="n">Candidate</span><span class="o">.</span><span class="n">dispersion_delay</span><span class="p">(</span><span class="n">dms</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-
 <p>Calculate the dispersion delay for the candidate DM or at given dispersion DM</p>
 <p>Args: </p>
 <div class="codehilite"><pre><span></span><code><span class="err">dms (Union[float,np.ndarray]) : DM or a list of DMs</span>
 </code></pre></div>
 
-
 <p>Returns: </p>
 <div class="codehilite"><pre><span></span><code><span class="err">Union[float, np.ndarray]: dispersion delay in seconds</span>
 </code></pre></div>
 
-
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L146">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L153">[source]</a></span></p>
 <h3 id="get_chunk">get_chunk</h3>
 <div class="highlight"><pre><span></span><code><span class="n">Candidate</span><span class="o">.</span><span class="n">get_chunk</span><span class="p">(</span><span class="n">tstart</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tstop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">for_preprocessing</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
-
 <p>Get a chunk of data. The data is saved in <code>self.data</code>.</p>
 <p>Args: </p>
 <div class="codehilite"><pre><span></span><code><span class="err">tstart (float): start time of the chunk in seconds</span>
@@ -985,13 +981,11 @@
 <span class="err">read based on the width of the candidate</span>
 </code></pre></div>
 
-
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L233">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L263">[source]</a></span></p>
 <h3 id="dedisperse">dedisperse</h3>
 <div class="highlight"><pre><span></span><code><span class="n">Candidate</span><span class="o">.</span><span class="n">dedisperse</span><span class="p">(</span><span class="n">dms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;CPU&quot;</span><span class="p">)</span>
 </code></pre></div>
-
 <p>Dedisperse a chunk of data. Saves the dedispersed chunk in <code>self.dedispersed</code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -1002,13 +996,11 @@
 <span class="err">target (str): &#39;CPU&#39; to run the code on the CPU or &#39;GPU&#39; to run it on a GPU.</span>
 </code></pre></div>
 
-
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L274">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L304">[source]</a></span></p>
 <h3 id="dedispersets">dedispersets</h3>
 <div class="highlight"><pre><span></span><code><span class="n">Candidate</span><span class="o">.</span><span class="n">dedispersets</span><span class="p">(</span><span class="n">dms</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-
 <p>Create a dedispersed time series</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -1018,18 +1010,15 @@
 <div class="codehilite"><pre><span></span><code><span class="err">dms (float): The DM to dedisperse the data at.</span>
 </code></pre></div>
 
-
 <p>Returns: </p>
 <div class="codehilite"><pre><span></span><code><span class="err">numpy.ndarray: Dedispersed time series.</span>
 </code></pre></div>
 
-
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L307">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L337">[source]</a></span></p>
 <h3 id="dmtime">dmtime</h3>
 <div class="highlight"><pre><span></span><code><span class="n">Candidate</span><span class="o">.</span><span class="n">dmtime</span><span class="p">(</span><span class="n">dmsteps</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;CPU&quot;</span><span class="p">)</span>
 </code></pre></div>
-
 <p>Generates DM-time array of the candidate by dedispersing at adjacent DM values. Saves the data in <code>self.dmt</code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -1040,30 +1029,25 @@
 <span class="err">target (str): &#39;CPU&#39; to run the code on the CPU or &#39;GPU&#39; to run it on a GPU.</span>
 </code></pre></div>
 
-
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L329">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L359">[source]</a></span></p>
 <h3 id="get_snr">get_snr</h3>
 <div class="highlight"><pre><span></span><code><span class="n">Candidate</span><span class="o">.</span><span class="n">get_snr</span><span class="p">(</span><span class="n">time_series</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-
 <p>Calculates the SNR of the candidate</p>
 <p>Args: </p>
 <div class="codehilite"><pre><span></span><code><span class="err">time_series (np.ndarray) : time series array to calculate the SNR of</span>
 </code></pre></div>
 
-
 <p>Returns: </p>
 <div class="codehilite"><pre><span></span><code><span class="n">float</span><span class="o">:</span> <span class="n">SNR</span>
 </code></pre></div>
 
-
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L352">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L382">[source]</a></span></p>
 <h3 id="optimize_dm">optimize_dm</h3>
 <div class="highlight"><pre><span></span><code><span class="n">Candidate</span><span class="o">.</span><span class="n">optimize_dm</span><span class="p">()</span>
 </code></pre></div>
-
 <p>Calculate more precise value of the DM by interpolating between DM values to maximise the SNR</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -1073,13 +1057,11 @@
 <div class="codehilite"><pre><span></span><code><span class="err">optimnised DM, optimised SNR</span>
 </code></pre></div>
 
-
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L382">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L412">[source]</a></span></p>
 <h3 id="decimate">decimate</h3>
 <div class="highlight"><pre><span></span><code><span class="n">Candidate</span><span class="o">.</span><span class="n">decimate</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">decimate_factor</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </code></pre></div>
-
 <p>Decimate FT or DMT data.</p>
 <p>Todo:
     * Update candidate parameters as per decimation factor</p>
@@ -1091,13 +1073,11 @@
 <span class="err">**kwargs: kwargs for numpy.pad</span>
 </code></pre></div>
 
-
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L420">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/candidate.py#L450">[source]</a></span></p>
 <h3 id="resize">resize</h3>
 <div class="highlight"><pre><span></span><code><span class="n">Candidate</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </code></pre></div>
-
 <p>Resize FT or DMT data</p>
 <p>Todo:
     * Update candidate parameters as per final size</p>
@@ -1107,7 +1087,6 @@
 <span class="err">axis (int) : Axis to resize alone</span>
 <span class="err">**kwargs: Arguments for skimage.transform resize function</span>
 </code></pre></div>
-
 
 <hr />
                 
@@ -1176,8 +1155,8 @@
       
     </div>
     
-      <script src="../assets/javascripts/vendor.77e55a48.min.js"></script>
-      <script src="../assets/javascripts/bundle.9554a270.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      <script src="../assets/javascripts/vendor.7e0ee788.min.js"></script>
+      <script src="../assets/javascripts/bundle.c1ccee15.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
       
       <script>
         app = initialize({

@@ -65,12 +65,14 @@ Args:
 
     nstart (int): start sample
     nsamp (int): number of samples to read
-    time_decimation_factor (int): decimate in time with this factor
-    frequency_decimation_factor (int): decimate in frequency with this factor
+    time_decimation_factor (int): number of time samples to average
+    frequency_decimation_factor (int): number of frequency channels to average
     pol (int): which polarization to chose
 
 !!! note
-    Both decimation factors should exactly device the nsamp or nchans
+    The decimation (both in time and frequency) is done on the data read i.e containing `nsamp` number of samples
+    and `nchans` number of channels. Therefore, both decimation factors should exactly divide the
+    nsamps or nchans respectively.
 
 Returns: 
 
@@ -79,7 +81,7 @@ Returns:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L267)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L269)</span>
 
 ### dispersion_delay
 
@@ -102,7 +104,7 @@ Returns:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L285)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L287)</span>
 
 ### Header
 
@@ -130,10 +132,10 @@ Attributes:
     center_freq (float): Center frequency of the data.
     time_decimation_factor (int): Number of time samples to average
     frequency_decimation_factor (int): Number of frequency channels to average
-    native_tsamp (float): Sampling time of the data pre decimation (seconds)
-    native_foff (float): Channel bandwidth of the data pre decimation (MHz)
-    native_nchans : Number of channels in the data pre decimation
-    native_nspectra: Number of spectra in the data pre decimation
+    native_tsamp (float): Sampling time of the data pre-decimation (seconds)
+    native_foff (float): Channel bandwidth of the data pre-decimation (MHz)
+    native_nchans : Number of channels in the data pre-decimation
+    native_nspectra: Number of spectra in the data pre-decimation
     dtype: dtype of the (read) data
     nbits (int): Number of bits in the data
     tstart (float): Start MJD of the data

@@ -19,6 +19,8 @@ your.writer.Writer(
     savgol_sigma=4,
     gulp=None,
     zero_dm_subt=False,
+    time_decimation_factor=1,
+    frequency_decimation_factor=1,
 )
 ```
 
@@ -46,7 +48,7 @@ Args:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L181)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L192)</span>
 
 ### to_fil
 
@@ -61,7 +63,7 @@ Writes out a Filterbank File.
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L227)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L238)</span>
 
 ### to_fits
 
@@ -80,7 +82,7 @@ Args:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L145)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L156)</span>
 
 ### get_data_to_write
 
@@ -102,7 +104,7 @@ Args:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L332)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L343)</span>
 
 ### dada_header
 
@@ -121,7 +123,7 @@ Returns:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L354)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L365)</span>
 
 ### setup_dada
 
@@ -141,7 +143,7 @@ Args:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L384)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L395)</span>
 
 ### to_dada
 
