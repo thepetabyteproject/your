@@ -302,8 +302,7 @@ if __name__ == "__main__":
         formatter_class=YourArgparseFormatter,
         epilog=textwrap.dedent(
             """\
-            This script can be used to visualize the data (Frequency-Time, bandpass and time series). 
-            It also reports some basic statistics of the data. 
+            This script can be used to visualize the data (Frequency-Time, bandpass and time series). It also reports some basic statistics of the data. 
             """
         )
     )

@@ -159,19 +159,18 @@ if __name__ == "__main__":
         formatter_class=YourArgparseFormatter,
         epilog=textwrap.dedent(
             """\
-            `your_candmaker.py` can be used to make candidate cutout files. These files are generated 
-            in HDF file format. The output candidates have been preprocessed and consists of Dedispersed Frequency-Time 
-            and DM-Time information of the candidate. The input should be a csv file containing the parameters of the candidates. 
-            The input csv file should contain the following fields: 
-            - file: Filterbank or PSRFITs file containing the data. In case of multiple files, this should contain the 
-            name of first file. 
-            - snr: Signal to Noise of the candidate.
-            - width: Width of candidate as log2(number of samples). 
-            - dm: DM of candidate
-            - label: Label of candidate (can be just set to 0, if not known)
-            - stime: Start time (seconds) of the candidate.
-            - chan_mask_path: Path of the channel mask file. 
-            - num_files: Number of files. 
+        `your_candmaker.py` can be used to make candidate cutout files. Some additional notes for this script: 
+        - These files are generated in HDF file format. 
+        - The output candidates have been preprocessed and consists of Dedispersed Frequency-Time and DM-Time information of the candidate. 
+        - The input should be a csv file containing the parameters of the candidates. The input csv file should contain the following fields: 
+                - file: Filterbank or PSRFITs file containing the data. In case of multiple files, this should contain the name of first file. 
+                - snr: Signal to Noise of the candidate.
+                - width: Width of candidate as log2(number of samples). 
+                - dm: DM of candidate
+                - label: Label of candidate (can be just set to 0, if not known)
+                - stime: Start time (seconds) of the candidate.
+                - chan_mask_path: Path of the channel mask file. 
+                - num_files: Number of files. 
             """
         ),
 
