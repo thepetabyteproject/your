@@ -95,7 +95,7 @@ commonly used language within Astronomy. It also comes with comprehensive
  
 
 `Your` uses the matplotlib library [@Hunter:2007] for plotting, and also makes use of various 
-numpy [@oliphant2006guide; @van2011numpy], scipy [@2020SciPy], scikit-image [@van2014scikit], numba [@numba] and 
+numpy [@harris2020], scipy [@2020SciPy], scikit-image [@van2014scikit], numba [@numba] and 
 Pandas [@reback2020pandas; @pandas2010] functions. `Your` also leverages several functions in the 
 Astropy package [@astropy:2013; @astropy:2018]: fits (astropy.io.fits), units (astropy.units), 
 coordinates (astropy.coordinates) and time (astropy.time). 
