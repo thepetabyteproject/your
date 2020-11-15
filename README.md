@@ -77,3 +77,20 @@ Here are some [tutorial notebooks](https://github.com/devanshkv/your/tree/master
 # Code Contributions
 We welcome all types of code contribution. Please have a look at our [guideline](CONTRIBUTING.md) and [code of conduct](CODE_OF_CONDUCT.md).
 
+# Citation
+If you use `Your`, please cite our [JOSS Paper](https://joss.theoj.org/papers/10.21105/joss.02750): [![status](https://joss.theoj.org/papers/798844ebd352f563de28bb75515da674/status.svg?style=flat-square)](https://joss.theoj.org/papers/798844ebd352f563de28bb75515da674)
+
+```bash
+@article{Aggarwal2020,
+  doi = {10.21105/joss.02750},
+  url = {https://doi.org/10.21105/joss.02750},
+  year = {2020},
+  publisher = {The Open Journal},
+  volume = {5},
+  number = {55},
+  pages = {2750},
+  author = {Kshitij Aggarwal and Devansh Agarwal and Joseph W. Kania and William Fiore and Reshma Anna Thomas and Scott M. Ransom and Paul B. Demorest and Robert S. Wharton and Sarah Burke-Spolaor and Duncan R. Lorimer and Maura A. Mclaughlin and Nathaniel Garver-Daniels},
+  title = {Your: Your Unified Reader},
+  journal = {Journal of Open Source Software}
+}
+```
