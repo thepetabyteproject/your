@@ -7,7 +7,7 @@ from psrdada import Writer
 logger = logging.getLogger(__name__)
 
 """
-To use `psrdada` you would first need to install [psrdada-python](https://github.com/AA-ALERT/psrdada-python).
+To use `psrdada` you would first need to install [psrdada-python](https://github.com/TRASAL/psrdada-python).
 """
 
 

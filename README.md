@@ -61,7 +61,7 @@ python setup.py install
 ``` 
 
 **Note**:
-    To use the `psrdada` format, you would need to install [psrdada-python](https://github.com/AA-ALERT/psrdada-python). [`your_heimdall.py`](https://thepetabyteproject.github.io/your/bin/your_heimdall/) requires [Heimdall](https://sourceforge.net/projects/heimdall-astro/) and [psrdada-python](https://github.com/AA-ALERT/psrdada-python). 
+    To use the `psrdada` format, you would need to install [psrdada-python](https://github.com/TRASAL/psrdada-python). [`your_heimdall.py`](https://thepetabyteproject.github.io/your/bin/your_heimdall/) requires [Heimdall](https://sourceforge.net/projects/heimdall-astro/) and [psrdada-python](https://github.com/TRASAL/psrdada-python). 
     To run the tests you would need to install `pytest`. 
 
 
