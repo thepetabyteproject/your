@@ -24,10 +24,10 @@ jobs:
         run: |
           python setup.py install
       - name: Black Check
-          uses: jpetrucciani/black-check@20.8b1
-          with:
-            # File or directory to run black on
-            path: # optional, default is .
+        uses: jpetrucciani/black-check@20.8b1
+        with:
+          # File or directory to run black on
+          path: # optional, default is .
       - name: Run pytest and Generate coverage report
         run: |
           pip install pytest pytest-cov
