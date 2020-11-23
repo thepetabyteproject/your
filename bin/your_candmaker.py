@@ -173,7 +173,6 @@ if __name__ == "__main__":
                 - num_files: Number of files. 
             """
         ),
-
     )
     parser.add_argument("-v", "--verbose", help="Be verbose", action="store_true")
     parser.add_argument(
