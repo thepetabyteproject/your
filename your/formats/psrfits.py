@@ -97,7 +97,7 @@ class PsrfitsFile(object):
         tstart (float): Start MJD of the data
         tsamp (float): Sampling interval (seconds)
         nifs (int): Number of IFs in the data.
-        
+
     """
 
     def __init__(self, psrfitslist):
@@ -279,7 +279,7 @@ class PsrfitsFile(object):
 
         Args:
            isub (int) : index of subint (first subint is 0)
-            
+
         Returns:
             np.ndarray : Subint weights. (There is one value for each channel)
 
@@ -292,7 +292,7 @@ class PsrfitsFile(object):
 
         Args:
              isub (int) : index of subint (first subint is 0)
-            
+
         Returns:
             np.ndarray : Subint scales. (There is one value for each channel)
 
@@ -305,7 +305,7 @@ class PsrfitsFile(object):
 
         Args:
             isub (int) : index of subint (first subint is 0)
-            
+
         Returns:
             np.ndarray : Subint offsets. (There is one value for each channel)
 
@@ -315,12 +315,12 @@ class PsrfitsFile(object):
     def get_data(self, nstart, nsamp, pol=0):
         """
         Return 2D array of data from PSRFITS files.
- 
+
         Args:
             nstart (int) : Starting sample
             nsamp (int) : number of samples to read
             pol (int) : which polarization to return
- 
+
         Returns:
             np.ndarray : Time-Frequency numpy array
 

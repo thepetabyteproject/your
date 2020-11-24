@@ -26,8 +26,8 @@ logger = logging.getLogger(__name__)
 
 def calc_skipchan(lowband_obj, upband_obj):
     """
-    Calculate the number of frequency channels to 
-    skip from top of lower and bottom of upper 
+    Calculate the number of frequency channels to
+    skip from top of lower and bottom of upper
     frequency bands
     :param lowband_obj: Your object for the lower frequency band
     :param upband_obj: Your object for the upper frequency band
@@ -70,7 +70,7 @@ def read_and_combine_subint(lowband_obj, upband_obj, fsub, upchanskip, lowchansk
     :fsub: subint to read
     :upchanskip: Lower channels to skip from the upperband
     :lowchanskip: Upper channels to skip from the lower band
-    :return data: Combined data for the input subint 
+    :return data: Combined data for the input subint
     """
     lowsub_data = lowband_obj.read_subint(
         fsub, apply_weights=False, apply_scales=False, apply_offsets=False
@@ -200,12 +200,12 @@ def make_sigproc_obj(filfile, lowband_obj, nchan, fch1, foff):
 
 def write_fil(data, lowband_obj, upband_obj, filename=None, outdir=None):
     """
-    Write Filterbank file given the upper and lower band Your 
+    Write Filterbank file given the upper and lower band Your
     objects and combined data
     :param lowband_obj: Your object for the lower frequency band
     :param upband_obj: Your object for the upper frequency band
     :param upband_obj: Your object for the upper frequency band
-    :param data: Combined data from two bands 
+    :param data: Combined data from two bands
     :param filename: Output name of the Filterbank file
     :param outdir: Output directory for the Filterbank file
     """
@@ -250,7 +250,7 @@ def write_fil(data, lowband_obj, upband_obj, filename=None, outdir=None):
 
 def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
     """
-    combines data from two subbands from Mock spectrometer 
+    combines data from two subbands from Mock spectrometer
     and writes out a Filterbank file.
     :param f1: List of files from one subband
     :param f2: List of files from other subband
@@ -579,7 +579,9 @@ if __name__ == "__main__":
     if not values.no_log_file:
         if values.verbose:
             logging.basicConfig(
-                filename=log_filename, level=logging.DEBUG, format=logging_format,
+                filename=log_filename,
+                level=logging.DEBUG,
+                format=logging_format,
             )
         else:
             logging.basicConfig(

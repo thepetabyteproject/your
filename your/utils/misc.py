@@ -160,11 +160,12 @@ class MyEncoder(json.JSONEncoder):
         else:
             return super(MyEncoder, self).default(obj)
 
+
 class YourArgparseFormatter(
-    argparse.ArgumentDefaultsHelpFormatter,
-    argparse.RawTextHelpFormatter
+    argparse.ArgumentDefaultsHelpFormatter, argparse.RawTextHelpFormatter
 ):
     """
     Allows both Raw Text Formatting and Default Args
     """
+
     pass

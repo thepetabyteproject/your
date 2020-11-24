@@ -76,7 +76,9 @@ if __name__ == "__main__":
         required=False,
     )
     parser.add_argument(
-        "--no_progress", help="Do not show the progress bar", action="store_false",
+        "--no_progress",
+        help="Do not show the progress bar",
+        action="store_false",
     )
     parser.add_argument(
         "-r",
@@ -148,7 +150,9 @@ if __name__ == "__main__":
     if not values.no_log_file:
         if values.verbose:
             logging.basicConfig(
-                filename=log_filename, level=logging.DEBUG, format=logging_format,
+                filename=log_filename,
+                level=logging.DEBUG,
+                format=logging_format,
             )
         else:
             logging.basicConfig(

@@ -56,7 +56,7 @@ class Writer:
         gulp=None,
         zero_dm_subt=False,
         time_decimation_factor=1,
-        frequency_decimation_factor=1
+        frequency_decimation_factor=1,
     ):
 
         self.your_object = your_object

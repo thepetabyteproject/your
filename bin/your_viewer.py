@@ -304,7 +304,7 @@ if __name__ == "__main__":
             """\
             This script can be used to visualize the data (Frequency-Time, bandpass and time series). It also reports some basic statistics of the data. 
             """
-        )
+        ),
     )
     parser.add_argument(
         "-f",
