@@ -108,7 +108,7 @@ def normalise(data):
 def smad_plotter(freq_time, sigma=5.0, clip=True):
     """
     Spectral Median Absolute Deviation clipper
-   
+
     Args:
         freq_time (np.ndarray) : the frequency time data
         sigma (float): sigma at which to clip data

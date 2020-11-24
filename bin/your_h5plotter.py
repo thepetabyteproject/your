@@ -83,7 +83,9 @@ if __name__ == "__main__":
         required=False,
     )
     parser.add_argument(
-        "--no_progress", help="Do not show the tqdm bar", action="store_true",
+        "--no_progress",
+        help="Do not show the tqdm bar",
+        action="store_true",
     )
     parser.add_argument(
         "--no_log_file", help="Do not write a log file", action="store_true"

@@ -12,7 +12,7 @@ from your.utils.plotter import save_bandpass
 def bandpass(f, time=0, nspectra=8192, outname=None):
     """
     Plots and saves the bandpass
-    
+
     Args:
         f: File to read
 
