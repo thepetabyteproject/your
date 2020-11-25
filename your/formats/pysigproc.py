@@ -198,8 +198,8 @@ class SigprocFile(object):
             logging.debug(f"Reading parameter {s, n} from the Filterbank file header.")
             try:
                 s = s.decode()
+                self.hdrbytes += n
                 if s in self._type and n > 0:
-                    self.hdrbytes += n
                     if self._type[s] == "string":
                         (v, n) = self.get_string(self.fp)
                         self.hdrbytes += n
