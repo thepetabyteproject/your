@@ -7,7 +7,7 @@ import sys
 from collections import OrderedDict
 
 import numpy
-
+import logging
 from your.utils.astro import dec2deg
 from your.utils.astro import ra2deg
 
@@ -188,26 +188,43 @@ class SigprocFile(object):
             self.fp = fp
         self.hdrbytes = 0
         (s, n) = self.get_string(self.fp)
+        logging.debug(f"Reading {s} from the Filterbank file header.")
         if s != b"HEADER_START":
             self.hdrbytes = 0
             return None
         self.hdrbytes += n
         while True:
             (s, n) = self.get_string(self.fp)
-            s = s.decode()
-            self.hdrbytes += n
-            if s == "HEADER_END":
-                return
-            if self._type[s] == "string":
-                (v, n) = self.get_string(self.fp)
+            logging.debug(f"Reading parameter {s, n} from the Filterbank file header.")
+            try:
+                s = s.decode()
+                if s in self._type and n > 0:
+                    self.hdrbytes += n
+                    if self._type[s] == "string":
+                        (v, n) = self.get_string(self.fp)
+                        self.hdrbytes += n
+                        setattr(self, s, v)
+                    else:
+                        datatype = self._type[s][0]
+                        datasize = struct.calcsize(datatype)
+                        val = struct.unpack(datatype, self.fp.read(datasize))[0]
+                        setattr(self, s, val)
+                        self.hdrbytes += datasize
+                elif "HEADER_END" in s:
+                    return
+                else:
+                    logging.warning(
+                        f"Unknown header parameter: {s}. Skipping it and continuing. This may lead to "
+                        f"incorrect header values."
+                    )
+                    self.hdrbytes += n
+                    logging.warning(f"Skipping next 4 bytes of data.")
+                    self.fp.read(4)
+            except AttributeError:
+                logging.warning(
+                    f"Unknown header parameter: {s}. This may lead to incorrect header values."
+                )
                 self.hdrbytes += n
-                setattr(self, s, v)
-            else:
-                datatype = self._type[s][0]
-                datasize = struct.calcsize(datatype)
-                val = struct.unpack(datatype, self.fp.read(datasize))[0]
-                setattr(self, s, val)
-                self.hdrbytes += datasize
 
     @property
     def dtype(self):
