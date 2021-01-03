@@ -10,6 +10,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from rich.logging import RichHandler
+from rich.console import Console
+from rich.table import Table
 import textwrap
 
 from your import Your
@@ -82,15 +84,21 @@ class Paint(Frame):
         self.prev["command"] = self.save_figure
         self.prev.grid(row=0, column=4)
 
-    def nice_print(self, dic):
+    def table_print(self, dic):
         """
-        Prints out data files into in a nice to view way
+        Prints out data using rich.Table
 
         Inputs:
         dic --  dictionary containing data file meta data to be printed
         """
+
+        console = Console()
+        table = Table(show_header=True, header_style="bold red")
+        table.add_column("Parameter", justify="right")
+        table.add_column("Value")
         for key, item in dic.items():
-            print(f"{key : >27}:\t{item}")
+            table.add_row(key, f"{item}")
+        console.print(table)
 
     def get_header(self):
         """
@@ -101,7 +109,7 @@ class Paint(Frame):
         dic["nchans"] = self.your_obj.your_header.nchans
         dic["foff"] = self.your_obj.your_header.foff
         dic["nspectra"] = self.your_obj.your_header.nspectra
-        self.nice_print(dic)
+        self.table_print(dic)
 
     def load_file(self, file_name=[""], start_samp=0, gulp_size=1024, chan_std=False):
         """
