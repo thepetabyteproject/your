@@ -27,7 +27,7 @@ class SigprocFile(object):
 
         rawdatafile (str): Raw data file
         source_name (str): Source Name
-        machine_id (int) : Machine ID
+        machine_id (int): Machine ID
         barycentric (int): If 1 the data is barycentered
         pulsarcentric (int): Is the data in pulsar's frame of reference?
         src_raj (float): RA of the source (HHMMSS.SS)
@@ -230,7 +230,8 @@ class SigprocFile(object):
     def dtype(self):
         """
 
-        Returns: dtype of the data
+        Returns:
+            dtype of the data
 
         """
         if self.nbits == 8:
@@ -246,7 +247,8 @@ class SigprocFile(object):
     def bytes_per_spectrum(self):
         """
 
-        Returns: bytes per spectrum
+        Returns:
+            bytes per spectrum
 
         """
         return self.nbits * self.nchans * self.nifs / 8
@@ -254,7 +256,8 @@ class SigprocFile(object):
     def nspectra(self):
         """
 
-        Returns: Number of specrta in the file
+        Returns:
+            Number of specrta in the file
 
         """
         return (self._mmdata.size() - self.hdrbytes) / self.bytes_per_spectrum
@@ -264,7 +267,8 @@ class SigprocFile(object):
 
         Native number of spectra in the file. This will be made a property so that it can't be overwritten
 
-        Returns:Number of specrta in the file
+        Returns:
+            Number of specrta in the file
 
         """
 
@@ -378,7 +382,7 @@ class SigprocFile(object):
         Append spectra to the end of the file
 
         Args:
-            spectra (numpy.ndarray) : numpy array of the data to be dumped into the filterbank file
+            spectra (numpy.ndarray): numpy array of the data to be dumped into the filterbank file
             filename (str): name of the filterbank file
         """
         with open(filename, "ab") as f:

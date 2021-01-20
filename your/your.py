@@ -19,14 +19,14 @@ class Your(PsrfitsFile, SigprocFile):
     Your class.
 
     Args:
-        file : String or a list of files. It can either filterbank or psrfits files.
+        file: String or a list of files. It can either filterbank or psrfits files.
 
     Examples:
         your_object = your.Your("/path/to/filterbank.fil")
         your_object = your.Your(["puppi_58763_B1919+21_0292_0001.fits","puppi_58763_B1919+21_0292_0002.fits"]
 
     Attributes:
-        your_header : instance of the Header class
+        your_header: instance of the Header class
 
     """
 
@@ -294,7 +294,7 @@ class Header:
 
     Attributes:
         filelist (list): List of files used to make the your object
-        filename (str) : Name of the first file used to make the object
+        filename (str): Name of the first file used to make the object
         basename (str): Base name of file
         source_name (str): Source Name
         ra_deg (float): RA of the source in degrees
@@ -311,7 +311,7 @@ class Header:
         nbits (int): Number of bits in the data
         tstart (float): Start MJD of the data
         fch1 (float): Frequency of the first channel (MHz)
-        npol (int) : Number of polarisations in the data
+        npol (int): Number of polarisations in the data
     """
 
     def __init__(self, your):

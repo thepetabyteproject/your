@@ -17,10 +17,10 @@ def _decimate(data, decimate_factor, axis, pad=False, **kwargs):
     Decimate an input array by an input factor. Optionally padding can also be done.
 
     Args:
-        data (np.ndarray) : data array to decimat
-        decimate_factor (int) : number of samples to combine
-        axis (int) : axis along which decimation is to be done
-        pad (bool) : Whether to apply padding if the data axis length is not a multiple of decimation factor
+        data (np.ndarray): data array to decimat
+        decimate_factor (int): number of samples to combine
+        axis (int): axis along which decimation is to be done
+        pad (bool): Whether to apply padding if the data axis length is not a multiple of decimation factor
         **kwargs: arguments of padding
 
     Returns:
@@ -56,8 +56,8 @@ def _resize(data, size, axis, **kwargs):
 
     Args:
         data (np.ndarray): data array to resize
-        size (int) : required size of the axis
-        axis (int) : axis long which resizing is to be done
+        size (int): required size of the axis
+        axis (int): axis long which resizing is to be done
         **kargs: arguments for skimage.transform resize function
 
     Returns:
@@ -75,10 +75,10 @@ def crop(data, start_sample, length, axis):
     Crops the input array to a required size
 
     Args:
-        data (np.ndarray) : Data array to crop
-        start_sample (int) : Sample to start the output cropped array
-        length (int) : Final Length along the axis of the output
-        axis (int) : Axis to crop
+        data (np.ndarray): Data array to crop
+        start_sample (int): Sample to start the output cropped array
+        length (int): Final Length along the axis of the output
+        axis (int): Axis to crop
 
     Returns:
         np.ndarray: Cropped array
@@ -100,10 +100,10 @@ def pad_along_axis(array: np.ndarray, target_length, loc="end", axis=0, **kwargs
     Pads data along the required axis on the input array to reach a target size
 
     Args:
-        array (np.ndarray) : Input array to pad
-        target_length (int) : Required length of the axis
-        loc (int) : Location to pad: start: pad in beginning, end: pad in end, else: pad equally on both sides
-        axis (int) : Axis to pad along
+        array (np.ndarray): Input array to pad
+        target_length (int): Required length of the axis
+        loc (int): Location to pad: start: pad in beginning, end: pad in end, else: pad equally on both sides
+        axis (int): Axis to pad along
         **kwargs: args for np.pad
 
     Returns:
@@ -134,14 +134,12 @@ def check_file_exist(file):
     Args:
         file: Path of file to check
 
-    Returns:
+    Raises:
+        IOError
 
     """
-    try:
-        assert os.path.isfile(file)
-    except AssertionError as err:
-        logger.exception(f"File {file} not found ")
-        raise err
+    if not os.path.isfile(file):
+        raise IOError(f"{file} not found")
 
 
 class MyEncoder(json.JSONEncoder):

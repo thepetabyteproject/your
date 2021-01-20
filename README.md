@@ -78,7 +78,7 @@ Here are some [tutorial notebooks](https://github.com/devanshkv/your/tree/master
 We welcome all types of code contribution. Please have a look at our [guideline](CONTRIBUTING.md) and [code of conduct](CODE_OF_CONDUCT.md).
 
 # Citation
-If you use `Your`, please cite our [JOSS Paper](https://joss.theoj.org/papers/10.21105/joss.02750): [![status](https://joss.theoj.org/papers/798844ebd352f563de28bb75515da674/status.svg?style=flat-square)](https://joss.theoj.org/papers/798844ebd352f563de28bb75515da674)
+If you use `Your`, please cite our [JOSS Paper](https://joss.theoj.org/papers/10.21105/joss.02750):
 
 ```bash
 @article{Aggarwal2020,

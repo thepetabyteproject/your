@@ -16,7 +16,7 @@ class Candidate(Your):
     Candidate Class
 
     Args:
-        fp Union[str, List]: String or a list of files. It can either filterbank or psrfits files.
+        fp Union[str, list]: String or a list of files. It can either filterbank or psrfits files.
         dm (float): Dispersion Measure of the candidate
         tcand (float): start time of the candidate in seconds at the highest frequency channel
         width (int): pulse width of the candidate in samples
@@ -134,7 +134,7 @@ class Candidate(Your):
         Calculate the dispersion delay for the candidate DM or at given dispersion DM
 
         Args:
-            dms (Union[float,np.ndarray]) : DM or a list of DMs
+            dms (Union[float,np.ndarray]): DM or a list of DMs
 
         Returns:
             Union[float, np.ndarray]: dispersion delay in seconds
@@ -342,7 +342,7 @@ class Candidate(Your):
             Our method rolls the data around while dedispersing it.
 
         Args:
-            dmsteps (int) : Number of DMs to dedisperse at.
+            dmsteps (int): Number of DMs to dedisperse at.
             target (str): 'CPU' to run the code on the CPU or 'GPU' to run it on a GPU.
 
         """
@@ -361,7 +361,7 @@ class Candidate(Your):
         Calculates the SNR of the candidate
 
         Args:
-            time_series (np.ndarray) : time series array to calculate the SNR of
+            time_series (np.ndarray): time series array to calculate the SNR of
 
         Returns:
             float: SNR
@@ -387,7 +387,7 @@ class Candidate(Your):
             This function has not been fully tested.
 
         Returns:
-            optimnised DM, optimised SNR
+            Optimized DM, optimised SNR
         """
         if self.data is None:
             return None
@@ -457,7 +457,7 @@ class Candidate(Your):
         Args:
             key (str): Keywords to chose which data to resize ('dmt' or 'ft')
             size: Final size of the data array required
-            axis (int) : Axis to resize alone
+            axis (int): Axis to resize alone
             **kwargs: Arguments for skimage.transform resize function
 
         """

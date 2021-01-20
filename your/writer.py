@@ -23,19 +23,19 @@ class Writer:
     Args:
 
         your_object: Your object
-        nstart (int) : Start sample to read from
-        nsamp (int) : Number of samples to write
-        c_min (int) : Starting channel index (default: 0)
-        c_max (int) : End channel index (default: total number of frequencies)
-        outdir (str) : Output directory for file
-        outname (str) : Name of the file to write to (without the file extension)
-        progress (bool) : Set to it to false to disable progress bars
-        flag_rfi (bool) : To turn on RFI flagging
-        spectral_kurtosis_sigma (float) : Sigma for spectral kurtosis filter
-        savgol_frequency_window (float) : Filter window for savgol filter
-        savgol_sigma (float) : Sigma for savgol filter
-        gulp (int) : Gulp size for the data
-        zero_dm_subt (bool) : Enable zero DM rfi excision
+        nstart (int): Start sample to read from
+        nsamp (int): Number of samples to write
+        c_min (int): Starting channel index (default: 0)
+        c_max (int): End channel index (default: total number of frequencies)
+        outdir (str): Output directory for file
+        outname (str): Name of the file to write to (without the file extension)
+        progress (bool): Set to it to false to disable progress bars
+        flag_rfi (bool): To turn on RFI flagging
+        spectral_kurtosis_sigma (float): Sigma for spectral kurtosis filter
+        savgol_frequency_window (float): Filter window for savgol filter
+        savgol_sigma (float):  Sigma for savgol filter
+        gulp (int): Gulp size for the data
+        zero_dm_subt (bool): Enable zero DM rfi excision
 
     """
 
@@ -161,7 +161,7 @@ class Writer:
 
         Args:
 
-            start_sample (int) : Start sample number to read from
+            start_sample (int): Start sample number to read from
             nsamp (int): Number of samples to read
 
         """
@@ -240,7 +240,7 @@ class Writer:
         Writes out a PSRFITS file
 
         Args:
-            npsub (int) : number of spectra per subint
+            npsub (int): number of spectra per subint
 
         """
 

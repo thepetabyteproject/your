@@ -58,9 +58,9 @@ class HeimdallManager:
         filename (str): process specified SIGPROC filterbank file
         verbosity (str): v, V, g, G increase verbosity level
         nsamps_gulp (int): number of samples to be read at a time
-        beam (int) : over-ride beam number
+        beam (int): over-ride beam number
         baseline_length (float): number of seconds over which to smooth the baseline
-        output_dir (str) : create all output files in specified path
+        output_dir (str): create all output files in specified path
         dm (list): min and max DM
         dm_tol (float): SNR loss tolerance between each DM trial
         zap_chans (int): zap all channels between start and end channels inclusive
