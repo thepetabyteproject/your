@@ -153,7 +153,7 @@ mdFile.new_table(
 mdFile.create_md_file()
 
 # Convert all note tabs so that it looks cooler with the material theme
-linebreaker_list = ["Args:", "Examples:", "Returns:", "Attributes:"]
+linebreaker_list = ["Args:", "Examples:", "Returns:", "Attributes:", "Raises:"]
 
 for dname, dirs, files in os.walk("sources"):
     for fname in files:
