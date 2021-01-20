@@ -42,7 +42,7 @@ def test_your_no_file():
     with pytest.raises(ValueError):
         Your([])
 
-    with pytest.raises(AssertionError):
+    with pytest.raises(IOError):
         Your("nofile.blah")
 
 
