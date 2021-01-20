@@ -17,10 +17,7 @@ This script can be used to plot and save the candidate HDF5 format files generat
 
 
 ```bash
-usage: your_h5plotter.py [-h] [-v] [-f FILES [FILES ...]] [-c RESULTS_CSV]
-                         [--publish] [--no_detrend_ft] [--no_save]
-                         [-o OUT_DIR] [-mad [MAD_FILTER]] [-n NPROC]
-                         [--no_progress] [--no_log_file]
+usage: your_h5plotter.py [-h] [-v] [-f FILES [FILES ...]] [-c RESULTS_CSV] [--publish] [--no_detrend_ft] [--no_save] [-o OUT_DIR] [-mad [MAD_FILTER]] [-n NPROC] [--no_progress] [--no_log_file]
 
 ```
 # Arguments

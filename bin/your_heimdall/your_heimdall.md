@@ -27,14 +27,8 @@ Your Heimdall Fetch FRB
 
 
 ```bash
-usage: your_heimdall.py [-h] [-v] [-f FILES [FILES ...]] [-dm DM DM]
-                        [-g GPU_ID] [-flag_rfi]
-                        [-sk_sigma SPECTRAL_KURTOSIS_SIGMA]
-                        [-sg_sigma SAVGOL_SIGMA]
-                        [-sg_frequency SAVGOL_FREQUENCY_WINDOW]
-                        [-dm_tol DM_TOL] [-rfi_no_narrow] [-rfi_no_broad]
-                        [-mask MASK] [-o OUTPUT_DIR] [-fs CHANNEL_START]
-                        [-fe CHANNEL_END] [--no_progress] [--no_log_file]
+usage: your_heimdall.py [-h] [-v] [-f FILES [FILES ...]] [-dm DM DM] [-g GPU_ID] [-flag_rfi] [-sk_sigma SPECTRAL_KURTOSIS_SIGMA] [-sg_sigma SAVGOL_SIGMA] [-sg_frequency SAVGOL_FREQUENCY_WINDOW]
+                        [-dm_tol DM_TOL] [-rfi_no_narrow] [-rfi_no_broad] [-mask MASK] [-o OUTPUT_DIR] [-fs CHANNEL_START] [-fe CHANNEL_END] [--no_progress] [--no_log_file]
 
 ```
 # Arguments

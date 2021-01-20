@@ -10,11 +10,7 @@ Make Bad channel mask
 
 
 ```bash
-usage: your_rfimask.py [-h] [-f FILES [FILES ...]] [-n NSPECTRA]
-                       [-sk_sigma SPECTRAL_KURTOSIS_SIGMA]
-                       [-sg_sigma SAVGOL_SIGMA]
-                       [-sg_frequency SAVGOL_FREQUENCY_WINDOW] [-o OUTPUT_DIR]
-                       [--no_log_file] [-v]
+usage: your_rfimask.py [-h] [-f FILES [FILES ...]] [-n NSPECTRA] [-sk_sigma SPECTRAL_KURTOSIS_SIGMA] [-sg_sigma SAVGOL_SIGMA] [-sg_frequency SAVGOL_FREQUENCY_WINDOW] [-o OUTPUT_DIR] [--no_log_file] [-v]
 
 ```
 # Arguments

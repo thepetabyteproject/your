@@ -39,10 +39,7 @@ Your candmaker! Make h5 candidates from the candidate csv files
 
 
 ```bash
-usage: your_candmaker.py [-h] [-v] [-fs FREQUENCY_SIZE]
-                         [-g GPU_ID [GPU_ID ...]] [-ts TIME_SIZE] -c
-                         CAND_PARAM_FILE [-n NPROC] [-o FOUT] [-opt]
-                         [--no_log_file]
+usage: your_candmaker.py [-h] [-v] [-fs FREQUENCY_SIZE] [-g GPU_ID [GPU_ID ...]] [-ts TIME_SIZE] -c CAND_PARAM_FILE [-n NPROC] [-o FOUT] [-opt] [--no_log_file]
 
 ```
 # Arguments

@@ -10,13 +10,8 @@ Convert/Write files from any format to a single file in any format.
 
 
 ```bash
-usage: your_writer.py [-h] [-v] -f FILES [FILES ...] -t TYPE [-c CHANS CHANS]
-                      [-nstart NSTART] [-nsamp NSAMP] [-o OUTDIR]
-                      [-name OUT_NAME] [--no_progress] [-r]
-                      [-sksig SPECTRAL_KURTOSIS_SIGMA] [-sgsig SAVGOL_SIGMA]
-                      [-sgfw SAVGOL_FREQUENCY_WINDOW] [-zero_dm_subt]
-                      [-td TIME_DECIMATION_FACTOR]
-                      [-fd FREQUENCY_DECIMATION_FACTOR] [--no_log_file]
+usage: your_writer.py [-h] [-v] -f FILES [FILES ...] -t TYPE [-c CHANS CHANS] [-nstart NSTART] [-nsamp NSAMP] [-o OUTDIR] [-name OUT_NAME] [--no_progress] [-r] [-sksig SPECTRAL_KURTOSIS_SIGMA]
+                      [-sgsig SAVGOL_SIGMA] [-sgfw SAVGOL_FREQUENCY_WINDOW] [-zero_dm_subt] [-td TIME_DECIMATION_FACTOR] [-fd FREQUENCY_DECIMATION_FACTOR] [--no_log_file]
 
 ```
 # Arguments
