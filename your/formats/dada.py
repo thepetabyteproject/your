@@ -18,9 +18,7 @@ class DadaManager:
     Args:
 
         size (int): size of each buffer (in bytes)
-
         key (hex): hexadecimal dada key
-
         n_readers (int): Number of dada readers.
     """
 
@@ -58,7 +56,6 @@ class DadaManager:
         Dump the data to the buffer
 
         Args:
-
             data_input (numpy.ndarray): Numpy array of the data.
 
         """

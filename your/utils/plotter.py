@@ -140,7 +140,7 @@ def save_bandpass(
         bandpass (np.ndarray): Bandpass of the data
         chan_nos (np.ndarray): Array of channel numbers
         mask (np.ndarray): Boolean Array of channel mask
-        outdir (str) : Output directory to save the plot
+        outdir (str): Output directory to save the plot
         outname (str): Name of the bandpass file
     """
 

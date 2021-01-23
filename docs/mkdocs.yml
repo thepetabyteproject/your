@@ -22,7 +22,7 @@ nav:
   - Reference API:
       - Core:
           - Your: your.md
-          - Candiate: candidate.md
+          - Candidate: candidate.md
           - Writer: writer.md
       - Formats:
           - Psrdada: formats/psrdada.md

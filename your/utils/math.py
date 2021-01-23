@@ -30,7 +30,7 @@ def primes(n):
 
     Args:
 
-        n (int) : a positive number
+        n (int): a positive number
 
     Returns:
         list: List of primes
@@ -54,12 +54,12 @@ def closest_divisor(n, m):
     Calculates the divisor of n, which is closest to (i.e bigger than) m
 
     Args:
-        n (int) : larger number of which divisor is to be found
-        m (int) : divisor closest to this number
+        n (int):  larger number of which divisor is to be found
+        m (int): divisor closest to this number
 
 
     Returns:
-        int : The divisor of n, which is closest to (i.e bigger than) m
+        int: The divisor of n, which is closest to (i.e bigger than) m
 
     """
     pfs = primes(n)
@@ -77,7 +77,7 @@ def find_gcd(list_of_nos):
 
     Args:
 
-        list_of_nos (list) : list of numbers
+        list_of_nos (list): list of numbers
 
     Returns:
 
@@ -110,7 +110,7 @@ def smad_plotter(freq_time, sigma=5.0, clip=True):
     Spectral Median Absolute Deviation clipper
 
     Args:
-        freq_time (np.ndarray) : the frequency time data
+        freq_time (np.ndarray): the frequency time data
         sigma (float): sigma at which to clip data
         clip (bool): if true replaces clips the data else replaces it with zeroes
 
