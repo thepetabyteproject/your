@@ -12,6 +12,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from rich.logging import RichHandler
 from rich.console import Console
 from rich.table import Table
+from rich import box
 import textwrap
 
 from your import Your
@@ -93,7 +94,7 @@ class Paint(Frame):
         """
 
         console = Console()
-        table = Table(show_header=True, header_style="bold red")
+        table = Table(show_header=True, header_style="bold red", box=box.DOUBLE_EDGE)
         table.add_column("Parameter", justify="right")
         table.add_column("Value")
         for key, item in dic.items():

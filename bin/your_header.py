@@ -8,6 +8,7 @@ import logging
 from rich.logging import RichHandler
 from rich.console import Console
 from rich.table import Table
+from rich import box
 
 from your import Your
 from your.utils.misc import YourArgparseFormatter
@@ -21,7 +22,7 @@ def nice_print(dic):
     dic --  dictionary containing data file meta data to be printed
     """
     for key, item in dic.items():
-        print(f"{key : >27}:\t{item}")
+        print(f"{key}\t{item}")
 
 
 def table_print(dic):
@@ -33,7 +34,7 @@ def table_print(dic):
     """
 
     console = Console()
-    table = Table(show_header=True, header_style="bold red")
+    table = Table(show_header=True, header_style="bold red", box=box.DOUBLE_EDGE)
     table.add_column("Parameter", justify="right")
     table.add_column("Value")
     for key, item in dic.items():
