@@ -189,7 +189,7 @@ class Writer:
         data = data.astype(self.your_object.your_header.dtype)
         self.data = data
 
-    def to_fil(self):
+    def to_fil(self, data=None):
         """
 
         Writes out a Filterbank File.
@@ -214,24 +214,30 @@ class Writer:
             if not os.path.isfile(self.outname):
                 raise IOError("Failed to write the filterbank file")
 
-            # get the nstart and number of samples to write
-            start_sample = self.nstart
-            samples_left = self.nsamp
+            if data == None:
+                # get the nstart and number of samples to write
+                start_sample = self.nstart
+                samples_left = self.nsamp
 
-            # open the file
-            with open(self.outname, "ab") as f:
-                # read till there are spectra to read
-                while samples_left > 0:
-                    self.get_data_to_write(start_sample, self.gulp)
-                    start_sample += self.gulp
-                    samples_left -= self.gulp
-                    # goto the end of the file and dump
-                    f.seek(0, os.SEEK_END)
-                    f.write(self.data.ravel())
-                    progress.update(task, advance=self.gulp)
-                    logger.debug(
-                        f"Wrote from spectra {start_sample}-{start_sample + self.gulp} to filterbank"
-                    )
+                # open the file
+                with open(self.outname, "ab") as f:
+                    # read till there are spectra to read
+                    while samples_left > 0:
+                        self.get_data_to_write(start_sample, self.gulp)
+                        start_sample += self.gulp
+                        samples_left -= self.gulp
+                        # goto the end of the file and dump
+                        f.seek(0, os.SEEK_END)
+                        f.write(self.data.ravel())
+                        progress.update(task, advance=self.gulp)
+                        logger.debug(
+                            f"Wrote from spectra {start_sample}-{start_sample + self.gulp} to filterbank"
+                        )
+            else:
+                with open(self.outname, "ab") as f:
+                    f.write(data.ravel())
+                progress.update(task, self.nsamp)
+                logger.debug("Wrote given spectra")
 
         logging.debug(f"Wrote all the necessary spectra")
 
