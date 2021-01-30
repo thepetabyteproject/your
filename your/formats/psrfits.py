@@ -34,7 +34,7 @@ def unpack_2bit(data):
     Unpack 2-bit data that has been read in as bytes.
 
     Args:
-        data (np.ndarray) : array of unsigned 2-bit ints packed into an array of bytes.
+        data (np.ndarray): array of unsigned 2-bit ints packed into an array of bytes.
 
     Returns:
         np.ndarray: unpacked array. The size of this array will be four times the size of the input data.
@@ -52,7 +52,7 @@ def unpack_4bit(data):
     Unpack 4-bit data that has been read in as bytes.
 
     Args:
-        data (np.ndarray) : array of unsigned 4-bit ints packed into an array of bytes.
+        data (np.ndarray): array of unsigned 4-bit ints packed into an array of bytes.
 
     Returns:
         np.ndarray: unpacked array. The size of this array will be twice the size of the input data.
@@ -81,7 +81,7 @@ class PsrfitsFile(object):
         specinfo (obj): Object of class SpectraInfo for the given file list
         header (list): Header of the fits file
         source_name (str): Source Name
-        machine_id (int) : Machine ID
+        machine_id (int): Machine ID
         barycentric (int): If 1 the data is barycentered
         pulsarcentric (int): Is the data in pulsar's frame of reference?
         src_raj (float): RA of the source (HHMMSS.SS)
@@ -97,7 +97,7 @@ class PsrfitsFile(object):
         tstart (float): Start MJD of the data
         tsamp (float): Sampling interval (seconds)
         nifs (int): Number of IFs in the data.
-        
+
     """
 
     def __init__(self, psrfitslist):
@@ -143,7 +143,7 @@ class PsrfitsFile(object):
         """
 
         Returns:
-            int : Total number of spectra in all files in filelist
+            int: Total number of spectra in all files in filelist
 
         """
         return int(self.specinfo.spectra_per_subint * np.sum(self.specinfo.num_subint))
@@ -153,7 +153,7 @@ class PsrfitsFile(object):
         Native number of total spectra in all the files. This will be made a property so that it can't be overwritten
 
         Returns:
-            int : Total number of spectra in all files in filelist
+            int: Total number of spectra in all files in filelist
 
         """
         return int(self.specinfo.spectra_per_subint * np.sum(self.specinfo.num_subint))
@@ -163,7 +163,7 @@ class PsrfitsFile(object):
         This will be made a property so that it can't be overwritten.
 
         Returns:
-            float : Native sampling time of the file.
+            float: Native sampling time of the file.
 
         """
         return self.specinfo.dt
@@ -173,7 +173,7 @@ class PsrfitsFile(object):
         This will be made a property so that it can't be overwritten.
 
         Returns:
-             float : Native channel bandwidth
+             float: Native channel bandwidth
 
         """
         return self.bw / self.nchan
@@ -196,13 +196,13 @@ class PsrfitsFile(object):
         Applys scales, weights, and offsets to the data.
 
         Args:
-            isub (int) : index of subint (first subint is 0)
-            apply_weights (bool) : If True, apply weights. (Default: apply weights)
-            apply_scales (bool) : If True, apply scales. (Default: apply scales)
-            apply_offsets (bool) : If True, apply offsets. (Default: apply offsets)
+            isub (int): index of subint (first subint is 0)
+            apply_weights (bool): If True, apply weights. (Default: apply weights)
+            apply_scales (bool): If True, apply scales. (Default: apply scales)
+            apply_offsets (bool): If True, apply offsets. (Default: apply offsets)
 
         Returns:
-            np.ndarray : Subint data with scales, weights, and offsets applied in float32 dtype with shape (nsamps,nchan).
+            np.ndarray: Subint data with scales, weights, and offsets applied in float32 dtype with shape (nsamps,nchan).
 
         """
         sdata = self.fits["SUBINT"].data[isub]["DATA"]
@@ -278,10 +278,10 @@ class PsrfitsFile(object):
         Return weights for a particular subint.
 
         Args:
-           isub (int) : index of subint (first subint is 0)
-            
+           isub (int): index of subint (first subint is 0)
+
         Returns:
-            np.ndarray : Subint weights. (There is one value for each channel)
+            np.ndarray: Subint weights. (There is one value for each channel)
 
         """
         return self.fits["SUBINT"].data[isub]["DAT_WTS"]
@@ -291,10 +291,10 @@ class PsrfitsFile(object):
         Return scales for a particular subint.
 
         Args:
-             isub (int) : index of subint (first subint is 0)
-            
+             isub (int): index of subint (first subint is 0)
+
         Returns:
-            np.ndarray : Subint scales. (There is one value for each channel)
+            np.ndarray: Subint scales. (There is one value for each channel)
 
         """
         return self.fits["SUBINT"].data[isub]["DAT_SCL"]
@@ -304,10 +304,10 @@ class PsrfitsFile(object):
         Return offsets for a particular subint.
 
         Args:
-            isub (int) : index of subint (first subint is 0)
-            
+            isub (int): index of subint (first subint is 0)
+
         Returns:
-            np.ndarray : Subint offsets. (There is one value for each channel)
+            np.ndarray: Subint offsets. (There is one value for each channel)
 
         """
         return self.fits["SUBINT"].data[isub]["DAT_OFFS"]
@@ -315,14 +315,14 @@ class PsrfitsFile(object):
     def get_data(self, nstart, nsamp, pol=0):
         """
         Return 2D array of data from PSRFITS files.
- 
+
         Args:
-            nstart (int) : Starting sample
-            nsamp (int) : number of samples to read
-            pol (int) : which polarization to return
- 
+            nstart (int): Starting sample
+            nsamp (int): number of samples to read
+            pol (int): which polarization to return
+
         Returns:
-            np.ndarray : Time-Frequency numpy array
+            np.ndarray: Time-Frequency numpy array
 
         """
         # Calculate starting subint and ending subint
@@ -427,7 +427,7 @@ class SpectraInfo:
     Class to read the header of fits files
 
     Args:
-        filenames (list) : list of fits files
+        filenames (list): list of fits files
     """
 
     def __init__(self, filenames):

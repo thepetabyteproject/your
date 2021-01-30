@@ -137,7 +137,9 @@ if __name__ == "__main__":
         default=-1,
     )
     parser.add_argument(
-        "--no_progress", help="Do not show the tqdm bar", action="store_false",
+        "--no_progress",
+        help="Do not show the tqdm bar",
+        action="store_false",
     )
     parser.add_argument(
         "--no_log_file", help="Do not write a log file", action="store_true"
@@ -163,7 +165,9 @@ if __name__ == "__main__":
     if not values.no_log_file:
         if values.verbose:
             logging.basicConfig(
-                filename=log_filename, level=logging.DEBUG, format=logging_format,
+                filename=log_filename,
+                level=logging.DEBUG,
+                format=logging_format,
             )
         else:
             logging.basicConfig(

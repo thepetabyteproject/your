@@ -7,7 +7,7 @@ import sys
 from collections import OrderedDict
 
 import numpy
-
+import logging
 from your.utils.astro import dec2deg
 from your.utils.astro import ra2deg
 
@@ -27,7 +27,7 @@ class SigprocFile(object):
 
         rawdatafile (str): Raw data file
         source_name (str): Source Name
-        machine_id (int) : Machine ID
+        machine_id (int): Machine ID
         barycentric (int): If 1 the data is barycentered
         pulsarcentric (int): Is the data in pulsar's frame of reference?
         src_raj (float): RA of the source (HHMMSS.SS)
@@ -188,32 +188,50 @@ class SigprocFile(object):
             self.fp = fp
         self.hdrbytes = 0
         (s, n) = self.get_string(self.fp)
+        logging.debug(f"Reading {s} from the Filterbank file header.")
         if s != b"HEADER_START":
             self.hdrbytes = 0
             return None
         self.hdrbytes += n
         while True:
             (s, n) = self.get_string(self.fp)
-            s = s.decode()
-            self.hdrbytes += n
-            if s == "HEADER_END":
-                return
-            if self._type[s] == "string":
-                (v, n) = self.get_string(self.fp)
+            logging.debug(f"Reading parameter {s, n} from the Filterbank file header.")
+            try:
+                s = s.decode()
                 self.hdrbytes += n
-                setattr(self, s, v)
-            else:
-                datatype = self._type[s][0]
-                datasize = struct.calcsize(datatype)
-                val = struct.unpack(datatype, self.fp.read(datasize))[0]
-                setattr(self, s, val)
-                self.hdrbytes += datasize
+                if s in self._type and n > 0:
+                    if self._type[s] == "string":
+                        (v, n) = self.get_string(self.fp)
+                        self.hdrbytes += n
+                        setattr(self, s, v)
+                    else:
+                        datatype = self._type[s][0]
+                        datasize = struct.calcsize(datatype)
+                        val = struct.unpack(datatype, self.fp.read(datasize))[0]
+                        setattr(self, s, val)
+                        self.hdrbytes += datasize
+                elif "HEADER_END" in s:
+                    return
+                else:
+                    logging.warning(
+                        f"Unknown header parameter: {s}. Skipping it and continuing. This may lead to "
+                        f"incorrect header values."
+                    )
+                    self.hdrbytes += n
+                    logging.warning(f"Skipping next 4 bytes of data.")
+                    self.fp.read(4)
+            except AttributeError:
+                logging.warning(
+                    f"Unknown header parameter: {s}. This may lead to incorrect header values."
+                )
+                self.hdrbytes += n
 
     @property
     def dtype(self):
         """
 
-        Returns: dtype of the data
+        Returns:
+            dtype of the data
 
         """
         if self.nbits == 8:
@@ -229,7 +247,8 @@ class SigprocFile(object):
     def bytes_per_spectrum(self):
         """
 
-        Returns: bytes per spectrum
+        Returns:
+            bytes per spectrum
 
         """
         return self.nbits * self.nchans * self.nifs / 8
@@ -237,7 +256,8 @@ class SigprocFile(object):
     def nspectra(self):
         """
 
-        Returns: Number of specrta in the file
+        Returns:
+            Number of specrta in the file
 
         """
         return (self._mmdata.size() - self.hdrbytes) / self.bytes_per_spectrum
@@ -247,7 +267,8 @@ class SigprocFile(object):
 
         Native number of spectra in the file. This will be made a property so that it can't be overwritten
 
-        Returns:Number of specrta in the file
+        Returns:
+            Number of specrta in the file
 
         """
 
@@ -361,7 +382,7 @@ class SigprocFile(object):
         Append spectra to the end of the file
 
         Args:
-            spectra (numpy.ndarray) : numpy array of the data to be dumped into the filterbank file
+            spectra (numpy.ndarray): numpy array of the data to be dumped into the filterbank file
             filename (str): name of the filterbank file
         """
         with open(filename, "ab") as f:

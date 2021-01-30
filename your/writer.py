@@ -23,19 +23,19 @@ class Writer:
     Args:
 
         your_object: Your object
-        nstart (int) : Start sample to read from
-        nsamp (int) : Number of samples to write
-        c_min (int) : Starting channel index (default: 0)
-        c_max (int) : End channel index (default: total number of frequencies)
-        outdir (str) : Output directory for file
-        outname (str) : Name of the file to write to (without the file extension)
-        progress (bool) : Set to it to false to disable progress bars
-        flag_rfi (bool) : To turn on RFI flagging
-        spectral_kurtosis_sigma (float) : Sigma for spectral kurtosis filter
-        savgol_frequency_window (float) : Filter window for savgol filter
-        savgol_sigma (float) : Sigma for savgol filter
-        gulp (int) : Gulp size for the data
-        zero_dm_subt (bool) : Enable zero DM rfi excision
+        nstart (int): Start sample to read from
+        nsamp (int): Number of samples to write
+        c_min (int): Starting channel index (default: 0)
+        c_max (int): End channel index (default: total number of frequencies)
+        outdir (str): Output directory for file
+        outname (str): Name of the file to write to (without the file extension)
+        progress (bool): Set to it to false to disable progress bars
+        flag_rfi (bool): To turn on RFI flagging
+        spectral_kurtosis_sigma (float): Sigma for spectral kurtosis filter
+        savgol_frequency_window (float): Filter window for savgol filter
+        savgol_sigma (float):  Sigma for savgol filter
+        gulp (int): Gulp size for the data
+        zero_dm_subt (bool): Enable zero DM rfi excision
 
     """
 
@@ -56,7 +56,7 @@ class Writer:
         gulp=None,
         zero_dm_subt=False,
         time_decimation_factor=1,
-        frequency_decimation_factor=1
+        frequency_decimation_factor=1,
     ):
 
         self.your_object = your_object
@@ -161,7 +161,7 @@ class Writer:
 
         Args:
 
-            start_sample (int) : Start sample number to read from
+            start_sample (int): Start sample number to read from
             nsamp (int): Number of samples to read
 
         """
@@ -189,7 +189,7 @@ class Writer:
         data = data.astype(self.your_object.your_header.dtype)
         self.data = data
 
-    def to_fil(self):
+    def to_fil(self, data=None):
         """
 
         Writes out a Filterbank File.
@@ -214,24 +214,30 @@ class Writer:
             if not os.path.isfile(self.outname):
                 raise IOError("Failed to write the filterbank file")
 
-            # get the nstart and number of samples to write
-            start_sample = self.nstart
-            samples_left = self.nsamp
+            if data == None:
+                # get the nstart and number of samples to write
+                start_sample = self.nstart
+                samples_left = self.nsamp
 
-            # open the file
-            with open(self.outname, "ab") as f:
-                # read till there are spectra to read
-                while samples_left > 0:
-                    self.get_data_to_write(start_sample, self.gulp)
-                    start_sample += self.gulp
-                    samples_left -= self.gulp
-                    # goto the end of the file and dump
-                    f.seek(0, os.SEEK_END)
-                    f.write(self.data.ravel())
-                    progress.update(task, advance=self.gulp)
-                    logger.debug(
-                        f"Wrote from spectra {start_sample}-{start_sample + self.gulp} to filterbank"
-                    )
+                # open the file
+                with open(self.outname, "ab") as f:
+                    # read till there are spectra to read
+                    while samples_left > 0:
+                        self.get_data_to_write(start_sample, self.gulp)
+                        start_sample += self.gulp
+                        samples_left -= self.gulp
+                        # goto the end of the file and dump
+                        f.seek(0, os.SEEK_END)
+                        f.write(self.data.ravel())
+                        progress.update(task, advance=self.gulp)
+                        logger.debug(
+                            f"Wrote from spectra {start_sample}-{start_sample + self.gulp} to filterbank"
+                        )
+            else:
+                with open(self.outname, "ab") as f:
+                    f.write(data.ravel())
+                progress.update(task, self.nsamp)
+                logger.debug("Wrote given spectra")
 
         logging.debug(f"Wrote all the necessary spectra")
 
@@ -240,7 +246,7 @@ class Writer:
         Writes out a PSRFITS file
 
         Args:
-            npsub (int) : number of spectra per subint
+            npsub (int): number of spectra per subint
 
         """
 

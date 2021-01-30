@@ -76,7 +76,9 @@ if __name__ == "__main__":
     if not values.no_log_file:
         if values.verbose:
             logging.basicConfig(
-                filename=log_filename, level=logging.DEBUG, format=logging_format,
+                filename=log_filename,
+                level=logging.DEBUG,
+                format=logging_format,
             )
         else:
             logging.basicConfig(

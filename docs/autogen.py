@@ -32,7 +32,6 @@ pages = {
         "your.writer.Writer.to_fil",
         "your.writer.Writer.to_fits",
         "your.writer.Writer.get_data_to_write",
-
         "your.writer.Writer.dada_header",
         "your.writer.Writer.setup_dada",
         "your.writer.Writer.to_dada",
@@ -103,7 +102,7 @@ pages = {
         "your.utils.misc.crop",
         "your.utils.misc.pad_along_axis",
         "your.utils.misc.MyEncoder",
-        "your.utils.misc.YourArgparseFormatter"
+        "your.utils.misc.YourArgparseFormatter",
     ],
 }
 
@@ -154,7 +153,7 @@ mdFile.new_table(
 mdFile.create_md_file()
 
 # Convert all note tabs so that it looks cooler with the material theme
-linebreaker_list = ["Args:", "Examples:", "Returns:", "Attributes:"]
+linebreaker_list = ["Args:", "Examples:", "Returns:", "Attributes:", "Raises:"]
 
 for dname, dirs, files in os.walk("sources"):
     for fname in files:
