@@ -98,43 +98,16 @@ if __name__ == "__main__":
                 handlers=[RichHandler(rich_tracebacks=True)],
             )
 
-    if values.savgol_sigma == 0 and values.spectral_kurtosis_sigma == 0:
-        raise ValueError("All sigma values cannot be zero.")
+    your_object = Your(file=values.files)
+    bandpass = your_object.bandpass(values.nspectra)
 
-    else:
-        your_object = Your(file=values.files)
-        bandpass = your_object.bandpass(values.nspectra)
-
-    if values.savgol_sigma > 0 and values.spectral_kurtosis_sigma == 0:
-        logging.info("Applying Savgol")
-        mask = savgol_filter(
-            bandpass=bandpass,
-            channel_bandwidth=your_object.your_header.foff,
-            frequency_window=values.savgol_frequency_window,
-            sigma=values.savgol_sigma,
-        )
-
-    elif values.savgol_sigma == 0 and values.spectral_kurtosis_sigma > 0:
-        logging.info("Applying Spectral Kurtosis")
-        mask = sk_filter(
-            data=your_object.get_data(0, values.nspectra),
-            channel_bandwidth=your_object.your_header.foff,
-            tsamp=your_object.your_header.tsamp,
-            N=None,
-            d=None,
-            sigma=values.spectral_kurtosis_sigma,
-        )
-
-    else:
-        logging.info("Applying both Spectral Kurtosis and Savgol")
-        mask = sk_sg_filter(
-            data=your_object.get_data(0, values.nspectra),
-            your_object=your_object,
-            nchans=your_object.your_header.nchans,
-            spectral_kurtosis_sigma=values.spectral_kurtosis_sigma,
-            savgol_frequency_window=values.savgol_frequency_window,
-            savgol_sigma=values.savgol_sigma,
-        )
+    mask = sk_sg_filter(
+        data=your_object.get_data(0, values.nspectra),
+        your_object=your_object,
+        spectral_kurtosis_sigma=values.spectral_kurtosis_sigma,
+        savgol_frequency_window=values.savgol_frequency_window,
+        savgol_sigma=values.savgol_sigma,
+    )
 
     basename = f"{values.output_dir}/{your_object.your_header.basename}_your_rfi_mask"
     chan_nos = np.array(range(your_object.your_header.nchans), dtype=int)
