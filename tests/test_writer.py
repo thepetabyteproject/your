@@ -2,16 +2,21 @@ import os
 
 from your import Your
 from your.writer import Writer
+import pytest
 
 _install_dir = os.path.abspath(os.path.dirname(__file__))
 
 
-def test_fil_to_fil():
-    # from fil
+@pytest.fixture(scope="function", autouse=True)
+def your_object():
     file = os.path.join(_install_dir, "data/small.fil")
-    f = Your(file)
+    return Your(file)
+
+
+def test_fil_to_fil(your_object):
+    # from fil
     w = Writer(
-        f,
+        your_object,
         nstart=1,
         nsamp=2,
         outname="temp",
@@ -27,16 +32,16 @@ def test_fil_to_fil():
     y = Your("temp.fil")
     assert y.your_header.nspectra == 2
     assert y.your_header.nchans == 190
-    assert (y.get_data(0, 2) - f.get_data(1, 2)[:, 10:200]).sum() == 0
+    assert (y.get_data(0, 2) - your_object.get_data(1, 2)[:, 10:200]).sum() == 0
     os.remove("temp.fil")
 
     # test without outname
-    w = Writer(f, nstart=0, nsamp=10, outdir="./", flag_rfi=True)
+    w = Writer(your_object, nstart=0, nsamp=10, outdir="./", flag_rfi=True)
     w.to_fil()
     assert os.path.isfile("small_converted.fil")
     y = Your("small_converted.fil")
     assert y.your_header.nspectra == 10
-    assert y.your_header.nchans == f.your_header.nchans
+    assert y.your_header.nchans == your_object.your_header.nchans
     os.remove("small_converted.fil")
 
 
@@ -121,3 +126,67 @@ def test_fits_to_fits():
     ns = y.your_header.nspectra
     assert (y.get_data(0, ns) - f.get_data(0, ns)[:, 0:10]).sum() == 0
     os.remove("small_converted.fits")
+
+
+def test_time_decimatation(your_object):
+    with pytest.raises(NotImplementedError):
+        w = Writer(
+            your_object,
+            outname="temp",
+            outdir="./",
+            flag_rfi=False,
+            zero_dm_subt=False,
+            time_decimation_factor=2,
+        )
+
+
+def test_frequency_decimatation(your_object):
+    with pytest.raises(NotImplementedError):
+        w = Writer(
+            your_object,
+            outname="temp",
+            outdir="./",
+            flag_rfi=False,
+            zero_dm_subt=False,
+            frequency_decimation_factor=2,
+        )
+
+
+def test_failing_replacement_policy(your_object):
+    with pytest.raises(ValueError):
+        w = Writer(
+            your_object,
+            outname="temp",
+            outdir="./",
+            flag_rfi=True,
+            zero_dm_subt=False,
+            replacement_policy="blah",
+        )
+
+
+def test_gulps(your_object):
+    w = Writer(
+        your_object,
+        nstart=1,
+        nsamp=2,
+        gulp=2,
+        outname="temp",
+        c_min=10,
+        c_max=200,
+        outdir="./",
+    )
+    w.to_fil()
+    assert os.path.isfile("temp.fil")
+
+    w = Writer(
+        your_object,
+        nstart=1,
+        nsamp=5,
+        gulp=20,
+        outname="temp",
+        c_min=10,
+        c_max=200,
+        outdir="./",
+    )
+    w.to_fil()
+    assert os.path.isfile("temp.fil")
