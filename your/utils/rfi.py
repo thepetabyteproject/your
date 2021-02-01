@@ -122,6 +122,11 @@ def sk_sg_filter(
          numpy.ndarray: mask for channels
 
     """
+    if (spectral_kurtosis_sigma == 0) and (savgol_sigma) == 0:
+        raise ValueError(
+            "Both savgol_sigma and spectral_kurtosis_sigma cannot be zero."
+        )
+
     mask = np.zeros(data.shape[1], dtype=np.bool)
     if spectral_kurtosis_sigma > 0:
         logger.debug(
@@ -134,7 +139,10 @@ def sk_sg_filter(
             sigma=spectral_kurtosis_sigma,
         )
         mask[sk_mask] = True
-    elif savgol_sigma > 0:
+    else:
+        raise ValueError("spectral_kurtosis_sigma can't be negative")
+
+    if savgol_sigma > 0:
         bp = data.sum(0)[~sk_mask]
         logger.debug(
             f"Applying savgol filter with frequency_window={savgol_frequency_window} and sigma={savgol_sigma}"
@@ -147,7 +155,6 @@ def sk_sg_filter(
         )
         mask[np.where(mask == False)[0][sg_mask]] = True
     else:
-        raise ValueError(
-            "Both savgol_sigma and spectral_kurtosis_sigma cannot be zero."
-        )
+        raise ValueError("savgol_sigma can't be negative")
+
     return mask
