@@ -14,7 +14,7 @@
       
       
       <link rel="shortcut icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.5">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.7">
     
     
       
@@ -22,10 +22,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.15aa0b43.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.cb6bc1d0.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.75751829.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.39b8e14a.min.css">
         
           
           
@@ -204,7 +204,6 @@
       
       
 
-
   
   
   
@@ -220,7 +219,6 @@
       
       
 
-
   
   
   
@@ -235,7 +233,6 @@
       
       
       
-
 
   
   
@@ -285,6 +282,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#writing-filterbanks-from-scratch" class="md-nav__link">
+    Writing Filterbanks from scratch
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -296,7 +300,6 @@
       
       
       
-
 
   
   
@@ -313,7 +316,6 @@
       
       
 
-
   
   
   
@@ -329,7 +331,6 @@
       
       
 
-
   
   
   
@@ -344,7 +345,6 @@
       
       
       
-
 
   
   
@@ -777,7 +777,6 @@
       
       
 
-
   
   
   
@@ -823,6 +822,13 @@
         <li class="md-nav__item">
   <a href="#writing-psrfits" class="md-nav__link">
     Writing PSRFITS
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#writing-filterbanks-from-scratch" class="md-nav__link">
+    Writing Filterbanks from scratch
   </a>
   
 </li>
@@ -15235,10 +15241,52 @@ h1:hover .anchor-link, h2:hover .anchor-link, h3:hover .anchor-link {
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h1 id="writing-files">Writing files<a class="anchor-link" href="#Writing-files">&#182;</a></h1>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[1]:</div>
+    <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+        
+        
+        <div class="CodeMirror cm-s-jupyter">
+    <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="kn">import</span> <span class="nn">your</span>
+
+<span class="n">your</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[1]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>&#39;0.6.2&#39;</pre>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[2]:</div>
     <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
         
         
@@ -15259,7 +15307,7 @@ h1:hover .anchor-link, h2:hover .anchor-link, h3:hover .anchor-link {
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[2]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[3]:</div>
     <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
         
         
@@ -15288,7 +15336,7 @@ h1:hover .anchor-link, h2:hover .anchor-link, h3:hover .anchor-link {
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[3]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div>
     <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
         
         
@@ -15318,7 +15366,7 @@ h1:hover .anchor-link, h2:hover .anchor-link, h3:hover .anchor-link {
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[12]:</div>
     <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
         
         
@@ -15329,7 +15377,7 @@ h1:hover .anchor-link, h2:hover .anchor-link, h3:hover .anchor-link {
     <span class="n">nsamp</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
     <span class="n">c_min</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
     <span class="n">c_max</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-    <span class="n">outdir</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span>
+    <span class="n">outdir</span><span class="o">=</span><span class="s2">&quot;.&quot;</span>
     <span class="n">outname</span><span class="o">=</span><span class="s2">&quot;filfromfil&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
@@ -15349,7 +15397,7 @@ h1:hover .anchor-link, h2:hover .anchor-link, h3:hover .anchor-link {
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[5]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[13]:</div>
     <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
         
         
@@ -15379,57 +15427,13 @@ h1:hover .anchor-link, h2:hover .anchor-link, h3:hover .anchor-link {
 
 
 
-<div id="372d8c1e-60d6-4c8b-adcc-5338e9e2fc08" class="jupyter-widgets jp-OutputArea-output ">
+<div id="20db6b73-7914-45d9-93fb-a60818a3718e" class="jupyter-widgets jp-OutputArea-output ">
 <script type="text/javascript">
-var element = document.getElementById('372d8c1e-60d6-4c8b-adcc-5338e9e2fc08');
+var element = document.getElementById('20db6b73-7914-45d9-93fb-a60818a3718e');
 </script>
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "b568dfd9ad7c43dd996a56a417ee4e55", "version_major": 2, "version_minor": 0}
+{"model_id": "de9d8d9823c64c9dba746f5dfa51ad90", "version_major": 2, "version_minor": 0}
 </script>
-</div>
-
-</div>
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output " data-mime-type="text/html">
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
-
-</div>
-
-</div>
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output " data-mime-type="text/html">
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="color: #008000">Writing...</span> <span style="color: #3a3a3a">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span> <span style="color: #800080">  0%</span> <span style="color: #008080">-:--:--</span>
-</pre>
-
-</div>
-
-</div>
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output " data-mime-type="text/html">
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="color: #008000">Writing...</span> <span style="color: #729c1f">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span> <span style="color: #800080">100%</span> <span style="color: #008080">0:00:00</span>
-</pre>
-
 </div>
 
 </div>
@@ -15447,7 +15451,7 @@ var element = document.getElementById('372d8c1e-60d6-4c8b-adcc-5338e9e2fc08');
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[6]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[14]:</div>
     <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
         
         
@@ -15470,44 +15474,33 @@ var element = document.getElementById('372d8c1e-60d6-4c8b-adcc-5338e9e2fc08');
 <div class="jp-OutputArea-child">
 
     
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[6]:</div>
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
 
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">OSError</span>                                   Traceback (most recent call last)
+<span class="ansi-green-fg">&lt;ipython-input-14-8ed06598747a&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
+<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>your_written_filterbank <span class="ansi-blue-fg">=</span> Your<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#34;filfromfil.fil&#34;</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">      2</span> your_written_filterbank<span class="ansi-blue-fg">.</span>your_header
 
+<span class="ansi-green-fg">~/soft/conda/envs/your_env/lib/python3.8/site-packages/your-0.6.2-py3.8.egg/your/your.py</span> in <span class="ansi-cyan-fg">__init__</span><span class="ansi-blue-fg">(self, file)</span>
+<span class="ansi-green-intense-fg ansi-bold">     35</span>         <span class="ansi-green-fg">if</span> isinstance<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">.</span>your_file<span class="ansi-blue-fg">,</span> str<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">     36</span>             ext <span class="ansi-blue-fg">=</span> os<span class="ansi-blue-fg">.</span>path<span class="ansi-blue-fg">.</span>splitext<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">.</span>your_file<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">]</span>
+<span class="ansi-green-fg">---&gt; 37</span><span class="ansi-red-fg">             </span>check_file_exist<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">.</span>your_file<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     38</span>             <span class="ansi-green-fg">if</span> ext <span class="ansi-blue-fg">==</span> <span class="ansi-blue-fg">&#34;.fits&#34;</span> <span class="ansi-green-fg">or</span> ext <span class="ansi-blue-fg">==</span> <span class="ansi-blue-fg">&#34;.sf&#34;</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">     39</span>                 self<span class="ansi-blue-fg">.</span>format <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">&#34;fits&#34;</span>
 
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>Unified Header:
-  &#34;basename&#34;: &#34;filfromfil&#34;
-  &#34;bw&#34;: -90.0
-  &#34;center_freq&#34;: 1410.0
-  &#34;dec_deg&#34;: 13.964475555555554
-  &#34;dtype&#34;: &#34;uint8&#34;
-  &#34;fch1&#34;: 1455.0
-  &#34;filelist&#34;: [
-    &#34;filfromfil.fil&#34;
-  ]
-  &#34;filename&#34;: &#34;filfromfil.fil&#34;
-  &#34;foff&#34;: -1.0
-  &#34;format&#34;: &#34;fil&#34;
-  &#34;frequency_decimation_factor&#34;: 1
-  &#34;gb&#34;: 75.61933243565039
-  &#34;gl&#34;: 97.96004079061271
-  &#34;native_foff&#34;: -1.0
-  &#34;native_nchans&#34;: 90
-  &#34;native_nspectra&#34;: 10.0
-  &#34;native_tsamp&#34;: 0.00126646875
-  &#34;nbits&#34;: 8
-  &#34;nchans&#34;: 90
-  &#34;npol&#34;: 1
-  &#34;nspectra&#34;: 10
-  &#34;ra_deg&#34;: 186.65681708333335
-  &#34;source_name&#34;: &#34;src1&#34;
-  &#34;time_decimation_factor&#34;: 1
-  &#34;tsamp&#34;: 0.00126646875
-  &#34;tstart&#34;: 58682.620316710374
-  &#34;tstart_utc&#34;: &#34;2019-07-18T14:53:15.364&#34;</pre>
+<span class="ansi-green-fg">~/soft/conda/envs/your_env/lib/python3.8/site-packages/your-0.6.2-py3.8.egg/your/utils/misc.py</span> in <span class="ansi-cyan-fg">check_file_exist</span><span class="ansi-blue-fg">(file)</span>
+<span class="ansi-green-intense-fg ansi-bold">    140</span>     &#34;&#34;&#34;
+<span class="ansi-green-intense-fg ansi-bold">    141</span>     <span class="ansi-green-fg">if</span> <span class="ansi-green-fg">not</span> os<span class="ansi-blue-fg">.</span>path<span class="ansi-blue-fg">.</span>isfile<span class="ansi-blue-fg">(</span>file<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 142</span><span class="ansi-red-fg">         </span><span class="ansi-green-fg">raise</span> IOError<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">f&#34;{file} not found&#34;</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    143</span> 
+<span class="ansi-green-intense-fg ansi-bold">    144</span> 
+
+<span class="ansi-red-fg">OSError</span>: filfromfil.fil not found</pre>
 </div>
-
 </div>
 
 </div>
@@ -15523,7 +15516,7 @@ var element = document.getElementById('372d8c1e-60d6-4c8b-adcc-5338e9e2fc08');
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[7]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
     <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
         
         
@@ -15538,10 +15531,10 @@ var element = document.getElementById('372d8c1e-60d6-4c8b-adcc-5338e9e2fc08');
 </div>
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[8]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
     <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
         
         
@@ -15555,29 +15548,6 @@ var element = document.getElementById('372d8c1e-60d6-4c8b-adcc-5338e9e2fc08');
 </div>
 </div>
 
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[8]:</div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>True</pre>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
@@ -15589,7 +15559,7 @@ and select some channels</p>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[9]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
     <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
         
         
@@ -15614,7 +15584,7 @@ and select some channels</p>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[10]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
     <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
         
         
@@ -15636,10 +15606,10 @@ and select some channels</p>
 <p>To write a PSRFITS we use the <a href="https://thepetabyteproject.github.io/your/writer/#to_fits"><code>to_fits</code></a> method,</p>
 
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[11]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
     <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
         
         
@@ -15653,159 +15623,207 @@ and select some channels</p>
 </div>
 </div>
 
-<div class="jp-Cell-outputWrapper">
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>Similar to reading the PSRFITS file, we can also read a filterbank file and convert to both formats by first defining a <a href="https://thepetabyteproject.github.io/your/writer/"><code>writer_object</code></a> and using the <a href="https://thepetabyteproject.github.io/your/writer/#to_fits"><code>to_fits</code></a> and <a href="https://thepetabyteproject.github.io/your/writer/#to_fil"><code>to_fil</code></a> methods.</p>
+<h2 id="writing-filterbanks-from-scratch">Writing Filterbanks from scratch<a class="anchor-link" href="#Writing-Filterbanks-from-scratch">&#182;</a></h2><p>First step in writing a filterbank is to create the header. We will use the <a href="https://thepetabyteproject.github.io/your/formats/filwriter/#make_sigproc_object"><code>make_sigproc_object</code></a> function for this.</p>
 
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+    <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+        
+        
+        <div class="CodeMirror cm-s-jupyter">
+    <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">your.formats.filwriter</span> <span class="kn">import</span> <span class="n">make_sigproc_object</span>
+</pre></div>
 
-<div class="jp-OutputArea jp-Cell-outputArea">
+        </div>
+    </div>
 
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr">
-<pre>2020-11-02 13:29:04,530 - root - MainThread - INFO - ObsInfo updated with relevant parameters
-2020-11-02 13:29:04,531 - your.formats.fitswriter - MainThread - INFO - Setting the following info to be written in ./fitsfromfil.fits 
- {
-    &#34;ant_x&#34;: -1601185.63,
-    &#34;ant_y&#34;: -5041978.15,
-    &#34;ant_z&#34;: 3554876.43,
-    &#34;bmaj_deg&#34;: 0.0,
-    &#34;bmin_deg&#34;: 0.0,
-    &#34;bpa_deg&#34;: 0.0,
-    &#34;bw&#34;: -100.0,
-    &#34;chan_bw&#34;: -1.0,
-    &#34;dec_str&#34;: &#34;13:57:52.1120&#34;,
-    &#34;dt&#34;: 0.00126646875,
-    &#34;fcenter&#34;: 1415.0,
-    &#34;file_date&#34;: &#34;2020-11-02T18:29:04&#34;,
-    &#34;longitude&#34;: -107.61833443381258,
-    &#34;nbits&#34;: 8,
-    &#34;nchan&#34;: 100,
-    &#34;nsblk&#34;: 10,
-    &#34;nsuboffs&#34;: 0.0,
-    &#34;obs_date&#34;: &#34;2019-07-18T14:53:15&#34;,
-    &#34;observer&#34;: &#34;Human&#34;,
-    &#34;proj_id&#34;: &#34;Awesome_Project&#34;,
-    &#34;ra_str&#34;: &#34;12:26:37.6361&#34;,
-    &#34;scan_len&#34;: 0.0126646875,
-    &#34;src_name&#34;: &#34;src1&#34;,
-    &#34;stt_imjd&#34;: 58682,
-    &#34;stt_lst&#34;: 12438.193191755068,
-    &#34;stt_offs&#34;: 0.3637763159349561,
-    &#34;stt_smjd&#34;: 53595,
-    &#34;telescope&#34;: &#34;VLA&#34;
-}
-2020-11-02 13:29:04,542 - root - MainThread - INFO - Building the PSRFITS table
-2020-11-02 13:29:04,569 - root - MainThread - INFO - Writing PSRFITS table to file: ./fitsfromfil.fits
-2020-11-02 13:29:04,657 - root - MainThread - INFO - Header information written in ./fitsfromfil.fits
-2020-11-02 13:29:04,658 - your.writer - MainThread - INFO - Filling PSRFITS file with data
-2020-11-02 13:29:04,678 - your.writer - MainThread - INFO - Number of subints to write 1
-</pre>
 </div>
 </div>
 
-<div class="jp-OutputArea-child">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+    <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+        
+        
+        <div class="CodeMirror cm-s-jupyter">
+    <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="n">sigproc_object</span> <span class="o">=</span> <span class="n">make_sigproc_object</span><span class="p">(</span>
+    <span class="n">rawdatafile</span>  <span class="o">=</span> <span class="s2">&quot;foo.fil&quot;</span><span class="p">,</span>
+    <span class="n">source_name</span> <span class="o">=</span> <span class="s2">&quot;bar&quot;</span><span class="p">,</span>
+    <span class="n">nchans</span>  <span class="o">=</span> <span class="mi">1024</span><span class="p">,</span> 
+    <span class="n">foff</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="c1">#MHz</span>
+    <span class="n">fch1</span> <span class="o">=</span> <span class="mi">2000</span><span class="p">,</span> <span class="c1"># MHz</span>
+    <span class="n">tsamp</span> <span class="o">=</span> <span class="mf">256e-6</span><span class="p">,</span> <span class="c1"># seconds</span>
+    <span class="n">tstart</span> <span class="o">=</span> <span class="mi">59246</span><span class="p">,</span> <span class="c1">#MJD</span>
+    <span class="n">src_raj</span><span class="o">=</span><span class="mf">112233.44</span><span class="p">,</span> <span class="c1"># HHMMSS.SS</span>
+    <span class="n">src_dej</span><span class="o">=</span><span class="mf">112233.44</span><span class="p">,</span> <span class="c1"># DDMMSS.SS</span>
+    <span class="n">machine_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">nbeams</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">ibeam</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">nbits</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+    <span class="n">nifs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">barycentric</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">pulsarcentric</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">telescope_id</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
+    <span class="n">data_type</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">az_start</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">za_start</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
 
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-
-
-
-
-
-<div id="893be085-d349-415d-a0a0-a3aedb0a77a5" class="jupyter-widgets jp-OutputArea-output ">
-<script type="text/javascript">
-var element = document.getElementById('893be085-d349-415d-a0a0-a3aedb0a77a5');
-</script>
-<script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "84eba871dedb4e47816c680668d8a420", "version_major": 2, "version_minor": 0}
-</script>
-</div>
-
-</div>
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output " data-mime-type="text/html">
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"></pre>
-
-</div>
-
-</div>
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output " data-mime-type="text/html">
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="color: #008000">Writing...</span> <span style="color: #3a3a3a">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span> <span style="color: #800080">  0%</span> <span style="color: #008080">-:--:--</span>
-</pre>
+        </div>
+    </div>
 
 </div>
-
-</div>
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr">
-<pre>2020-11-02 13:29:04,701 - your.writer - MainThread - INFO - Writing data to ./fitsfromfil.fits from subint = 0 to 1.
-</pre>
-</div>
-</div>
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output " data-mime-type="text/html">
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="color: #008000">Writing...</span> <span style="color: #729c1f">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span> <span style="color: #800080">100%</span> <span style="color: #008080">0:00:00</span>
-</pre>
-
-</div>
-
-</div>
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr">
-<pre>2020-11-02 13:29:05,464 - your.writer - MainThread - INFO - All spectra written to ./fitsfromfil.fits
-</pre>
-</div>
-</div>
-
-</div>
-
 </div>
 
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Similar to reading the PSRFITS file, we can also read a filterbank file and convert to both formats by first defining a <a href="https://thepetabyteproject.github.io/your/writer/"><code>writer_object</code></a> and using the <a href="https://thepetabyteproject.github.io/your/writer/#to_fits"><code>to_fits</code></a> and <a href="https://thepetabyteproject.github.io/your/writer/#to_fil"><code>to_fil</code></a> methods.</p>
+<p>Now we have <code>sigproc_object</code> which is an instance of the <a href="https://thepetabyteproject.github.io/your/formats/pysigproc/#sigprocfile"><code>SigprocFile</code></a> class. The class contains all the required functions to write a new file.</p>
+<p>First we use <a href="https://thepetabyteproject.github.io/your/formats/pysigproc/#write_header"><code>write_header</code></a> to write the header in <code>foo.fil</code> and then we use <a href="https://thepetabyteproject.github.io/your/formats/pysigproc/#append_spectra"><code>append_spectra</code></a> to fill data in the file.</p>
 
 </div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+    <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+        
+        
+        <div class="CodeMirror cm-s-jupyter">
+    <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="n">sigproc_object</span><span class="o">.</span><span class="n">write_header</span><span class="p">(</span><span class="s2">&quot;foo.fil&quot;</span><span class="p">)</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+</div>
+
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>Now let's create some random data with 8192 time samples and 1024 frequency channels to fill in our file and then append it.</p>
+
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+    <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+        
+        
+        <div class="CodeMirror cm-s-jupyter">
+    <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="n">data_written</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">255</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">8192</span><span class="p">,</span><span class="mi">1024</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+    <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+        
+        
+        <div class="CodeMirror cm-s-jupyter">
+    <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="n">sigproc_object</span><span class="o">.</span><span class="n">append_spectra</span><span class="p">(</span><span class="n">data_written</span><span class="p">,</span> <span class="s2">&quot;foo.fil&quot;</span><span class="p">)</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+</div>
+
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>We can test if the data written is correct by opening it using Your.</p>
+
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+    <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+        
+        
+        <div class="CodeMirror cm-s-jupyter">
+    <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="n">your_filterbank</span> <span class="o">=</span> <span class="n">Your</span><span class="p">(</span><span class="s2">&quot;foo.fil&quot;</span><span class="p">)</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+    <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+        
+        
+        <div class="CodeMirror cm-s-jupyter">
+    <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="n">your_filterbank</span><span class="o">.</span><span class="n">your_header</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+    <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+        
+        
+        <div class="CodeMirror cm-s-jupyter">
+    <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="n">data_read</span> <span class="o">=</span> <span class="n">your_filterbank</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">nstart</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nsamp</span><span class="o">=</span><span class="mi">8192</span><span class="p">)</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+    <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+        
+        
+        <div class="CodeMirror cm-s-jupyter">
+    <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">data_read</span><span class="p">,</span> <span class="n">data_written</span><span class="p">)</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+</div>
+
 </div>
 </body>
 
@@ -15878,15 +15896,15 @@ var element = document.getElementById('893be085-d349-415d-a0a0-a3aedb0a77a5');
       
     </div>
     
-      <script src="../../assets/javascripts/vendor.93c04032.min.js"></script>
-      <script src="../../assets/javascripts/bundle.83e5331e.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      <script src="../../assets/javascripts/vendor.53cc9318.min.js"></script>
+      <script src="../../assets/javascripts/bundle.e9c9f54f.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
       
       <script>
         app = initialize({
           base: "../..",
           features: ['search.highlight'],
           search: Object.assign({
-            worker: "../../assets/javascripts/worker/search.8c7e0a7e.min.js"
+            worker: "../../assets/javascripts/worker/search.9c0e82ba.min.js"
           }, typeof search !== "undefined" && search)
         })
       </script>

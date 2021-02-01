@@ -23,7 +23,7 @@ usage: your_viewer.py [-h] [-f FILES [FILES ...]] [-s START] [-g GULP] [-e] [-d 
 # Arguments
 
 |short|long|default|help|
-| :---: | :---: | :---: | :---: |
+| :--- | :--- | :--- | :--- |
 |`-h`|`--help`||show this help message and exit|
 |`-f`|`--files`|`['']`|Fits or filterbank files to view.|
 |`-s`|`--start`|`0`|Start index|

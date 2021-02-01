@@ -14,15 +14,13 @@ Args:
 
 
     size (int): size of each buffer (in bytes)
-
     key (hex): hexadecimal dada key
-
     n_readers (int): Number of dada readers.
 
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L32)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L30)</span>
 
 ### setup
 
@@ -38,7 +36,7 @@ Set up the dada buffers and connect to a writer.
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L50)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L48)</span>
 
 ### dump_header
 
@@ -53,7 +51,7 @@ Set the psrdada header
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L56)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L54)</span>
 
 ### dump_data
 
@@ -67,13 +65,12 @@ Dump the data to the buffer
 
 Args: 
 
-
     data_input (numpy.ndarray): Numpy array of the data.
 
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L70)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L67)</span>
 
 ### mark_filled
 
@@ -88,7 +85,7 @@ Mark that data is filled in the buffer page.
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L76)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L73)</span>
 
 ### eod
 
@@ -103,7 +100,7 @@ Mark the end of data.
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L82)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/dada.py#L79)</span>
 
 ### teardown
 

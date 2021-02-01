@@ -14,7 +14,7 @@
       
       
       <link rel="shortcut icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.5">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.7">
     
     
       
@@ -22,10 +22,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.15aa0b43.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.cb6bc1d0.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.75751829.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.39b8e14a.min.css">
         
           
           
@@ -204,7 +204,6 @@
       
       
 
-
   
   
   
@@ -219,7 +218,6 @@
       
       
       
-
 
   
   
@@ -236,7 +234,6 @@
       
       
 
-
   
   
   
@@ -251,7 +248,6 @@
       
       
       
-
 
   
   
@@ -268,7 +264,6 @@
       
       
 
-
   
   
   
@@ -284,7 +279,6 @@
       
       
 
-
   
   
   
@@ -299,7 +293,6 @@
       
       
       
-
 
   
   
@@ -840,7 +833,6 @@
       
       
 
-
   
   
   
@@ -978,7 +970,7 @@
 </code></pre></div>
 <p>Candidate Class</p>
 <p>Args: </p>
-<div class="codehilite"><pre><span></span><code><span class="err">fp Union[str, List]: String or a list of files. It can either filterbank or psrfits files.</span>
+<div class="codehilite"><pre><span></span><code><span class="err">fp Union[str, list]: String or a list of files. It can either filterbank or psrfits files.</span>
 <span class="err">dm (float): Dispersion Measure of the candidate</span>
 <span class="err">tcand (float): start time of the candidate in seconds at the highest frequency channel</span>
 <span class="err">width (int): pulse width of the candidate in samples</span>
@@ -1011,7 +1003,7 @@
 </code></pre></div>
 <p>Calculate the dispersion delay for the candidate DM or at given dispersion DM</p>
 <p>Args: </p>
-<div class="codehilite"><pre><span></span><code><span class="err">dms (Union[float,np.ndarray]) : DM or a list of DMs</span>
+<div class="codehilite"><pre><span></span><code><span class="err">dms (Union[float,np.ndarray]): DM or a list of DMs</span>
 </code></pre></div>
 
 <p>Returns: </p>
@@ -1075,7 +1067,7 @@
 <p>Our method rolls the data around while dedispersing it.</p>
 </div>
 <p>Args: </p>
-<div class="codehilite"><pre><span></span><code><span class="err">dmsteps (int) : Number of DMs to dedisperse at.</span>
+<div class="codehilite"><pre><span></span><code><span class="err">dmsteps (int): Number of DMs to dedisperse at.</span>
 <span class="err">target (str): &#39;CPU&#39; to run the code on the CPU or &#39;GPU&#39; to run it on a GPU.</span>
 </code></pre></div>
 
@@ -1086,7 +1078,7 @@
 </code></pre></div>
 <p>Calculates the SNR of the candidate</p>
 <p>Args: </p>
-<div class="codehilite"><pre><span></span><code><span class="err">time_series (np.ndarray) : time series array to calculate the SNR of</span>
+<div class="codehilite"><pre><span></span><code><span class="err">time_series (np.ndarray): time series array to calculate the SNR of</span>
 </code></pre></div>
 
 <p>Returns: </p>
@@ -1104,7 +1096,7 @@
 <p>This function has not been fully tested.</p>
 </div>
 <p>Returns: </p>
-<div class="codehilite"><pre><span></span><code><span class="err">optimnised DM, optimised SNR</span>
+<div class="codehilite"><pre><span></span><code><span class="err">Optimized DM, optimised SNR</span>
 </code></pre></div>
 
 <hr />
@@ -1134,7 +1126,7 @@
 <p>Args: </p>
 <div class="codehilite"><pre><span></span><code><span class="err">key (str): Keywords to chose which data to resize (&#39;dmt&#39; or &#39;ft&#39;)</span>
 <span class="c">size: Final size of the data array required</span>
-<span class="err">axis (int) : Axis to resize alone</span>
+<span class="err">axis (int): Axis to resize alone</span>
 <span class="err">**kwargs: Arguments for skimage.transform resize function</span>
 </code></pre></div>
 
@@ -1205,15 +1197,15 @@
       
     </div>
     
-      <script src="../assets/javascripts/vendor.93c04032.min.js"></script>
-      <script src="../assets/javascripts/bundle.83e5331e.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      <script src="../assets/javascripts/vendor.53cc9318.min.js"></script>
+      <script src="../assets/javascripts/bundle.e9c9f54f.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
       
       <script>
         app = initialize({
           base: "..",
           features: ['search.highlight'],
           search: Object.assign({
-            worker: "../assets/javascripts/worker/search.8c7e0a7e.min.js"
+            worker: "../assets/javascripts/worker/search.9c0e82ba.min.js"
           }, typeof search !== "undefined" && search)
         })
       </script>

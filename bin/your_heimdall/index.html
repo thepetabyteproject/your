@@ -14,7 +14,7 @@
       
       
       <link rel="shortcut icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.5">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.7">
     
     
       
@@ -22,10 +22,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.15aa0b43.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.cb6bc1d0.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.75751829.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.39b8e14a.min.css">
         
           
           
@@ -204,7 +204,6 @@
       
       
 
-
   
   
   
@@ -219,7 +218,6 @@
       
       
       
-
 
   
   
@@ -236,7 +234,6 @@
       
       
 
-
   
   
   
@@ -251,7 +248,6 @@
       
       
       
-
 
   
   
@@ -268,7 +264,6 @@
       
       
 
-
   
   
   
@@ -284,7 +279,6 @@
       
       
 
-
   
   
   
@@ -299,7 +293,6 @@
       
       
       
-
 
   
   
@@ -745,7 +738,6 @@
       
       
 
-
   
   
   
@@ -813,127 +805,127 @@
 </li>
 </ul>
 <h1 id="usage">Usage:</h1>
-<div class="highlight"><pre><span></span><code>usage: your_heimdall.py <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-v<span class="o">]</span> <span class="o">[</span>-f FILES <span class="o">[</span>FILES ...<span class="o">]]</span> <span class="o">[</span>-dm DM DM<span class="o">]</span> <span class="o">[</span>-g GPU_ID<span class="o">]</span> <span class="o">[</span>-flag_rfi<span class="o">]</span> <span class="o">[</span>-sk_sigma SPECTRAL_KURTOSIS_SIGMA<span class="o">]</span> <span class="o">[</span>-sg_sigma SAVGOL_SIGMA<span class="o">]</span> <span class="o">[</span>-sg_frequency SAVGOL_FREQUENCY_WINDOW<span class="o">]</span>
-                        <span class="o">[</span>-dm_tol DM_TOL<span class="o">]</span> <span class="o">[</span>-rfi_no_narrow<span class="o">]</span> <span class="o">[</span>-rfi_no_broad<span class="o">]</span> <span class="o">[</span>-mask MASK<span class="o">]</span> <span class="o">[</span>-o OUTPUT_DIR<span class="o">]</span> <span class="o">[</span>-fs CHANNEL_START<span class="o">]</span> <span class="o">[</span>-fe CHANNEL_END<span class="o">]</span> <span class="o">[</span>--no_progress<span class="o">]</span> <span class="o">[</span>--no_log_file<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>usage: your_heimdall.py <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-v<span class="o">]</span> <span class="o">[</span>-f FILES <span class="o">[</span>FILES ...<span class="o">]]</span> <span class="o">[</span>-dm DM DM<span class="o">]</span> <span class="o">[</span>-g GPU_ID<span class="o">]</span> <span class="o">[</span>-flag_rfi<span class="o">]</span> <span class="o">[</span>-sk_sigma SPECTRAL_KURTOSIS_SIGMA<span class="o">]</span> <span class="o">[</span>-sg_sigma SAVGOL_SIGMA<span class="o">]</span> <span class="o">[</span>-sg_frequency SAVGOL_FREQUENCY_WINDOW<span class="o">]</span> <span class="o">[</span>-dm_tol DM_TOL<span class="o">]</span> <span class="o">[</span>-rfi_no_narrow<span class="o">]</span> <span class="o">[</span>-rfi_no_broad<span class="o">]</span> <span class="o">[</span>-mask MASK<span class="o">]</span>
+                        <span class="o">[</span>-o OUTPUT_DIR<span class="o">]</span> <span class="o">[</span>-fs CHANNEL_START<span class="o">]</span> <span class="o">[</span>-fe CHANNEL_END<span class="o">]</span> <span class="o">[</span>--no_progress<span class="o">]</span> <span class="o">[</span>--no_log_file<span class="o">]</span>
 </code></pre></div>
 <h1 id="arguments">Arguments</h1>
 <table>
 <thead>
 <tr>
-<th align="center">short</th>
-<th align="center">long</th>
-<th align="center">default</th>
-<th align="center">help</th>
+<th align="left">short</th>
+<th align="left">long</th>
+<th align="left">default</th>
+<th align="left">help</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td align="center"><code>-h</code></td>
-<td align="center"><code>--help</code></td>
-<td align="center"></td>
-<td align="center">show this help message and exit</td>
+<td align="left"><code>-h</code></td>
+<td align="left"><code>--help</code></td>
+<td align="left"></td>
+<td align="left">show this help message and exit</td>
 </tr>
 <tr>
-<td align="center"><code>-v</code></td>
-<td align="center"><code>--verbose</code></td>
-<td align="center"><code>0</code></td>
-<td align="center">Be verbose</td>
+<td align="left"><code>-v</code></td>
+<td align="left"><code>--verbose</code></td>
+<td align="left"><code>0</code></td>
+<td align="left">Be verbose</td>
 </tr>
 <tr>
-<td align="center"><code>-f</code></td>
-<td align="center"><code>--files</code></td>
-<td align="center"><code>None</code></td>
-<td align="center">filterbank or psrfits</td>
+<td align="left"><code>-f</code></td>
+<td align="left"><code>--files</code></td>
+<td align="left"><code>None</code></td>
+<td align="left">filterbank or psrfits</td>
 </tr>
 <tr>
-<td align="center"><code>-dm</code></td>
-<td align="center"><code>--dm</code></td>
-<td align="center"><code>[10, 1000]</code></td>
-<td align="center">DM (eg -dm 10 1000)</td>
+<td align="left"><code>-dm</code></td>
+<td align="left"><code>--dm</code></td>
+<td align="left"><code>[10, 1000]</code></td>
+<td align="left">DM (eg -dm 10 1000)</td>
 </tr>
 <tr>
-<td align="center"><code>-g</code></td>
-<td align="center"><code>--gpu_id</code></td>
-<td align="center"><code>0</code></td>
-<td align="center">GPU ID to run heimdall on</td>
+<td align="left"><code>-g</code></td>
+<td align="left"><code>--gpu_id</code></td>
+<td align="left"><code>0</code></td>
+<td align="left">GPU ID to run heimdall on</td>
 </tr>
 <tr>
-<td align="center"><code>-flag_rfi</code></td>
-<td align="center"><code>--flag_rfi</code></td>
-<td align="center"></td>
-<td align="center">Use your to flag RFI</td>
+<td align="left"><code>-flag_rfi</code></td>
+<td align="left"><code>--flag_rfi</code></td>
+<td align="left"></td>
+<td align="left">Use your to flag RFI</td>
 </tr>
 <tr>
-<td align="center"><code>-sk_sigma</code></td>
-<td align="center"><code>--spectral_kurtosis_sigma</code></td>
-<td align="center"><code>4</code></td>
-<td align="center">Sigma for spectral kurtosis based RFI mitigation, only applied if -flag_rfi is used.</td>
+<td align="left"><code>-sk_sigma</code></td>
+<td align="left"><code>--spectral_kurtosis_sigma</code></td>
+<td align="left"><code>4</code></td>
+<td align="left">Sigma for spectral kurtosis based RFI mitigation, only applied if -flag_rfi is used.</td>
 </tr>
 <tr>
-<td align="center"><code>-sg_sigma</code></td>
-<td align="center"><code>--savgol_sigma</code></td>
-<td align="center"><code>4</code></td>
-<td align="center">Sigma for Savgol filter for RFI mitigation, only applied if -flag_rfi is used.</td>
+<td align="left"><code>-sg_sigma</code></td>
+<td align="left"><code>--savgol_sigma</code></td>
+<td align="left"><code>4</code></td>
+<td align="left">Sigma for Savgol filter for RFI mitigation, only applied if -flag_rfi is used.</td>
 </tr>
 <tr>
-<td align="center"><code>-sg_frequency</code></td>
-<td align="center"><code>--savgol_frequency_window</code></td>
-<td align="center"><code>15</code></td>
-<td align="center">Filter window for savgol filter (in MHz), only applied if -flag_rfi is used.</td>
+<td align="left"><code>-sg_frequency</code></td>
+<td align="left"><code>--savgol_frequency_window</code></td>
+<td align="left"><code>15</code></td>
+<td align="left">Filter window for savgol filter (in MHz), only applied if -flag_rfi is used.</td>
 </tr>
 <tr>
-<td align="center"><code>-dm_tol</code></td>
-<td align="center"><code>--dm_tol</code></td>
-<td align="center"><code>1.25</code></td>
-<td align="center">SNR loss tolerance between DM trials</td>
+<td align="left"><code>-dm_tol</code></td>
+<td align="left"><code>--dm_tol</code></td>
+<td align="left"><code>1.25</code></td>
+<td align="left">SNR loss tolerance between DM trials</td>
 </tr>
 <tr>
-<td align="center"><code>-rfi_no_narrow</code></td>
-<td align="center"><code>--rfi_no_narrow</code></td>
-<td align="center"></td>
-<td align="center">disable narrow band RFI excision</td>
+<td align="left"><code>-rfi_no_narrow</code></td>
+<td align="left"><code>--rfi_no_narrow</code></td>
+<td align="left"></td>
+<td align="left">disable narrow band RFI excision</td>
 </tr>
 <tr>
-<td align="center"><code>-rfi_no_broad</code></td>
-<td align="center"><code>--rfi_no_broad</code></td>
-<td align="center"></td>
-<td align="center">disable 0-DM RFI excision</td>
+<td align="left"><code>-rfi_no_broad</code></td>
+<td align="left"><code>--rfi_no_broad</code></td>
+<td align="left"></td>
+<td align="left">disable 0-DM RFI excision</td>
 </tr>
 <tr>
-<td align="center"><code>-mask</code></td>
-<td align="center"><code>--mask</code></td>
-<td align="center"><code>None</code></td>
-<td align="center">File containing channel numbers to flag</td>
+<td align="left"><code>-mask</code></td>
+<td align="left"><code>--mask</code></td>
+<td align="left"><code>None</code></td>
+<td align="left">File containing channel numbers to flag</td>
 </tr>
 <tr>
-<td align="center"><code>-o</code></td>
-<td align="center"><code>--output_dir</code></td>
-<td align="center"><code>None</code></td>
-<td align="center">Output dir for heimdall candidates</td>
+<td align="left"><code>-o</code></td>
+<td align="left"><code>--output_dir</code></td>
+<td align="left"><code>None</code></td>
+<td align="left">Output dir for heimdall candidates</td>
 </tr>
 <tr>
-<td align="center"><code>-fs</code></td>
-<td align="center"><code>--channel_start</code></td>
-<td align="center"><code>0</code></td>
-<td align="center">Start channel for sub band search</td>
+<td align="left"><code>-fs</code></td>
+<td align="left"><code>--channel_start</code></td>
+<td align="left"><code>0</code></td>
+<td align="left">Start channel for sub band search</td>
 </tr>
 <tr>
-<td align="center"><code>-fe</code></td>
-<td align="center"><code>--channel_end</code></td>
-<td align="center"><code>-1</code></td>
-<td align="center">End channel for sub band search</td>
+<td align="left"><code>-fe</code></td>
+<td align="left"><code>--channel_end</code></td>
+<td align="left"><code>-1</code></td>
+<td align="left">End channel for sub band search</td>
 </tr>
 <tr>
-<td align="center"></td>
-<td align="center"><code>--no_progress</code></td>
-<td align="center"></td>
-<td align="center">Do not show the tqdm bar</td>
+<td align="left"></td>
+<td align="left"><code>--no_progress</code></td>
+<td align="left"></td>
+<td align="left">Do not show the tqdm bar</td>
 </tr>
 <tr>
-<td align="center"></td>
-<td align="center"><code>--no_log_file</code></td>
-<td align="center"></td>
-<td align="center">Do not write a log file</td>
+<td align="left"></td>
+<td align="left"><code>--no_log_file</code></td>
+<td align="left"></td>
+<td align="left">Do not write a log file</td>
 </tr>
 </tbody>
 </table>
@@ -1003,15 +995,15 @@
       
     </div>
     
-      <script src="../../assets/javascripts/vendor.93c04032.min.js"></script>
-      <script src="../../assets/javascripts/bundle.83e5331e.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      <script src="../../assets/javascripts/vendor.53cc9318.min.js"></script>
+      <script src="../../assets/javascripts/bundle.e9c9f54f.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
       
       <script>
         app = initialize({
           base: "../..",
           features: ['search.highlight'],
           search: Object.assign({
-            worker: "../../assets/javascripts/worker/search.8c7e0a7e.min.js"
+            worker: "../../assets/javascripts/worker/search.9c0e82ba.min.js"
           }, typeof search !== "undefined" && search)
         })
       </script>

@@ -16,7 +16,7 @@ usage: your_combine_mocks.py [-h] [-v] [-f1 FIRST_BAND] [-f2 SECOND_BAND] [-s NS
 # Arguments
 
 |short|long|default|help|
-| :---: | :---: | :---: | :---: |
+| :--- | :--- | :--- | :--- |
 |`-h`|`--help`||show this help message and exit|
 |`-v`|`--verbose`||Be verbose|
 |`-f1`|`--first_band`|`None`|Path of files containing one band|

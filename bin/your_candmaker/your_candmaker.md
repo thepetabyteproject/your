@@ -45,7 +45,7 @@ usage: your_candmaker.py [-h] [-v] [-fs FREQUENCY_SIZE] [-g GPU_ID [GPU_ID ...]]
 # Arguments
 
 |short|long|default|help|
-| :---: | :---: | :---: | :---: |
+| :--- | :--- | :--- | :--- |
 |`-h`|`--help`||show this help message and exit|
 |`-v`|`--verbose`||Be verbose|
 |`-fs`|`--frequency_size`|`256`|Frequency size after rebinning|

@@ -12,7 +12,7 @@ Your class.
 
 Args: 
 
-    file : String or a list of files. It can either filterbank or psrfits files.
+    file: String or a list of files. It can either filterbank or psrfits files.
 
 Examples: 
 
@@ -21,12 +21,12 @@ Examples:
 
 Attributes: 
 
-    your_header : instance of the Header class
+    your_header: instance of the Header class
 
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L132)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L130)</span>
 
 ### bandpass
 
@@ -49,7 +49,7 @@ Returns:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L160)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L158)</span>
 
 ### get_data
 
@@ -81,7 +81,7 @@ Returns:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L269)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L267)</span>
 
 ### dispersion_delay
 
@@ -104,7 +104,7 @@ Returns:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L287)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/your.py#L285)</span>
 
 ### Header
 
@@ -123,7 +123,7 @@ Args:
 Attributes: 
 
     filelist (list): List of files used to make the your object
-    filename (str) : Name of the first file used to make the object
+    filename (str): Name of the first file used to make the object
     basename (str): Base name of file
     source_name (str): Source Name
     ra_deg (float): RA of the source in degrees
@@ -140,7 +140,7 @@ Attributes:
     nbits (int): Number of bits in the data
     tstart (float): Start MJD of the data
     fch1 (float): Frequency of the first channel (MHz)
-    npol (int) : Number of polarisations in the data
+    npol (int): Number of polarisations in the data
 
 
 ----

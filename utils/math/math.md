@@ -37,7 +37,7 @@ All the prime factors of a positive number
 Args: 
 
 
-    n (int) : a positive number
+    n (int): a positive number
 
 Returns: 
 
@@ -60,13 +60,13 @@ Calculates the divisor of n, which is closest to (i.e bigger than) m
 
 Args: 
 
-    n (int) : larger number of which divisor is to be found
-    m (int) : divisor closest to this number
+    n (int):  larger number of which divisor is to be found
+    m (int): divisor closest to this number
 
 
 Returns: 
 
-    int : The divisor of n, which is closest to (i.e bigger than) m
+    int: The divisor of n, which is closest to (i.e bigger than) m
 
 
 ----
@@ -86,7 +86,7 @@ Greatest Common Divisor for a list of nos
 Args: 
 
 
-    list_of_nos (list) : list of numbers
+    list_of_nos (list): list of numbers
 
 Returns: 
 
@@ -133,7 +133,7 @@ Spectral Median Absolute Deviation clipper
 
 Args: 
 
-    freq_time (np.ndarray) : the frequency time data
+    freq_time (np.ndarray): the frequency time data
     sigma (float): sigma at which to clip data
     clip (bool): if true replaces clips the data else replaces it with zeroes
 

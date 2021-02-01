@@ -49,7 +49,7 @@ Returns:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/rfi.py#L54)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/rfi.py#L55)</span>
 
 ### sk_filter
 
@@ -77,7 +77,7 @@ Returns:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/rfi.py#L83)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/rfi.py#L84)</span>
 
 ### calc_N
 
@@ -101,14 +101,14 @@ Returns:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/rfi.py#L101)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/utils/rfi.py#L102)</span>
 
 ### sk_sg_filter
 
 
 ```python
 your.utils.rfi.sk_sg_filter(
-    data, your_object, nchans, spectral_kurtosis_sigma=6, savgol_frequency_window=15, savgol_sigma=5
+    data, your_object, spectral_kurtosis_sigma=6, savgol_frequency_window=15, savgol_sigma=5
 )
 ```
 
@@ -119,7 +119,6 @@ Args:
 
     data (numpy.ndarray): 2D frequency time data
     your_object: Your object
-    nchans (int): number of channels
     spectral_kurtosis_sigma (float): sigma value to apply cutoff on for SK filter
     savgol_frequency_window (float): frequency window for savgol filter(MHz)
     savgol_sigma (float): sigma value to apply cutoff on for savgol filter

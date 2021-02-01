@@ -23,7 +23,7 @@ usage: your_h5plotter.py [-h] [-v] [-f FILES [FILES ...]] [-c RESULTS_CSV] [--pu
 # Arguments
 
 |short|long|default|help|
-| :---: | :---: | :---: | :---: |
+| :--- | :--- | :--- | :--- |
 |`-h`|`--help`||show this help message and exit|
 |`-v`|`--verbose`||Be verbose|
 |`-f`|`--files`|`None`|h5 files to be plotted|

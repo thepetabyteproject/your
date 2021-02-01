@@ -16,7 +16,7 @@ usage: your_bandpass.py [-h] -f FILES [FILES ...] [-n NSPECTRA] [-t TIME] [-b NA
 # Arguments
 
 |short|long|default|help|
-| :---: | :---: | :---: | :---: |
+| :--- | :--- | :--- | :--- |
 |`-h`|`--help`||show this help message and exit|
 |`-f`|`--files`|`None`|Fits or filterbank files to read.|
 |`-n`|`--nspectra`|`8192`|Number of spectra to use for bandpass.|

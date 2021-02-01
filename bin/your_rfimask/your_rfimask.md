@@ -16,7 +16,7 @@ usage: your_rfimask.py [-h] [-f FILES [FILES ...]] [-n NSPECTRA] [-sk_sigma SPEC
 # Arguments
 
 |short|long|default|help|
-| :---: | :---: | :---: | :---: |
+| :--- | :--- | :--- | :--- |
 |`-h`|`--help`||show this help message and exit|
 |`-f`|`--files`|`None`|filterbank or psrfits|
 |`-n`|`--nspectra`|`8192`|Number of spectra to read and apply filters to|

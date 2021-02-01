@@ -23,7 +23,7 @@ Attributes:
 
     rawdatafile (str): Raw data file
     source_name (str): Source Name
-    machine_id (int) : Machine ID
+    machine_id (int): Machine ID
     barycentric (int): If 1 the data is barycentered
     pulsarcentric (int): Is the data in pulsar's frame of reference?
     src_raj (float): RA of the source (HHMMSS.SS)
@@ -43,7 +43,7 @@ Attributes:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/pysigproc.py#L256)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/pysigproc.py#L277)</span>
 
 ### get_data
 
@@ -69,7 +69,7 @@ Returns:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/pysigproc.py#L287)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/pysigproc.py#L308)</span>
 
 ### unpack
 
@@ -93,7 +93,7 @@ Returns:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/pysigproc.py#L346)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/pysigproc.py#L367)</span>
 
 ### write_header
 
@@ -112,7 +112,7 @@ Args:
 
 ----
 
-<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/pysigproc.py#L358)</span>
+<span style="float:right;">[[source]](https://github.com/thepetabyteproject/your/blob/master/your/formats/pysigproc.py#L379)</span>
 
 ### append_spectra
 
@@ -126,7 +126,7 @@ Append spectra to the end of the file
 
 Args: 
 
-    spectra (numpy.ndarray) : numpy array of the data to be dumped into the filterbank file
+    spectra (numpy.ndarray): numpy array of the data to be dumped into the filterbank file
     filename (str): name of the filterbank file
 
 

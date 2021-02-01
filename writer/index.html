@@ -14,7 +14,7 @@
       
       
       <link rel="shortcut icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.5">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.7">
     
     
       
@@ -22,10 +22,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.15aa0b43.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.cb6bc1d0.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.75751829.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.39b8e14a.min.css">
         
           
           
@@ -204,7 +204,6 @@
       
       
 
-
   
   
   
@@ -219,7 +218,6 @@
       
       
       
-
 
   
   
@@ -236,7 +234,6 @@
       
       
 
-
   
   
   
@@ -251,7 +248,6 @@
       
       
       
-
 
   
   
@@ -268,7 +264,6 @@
       
       
 
-
   
   
   
@@ -284,7 +279,6 @@
       
       
 
-
   
   
   
@@ -299,7 +293,6 @@
       
       
       
-
 
   
   
@@ -812,7 +805,6 @@
       
       
 
-
   
   
   
@@ -933,56 +925,63 @@
     <span class="n">zero_dm_subt</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">time_decimation_factor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">frequency_decimation_factor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">replacement_policy</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 </code></pre></div>
 <p>The unified writer class.</p>
 <p>Args: </p>
 <div class="codehilite"><pre><span></span><code><span class="n">your_object</span><span class="o">:</span> <span class="n">Your</span> <span class="n">object</span>
-<span class="n">nstart</span> <span class="o">(</span><span class="n">int</span><span class="o">)</span> <span class="o">:</span> <span class="n">Start</span> <span class="n">sample</span> <span class="n">to</span> <span class="n">read</span> <span class="n">from</span>
-<span class="n">nsamp</span> <span class="o">(</span><span class="n">int</span><span class="o">)</span> <span class="o">:</span> <span class="n">Number</span> <span class="n">of</span> <span class="n">samples</span> <span class="n">to</span> <span class="n">write</span>
-<span class="n">c_min</span> <span class="o">(</span><span class="n">int</span><span class="o">)</span> <span class="o">:</span> <span class="n">Starting</span> <span class="n">channel</span> <span class="n">index</span> <span class="o">(</span><span class="k">default</span><span class="o">:</span> <span class="mi">0</span><span class="o">)</span>
-<span class="n">c_max</span> <span class="o">(</span><span class="n">int</span><span class="o">)</span> <span class="o">:</span> <span class="n">End</span> <span class="n">channel</span> <span class="n">index</span> <span class="o">(</span><span class="k">default</span><span class="o">:</span> <span class="n">total</span> <span class="n">number</span> <span class="n">of</span> <span class="n">frequencies</span><span class="o">)</span>
-<span class="n">outdir</span> <span class="o">(</span><span class="n">str</span><span class="o">)</span> <span class="o">:</span> <span class="n">Output</span> <span class="n">directory</span> <span class="k">for</span> <span class="n">file</span>
-<span class="n">outname</span> <span class="o">(</span><span class="n">str</span><span class="o">)</span> <span class="o">:</span> <span class="n">Name</span> <span class="n">of</span> <span class="n">the</span> <span class="n">file</span> <span class="n">to</span> <span class="n">write</span> <span class="n">to</span> <span class="o">(</span><span class="n">without</span> <span class="n">the</span> <span class="n">file</span> <span class="n">extension</span><span class="o">)</span>
-<span class="n">progress</span> <span class="o">(</span><span class="n">bool</span><span class="o">)</span> <span class="o">:</span> <span class="n">Set</span> <span class="n">to</span> <span class="n">it</span> <span class="n">to</span> <span class="kc">false</span> <span class="n">to</span> <span class="n">disable</span> <span class="n">progress</span> <span class="n">bars</span>
-<span class="n">flag_rfi</span> <span class="o">(</span><span class="n">bool</span><span class="o">)</span> <span class="o">:</span> <span class="n">To</span> <span class="n">turn</span> <span class="n">on</span> <span class="n">RFI</span> <span class="n">flagging</span>
-<span class="n">spectral_kurtosis_sigma</span> <span class="o">(</span><span class="n">float</span><span class="o">)</span> <span class="o">:</span> <span class="n">Sigma</span> <span class="k">for</span> <span class="n">spectral</span> <span class="n">kurtosis</span> <span class="n">filter</span>
-<span class="n">savgol_frequency_window</span> <span class="o">(</span><span class="n">float</span><span class="o">)</span> <span class="o">:</span> <span class="n">Filter</span> <span class="n">window</span> <span class="k">for</span> <span class="n">savgol</span> <span class="n">filter</span>
-<span class="n">savgol_sigma</span> <span class="o">(</span><span class="n">float</span><span class="o">)</span> <span class="o">:</span> <span class="n">Sigma</span> <span class="k">for</span> <span class="n">savgol</span> <span class="n">filter</span>
-<span class="n">gulp</span> <span class="o">(</span><span class="n">int</span><span class="o">)</span> <span class="o">:</span> <span class="n">Gulp</span> <span class="n">size</span> <span class="k">for</span> <span class="n">the</span> <span class="n">data</span>
-<span class="n">zero_dm_subt</span> <span class="o">(</span><span class="n">bool</span><span class="o">)</span> <span class="o">:</span> <span class="n">Enable</span> <span class="n">zero</span> <span class="n">DM</span> <span class="n">rfi</span> <span class="n">excision</span>
+<span class="n">nstart</span> <span class="o">(</span><span class="n">int</span><span class="o">):</span> <span class="n">Start</span> <span class="n">sample</span> <span class="n">to</span> <span class="n">read</span> <span class="n">from</span>
+<span class="n">nsamp</span> <span class="o">(</span><span class="n">int</span><span class="o">):</span> <span class="n">Number</span> <span class="n">of</span> <span class="n">samples</span> <span class="n">to</span> <span class="n">write</span>
+<span class="n">c_min</span> <span class="o">(</span><span class="n">int</span><span class="o">):</span> <span class="n">Starting</span> <span class="n">channel</span> <span class="n">index</span> <span class="o">(</span><span class="k">default</span><span class="o">:</span> <span class="mi">0</span><span class="o">)</span>
+<span class="n">c_max</span> <span class="o">(</span><span class="n">int</span><span class="o">):</span> <span class="n">End</span> <span class="n">channel</span> <span class="n">index</span> <span class="o">(</span><span class="k">default</span><span class="o">:</span> <span class="n">total</span> <span class="n">number</span> <span class="n">of</span> <span class="n">frequencies</span><span class="o">)</span>
+<span class="n">outdir</span> <span class="o">(</span><span class="n">str</span><span class="o">):</span> <span class="n">Output</span> <span class="n">directory</span> <span class="k">for</span> <span class="n">file</span>
+<span class="n">outname</span> <span class="o">(</span><span class="n">str</span><span class="o">):</span> <span class="n">Name</span> <span class="n">of</span> <span class="n">the</span> <span class="n">file</span> <span class="n">to</span> <span class="n">write</span> <span class="n">to</span> <span class="o">(</span><span class="n">without</span> <span class="n">the</span> <span class="n">file</span> <span class="n">extension</span><span class="o">)</span>
+<span class="n">progress</span> <span class="o">(</span><span class="n">bool</span><span class="o">):</span> <span class="n">Set</span> <span class="n">to</span> <span class="n">it</span> <span class="n">to</span> <span class="kc">false</span> <span class="n">to</span> <span class="n">disable</span> <span class="n">progress</span> <span class="n">bars</span>
+<span class="n">flag_rfi</span> <span class="o">(</span><span class="n">bool</span><span class="o">):</span> <span class="n">To</span> <span class="n">turn</span> <span class="n">on</span> <span class="n">RFI</span> <span class="n">flagging</span>
+<span class="n">spectral_kurtosis_sigma</span> <span class="o">(</span><span class="n">float</span><span class="o">):</span> <span class="n">Sigma</span> <span class="k">for</span> <span class="n">spectral</span> <span class="n">kurtosis</span> <span class="n">filter</span>
+<span class="n">savgol_frequency_window</span> <span class="o">(</span><span class="n">float</span><span class="o">):</span> <span class="n">Filter</span> <span class="n">window</span> <span class="k">for</span> <span class="n">savgol</span> <span class="n">filter</span>
+<span class="n">savgol_sigma</span> <span class="o">(</span><span class="n">float</span><span class="o">):</span>  <span class="n">Sigma</span> <span class="k">for</span> <span class="n">savgol</span> <span class="n">filter</span>
+<span class="n">gulp</span> <span class="o">(</span><span class="n">int</span><span class="o">):</span> <span class="n">Gulp</span> <span class="n">size</span> <span class="k">for</span> <span class="n">the</span> <span class="n">data</span>
+<span class="n">zero_dm_subt</span> <span class="o">(</span><span class="n">bool</span><span class="o">):</span> <span class="n">Enable</span> <span class="n">zero</span> <span class="n">DM</span> <span class="n">rfi</span> <span class="n">excision</span>
+<span class="n">time_decimation_factor</span> <span class="o">(</span><span class="n">int</span><span class="o">):</span> <span class="n">Time</span> <span class="n">Decimation</span> <span class="n">Factor</span> <span class="o">(</span><span class="k">in</span> <span class="n">number</span> <span class="n">of</span> <span class="n">samples</span><span class="o">)</span>
+<span class="n">frequency_decimation_factor</span> <span class="o">(</span><span class="n">int</span><span class="o">):</span> <span class="n">Frequency</span> <span class="n">Decimation</span> <span class="n">Factor</span> <span class="o">(</span><span class="k">in</span> <span class="n">number</span> <span class="n">of</span> <span class="n">samples</span><span class="o">)</span>
+<span class="n">replacement_policy</span> <span class="o">(</span><span class="n">str</span><span class="o">):</span> <span class="n">Replace</span> <span class="n">flagged</span> <span class="n">values</span> <span class="k">with</span> <span class="n">mean</span><span class="o">,</span> <span class="n">median</span> <span class="n">or</span> <span class="n">zeros</span><span class="o">.</span>
 </code></pre></div>
 
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L192">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L211">[source]</a></span></p>
 <h3 id="to_fil">to_fil</h3>
-<div class="highlight"><pre><span></span><code><span class="n">Writer</span><span class="o">.</span><span class="n">to_fil</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><span class="n">Writer</span><span class="o">.</span><span class="n">to_fil</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Writes out a Filterbank File.</p>
+<p>Args: 
+ data (np.ndarray):  Write out your custom data from a numpy array. If not specified it will read the
+input file and write with the attributes setup in the writer class.</p>
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L238">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L270">[source]</a></span></p>
 <h3 id="to_fits">to_fits</h3>
 <div class="highlight"><pre><span></span><code><span class="n">Writer</span><span class="o">.</span><span class="n">to_fits</span><span class="p">(</span><span class="n">npsub</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div>
 <p>Writes out a PSRFITS file</p>
 <p>Args: </p>
-<div class="codehilite"><pre><span></span><code><span class="err">npsub (int) : number of spectra per subint</span>
+<div class="codehilite"><pre><span></span><code><span class="err">npsub (int): number of spectra per subint</span>
 </code></pre></div>
 
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L156">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L167">[source]</a></span></p>
 <h3 id="get_data_to_write">get_data_to_write</h3>
 <div class="highlight"><pre><span></span><code><span class="n">Writer</span><span class="o">.</span><span class="n">get_data_to_write</span><span class="p">(</span><span class="n">start_sample</span><span class="p">,</span> <span class="n">nsamp</span><span class="p">)</span>
 </code></pre></div>
 <p>Read data to self.data, selects channels
 Optionally perform RFI filtering and zero-DM subtraction</p>
 <p>Args: </p>
-<div class="codehilite"><pre><span></span><code><span class="err">start_sample (int) : Start sample number to read from</span>
+<div class="codehilite"><pre><span></span><code><span class="err">start_sample (int): Start sample number to read from</span>
 <span class="err">nsamp (int): Number of samples to read</span>
 </code></pre></div>
 
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L343">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L368">[source]</a></span></p>
 <h3 id="dada_header">dada_header</h3>
 <div class="highlight"><pre><span></span><code><span class="n">Writer</span><span class="o">.</span><span class="n">dada_header</span><span class="p">()</span>
 </code></pre></div>
@@ -992,7 +991,7 @@ Optionally perform RFI filtering and zero-DM subtraction</p>
 </code></pre></div>
 
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L365">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L390">[source]</a></span></p>
 <h3 id="setup_dada">setup_dada</h3>
 <div class="highlight"><pre><span></span><code><span class="n">Writer</span><span class="o">.</span><span class="n">setup_dada</span><span class="p">(</span><span class="n">dada_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">data_step</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
@@ -1003,7 +1002,7 @@ Optionally perform RFI filtering and zero-DM subtraction</p>
 </code></pre></div>
 
 <hr />
-<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L395">[source]</a></span></p>
+<p><span style="float:right;"><a href="https://github.com/thepetabyteproject/your/blob/master/your/writer.py#L420">[source]</a></span></p>
 <h3 id="to_dada">to_dada</h3>
 <div class="highlight"><pre><span></span><code><span class="n">Writer</span><span class="o">.</span><span class="n">to_dada</span><span class="p">()</span>
 </code></pre></div>
@@ -1075,15 +1074,15 @@ Optionally perform RFI filtering and zero-DM subtraction</p>
       
     </div>
     
-      <script src="../assets/javascripts/vendor.93c04032.min.js"></script>
-      <script src="../assets/javascripts/bundle.83e5331e.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      <script src="../assets/javascripts/vendor.53cc9318.min.js"></script>
+      <script src="../assets/javascripts/bundle.e9c9f54f.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
       
       <script>
         app = initialize({
           base: "..",
           features: ['search.highlight'],
           search: Object.assign({
-            worker: "../assets/javascripts/worker/search.8c7e0a7e.min.js"
+            worker: "../assets/javascripts/worker/search.9c0e82ba.min.js"
           }, typeof search !== "undefined" && search)
         })
       </script>

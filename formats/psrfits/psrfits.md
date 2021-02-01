@@ -26,7 +26,7 @@ Attributes:
     specinfo (obj): Object of class SpectraInfo for the given file list
     header (list): Header of the fits file
     source_name (str): Source Name
-    machine_id (int) : Machine ID
+    machine_id (int): Machine ID
     barycentric (int): If 1 the data is barycentered
     pulsarcentric (int): Is the data in pulsar's frame of reference?
     src_raj (float): RA of the source (HHMMSS.SS)
@@ -42,7 +42,6 @@ Attributes:
     tstart (float): Start MJD of the data
     tsamp (float): Sampling interval (seconds)
     nifs (int): Number of IFs in the data.
-    
 
 
 ----
@@ -62,14 +61,14 @@ Applys scales, weights, and offsets to the data.
 
 Args: 
 
-    isub (int) : index of subint (first subint is 0)
-    apply_weights (bool) : If True, apply weights. (Default: apply weights)
-    apply_scales (bool) : If True, apply scales. (Default: apply scales)
-    apply_offsets (bool) : If True, apply offsets. (Default: apply offsets)
+    isub (int): index of subint (first subint is 0)
+    apply_weights (bool): If True, apply weights. (Default: apply weights)
+    apply_scales (bool): If True, apply scales. (Default: apply scales)
+    apply_offsets (bool): If True, apply offsets. (Default: apply offsets)
 
 Returns: 
 
-    np.ndarray : Subint data with scales, weights, and offsets applied in float32 dtype with shape (nsamps,nchan).
+    np.ndarray: Subint data with scales, weights, and offsets applied in float32 dtype with shape (nsamps,nchan).
 
 
 ----
@@ -88,13 +87,13 @@ Return 2D array of data from PSRFITS files.
 
 Args: 
 
-    nstart (int) : Starting sample
-    nsamp (int) : number of samples to read
-    pol (int) : which polarization to return
+    nstart (int): Starting sample
+    nsamp (int): number of samples to read
+    pol (int): which polarization to return
 
 Returns: 
 
-    np.ndarray : Time-Frequency numpy array
+    np.ndarray: Time-Frequency numpy array
 
 
 ----
@@ -113,7 +112,7 @@ Class to read the header of fits files
 
 Args: 
 
-    filenames (list) : list of fits files
+    filenames (list): list of fits files
 
 
 ----
@@ -132,7 +131,7 @@ Unpack 2-bit data that has been read in as bytes.
 
 Args: 
 
-    data (np.ndarray) : array of unsigned 2-bit ints packed into an array of bytes.
+    data (np.ndarray): array of unsigned 2-bit ints packed into an array of bytes.
 
 Returns: 
 
@@ -155,7 +154,7 @@ Unpack 4-bit data that has been read in as bytes.
 
 Args: 
 
-    data (np.ndarray) : array of unsigned 4-bit ints packed into an array of bytes.
+    data (np.ndarray): array of unsigned 4-bit ints packed into an array of bytes.
 
 Returns: 
 
