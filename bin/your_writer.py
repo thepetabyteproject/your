@@ -148,6 +148,7 @@ if __name__ == "__main__":
         choices=["mean", "median", "zero"],
         required=False,
         default="mean",
+        help="Replace the RFI flagged values with either mean, median or zero.",
     )
     parser.add_argument(
         "--no_log_file", help="Do not write a log file", action="store_true"
