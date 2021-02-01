@@ -1,4 +1,13 @@
 from your.utils.rfi import *
+import pytest
+import os
+from your import Your
+
+
+@pytest.fixture(scope="session", autouse=True)
+def fil_file():
+    _install_dir = os.path.abspath(os.path.dirname(__file__))
+    return os.path.join(_install_dir, "data/28.fil")
 
 
 def test_calc_N():
