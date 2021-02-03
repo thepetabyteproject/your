@@ -140,6 +140,7 @@ def sk_sg_filter(
         )
         mask[sk_mask] = True
     elif spectral_kurtosis_sigma == 0:
+        sk_mask = np.zeros(data.shape[1], dtype=np.bool)
         pass
     else:
         raise ValueError("spectral_kurtosis_sigma can't be negative")
