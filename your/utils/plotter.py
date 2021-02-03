@@ -87,7 +87,7 @@ def plot_h5(
             ax4 = plt.subplot(gs[:, 1])
             to_print = []
             for key in f.attrs.keys():
-                if "filelist" in key:
+                if "filelist" in key or "mask" in key:
                     pass
                 elif "filename" in key:
                     to_print.append(f"filename : {os.path.basename(f.attrs[key])}\n")
