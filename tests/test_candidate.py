@@ -149,6 +149,7 @@ def test_resize(cand):
     except AttributeError:
         pass
 
+
 def test_rfi_mask():
     fil_file = os.path.join(_install_dir, "data/28.fil")
     cand = Candidate(
@@ -170,9 +171,10 @@ def test_rfi_mask():
     assert cand.data[:, 172:177].sum() == 0
     assert cand.data[:, ~cand.rfi_mask].sum() != 0
 
+
 def test_kill_mask():
     fil_file = os.path.join(_install_dir, "data/28.fil")
-    km = np.zeros(336, dtype='bool')
+    km = np.zeros(336, dtype="bool")
     km[[10, 12, 25, 100, 300]] = True
     cand = Candidate(
         fp=fil_file,
@@ -184,7 +186,7 @@ def test_kill_mask():
         min_samp=256,
         device=0,
         flag_rfi=False,
-        kill_mask=km
+        kill_mask=km,
     )
     cand.get_chunk()
     assert cand.data[:, cand.kill_mask].sum() == 0
