@@ -190,3 +190,4 @@ def test_gulps(your_object):
     )
     w.to_fil()
     assert os.path.isfile("temp.fil")
+    os.remove("temp.fil")

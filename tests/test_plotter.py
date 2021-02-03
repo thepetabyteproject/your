@@ -16,6 +16,7 @@ def test_save_bandpass():
     os.remove("28_bp.png")
     save_bandpass(y, bandpass, mask=mask)
     assert os.path.isfile("28_bandpass.png")
+    os.remove("28_bandpass.png")
 
 
 def test_plot_h5():
