@@ -7,6 +7,7 @@ from your import Your
 from your.utils.gpu import gpu_dedisperse, gpu_dmt
 from your.utils.misc import *
 from your.utils.misc import _decimate, _resize
+from your.utils.rfi import sk_sg_filter
 
 logger = logging.getLogger(__name__)
 
@@ -25,6 +26,10 @@ class Candidate(Your):
         min_samp (int): Minimum number of time samples
         device (int): GPU ID if using GPUs
         kill_mask (numpy.ndarray): Boolean mask of channels to kill
+        spectral_kurtosis_sigma (float): Sigma for spectral kurtosis filter
+        savgol_frequency_window (float): Filter window for savgol filter
+        savgol_sigma (float):  Sigma for savgol filter
+        flag_rfi (bool): To turn on RFI flagging
     """
 
     def __init__(
@@ -37,7 +42,11 @@ class Candidate(Your):
         snr=0,
         min_samp=256,
         device=0,
-        kill_mask=None,
+        kill_mask=np.array([False]),
+        spectral_kurtosis_sigma=4,
+        savgol_frequency_window=15,
+        savgol_sigma=4,
+        flag_rfi=False,
     ):
         Your.__init__(self, fp)
         self.dm = dm
@@ -54,6 +63,11 @@ class Candidate(Your):
         self.dm_opt = -1
         self.snr_opt = -1
         self.kill_mask = kill_mask
+        self.spectral_kurtosis_sigma = spectral_kurtosis_sigma
+        self.savgol_frequency_window = savgol_frequency_window
+        self.savgol_sigma = savgol_sigma
+        self.flag_rfi = flag_rfi
+        self.rfi_mask = np.array([False])
         logger.debug(
             f"Initiated a cand object with"
             f"dm: {self.dm}"
@@ -91,6 +105,8 @@ class Candidate(Your):
             f.attrs["snr_opt"] = self.snr_opt
             f.attrs["width"] = self.width
             f.attrs["label"] = self.label
+            f.attrs["rfi_mask"] = self.rfi_mask
+            f.attrs["kill_mask"] = self.kill_mask
 
             f.attrs["filelist"] = self.your_header.filelist
 
@@ -251,11 +267,25 @@ class Candidate(Your):
 
         self.data = data.astype(self.your_header.dtype)
 
-        if self.kill_mask is not None:
+        if self.kill_mask.any():
             logger.info("Applying the kill mask")
             assert len(self.kill_mask) == self.data.shape[1]
             data_copy = self.data.copy()
             data_copy[:, self.kill_mask] = 0
+            self.data = data_copy
+            del data_copy
+
+        if self.flag_rfi:
+            data_copy = self.data.copy()
+            mask = sk_sg_filter(
+                data_copy,
+                self,
+                self.spectral_kurtosis_sigma,
+                self.savgol_frequency_window,
+                self.savgol_sigma,
+            )
+            self.rfi_mask = mask
+            data_copy[:, self.rfi_mask] = 0
             self.data = data_copy
             del data_copy
         return self
