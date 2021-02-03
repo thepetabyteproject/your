@@ -303,6 +303,10 @@ if __name__ == "__main__":
                 handlers=[RichHandler(rich_tracebacks=True)],
             )
 
+    logging.info("Input Arguments:-")
+    for arg, value in sorted(vars(values).items()):
+        logging.info("%s: %r", arg, value)
+
     if -1 not in values.gpu_id:
         from numba.cuda.cudadrv.driver import CudaAPIError
 
