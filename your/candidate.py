@@ -69,10 +69,10 @@ class Candidate(Your):
         self.flag_rfi = flag_rfi
         self.rfi_mask = np.array([False])
         logger.debug(
-            f"Initiated a cand object with"
-            f"dm: {self.dm}"
-            f"snr: {self.snr}"
-            f"width:{self.width}"
+            f"Initiated a cand object with "
+            f"dm: {self.dm}, "
+            f"snr: {self.snr}, "
+            f"width:{self.width}, "
             f"tcand: {self.tcand}"
         )
 
