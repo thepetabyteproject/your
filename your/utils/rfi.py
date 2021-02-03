@@ -139,6 +139,8 @@ def sk_sg_filter(
             sigma=spectral_kurtosis_sigma,
         )
         mask[sk_mask] = True
+    elif spectral_kurtosis_sigma == 0:
+        pass
     else:
         raise ValueError("spectral_kurtosis_sigma can't be negative")
 
@@ -154,6 +156,8 @@ def sk_sg_filter(
             sigma=savgol_sigma,
         )
         mask[np.where(mask == False)[0][sg_mask]] = True
+    elif savgol_sigma == 0:
+        pass
     else:
         raise ValueError("savgol_sigma can't be negative")
 

@@ -278,11 +278,11 @@ class Candidate(Your):
         if self.flag_rfi:
             data_copy = self.data.copy()
             mask = sk_sg_filter(
-                data_copy,
-                self,
-                self.spectral_kurtosis_sigma,
-                self.savgol_frequency_window,
-                self.savgol_sigma,
+                data=data_copy,
+                your_object=self,
+                spectral_kurtosis_sigma=self.spectral_kurtosis_sigma,
+                savgol_frequency_window=self.savgol_frequency_window,
+                savgol_sigma=self.savgol_sigma,
             )
             self.rfi_mask = mask
             data_copy[:, self.rfi_mask] = 0
