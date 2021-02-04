@@ -22,6 +22,24 @@ def savgol_filter(bandpass, channel_bandwidth, frequency_window=15, sigma=6):
 
     """
     window = int(np.ceil(frequency_window / np.abs(channel_bandwidth)) // 2 * 2 + 1)
+    if window < 41:
+        logger.warning(
+            "Window size is less than 41 channels. Setting it to 41 channels."
+        )
+        window = 41
+
+    if window > len(bandpass):
+        logger.warning(
+            "Window size is larger than the number of channels. Setting it to total number of channels."
+        )
+        nch = len(bandpass)
+        if nch % 2:
+            window = nch - 1
+        else:
+            window = nch
+
+    logger.debug(f"Window size for savgol filter is {window}.")
+
     y = sg(bandpass, window, 2)
     sub = bandpass - y
     sigma = sigma * np.std(sub)
