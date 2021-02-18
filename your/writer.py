@@ -36,6 +36,9 @@ class Writer:
         savgol_sigma (float):  Sigma for savgol filter
         gulp (int): Gulp size for the data
         zero_dm_subt (bool): Enable zero DM rfi excision
+        time_decimation_factor (int): Time Decimation Factor (in number of samples)
+        frequency_decimation_factor (int): Frequency Decimation Factor (in number of samples)
+        replacement_policy (str): Replace flagged values with mean, median or zeros.
 
     """
 
@@ -57,6 +60,7 @@ class Writer:
         zero_dm_subt=False,
         time_decimation_factor=1,
         frequency_decimation_factor=1,
+        replacement_policy="mean",
     ):
 
         self.your_object = your_object
@@ -77,6 +81,13 @@ class Writer:
 
         if self.frequency_decimation_factor > 1:
             raise NotImplementedError("We have not implemented this feature yet.")
+
+        self.replacement_policy = replacement_policy
+
+        if self.replacement_policy not in ["mean", "median", "zero"]:
+            raise ValueError(
+                f"replacement_policy can only be 'mean', 'median' or 'zero'."
+            )
 
         self.outdir = outdir
         self.outname = outname
@@ -117,7 +128,7 @@ class Writer:
             else:
                 self.outname = name + "_converted"
 
-        if not self.outdir:
+        if self.outdir is None:
             self.outdir = original_dir
 
         logging.debug("Writer Attributes:-")
@@ -171,16 +182,24 @@ class Writer:
             mask = sk_sg_filter(
                 data,
                 self.your_object,
-                self.nchans,
                 self.sk_sig,
                 self.sg_fw,
                 self.sg_sig,
             )
 
-            if self.your_object.your_header.dtype == np.uint8:
-                data[:, mask] = np.around(np.mean(data[:, ~mask]))
+            if self.replacement_policy == "mean":
+                fill_value = np.mean(data[:, ~mask])
+            elif self.replacement_policy == "median":
+                fill_value = np.median(data[:, ~mask])
             else:
-                data[:, mask] = np.mean(data[:, ~mask])
+                fill_value = 0
+
+            if self.your_object.your_header.nbits < 32:
+                fill_value = np.around(fill_value).astype(
+                    self.your_object.your_header.dtype
+                )
+
+            data[:, mask] = fill_value
 
         if self.zero_dm_subt:
             logger.debug("Subtracting 0-DM time series from the data")
@@ -191,12 +210,13 @@ class Writer:
 
     def to_fil(self, data=None):
         """
-
         Writes out a Filterbank File.
 
-        """
+        Args: data (np.ndarray):  Write out your custom data from a numpy array. If not specified it will read the
+        input file and write with the attributes setup in the writer class.
 
-        self.outname += ".fil"
+        """
+        self.outname = self.outdir + self.outname + ".fil"
         with Progress() as progress:
             if not self.progress:
                 task = progress.add_task(
@@ -231,13 +251,19 @@ class Writer:
                         f.write(self.data.ravel())
                         progress.update(task, advance=self.gulp)
                         logger.debug(
-                            f"Wrote from spectra {start_sample}-{start_sample + self.gulp} to filterbank"
+                            f"Wrote from spectra {start_sample}-{start_sample + self.gulp} to the filterbank"
                         )
             else:
-                with open(self.outname, "ab") as f:
-                    f.write(data.ravel())
-                progress.update(task, self.nsamp)
-                logger.debug("Wrote given spectra")
+                if data.dtype == self.your_object.your_header.dtype:
+                    logger.debug(f"write data of shape {data.shape} to {self.outname}")
+                    with open(self.outname, "ab") as f:
+                        f.write(data.ravel())
+                    progress.update(task, self.nsamp)
+                    logger.debug("Wrote given spectra")
+                else:
+                    raise TypeError(
+                        "The dtype of the input data does not match with the dtype of the your_object"
+                    )
 
         logging.debug(f"Wrote all the necessary spectra")
 
@@ -325,13 +351,6 @@ class Writer:
                     pass
 
                 data = np.reshape(data, (isub, npsub, nifs, self.nchans))
-
-                # If channel_bandwidth is negative, we need to flip the freq axis
-                #            if channel_bandwidth < 0:
-                #                logger.debug(f"Flipping band as {channel_bandwidth} < 0")
-                #                data = data[:, :, :, ::-1]
-                #            else:
-                #                pass
 
                 # Put data in hdu data array
                 logger.debug(f"Writing data of shape {data.shape} to {outfile}.")

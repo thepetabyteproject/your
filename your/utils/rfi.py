@@ -22,6 +22,24 @@ def savgol_filter(bandpass, channel_bandwidth, frequency_window=15, sigma=6):
 
     """
     window = int(np.ceil(frequency_window / np.abs(channel_bandwidth)) // 2 * 2 + 1)
+    if window < 41:
+        logger.warning(
+            "Window size is less than 41 channels. Setting it to 41 channels."
+        )
+        window = 41
+
+    if window > len(bandpass):
+        logger.warning(
+            "Window size is larger than the number of channels. Setting it to total number of channels."
+        )
+        nch = len(bandpass)
+        if nch % 2:
+            window = nch - 1
+        else:
+            window = nch
+
+    logger.debug(f"Window size for savgol filter is {window}.")
+
     y = sg(bandpass, window, 2)
     sub = bandpass - y
     sigma = sigma * np.std(sub)
@@ -42,7 +60,8 @@ def spectral_kurtosis(data, N=1, d=None):
          numpy.ndarray: Spectral Kurtosis along frequency axis
 
     """
-    data = data.astype("float32")
+    zero_mask = data == 0
+    data = np.ma.array(data.astype(float), mask=zero_mask)
     S1 = data.sum(0)
     S2 = (data ** 2).sum(0)
     M = data.shape[0]
@@ -101,7 +120,6 @@ def calc_N(channel_bandwidth, tsamp):
 def sk_sg_filter(
     data,
     your_object,
-    nchans,
     spectral_kurtosis_sigma=6,
     savgol_frequency_window=15,
     savgol_sigma=5,
@@ -113,7 +131,6 @@ def sk_sg_filter(
     Args:
         data (numpy.ndarray): 2D frequency time data
         your_object: Your object
-        nchans (int): number of channels
         spectral_kurtosis_sigma (float): sigma value to apply cutoff on for SK filter
         savgol_frequency_window (float): frequency window for savgol filter(MHz)
         savgol_sigma (float): sigma value to apply cutoff on for savgol filter
@@ -123,27 +140,44 @@ def sk_sg_filter(
          numpy.ndarray: mask for channels
 
     """
+    if (spectral_kurtosis_sigma == 0) and (savgol_sigma) == 0:
+        raise ValueError(
+            "Both savgol_sigma and spectral_kurtosis_sigma cannot be zero."
+        )
 
-    logger.info(
-        f"Applying spectral kurtosis filter with sigma={spectral_kurtosis_sigma}"
-    )
-    sk_mask = sk_filter(
-        data=data,
-        channel_bandwidth=your_object.your_header.foff,
-        tsamp=your_object.your_header.tsamp,
-        sigma=spectral_kurtosis_sigma,
-    )
-    bp = data.sum(0)[~sk_mask]
-    logger.info(
-        f"Applying savgol filter with frequency_window={savgol_frequency_window} and sigma={savgol_sigma}"
-    )
-    sg_mask = savgol_filter(
-        bandpass=bp,
-        channel_bandwidth=your_object.your_header.foff,
-        frequency_window=savgol_frequency_window,
-        sigma=savgol_sigma,
-    )
     mask = np.zeros(data.shape[1], dtype=np.bool)
-    mask[sk_mask] = True
-    mask[np.where(mask == False)[0][sg_mask]] = True
+    if spectral_kurtosis_sigma > 0:
+        logger.debug(
+            f"Applying spectral kurtosis filter with sigma={spectral_kurtosis_sigma}"
+        )
+        sk_mask = sk_filter(
+            data=data,
+            channel_bandwidth=your_object.your_header.foff,
+            tsamp=your_object.your_header.tsamp,
+            sigma=spectral_kurtosis_sigma,
+        )
+        mask[sk_mask] = True
+    elif spectral_kurtosis_sigma == 0:
+        sk_mask = np.zeros(data.shape[1], dtype=np.bool)
+        pass
+    else:
+        raise ValueError("spectral_kurtosis_sigma can't be negative")
+
+    if savgol_sigma > 0:
+        bp = data.sum(0)[~sk_mask]
+        logger.debug(
+            f"Applying savgol filter with frequency_window={savgol_frequency_window} and sigma={savgol_sigma}"
+        )
+        sg_mask = savgol_filter(
+            bandpass=bp,
+            channel_bandwidth=your_object.your_header.foff,
+            frequency_window=savgol_frequency_window,
+            sigma=savgol_sigma,
+        )
+        mask[np.where(mask == False)[0][sg_mask]] = True
+    elif savgol_sigma == 0:
+        pass
+    else:
+        raise ValueError("savgol_sigma can't be negative")
+
     return mask

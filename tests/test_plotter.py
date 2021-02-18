@@ -8,9 +8,15 @@ _install_dir = os.path.abspath(os.path.dirname(__file__))
 def test_save_bandpass():
     fil_file = os.path.join(_install_dir, "data/28.fil")
     y = Your(fil_file)
-    save_bandpass(y, y.bandpass(), outname="28_bp.png")
+    bandpass = y.bandpass()
+    mask = np.zeros_like(bandpass, dtype=np.bool)
+    mask[:10] = True
+    save_bandpass(y, bandpass, outname="28_bp.png")
     assert os.path.isfile("28_bp.png")
     os.remove("28_bp.png")
+    save_bandpass(y, bandpass, mask=mask)
+    assert os.path.isfile("28_bandpass.png")
+    os.remove("28_bandpass.png")
 
 
 def test_plot_h5():

@@ -148,3 +148,47 @@ def test_resize(cand):
         cand.resize("at", size=200, axis=1, anti_aliasing=True, mode="constant")
     except AttributeError:
         pass
+
+
+def test_rfi_mask():
+    fil_file = os.path.join(_install_dir, "data/28.fil")
+    cand = Candidate(
+        fp=fil_file,
+        dm=475.28400,
+        tcand=2.0288800,
+        width=2,
+        label=-1,
+        snr=16.8128,
+        min_samp=256,
+        device=0,
+        spectral_kurtosis_sigma=4,
+        savgol_frequency_window=15,
+        savgol_sigma=4,
+        flag_rfi=True,
+    )
+    cand.get_chunk()
+    assert cand.data[:, cand.rfi_mask].sum() == 0
+    assert cand.data[:, 172:177].sum() == 0
+    assert cand.data[:, ~cand.rfi_mask].sum() != 0
+
+
+def test_kill_mask():
+    fil_file = os.path.join(_install_dir, "data/28.fil")
+    km = np.zeros(336, dtype="bool")
+    km[[10, 12, 25, 100, 300]] = True
+    cand = Candidate(
+        fp=fil_file,
+        dm=475.28400,
+        tcand=2.0288800,
+        width=2,
+        label=-1,
+        snr=16.8128,
+        min_samp=256,
+        device=0,
+        flag_rfi=False,
+        kill_mask=km,
+    )
+    cand.get_chunk()
+    assert cand.data[:, cand.kill_mask].sum() == 0
+    assert cand.data[:, [10, 12, 300]].sum() == 0
+    assert cand.data[:, ~cand.kill_mask].sum() != 0

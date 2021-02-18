@@ -111,7 +111,17 @@ def cand2h5(cand_val):
 
     logger.debug(f"Source file list: {files}")
     cand = Candidate(
-        files, snr=snr, width=width, dm=dm, label=label, tcand=tcand, device=gpu_id
+        files,
+        snr=snr,
+        width=width,
+        dm=dm,
+        label=label,
+        tcand=tcand,
+        device=gpu_id,
+        spectral_kurtosis_sigma=args.spectral_kurtosis_sigma,
+        savgol_frequency_window=args.savgol_frequency_window,
+        savgol_sigma=args.savgol_sigma,
+        flag_rfi=args.flag_rfi,
     )
     if os.path.exists(str(kill_mask_path)):
         kill_mask = np.zeros(cand.nchans, dtype=np.bool)
@@ -216,6 +226,37 @@ if __name__ == "__main__":
         default=".",
     )
     parser.add_argument(
+        "-r",
+        "--flag_rfi",
+        help="Turn on RFI flagging",
+        action="store_true",
+        default=False,
+    )
+    parser.add_argument(
+        "-sksig",
+        "--spectral_kurtosis_sigma",
+        help="Sigma for spectral kurtosis filter",
+        type=float,
+        default=4,
+        required=False,
+    )
+    parser.add_argument(
+        "-sgsig",
+        "--savgol_sigma",
+        help="Sigma for savgol filter",
+        type=float,
+        default=4,
+        required=False,
+    )
+    parser.add_argument(
+        "-sgfw",
+        "--savgol_frequency_window",
+        help="Filter window for savgol filter (MHz)",
+        type=float,
+        default=15,
+        required=False,
+    )
+    parser.add_argument(
         "-opt",
         "--opt_dm",
         dest="opt_dm",
@@ -261,6 +302,10 @@ if __name__ == "__main__":
                 format=logging_format,
                 handlers=[RichHandler(rich_tracebacks=True)],
             )
+
+    logging.info("Input Arguments:-")
+    for arg, value in sorted(vars(values).items()):
+        logging.info("%s: %r", arg, value)
 
     if -1 not in values.gpu_id:
         from numba.cuda.cudadrv.driver import CudaAPIError

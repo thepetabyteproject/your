@@ -71,7 +71,7 @@ if __name__ == "__main__":
         "-name",
         "--out_name",
         type=str,
-        help="Output name of the file",
+        help="Output name of the file (do not add the file extension)",
         default=None,
         required=False,
     )
@@ -135,6 +135,22 @@ if __name__ == "__main__":
         default=1,
     )
     parser.add_argument(
+        "-g",
+        "--gulp_size",
+        help="Gulp size in samples",
+        required=False,
+        type=int,
+        default=None,
+    )
+    parser.add_argument(
+        "--replacement_policy",
+        type=str,
+        choices=["mean", "median", "zero"],
+        required=False,
+        default="mean",
+        help="Replace the RFI flagged values with either mean, median or zero.",
+    )
+    parser.add_argument(
         "--no_log_file", help="Do not write a log file", action="store_true"
     )
     values = parser.parse_args()
@@ -189,9 +205,11 @@ if __name__ == "__main__":
         spectral_kurtosis_sigma=values.spectral_kurtosis_sigma,
         savgol_frequency_window=values.savgol_frequency_window,
         savgol_sigma=values.savgol_sigma,
+        gulp=values.gulp_size,
         zero_dm_subt=values.zero_dm_subt,
         time_decimation_factor=values.time_decimation_factor,
         frequency_decimation_factor=values.frequency_decimation_factor,
+        replacement_policy=values.replacement_policy,
     )
 
     if values.type == "fits":

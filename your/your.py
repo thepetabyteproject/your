@@ -56,9 +56,7 @@ class Your(PsrfitsFile, SigprocFile):
                 for f in self.your_file:
                     check_file_exist(f)
                     ext = os.path.splitext(f)[1]
-                    if ext == ".fits" or ext == ".sf":
-                        pass
-                    else:
+                    if ext not in [".fits", ".sf"]:
                         raise TypeError(
                             "Can only work with a list of fits file or an individual filterbank file"
                         )
