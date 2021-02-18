@@ -129,7 +129,6 @@ class Paint(Frame):
             file_name = filedialog.askopenfilename(
                 filetypes=(("fits/fil files", "*.fil *.fits"), ("All files", "*.*"))
             )
-        self.file_name = file_name
 
         logging.info(f"Reading file {file_name}.")
         self.your_obj = Your(file_name)
@@ -291,7 +290,7 @@ class Paint(Frame):
         Saves the canvas image
         """
         img_name = (
-            os.path.splitext(os.path.basename(self.file_name))[0]
+            os.path.splitext(os.path.basename(self.your_obj.your_header.filename))[0]
             + f"_samp_{self.start_samp}_{self.start_samp + self.gulp_size}.png"
         )
         logging.info(f"Saving figure: {img_name}")
