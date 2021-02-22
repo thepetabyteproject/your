@@ -456,7 +456,10 @@ class SpectraInfo:
                 raise ValueError("File '%s' does not appear to be PSRFITS!" % fn)
 
             # Open the PSRFITS file
-            with pyfits.open(fn, mode="readonly", memmap=True) as hdus:
+            with pyfits.open(
+                fn, mode="readonly", memmap=True, ignore_missing_end=True
+            ) as hdus:
+                hdus.verify()
 
                 if ii == 0:
                     self.hdu_names = [hdu.name for hdu in hdus]
@@ -498,11 +501,6 @@ class SpectraInfo:
                 else:
                     self.chan_dm = primary["CHAN_DM"]
 
-                self.start_MJD[ii] = (
-                    primary["STT_IMJD"]
-                    + (primary["STT_SMJD"] + primary["STT_OFFS"]) / SECPERDAY
-                )
-
                 # Are we tracking
                 track = primary["TRK_MODE"] == "TRACK"
                 if ii == 0:
@@ -536,12 +534,36 @@ class SpectraInfo:
                     logger.warning("first freq channel is not 0 in file %d" % ii)
                 self.spectra_per_subint = subint["NSBLK"]
                 self.bits_per_sample = subint["NBITS"]
-                self.num_subint[ii] = subint["NAXIS2"]
+                nsubints = subint["NAXIS2"]
+                if nsubints == 0:
+                    logger.warning(f"Number of subints in {fn} is zero.")
+                    if ii == len(filenames) - 1:
+                        logger.warning(
+                            f"File {fn} is the last file and has zero subints. Ignoring this file."
+                        )
+                        if ii == 0:
+                            raise ValueError(
+                                f"File {fn} is the only file and has zero subints. Stopping"
+                            )
+                        else:
+                            continue
+                    else:
+                        raise ValueError(
+                            f"File {fn} has zero subints and is not the last file."
+                        )
+                else:
+                    self.num_subint[ii] = nsubints
+
                 self.start_subint[ii] = subint["NSUBOFFS"]
                 self.time_per_subint = self.dt * self.spectra_per_subint
 
                 # This is the MJD offset based on the starting subint number
                 MJDf = (self.time_per_subint * self.start_subint[ii]) / SECPERDAY
+
+                self.start_MJD[ii] = (
+                    primary["STT_IMJD"]
+                    + (primary["STT_SMJD"] + primary["STT_OFFS"]) / SECPERDAY
+                )
                 # The start_MJD values should always be correct
                 self.start_MJD[ii] += MJDf
 
