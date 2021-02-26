@@ -2,6 +2,7 @@
 import argparse
 import logging
 import os
+import textwrap
 from tkinter import *
 from tkinter import filedialog
 
@@ -9,13 +10,13 @@ import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from rich.logging import RichHandler
-from rich.console import Console
-from rich.table import Table
 from rich import box
-import textwrap
+from rich.console import Console
+from rich.logging import RichHandler
+from rich.table import Table
 
 from your import Your
+from your.utils.astro import dedisperse, calc_dispersion_delays
 from your.utils.misc import YourArgparseFormatter
 
 
@@ -28,14 +29,14 @@ class Paint(Frame):
     """
 
     # Define settings upon initialization. Here you can specify
-    def __init__(self, master=None):
+    def __init__(self, master=None, dm=0):
 
         # parameters that you want to send through the Frame class.
         Frame.__init__(self, master)
 
         # reference to the master widget, which is the tk window
         self.master = master
-
+        self.dm = dm
         # Creation of init_window
         # set widget title
         self.master.title("your_viewer")
@@ -135,6 +136,20 @@ class Paint(Frame):
         self.master.title(self.your_obj.your_header.basename)
         logging.info(f"Printing Header parameters")
         self.get_header()
+        if self.dm != 0:
+            self.dispersion_delays = calc_dispersion_delays(
+                self.dm, self.your_obj.chan_freqs
+            )
+            max_delay = np.max(np.abs(self.dispersion_delays))
+            if (
+                max_delay
+                > self.gulp_size * self.your_obj.your_header.native_tsamp
+            ):
+                logging.warning(
+                    f"Maximum dispersion delay for DM ({self.dm}) = {max_delay:.2f}s is greater than "
+                    f"the input gulp size {self.gulp_size*self.your_obj.your_header.native_tsamp}s. Pulses may not be "
+                    f"dedispersed completely."
+                )
         self.read_data()
 
         # create three plots, for ax1=time_series, ax2=dynamic spectra, ax4=bandpass
@@ -267,6 +282,14 @@ class Paint(Frame):
         ts = self.start_samp * self.your_obj.your_header.tsamp
         te = (self.start_samp + self.gulp_size) * self.your_obj.your_header.tsamp
         self.data = self.your_obj.get_data(self.start_samp, self.gulp_size).T
+        if self.dm != 0:
+            logging.info(f"Dedispersing data at DM: {self.dm}")
+            self.data = dedisperse(
+                self.data.copy(),
+                self.dm,
+                self.your_obj.native_tsamp,
+                delays=self.dispersion_delays,
+            )
         self.bandpass = np.mean(self.data, axis=1)
         self.time_series = np.mean(self.data, axis=0)
         logging.info(
@@ -346,6 +369,14 @@ if __name__ == "__main__":
         metavar=("width", "height"),
         default=[1024, 640],
     )
+    parser.add_argument(
+        "-dm",
+        "--dm",
+        help="DM to dedisperse the data",
+        type=float,
+        required=False,
+        default=0,
+    )
     parser.add_argument("-v", "--verbose", help="Be verbose", action="store_true")
     values = parser.parse_args()
 
@@ -369,7 +400,7 @@ if __name__ == "__main__":
     root = Tk()
     root.geometry(f"{values.display[0]}x{values.display[1]}")
     # creation of an instance
-    app = Paint(root)
+    app = Paint(root, dm=values.dm)
     app.load_file(
         values.files, values.start, values.gulp, values.chan_std
     )  # load file with user params
