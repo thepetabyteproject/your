@@ -30,6 +30,7 @@ def ra2deg(src_raj):
     """
     return 15.0 * dec2deg(src_raj)
 
+
 def dedisperse(data, dm, tsamp, chan_freqs=[], delays=[]):
     """
     Dedisperse a chunk of data..
@@ -65,6 +66,7 @@ def dedisperse(data, dm, tsamp, chan_freqs=[], delays=[]):
         )
     return dedispersed
 
+
 def calc_dispersion_delays(dm, chan_freqs):
     """
     Calculates dispersion delays at an input DM and a frequency array.
@@ -76,10 +78,5 @@ def calc_dispersion_delays(dm, chan_freqs):
     Returns:
         delays (float): dispersion delays at each frequency channel (in seconds)
     """
-    delays = (
-            4148808.0
-            * dm
-            * (1 / (chan_freqs[0]) ** 2 - 1 / (chan_freqs) ** 2)
-            / 1000
-    )
+    delays = 4148808.0 * dm * (1 / (chan_freqs[0]) ** 2 - 1 / (chan_freqs) ** 2) / 1000
     return delays

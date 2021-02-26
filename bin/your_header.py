@@ -5,10 +5,10 @@ Print your header
 import argparse
 import logging
 
-from rich.logging import RichHandler
-from rich.console import Console
-from rich.table import Table
 from rich import box
+from rich.console import Console
+from rich.logging import RichHandler
+from rich.table import Table
 
 from your import Your
 from your.utils.misc import YourArgparseFormatter

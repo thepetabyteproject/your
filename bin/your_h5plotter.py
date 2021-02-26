@@ -3,6 +3,7 @@
 import argparse
 import logging
 import os
+import textwrap
 from functools import partial
 from multiprocessing import Pool
 
@@ -13,7 +14,6 @@ from rich.progress import Progress
 
 from your.utils.misc import YourArgparseFormatter
 from your.utils.plotter import plot_h5
-import textwrap
 
 os.environ["HDF5_USE_FILE_LOCKING"] = "FALSE"
 matplotlib.use("Agg")

@@ -1,7 +1,9 @@
-from your.utils.rfi import *
-import pytest
 import os
+
+import pytest
+
 from your import Your
+from your.utils.rfi import *
 
 
 @pytest.fixture(scope="session", autouse=True)

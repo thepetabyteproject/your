@@ -141,10 +141,7 @@ class Paint(Frame):
                 self.dm, self.your_obj.chan_freqs
             )
             max_delay = np.max(np.abs(self.dispersion_delays))
-            if (
-                max_delay
-                > self.gulp_size * self.your_obj.your_header.native_tsamp
-            ):
+            if max_delay > self.gulp_size * self.your_obj.your_header.native_tsamp:
                 logging.warning(
                     f"Maximum dispersion delay for DM ({self.dm}) = {max_delay:.2f}s is greater than "
                     f"the input gulp size {self.gulp_size*self.your_obj.your_header.native_tsamp}s. Pulses may not be "

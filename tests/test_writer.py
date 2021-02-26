@@ -1,8 +1,9 @@
 import os
 
+import pytest
+
 from your import Your
 from your.writer import Writer
-import pytest
 
 _install_dir = os.path.abspath(os.path.dirname(__file__))
 

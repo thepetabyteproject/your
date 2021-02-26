@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import logging
 import mmap
 import os
 import struct
@@ -7,7 +8,7 @@ import sys
 from collections import OrderedDict
 
 import numpy
-import logging
+
 from your.utils.astro import dec2deg
 from your.utils.astro import ra2deg
 
