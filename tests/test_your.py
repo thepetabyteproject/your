@@ -46,6 +46,11 @@ def test_your_no_file():
         Your("nofile.blah")
 
 
+def test_zero_subints():
+    with pytest.raises(ValueError):
+        Your(os.path.join(_install_dir, "data/empty.fits"))
+
+
 def test_unsupported_file():
     with pytest.raises(TypeError):
         Your(os.path.join(_install_dir, "data/some.blah"))
