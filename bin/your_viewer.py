@@ -147,6 +147,10 @@ class Paint(Frame):
                     f"the input gulp size {self.gulp_size*self.your_obj.your_header.native_tsamp}s. Pulses may not be "
                     f"dedispersed completely."
                 )
+                logging.warning(
+                    f"Use gulp size of {int(max_delay//self.your_obj.your_header.native_tsamp):0d} to "
+                    f"dedisperse completely."
+                )
         self.read_data()
 
         # create three plots, for ax1=time_series, ax2=dynamic spectra, ax4=bandpass
