@@ -145,7 +145,7 @@ def sk_sg_filter(
             "Both savgol_sigma and spectral_kurtosis_sigma cannot be zero."
         )
 
-    mask = np.zeros(data.shape[1], dtype=np.bool)
+    mask = np.zeros(data.shape[1], dtype=np.bool_)
     if spectral_kurtosis_sigma > 0:
         logger.debug(
             f"Applying spectral kurtosis filter with sigma={spectral_kurtosis_sigma}"
@@ -158,7 +158,7 @@ def sk_sg_filter(
         )
         mask[sk_mask] = True
     elif spectral_kurtosis_sigma == 0:
-        sk_mask = np.zeros(data.shape[1], dtype=np.bool)
+        sk_mask = np.zeros(data.shape[1], dtype=np.bool_)
         pass
     else:
         raise ValueError("spectral_kurtosis_sigma can't be negative")

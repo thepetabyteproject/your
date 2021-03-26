@@ -124,7 +124,7 @@ def cand2h5(cand_val):
         flag_rfi=args.flag_rfi,
     )
     if os.path.exists(str(kill_mask_path)):
-        kill_mask = np.zeros(cand.nchans, dtype=np.bool)
+        kill_mask = np.zeros(cand.nchans, dtype=np.bool_)
         kill_mask[kill_chans] = True
         cand.kill_mask = kill_mask
     cand.get_chunk(for_preprocessing=True)

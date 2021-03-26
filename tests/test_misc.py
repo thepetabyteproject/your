@@ -40,8 +40,8 @@ def test_crop():
 def test_myencoder():
     c = MyEncoder()
     t = {}
-    t["1"] = np.int(1)
-    t["2"] = np.float(2)
+    t["1"] = int(1)
+    t["2"] = float(2)
     t["3"] = np.array([1, 2])
     t["4"] = 1
     t["5"] = "a"

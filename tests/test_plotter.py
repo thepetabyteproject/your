@@ -9,7 +9,7 @@ def test_save_bandpass():
     fil_file = os.path.join(_install_dir, "data/28.fil")
     y = Your(fil_file)
     bandpass = y.bandpass()
-    mask = np.zeros_like(bandpass, dtype=np.bool)
+    mask = np.zeros_like(bandpass, dtype=np.bool_)
     mask[:10] = True
     save_bandpass(y, bandpass, outname="28_bp.png")
     assert os.path.isfile("28_bp.png")
