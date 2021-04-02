@@ -52,6 +52,8 @@ class ObsInfo(object):
         self.ant_y = -5041978.15
         self.ant_z = 3554876.43
         self.longitude = self.calc_longitude()
+        self.npoln = 1
+        self.poln_type = "AA+BB"
 
     def calc_longitude(self):
         cc = coord.EarthLocation.from_geocentric(
@@ -110,6 +112,11 @@ class ObsInfo(object):
         # Strip out the decimal seconds
         out_str = date_str.split(".")[0]
         return out_str
+
+    def set_pol(self, npol=1, poln_type="AA+BB"):
+        # set number of polarisations and type
+        self.npoln = npol
+        self.poln_type = poln_type
 
     def fill_primary_header(self):
         p_hdr = fits.Header()
@@ -228,8 +235,8 @@ class ObsInfo(object):
         t_hdr["INT_TYPE"] = ("TIME", "Time axis (TIME, BINPHSPERI, BINLNGASC, etc)   ")
         t_hdr["INT_UNIT"] = ("SEC", "Unit of time axis (SEC, PHS (0-1), DEG)        ")
         t_hdr["SCALE"] = ("FluxDen", "Intensity units (FluxDen/RefFlux/Jansky)       ")
-        t_hdr["NPOL"] = (1, "Nr of polarisations                            ")
-        t_hdr["POL_TYPE"] = ("AA+BB", "Polarisation identifier (e.g., AABBCRCI, AA+BB)")
+        t_hdr["NPOL"] = (self.npoln, "Nr of polarisations                            ")
+        t_hdr["POL_TYPE"] = (self.poln_type, "Polarisation identifier (e.g., AABBCRCI, AA+BB)")
         t_hdr["TBIN"] = (self.dt, "[s] Time per bin or sample                     ")
         t_hdr["NBIN"] = (1, "Nr of bins (PSR/CAL mode; else 1)              ")
         t_hdr["NBIN_PRD"] = (0, "Nr of bins/pulse period (for gated data)       ")
@@ -250,25 +257,21 @@ class ObsInfo(object):
 
 
 def initialize_psrfits(
-    outfile, your_object, npsub=-1, nstart=None, nsamp=None, chan_freqs=None
+    outfile, your_object, npsub=-1, nstart=None, nsamp=None, chan_freqs=None, npoln=1, poln_type="AA+BB"
 ):
     """
     Set up a PSRFITS file with everything set up EXCEPT
     the DATA.
 
     Args:
-
         outfile: path to the output fits file to write to
-
         your_object: your object with the input Filterbank file
-
         npsub: number of spectra in a subint
-
         nstart: start sample to read from (for the input file)
-
         nsamp: number of spectra to read
-
         chan_freqs: array with frequencies of all the channels
+        npoln: number of polarisations in the output file
+        poln_type: polsarisation order
 
     """
 
@@ -301,7 +304,18 @@ def initialize_psrfits(
     freqs = fch1 + np.arange(nchans) * foff
     fcenter = fch1 + nchans * foff / 2
 
-    nifs = your_object.your_header.npol
+    if npoln == 4:
+        if your_object.your_header.npol == 4:
+            nifs = 4
+        else:
+            logger.warning(f'Number of polarisations in the data {your_object.your_header.npol} is not equal to 4.'
+                           f'Only writing 1 polarisation.')
+            nifs = 1
+    elif npoln == 1:
+        nifs = 1
+    else:
+        raise ValueError("npoln can only be 1 (for one polarisation) or 4 (for all polarisations).")
+
     # Source Info
     src_name = your_object.your_header.source_name
 
@@ -337,6 +351,7 @@ def initialize_psrfits(
     d.fill_beam_info(bmaj_deg, bmin_deg, bpa_deg)
     d.fill_data_info(tsamp, nbits)
     d.calc_start_lst(mjd)
+    d.set_pol(npol=nifs, poln_type=poln_type)
 
     logging.info("ObsInfo updated with relevant parameters")
 
