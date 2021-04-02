@@ -182,34 +182,41 @@ class Writer:
             nsamp (int): Number of samples to read
 
         """
-        data = self.your_object.get_data(start_sample, nsamp)
-        data = data[:, self.chan_min : self.chan_max]
+        data = self.your_object.get_data(start_sample, nsamp, npoln=self.npoln)
+
+        if self.npoln == 1:
+            data = np.expand_dims(data, 1)
+
+        # shape of data is (nt, npoln, nf)
+        data = data[:, :, self.chan_min : self.chan_max]
         if self.flag_rfi:
-            mask = sk_sg_filter(
-                data,
-                self.your_object,
-                self.sk_sig,
-                self.sg_fw,
-                self.sg_sig,
-            )
-
-            if self.replacement_policy == "mean":
-                fill_value = np.mean(data[:, ~mask])
-            elif self.replacement_policy == "median":
-                fill_value = np.median(data[:, ~mask])
-            else:
-                fill_value = 0
-
-            if self.your_object.your_header.nbits < 32:
-                fill_value = np.around(fill_value).astype(
-                    self.your_object.your_header.dtype
+            for i in range(data.shape[1]):
+                data_to_flag = data[:, i, :]
+                mask = sk_sg_filter(
+                    data_to_flag,
+                    self.your_object,
+                    self.sk_sig,
+                    self.sg_fw,
+                    self.sg_sig,
                 )
 
-            data[:, mask] = fill_value
+                if self.replacement_policy == "mean":
+                    fill_value = np.mean(data_to_flag[:, ~mask])
+                elif self.replacement_policy == "median":
+                    fill_value = np.median(data_to_flag[:, ~mask])
+                else:
+                    fill_value = 0
+
+                if self.your_object.your_header.nbits < 32:
+                    fill_value = np.around(fill_value).astype(
+                        self.your_object.your_header.dtype
+                    )
+
+                data[:, i, mask] = fill_value
 
         if self.zero_dm_subt:
             logger.debug("Subtracting 0-DM time series from the data")
-            data = data - data.mean(1)[:, None]
+            data = data - data.mean(-1)[:, :, None]
 
         data = data.astype(self.your_object.your_header.dtype)
         self.data = data
