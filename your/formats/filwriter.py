@@ -38,13 +38,7 @@ def sigproc_object_from_writer(your_writer):
 
     fil_obj.tstart = your_writer.tstart
 
-    if your_writer.npoln == 1:
-        fil_obj.nifs = 1  # Only use Intensity values
-    else:
-        logger.warning(
-            f"npoln > 1 is not supported for Filterbank writing. Writing out 1 polarisation."
-        )
-        fil_obj.nifs = 1
+    fil_obj.nifs = 1  # Only use Intensity values
 
     if (
         your_writer.your_object.your_header.ra_deg

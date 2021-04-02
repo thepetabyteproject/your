@@ -28,7 +28,6 @@ class Writer:
         c_min (int): Starting channel index (default: 0)
         c_max (int): End channel index (default: total number of frequencies)
         npoln (int): Number of output polarisations (default: 1)
-        poln_order (str): Polarisation order (default: "AA+BB")
         outdir (str): Output directory for file
         outname (str): Name of the file to write to (without the file extension)
         progress (bool): Set to it to false to disable progress bars
@@ -52,7 +51,6 @@ class Writer:
         c_min=None,
         c_max=None,
         npoln=1,
-        poln_order="AA+BB",
         outdir=None,
         outname=None,
         flag_rfi=False,
@@ -77,7 +75,6 @@ class Writer:
         self.c_min = c_min
         self.c_max = c_max
         self.npoln = npoln
-        self.poln_order = poln_order
 
         self.time_decimation_factor = time_decimation_factor
         self.frequency_decimation_factor = frequency_decimation_factor
@@ -170,6 +167,15 @@ class Writer:
             + self.nstart * self.your_object.your_header.tsamp / (60 * 60 * 24)
         )
 
+    @property
+    def poln_order(self):
+        if self.npoln == 1:
+            return "AA+BB"
+        elif self.npoln == 4:
+            return self.your_object.your_header.poln_order
+        else:
+            raise ValueError("npoln can only be 1 or 4.")
+
     def get_data_to_write(self, start_sample, nsamp):
         """
 
@@ -219,6 +225,8 @@ class Writer:
             data = data - data.mean(-1)[:, :, None]
 
         data = data.astype(self.your_object.your_header.dtype)
+
+        # shape of data is (nt, npoln, nf)
         self.data = data
 
     def to_fil(self, data=None):
@@ -230,6 +238,13 @@ class Writer:
 
         """
         self.outname = self.outdir + self.outname + ".fil"
+
+        if self.npoln == 4:
+            logger.warning(
+                f"npoln can only be 1 for output filterbanks. Setting npoln to 1."
+            )
+            self.npoln = 1
+
         with Progress() as progress:
             if not self.progress:
                 task = progress.add_task(
@@ -257,6 +272,7 @@ class Writer:
                     # read till there are spectra to read
                     while samples_left > 0:
                         self.get_data_to_write(start_sample, self.gulp)
+                        self.data = self.data.squeeze()
                         start_sample += self.gulp
                         samples_left -= self.gulp
                         # goto the end of the file and dump
@@ -360,12 +376,9 @@ class Writer:
                         f"nspectra in this chunk ({data.shape[0]}) < nsubints * npsub ({nvals})"
                     )
                     logger.debug(f"Appending zeros at the end to fill the subint")
-                    if self.npoln == 1:
-                        pad_back = np.zeros((nvals - data.shape[0], data.shape[1]))
-                    else:
-                        pad_back = np.zeros(
-                            (nvals - data.shape[0], data.shape[1], data.shape[2])
-                        )
+                    pad_back = np.zeros(
+                        (nvals - data.shape[0], data.shape[1], data.shape[2])
+                    )
                     data = np.vstack((data, pad_back))
                 else:
                     pass
