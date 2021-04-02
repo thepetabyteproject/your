@@ -248,7 +248,7 @@ class Your(PsrfitsFile, SigprocFile):
         elif npoln == 4:
             logger.warning(f"npoln is equal to 4. Returning all polarisations.")
         else:
-            raise ValueError(f"{npoln} can only be 1 (one polarisation) or 4 (all).")
+            raise ValueError(f"npoln ({npoln}) can only be 1 (one polarisation) or 4 (all).")
 
         data = self.formatclass.get_data(self, nstart, nsamp, pol=pol, npoln=npoln)
 

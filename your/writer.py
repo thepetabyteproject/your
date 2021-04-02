@@ -28,7 +28,7 @@ class Writer:
         c_min (int): Starting channel index (default: 0)
         c_max (int): End channel index (default: total number of frequencies)
         npoln (int): Number of output polarisations (default: 1)
-        poln_order (str): Polsarisation order (default: "AA+BB")
+        poln_order (str): Polarisation order (default: "AA+BB")
         outdir (str): Output directory for file
         outname (str): Name of the file to write to (without the file extension)
         progress (bool): Set to it to false to disable progress bars
