@@ -189,7 +189,13 @@ class PsrfitsFile(object):
         return self.nchan
 
     def read_subint(
-        self, isub, apply_weights=True, apply_scales=True, apply_offsets=True, pol=0, npoln=1
+        self,
+        isub,
+        apply_weights=True,
+        apply_scales=True,
+        apply_offsets=True,
+        pol=0,
+        npoln=1,
     ):
         """
         Read a PSRFITS subint from a open pyfits file object.
@@ -230,7 +236,9 @@ class PsrfitsFile(object):
                 data = np.asarray(sdata)
         elif npoln == 4:
             data = sdata.squeeze()
-            data = data.reshape((self.nsamp_per_subint, self.npoln, self.nchan)).astype(np.float32)
+            data = data.reshape((self.nsamp_per_subint, self.npoln, self.nchan)).astype(
+                np.float32
+            )
         else:
             # Handle 4-poln GUPPI/PUPPI data
             if len(shp) == 3 and shp[1] == self.npoln and self.poln_order == "AABBCRCI":
@@ -269,7 +277,9 @@ class PsrfitsFile(object):
                 data += np.left_shift(data2, 8) + data1
             else:
                 data = np.asarray(sdata)
-        data = data.reshape((self.nsamp_per_subint, npoln, self.nchan)).astype(np.float32)
+        data = data.reshape((self.nsamp_per_subint, npoln, self.nchan)).astype(
+            np.float32
+        )
         if apply_scales:
             data *= self.get_scales(isub)[: self.nchan]
         if apply_offsets:
@@ -429,7 +439,7 @@ class PsrfitsFile(object):
         #         else:
         #             freqs = self.freqs
 
-        return data #np.expand_dims(data.T, axis=1)
+        return data  # np.expand_dims(data.T, axis=1)
 
 
 class SpectraInfo:
