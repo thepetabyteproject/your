@@ -236,7 +236,10 @@ class ObsInfo(object):
         t_hdr["INT_UNIT"] = ("SEC", "Unit of time axis (SEC, PHS (0-1), DEG)        ")
         t_hdr["SCALE"] = ("FluxDen", "Intensity units (FluxDen/RefFlux/Jansky)       ")
         t_hdr["NPOL"] = (self.npoln, "Nr of polarisations                            ")
-        t_hdr["POL_TYPE"] = (self.poln_type, "Polarisation identifier (e.g., AABBCRCI, AA+BB)")
+        t_hdr["POL_TYPE"] = (
+            self.poln_type,
+            "Polarisation identifier (e.g., AABBCRCI, AA+BB)",
+        )
         t_hdr["TBIN"] = (self.dt, "[s] Time per bin or sample                     ")
         t_hdr["NBIN"] = (1, "Nr of bins (PSR/CAL mode; else 1)              ")
         t_hdr["NBIN_PRD"] = (0, "Nr of bins/pulse period (for gated data)       ")
@@ -257,7 +260,14 @@ class ObsInfo(object):
 
 
 def initialize_psrfits(
-    outfile, your_object, npsub=-1, nstart=None, nsamp=None, chan_freqs=None, npoln=1, poln_type="AA+BB"
+    outfile,
+    your_object,
+    npsub=-1,
+    nstart=None,
+    nsamp=None,
+    chan_freqs=None,
+    npoln=1,
+    poln_type="AA+BB",
 ):
     """
     Set up a PSRFITS file with everything set up EXCEPT
@@ -308,13 +318,17 @@ def initialize_psrfits(
         if your_object.your_header.npol == 4:
             nifs = 4
         else:
-            logger.warning(f'Number of polarisations in the data {your_object.your_header.npol} is not equal to 4.'
-                           f'Only writing 1 polarisation.')
+            logger.warning(
+                f"Number of polarisations in the data {your_object.your_header.npol} is not equal to 4."
+                f"Only writing 1 polarisation."
+            )
             nifs = 1
     elif npoln == 1:
         nifs = 1
     else:
-        raise ValueError("npoln can only be 1 (for one polarisation) or 4 (for all polarisations).")
+        raise ValueError(
+            "npoln can only be 1 (for one polarisation) or 4 (for all polarisations)."
+        )
 
     # Source Info
     src_name = your_object.your_header.source_name

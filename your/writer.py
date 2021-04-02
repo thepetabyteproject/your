@@ -27,6 +27,8 @@ class Writer:
         nsamp (int): Number of samples to write
         c_min (int): Starting channel index (default: 0)
         c_max (int): End channel index (default: total number of frequencies)
+        npoln (int): Number of output polarisations (default: 1)
+        poln_type (str): Polsarisation order (default: "AA+BB")
         outdir (str): Output directory for file
         outname (str): Name of the file to write to (without the file extension)
         progress (bool): Set to it to false to disable progress bars
@@ -49,6 +51,8 @@ class Writer:
         nsamp=None,
         c_min=None,
         c_max=None,
+        npoln=1,
+        poln_type="AA+BB",
         outdir=None,
         outname=None,
         flag_rfi=False,
@@ -72,6 +76,8 @@ class Writer:
 
         self.c_min = c_min
         self.c_max = c_max
+        self.npoln = npoln
+        self.poln_type = poln_type
 
         self.time_decimation_factor = time_decimation_factor
         self.frequency_decimation_factor = frequency_decimation_factor
@@ -296,9 +302,11 @@ class Writer:
             nstart=self.nstart,
             nsamp=self.nsamp,
             chan_freqs=self.chan_freqs,
+            npoln=self.npoln,
+            poln_type=self.poln_type,
         )
 
-        nifs = self.your_object.your_header.npol
+        nifs = self.npoln  # self.your_object.your_header.npol
 
         logger.info("Filling PSRFITS file with data")
 
@@ -339,13 +347,18 @@ class Writer:
                 data = self.data
                 st += nread
 
-                nvals = isub * npsub * nifs
+                nvals = isub * npsub  # * nifs
                 if data.shape[0] < nvals:
                     logger.debug(
-                        f"nspectra in this chunk ({data.shape[0]}) < nsubints * npsub * nifs ({nvals})"
+                        f"nspectra in this chunk ({data.shape[0]}) < nsubints * npsub ({nvals})"
                     )
                     logger.debug(f"Appending zeros at the end to fill the subint")
-                    pad_back = np.zeros((nvals - data.shape[0], data.shape[1]))
+                    if self.npoln == 1:
+                        pad_back = np.zeros((nvals - data.shape[0], data.shape[1]))
+                    else:
+                        pad_back = np.zeros(
+                            (nvals - data.shape[0], data.shape[1], data.shape[2])
+                        )
                     data = np.vstack((data, pad_back))
                 else:
                     pass
