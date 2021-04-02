@@ -53,7 +53,7 @@ class ObsInfo(object):
         self.ant_z = 3554876.43
         self.longitude = self.calc_longitude()
         self.npoln = 1
-        self.poln_type = "AA+BB"
+        self.poln_order = "AA+BB"
 
     def calc_longitude(self):
         cc = coord.EarthLocation.from_geocentric(
@@ -113,10 +113,10 @@ class ObsInfo(object):
         out_str = date_str.split(".")[0]
         return out_str
 
-    def set_pol(self, npol=1, poln_type="AA+BB"):
+    def set_pol(self, npol=1, poln_order="AA+BB"):
         # set number of polarisations and type
         self.npoln = npol
-        self.poln_type = poln_type
+        self.poln_order = poln_order
 
     def fill_primary_header(self):
         p_hdr = fits.Header()
@@ -237,7 +237,7 @@ class ObsInfo(object):
         t_hdr["SCALE"] = ("FluxDen", "Intensity units (FluxDen/RefFlux/Jansky)       ")
         t_hdr["NPOL"] = (self.npoln, "Nr of polarisations                            ")
         t_hdr["POL_TYPE"] = (
-            self.poln_type,
+            self.poln_order,
             "Polarisation identifier (e.g., AABBCRCI, AA+BB)",
         )
         t_hdr["TBIN"] = (self.dt, "[s] Time per bin or sample                     ")
@@ -267,7 +267,7 @@ def initialize_psrfits(
     nsamp=None,
     chan_freqs=None,
     npoln=1,
-    poln_type="AA+BB",
+    poln_order="AA+BB",
 ):
     """
     Set up a PSRFITS file with everything set up EXCEPT
@@ -281,7 +281,7 @@ def initialize_psrfits(
         nsamp: number of spectra to read
         chan_freqs: array with frequencies of all the channels
         npoln: number of polarisations in the output file
-        poln_type: polsarisation order
+        poln_order: polsarisation order
 
     """
 
@@ -365,7 +365,7 @@ def initialize_psrfits(
     d.fill_beam_info(bmaj_deg, bmin_deg, bpa_deg)
     d.fill_data_info(tsamp, nbits)
     d.calc_start_lst(mjd)
-    d.set_pol(npol=nifs, poln_type=poln_type)
+    d.set_pol(npol=nifs, poln_order=poln_order)
 
     logging.info("ObsInfo updated with relevant parameters")
 

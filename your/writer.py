@@ -28,7 +28,7 @@ class Writer:
         c_min (int): Starting channel index (default: 0)
         c_max (int): End channel index (default: total number of frequencies)
         npoln (int): Number of output polarisations (default: 1)
-        poln_type (str): Polsarisation order (default: "AA+BB")
+        poln_order (str): Polsarisation order (default: "AA+BB")
         outdir (str): Output directory for file
         outname (str): Name of the file to write to (without the file extension)
         progress (bool): Set to it to false to disable progress bars
@@ -52,7 +52,7 @@ class Writer:
         c_min=None,
         c_max=None,
         npoln=1,
-        poln_type="AA+BB",
+        poln_order="AA+BB",
         outdir=None,
         outname=None,
         flag_rfi=False,
@@ -77,7 +77,7 @@ class Writer:
         self.c_min = c_min
         self.c_max = c_max
         self.npoln = npoln
-        self.poln_type = poln_type
+        self.poln_order = poln_order
 
         self.time_decimation_factor = time_decimation_factor
         self.frequency_decimation_factor = frequency_decimation_factor
@@ -303,7 +303,7 @@ class Writer:
             nsamp=self.nsamp,
             chan_freqs=self.chan_freqs,
             npoln=self.npoln,
-            poln_type=self.poln_type,
+            poln_order=self.poln_order,
         )
 
         nifs = self.npoln  # self.your_object.your_header.npol
