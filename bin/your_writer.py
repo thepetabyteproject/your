@@ -143,7 +143,8 @@ if __name__ == "__main__":
         default=None,
     )
     parser.add_argument(
-        "-npol, --num_polarisation",
+        "-npol",
+        "--num_polarisation",
         help="Number of output polarisations",
         required=False,
         type=int,
