@@ -151,6 +151,14 @@ if __name__ == "__main__":
         default=1,
     )
     parser.add_argument(
+        "-npsub",
+        "--nspectra_per_subint",
+        help="Number of spectra per subint (used only for writing psrfits)",
+        required=False,
+        type=int,
+        default=4032,
+    )
+    parser.add_argument(
         "--replacement_policy",
         type=str,
         choices=["mean", "median", "zero"],
@@ -222,7 +230,7 @@ if __name__ == "__main__":
     )
 
     if values.type == "fits":
-        w.to_fits()
+        w.to_fits(npsub=values.npsub)
     elif values.type == "fil":
         w.to_fil()
     else:
