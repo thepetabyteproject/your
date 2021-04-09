@@ -216,6 +216,11 @@ class PsrfitsFile(object):
         sdata = self.fits["SUBINT"].data[isub]["DATA"]
         shp = sdata.squeeze().shape
 
+        assert npoln >= self.npoln, (
+            f"npoln ({npoln})  should be less than or equal to number of polarizations in the "
+            f"data ({self.npoln})"
+        )
+
         if pol > 0 and npoln == 1:
             assert (
                 self.poln_order == "IQUV"
@@ -266,6 +271,11 @@ class PsrfitsFile(object):
                     data = data + ((sdata[:, 0, :] - sdata[:, 1, :]) / 2).squeeze()
                 else:
                     raise ValueError(f"pol={pol} value not supported.")
+            elif len(shp) == 3 and shp[1] == self.npoln and self.poln_order == "AABB":
+                logger.warning("Polarization is AABB, summing AA and BB")
+                data = np.zeros((self.nsamp_per_subint, self.nchan), dtype=np.float32)
+                data += sdata[:, 0, :].squeeze()
+                data += sdata[:, 1, :].squeeze()
             elif len(shp) == 4 and shp[-1] == 2 and self.poln_order == "IQUV":
                 logger.warning(
                     "Data is packed as two uint8 arrays. Concatenating them to get uint16."
