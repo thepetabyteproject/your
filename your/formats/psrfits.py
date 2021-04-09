@@ -216,7 +216,7 @@ class PsrfitsFile(object):
         sdata = self.fits["SUBINT"].data[isub]["DATA"]
         shp = sdata.squeeze().shape
 
-        assert npoln >= self.npoln, (
+        assert npoln <= self.npoln, (
             f"npoln ({npoln})  should be less than or equal to number of polarizations in the "
             f"data ({self.npoln})"
         )
