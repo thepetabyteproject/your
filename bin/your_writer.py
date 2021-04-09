@@ -64,7 +64,7 @@ if __name__ == "__main__":
         "--outdir",
         type=str,
         help="Output directory for the file",
-        default=".",
+        default="./",
         required=False,
     )
     parser.add_argument(
