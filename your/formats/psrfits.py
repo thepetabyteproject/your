@@ -506,9 +506,9 @@ class SpectraInfo:
                 if ii == 0:
                     self.telescope = telescope
                 else:
-                    if telescope != self.telescope[0]:
+                    if telescope != self.telescope:
                         logger.warning(
-                            f"'TELESCOP' values don't match for files 0 ({self.telescope[0]}) and {ii}({telescope})!"
+                            f"'TELESCOP' values don't match for files 0 ({self.telescope}) and {ii}({telescope})!"
                         )
 
                 self.observer = primary["OBSERVER"]
