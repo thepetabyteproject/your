@@ -214,12 +214,13 @@ class PsrfitsFile(object):
             ), "Polarisation order in the file should be IQUV with pol=1 or pol=2"
 
         if self.nbits < 8:  # Unpack the bytes data
-            if (shp[0] != self.nsamp_per_subint) and (
-                shp[1] != self.nchan * self.nbits / 8
-            ):
-                sdata = sdata.reshape(
-                    self.nsamp_per_subint, int(self.nchan * self.nbits / 8)
-                )
+            if(len(shp) == 2):
+               if (shp[0] != self.nsamp_per_subint) and (
+                   shp[1] != self.nchan * self.nbits / 8
+               ):
+                  sdata = sdata.reshape(
+                     self.nsamp_per_subint, int(self.nchan * self.nbits / 8)
+                  )
             if self.nbits == 4:
                 data = unpack_4bit(sdata)
             elif self.nbits == 2:
