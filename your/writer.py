@@ -221,8 +221,24 @@ class Writer:
                 data[:, i, mask] = fill_value
 
         if self.zero_dm_subt:
-            logger.debug("Subtracting 0-DM time series from the data")
-            data = data - data.mean(-1)[:, :, None]
+            if self.npoln > 1:
+                raise NotImplementedError(
+                    "0-DM subtraction is implemented only for 1 output pol."
+                )
+
+            logger.debug("Subtracting 0-DM time series from the data.")
+            min_value = np.iinfo(self.your_object.your_header.dtype).min
+            max_value = np.iinfo(self.your_object.your_header.dtype).max
+            nt, npoln, nf = data.shape
+            ts = data.mean(-1)
+            bp = data.mean(0).squeeze()
+
+            for channel in range(nf):
+                data[:, :, channel] = np.clip(
+                    data[:, :, channel].astype("float32") - ts + bp[channel],
+                    min_value,
+                    max_value,
+                )
 
         data = data.astype(self.your_object.your_header.dtype)
 
