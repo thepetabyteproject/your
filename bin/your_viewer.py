@@ -3,8 +3,17 @@ import argparse
 import logging
 import os
 import textwrap
-from tkinter import *
-from tkinter import filedialog
+from tkinter import (
+    BOTH,
+    TOP,
+    Button,
+    Frame,
+    Menu,
+    OptionMenu,
+    StringVar,
+    Tk,
+    filedialog,
+)
 
 import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
@@ -16,11 +25,11 @@ from rich.logging import RichHandler
 from rich.table import Table
 
 from your import Your
-from your.utils.astro import dedisperse, calc_dispersion_delays
+from your.utils.astro import calc_dispersion_delays, dedisperse
 from your.utils.misc import YourArgparseFormatter
 
-
-# based on https://steemit.com/utopian-io/@hadif66/tutorial-embeding-scipy-matplotlib-with-tkinter-to-work-on-images-in-a-gui-framework
+# based on
+# https://steemit.com/utopian-io/@hadif66/tutorial-embeding-scipy-matplotlib-with-tkinter-to-work-on-images-in-a-gui-framework
 
 
 class Paint(Frame):
@@ -36,6 +45,11 @@ class Paint(Frame):
 
         # reference to the master widget, which is the tk window
         self.master = master
+
+        # Bind left and right keys to move data chunk
+        self.master.bind("<Left>", lambda event: self.prev_gulp())
+        self.master.bind("<Right>", lambda event: self.next_gulp())
+
         self.dm = dm
         # Creation of init_window
         # set widget title
@@ -68,23 +82,23 @@ class Paint(Frame):
         self.browse["command"] = self.load_file
         self.browse.grid(row=0, column=0)
 
-        # move image foward to next gulp of data
-        self.next = Button(self)
-        self.next["text"] = "Next Gulp"
-        self.next["command"] = self.next_gulp
-        self.next.grid(row=0, column=1)
+        # save figure
+        self.prev = Button(self)
+        self.prev["text"] = "Save Fig"
+        self.prev["command"] = self.save_figure
+        self.prev.grid(row=0, column=1)
 
         # move image back to previous gulp of data
         self.prev = Button(self)
         self.prev["text"] = "Prevous Gulp"
         self.prev["command"] = self.prev_gulp
-        self.prev.grid(row=0, column=3)
+        self.prev.grid(row=0, column=2)
 
-        # save figure
-        self.prev = Button(self)
-        self.prev["text"] = "Save Fig"
-        self.prev["command"] = self.save_figure
-        self.prev.grid(row=0, column=4)
+        # move image foward to next gulp of data
+        self.next = Button(self)
+        self.next["text"] = "Next Gulp"
+        self.next["command"] = self.next_gulp
+        self.next.grid(row=0, column=3)
 
     def table_print(self, dic):
         """
@@ -113,7 +127,7 @@ class Paint(Frame):
         dic["nspectra"] = self.your_obj.your_header.nspectra
         self.table_print(dic)
 
-    def load_file(self, file_name=[""], start_samp=0, gulp_size=1024, chan_std=False):
+    def load_file(self, file_name=[""], start_samp=0, gulp_size=4096, chan_std=False):
         """
         Loads data from a file:
 
@@ -126,7 +140,7 @@ class Paint(Frame):
         self.gulp_size = gulp_size
         self.chan_std = chan_std
 
-        if len(file_name) == 0:
+        if file_name == [""]:
             file_name = filedialog.askopenfilename(
                 filetypes=(("fits/fil files", "*.fil *.fits"), ("All files", "*.*"))
             )
