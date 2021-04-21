@@ -378,12 +378,14 @@ class Writer:
         header["FREQ"] = str((self.chan_freqs[0] + self.chan_freqs[-1]) / 2)
         tstart = Time(self.tstart, format="mjd")
         header["MJD_START"] = str(self.tstart)
-        header["NBIT"] = str(self.your_object.your_header.nbits)
+        header["NBIT"] = str(
+            int(np.dtype(self.your_object.your_header.dtype).itemsize * 8)
+        )
         header["TSAMP"] = str(self.your_object.your_header.tsamp * 1e6)
         header["HDR_SIZE"] = "4096"
         header["NCHAN"] = str(self.nchans)
         header["OBS_OFFSET"] = str(0)
-        header["NPOL"] = str(1)  # self.your_object.your_header.npol)
+        header["NPOL"] = str(1)
         header["UTC_START"] = str(tstart.utc.iso.replace(" ", "-"))
         return header
 
@@ -407,7 +409,9 @@ class Writer:
             self.data_step = self.gulp
 
         self.dada_size = int(
-            self.data_step * self.nchans * self.your_object.your_header.nbits / 8
+            self.data_step
+            * self.nchans
+            * np.dtype(self.your_object.your_header.dtype).itemsize
         )
         logger.debug(
             f"Setting up DadaManager with key: {self.dada_key} and page size {self.dada_size} bytes"
