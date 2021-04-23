@@ -1,19 +1,32 @@
 #!/usr/bin/env python3
+"""
+Takes from Dynamic Spectra from filterbank/fits files
+and displays in a GUI.
+Shows time series above spectra and bandpass to the right.
+
+Arguments:
+    --files: files to get data
+
+    --start: first sample to show
+
+    --gulp: How many saples to show
+
+    --chan_std: show 1 std for each channel
+
+    --display: display size of GUI
+
+    --dm: dispersion measure to dedisperse to
+
+Binds:
+    Left Arrow: Move the prevous gulp
+
+    Right Arrow: Move the the next gulp
+"""
 import argparse
 import logging
 import os
 import textwrap
-from tkinter import (
-    BOTH,
-    TOP,
-    Button,
-    Frame,
-    Menu,
-    OptionMenu,
-    StringVar,
-    Tk,
-    filedialog,
-)
+from tkinter import BOTH, TOP, Button, Frame, Menu, Tk, filedialog
 
 import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
@@ -26,6 +39,7 @@ from rich.table import Table
 
 from your import Your
 from your.utils.astro import calc_dispersion_delays, dedisperse
+from your.utils.math import bandpass_fitter
 from your.utils.misc import YourArgparseFormatter
 
 # based on
@@ -118,7 +132,8 @@ class Paint(Frame):
 
     def get_header(self):
         """
-        Gets meta data from data file and give the data to nice_print() to print to user
+        Gets meta data from data file and give the data
+        to nice_print() to print to user
         """
         dic = vars(self.your_obj.your_header)
         dic["tsamp"] = self.your_obj.your_header.tsamp
@@ -127,14 +142,25 @@ class Paint(Frame):
         dic["nspectra"] = self.your_obj.your_header.nspectra
         self.table_print(dic)
 
-    def load_file(self, file_name=[""], start_samp=0, gulp_size=4096, chan_std=False):
+    def load_file(
+        self,
+        file_name=[""],
+        start_samp=0,
+        gulp_size=4096,
+        chan_std=False,
+        bandpass_subtract=False,
+    ):
         """
         Loads data from a file:
 
         Inputs:
-        file_name -- name or list of files to load, if none given user must use gui to give file
-        start_samp -- sample number where to start show the file, defaults to the beginning of the file
+        file_name -- name or list of files to load,
+                     if none given user must use gui to give file
+        start_samp -- sample number where to start show the file,
+                      defaults to the beginning of the file
         gulp_size -- amount of data to show at a given time
+
+        bandpass_subtract -- subtract a polynomial fit of the bandpass
         """
         self.start_samp = start_samp
         self.gulp_size = gulp_size
@@ -148,7 +174,15 @@ class Paint(Frame):
         logging.info(f"Reading file {file_name}.")
         self.your_obj = Your(file_name)
         self.master.title(self.your_obj.your_header.basename)
-        logging.info(f"Printing Header parameters")
+        if bandpass_subtract:
+            iinfo = np.iinfo(self.your_obj.your_header.dtype)
+            self.min = iinfo.min
+            self.max = iinfo.max
+            self.subtract = True
+        else:
+            self.subtract = False
+
+        logging.info("Printing Header parameters")
         self.get_header()
         if self.dm != 0:
             self.dispersion_delays = calc_dispersion_delays(
@@ -260,6 +294,9 @@ class Paint(Frame):
         self.update_plot()
 
     def update_plot(self):
+        """
+        Redraws the plots when something is changed
+        """
         self.read_data()
         self.set_x_axis()
         self.im_ft.set_data(self.data)
@@ -276,6 +313,9 @@ class Paint(Frame):
         self.canvas.draw()
 
     def fill_bp(self):
+        """
+        Adds each channel's standard deviations to bandpass plot
+        """
         self.im_bp_fill.remove()
         bp_std = np.std(self.data, axis=1)
         bp_y = self.im_bandpass.get_ydata()
@@ -305,6 +345,18 @@ class Paint(Frame):
                 self.your_obj.native_tsamp,
                 delays=self.dispersion_delays,
             )
+        if self.subtract:
+            bandpass = bandpass_fitter(np.median(self.data, axis=1))
+            # fit data to median bandpass
+            np.clip(bandpass, self.min, self.max, out=bandpass)
+            # make sure the fit is nummerically possable
+            self.data = self.data - bandpass[:, None]
+
+            # attempt to return the correct data type, most values are close to zero
+            # add get clipped, causeing dynamic range problems
+            # diff = np.clip(self.data - bandpass[:, None], self.min, self.max)
+            # self.data = diff #diff.astype(self.your_obj.your_header.dtype)
+
         self.bandpass = np.mean(self.data, axis=1)
         self.time_series = np.mean(self.data, axis=0)
         logging.info(
@@ -347,8 +399,9 @@ if __name__ == "__main__":
         description="Read psrfits/filterbank files and show the data",
         formatter_class=YourArgparseFormatter,
         epilog=textwrap.dedent(
-            """\
-            This script can be used to visualize the data (Frequency-Time, bandpass and time series). It also reports some basic statistics of the data. 
+            """
+            This script can be used to visualize the data (Frequency-Time, bandpass and time series).
+            It also reports some basic statistics of the data.
             """
         ),
     )
@@ -392,6 +445,14 @@ if __name__ == "__main__":
         required=False,
         default=0,
     )
+    parser.add_argument(
+        "-subtract",
+        "--bandpass_subtract",
+        help="subtract a polynomial fitted bandpass",
+        required=False,
+        default=False,
+        action="store_true",
+    )
     parser.add_argument("-v", "--verbose", help="Be verbose", action="store_true")
     values = parser.parse_args()
 
@@ -417,6 +478,10 @@ if __name__ == "__main__":
     # creation of an instance
     app = Paint(root, dm=values.dm)
     app.load_file(
-        values.files, values.start, values.gulp, values.chan_std
+        values.files,
+        values.start,
+        values.gulp,
+        values.chan_std,
+        values.bandpass_subtract,
     )  # load file with user params
     root.mainloop()
