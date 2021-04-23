@@ -94,6 +94,11 @@ def test_pol(y):
     data = y.get_data(0, 256, pol=1)
     assert data.shape == (256, 336)
 
+    with pytest.raises(AssertionError):
+        y.get_data(0, 100, npoln=4)
+
+    assert y.your_header.poln_order == "I"
+
 
 def test_repr(fil_file):
     y = Your(fil_file)

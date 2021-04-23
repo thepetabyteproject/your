@@ -165,6 +165,29 @@ def test_failing_replacement_policy(your_object):
         )
 
 
+def test_pol(your_object):
+    w = Writer(
+        your_object,
+        outname="temp",
+        outdir="./",
+        flag_rfi=True,
+        zero_dm_subt=False,
+        npoln=1,
+    )
+    assert w.poln_order == "AA+BB"
+
+    with pytest.raises(ValueError):
+        w = Writer(
+            your_object,
+            outname="temp",
+            outdir="./",
+            flag_rfi=True,
+            zero_dm_subt=False,
+            npoln=3,
+        )
+        w.poln_order
+
+
 def test_gulps(your_object):
     w = Writer(
         your_object,

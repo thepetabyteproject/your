@@ -1,6 +1,7 @@
 import os
 
 import numpy as np
+import pytest
 
 from your.formats.pysigproc import SigprocFile
 
@@ -18,3 +19,11 @@ def test_get_data_fil():
     fil_obj = SigprocFile(fil_file)
     data = fil_obj.get_data(0, 10)
     assert np.isclose(np.mean(data), 128, atol=1)
+
+
+def test_pol():
+    fil_file = os.path.join(_install_dir, "data/28.fil")
+    fil_obj = SigprocFile(fil_file)
+    assert fil_obj.poln_order == "I"
+    with pytest.raises(AssertionError):
+        d = fil_obj.get_data(0, 10, npoln=3)
