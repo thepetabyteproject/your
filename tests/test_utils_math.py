@@ -3,6 +3,14 @@ from pytest import approx
 from your.utils.math import *
 
 
+def test_bandpass_fitter():
+    spike_size = 128
+    band = 4 * np.sin(np.linspace(0, np.pi, 1024)) + 256
+    band[256] = band[256] + spike_size
+    fit = bandpass_fitter(band)
+    assert approx(sum(band - fit) - spike_size, rel=1e3) == 0
+
+
 def test_closest_number():
     assert 1 == closest_number(511, 256)
     assert 0 == closest_number(5, 5)
