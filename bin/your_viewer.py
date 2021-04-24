@@ -1,10 +1,21 @@
 #!/usr/bin/env python3
+"""
+Takes Dynamic Spectra (Frequency-Time data) from filterbank/fits files,
+and displays in a GUI.
+
+Shows time series above spectra and bandpass to the right.
+
+It also reports some basic statistics of the data.
+
+Key Binds:
+    Left Arrow: Move the previous gulp
+
+    Right Arrow: Move the the next gulp
+"""
 import argparse
 import logging
 import os
-import textwrap
-from tkinter import *
-from tkinter import filedialog
+from tkinter import BOTH, TOP, Button, Frame, Menu, Tk, filedialog
 
 import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
@@ -16,11 +27,12 @@ from rich.logging import RichHandler
 from rich.table import Table
 
 from your import Your
-from your.utils.astro import dedisperse, calc_dispersion_delays
+from your.utils.astro import calc_dispersion_delays, dedisperse
+from your.utils.math import bandpass_fitter
 from your.utils.misc import YourArgparseFormatter
 
-
-# based on https://steemit.com/utopian-io/@hadif66/tutorial-embeding-scipy-matplotlib-with-tkinter-to-work-on-images-in-a-gui-framework
+# based on
+# https://steemit.com/utopian-io/@hadif66/tutorial-embeding-scipy-matplotlib-with-tkinter-to-work-on-images-in-a-gui-framework
 
 
 class Paint(Frame):
@@ -36,6 +48,11 @@ class Paint(Frame):
 
         # reference to the master widget, which is the tk window
         self.master = master
+
+        # Bind left and right keys to move data chunk
+        self.master.bind("<Left>", lambda event: self.prev_gulp())
+        self.master.bind("<Right>", lambda event: self.next_gulp())
+
         self.dm = dm
         # Creation of init_window
         # set widget title
@@ -68,23 +85,23 @@ class Paint(Frame):
         self.browse["command"] = self.load_file
         self.browse.grid(row=0, column=0)
 
-        # move image foward to next gulp of data
-        self.next = Button(self)
-        self.next["text"] = "Next Gulp"
-        self.next["command"] = self.next_gulp
-        self.next.grid(row=0, column=1)
+        # save figure
+        self.prev = Button(self)
+        self.prev["text"] = "Save Fig"
+        self.prev["command"] = self.save_figure
+        self.prev.grid(row=0, column=1)
 
         # move image back to previous gulp of data
         self.prev = Button(self)
         self.prev["text"] = "Prevous Gulp"
         self.prev["command"] = self.prev_gulp
-        self.prev.grid(row=0, column=3)
+        self.prev.grid(row=0, column=2)
 
-        # save figure
-        self.prev = Button(self)
-        self.prev["text"] = "Save Fig"
-        self.prev["command"] = self.save_figure
-        self.prev.grid(row=0, column=4)
+        # move image foward to next gulp of data
+        self.next = Button(self)
+        self.next["text"] = "Next Gulp"
+        self.next["command"] = self.next_gulp
+        self.next.grid(row=0, column=3)
 
     def table_print(self, dic):
         """
@@ -104,7 +121,8 @@ class Paint(Frame):
 
     def get_header(self):
         """
-        Gets meta data from data file and give the data to nice_print() to print to user
+        Gets meta data from data file and give the data
+        to nice_print() to print to user
         """
         dic = vars(self.your_obj.your_header)
         dic["tsamp"] = self.your_obj.your_header.tsamp
@@ -113,20 +131,31 @@ class Paint(Frame):
         dic["nspectra"] = self.your_obj.your_header.nspectra
         self.table_print(dic)
 
-    def load_file(self, file_name=[""], start_samp=0, gulp_size=1024, chan_std=False):
+    def load_file(
+        self,
+        file_name=[""],
+        start_samp=0,
+        gulp_size=4096,
+        chan_std=False,
+        bandpass_subtract=False,
+    ):
         """
         Loads data from a file:
 
         Inputs:
-        file_name -- name or list of files to load, if none given user must use gui to give file
-        start_samp -- sample number where to start show the file, defaults to the beginning of the file
+        file_name -- name or list of files to load,
+                     if none given user must use gui to give file
+        start_samp -- sample number where to start show the file,
+                      defaults to the beginning of the file
         gulp_size -- amount of data to show at a given time
+
+        bandpass_subtract -- subtract a polynomial fit of the bandpass
         """
         self.start_samp = start_samp
         self.gulp_size = gulp_size
         self.chan_std = chan_std
 
-        if len(file_name) == 0:
+        if file_name == [""]:
             file_name = filedialog.askopenfilename(
                 filetypes=(("fits/fil files", "*.fil *.fits"), ("All files", "*.*"))
             )
@@ -134,7 +163,15 @@ class Paint(Frame):
         logging.info(f"Reading file {file_name}.")
         self.your_obj = Your(file_name)
         self.master.title(self.your_obj.your_header.basename)
-        logging.info(f"Printing Header parameters")
+        if bandpass_subtract:
+            iinfo = np.iinfo(self.your_obj.your_header.dtype)
+            self.min = iinfo.min
+            self.max = iinfo.max
+            self.subtract = True
+        else:
+            self.subtract = False
+
+        logging.info("Printing Header parameters")
         self.get_header()
         if self.dm != 0:
             self.dispersion_delays = calc_dispersion_delays(
@@ -246,6 +283,9 @@ class Paint(Frame):
         self.update_plot()
 
     def update_plot(self):
+        """
+        Redraws the plots when something is changed
+        """
         self.read_data()
         self.set_x_axis()
         self.im_ft.set_data(self.data)
@@ -262,6 +302,9 @@ class Paint(Frame):
         self.canvas.draw()
 
     def fill_bp(self):
+        """
+        Adds each channel's standard deviations to bandpass plot
+        """
         self.im_bp_fill.remove()
         bp_std = np.std(self.data, axis=1)
         bp_y = self.im_bandpass.get_ydata()
@@ -291,6 +334,18 @@ class Paint(Frame):
                 self.your_obj.native_tsamp,
                 delays=self.dispersion_delays,
             )
+        if self.subtract:
+            bandpass = bandpass_fitter(np.median(self.data, axis=1))
+            # fit data to median bandpass
+            np.clip(bandpass, self.min, self.max, out=bandpass)
+            # make sure the fit is nummerically possable
+            self.data = self.data - bandpass[:, None]
+
+            # attempt to return the correct data type, most values are close to zero
+            # add get clipped, causeing dynamic range problems
+            # diff = np.clip(self.data - bandpass[:, None], self.min, self.max)
+            # self.data = diff #diff.astype(self.your_obj.your_header.dtype)
+
         self.bandpass = np.mean(self.data, axis=1)
         self.time_series = np.mean(self.data, axis=0)
         logging.info(
@@ -332,11 +387,7 @@ if __name__ == "__main__":
         prog="your_viewer.py",
         description="Read psrfits/filterbank files and show the data",
         formatter_class=YourArgparseFormatter,
-        epilog=textwrap.dedent(
-            """\
-            This script can be used to visualize the data (Frequency-Time, bandpass and time series). It also reports some basic statistics of the data. 
-            """
-        ),
+        epilog=__doc__,
     )
     parser.add_argument(
         "-f",
@@ -355,7 +406,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-e",
         "--chan_std",
-        help="Show 1 standard devation per channel in bandpass",
+        help="Show 1 standard deviation per channel in bandpass",
         required=False,
         default=False,
         action="store_true",
@@ -377,6 +428,14 @@ if __name__ == "__main__":
         type=float,
         required=False,
         default=0,
+    )
+    parser.add_argument(
+        "-subtract",
+        "--bandpass_subtract",
+        help="subtract a polynomial fitted bandpass",
+        required=False,
+        default=False,
+        action="store_true",
     )
     parser.add_argument("-v", "--verbose", help="Be verbose", action="store_true")
     values = parser.parse_args()
@@ -403,6 +462,10 @@ if __name__ == "__main__":
     # creation of an instance
     app = Paint(root, dm=values.dm)
     app.load_file(
-        values.files, values.start, values.gulp, values.chan_std
+        values.files,
+        values.start,
+        values.gulp,
+        values.chan_std,
+        values.bandpass_subtract,
     )  # load file with user params
     root.mainloop()
