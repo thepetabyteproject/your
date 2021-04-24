@@ -109,6 +109,11 @@ def test_4pol():
     data = y.get_data(0, 100, npoln=4)
     assert data.shape == (100, 4, 512)
 
+    data = y.get_data(
+        0, 100, npoln=4, time_decimation_factor=2, frequency_decimation_factor=2
+    )
+    assert data.shape == (50, 4, 256)
+
     with pytest.raises(ValueError):
         y.get_data(0, 100, npoln=3)
 
