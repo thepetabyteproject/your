@@ -100,6 +100,22 @@ def test_pol(y):
     assert y.your_header.poln_order == "I"
 
 
+def test_4pol():
+    file = os.path.join(_install_dir, "data/test_4pol.fits")
+    y = Your(file)
+    data = y.get_data(0, 100, npoln=1)
+    assert data.shape == (100, 512)
+
+    data = y.get_data(0, 100, npoln=4)
+    assert data.shape == (100, 4, 512)
+
+    with pytest.raises(ValueError):
+        y.get_data(0, 100, npoln=3)
+
+    with pytest.raises(ValueError):
+        y.get_data(0, 100, pol=5)
+
+
 def test_repr(fil_file):
     y = Your(fil_file)
     assert repr(y) == f"Using <class 'str'>:\n{fil_file}"
