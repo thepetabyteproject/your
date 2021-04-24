@@ -165,6 +165,29 @@ def test_failing_replacement_policy(your_object):
         )
 
 
+def test_pol(your_object):
+    w = Writer(
+        your_object,
+        outname="temp",
+        outdir="./",
+        flag_rfi=True,
+        zero_dm_subt=False,
+        npoln=1,
+    )
+    assert w.poln_order == "AA+BB"
+
+    with pytest.raises(ValueError):
+        w = Writer(
+            your_object,
+            outname="temp",
+            outdir="./",
+            flag_rfi=True,
+            zero_dm_subt=False,
+            npoln=3,
+        )
+        w.poln_order
+
+
 def test_gulps(your_object):
     w = Writer(
         your_object,
@@ -192,3 +215,19 @@ def test_gulps(your_object):
     w.to_fil()
     assert os.path.isfile("temp.fil")
     os.remove("temp.fil")
+
+
+def test_4pol_fits_to_fits():
+    file = os.path.join(_install_dir, "data/test_4pol.fits")
+    your_obj = Your(file)
+
+    w = Writer(
+        your_obj, nstart=1, nsamp=20, gulp=20, outname="temp_4pol", outdir="./", npoln=4
+    )
+    w.to_fits()
+
+    y = Your("temp_4pol.fits")
+    assert y.your_header.nspectra == 20
+    assert y.your_header.nchans == your_obj.your_header.nchans
+    assert (y.get_data(0, 5, npoln=4) - your_obj.get_data(1, 5, npoln=4)).sum() == 0
+    os.remove("temp_4pol.fits")

@@ -162,6 +162,7 @@ class Your(PsrfitsFile, SigprocFile):
         time_decimation_factor=None,
         frequency_decimation_factor=None,
         pol: int = 0,
+        npoln: int = 1,
     ):
         """
         Read data from files
@@ -172,6 +173,7 @@ class Your(PsrfitsFile, SigprocFile):
             time_decimation_factor (int): number of time samples to average
             frequency_decimation_factor (int): number of frequency channels to average
             pol (int): which polarization to chose
+            npoln (int): number of polarization to return
 
         Note:
             The decimation (both in time and frequency) is done on the data read i.e containing `nsamp` number of samples
@@ -219,36 +221,68 @@ class Your(PsrfitsFile, SigprocFile):
                 f"frequency_decimation_factor: {self.your_header.frequency_decimation_factor} should be a divisor or nchans:{self.nchans}"
             )
 
-        if pol not in [0, 1, 2, 3, 4]:
+        assert npoln <= self.your_header.npol, (
+            f"npoln={npoln} cannot be greater than number of polarisations in "
+            f"the data {self.your_header.npol}"
+        )
+
+        if npoln == 1:
+            if pol not in [0, 1, 2, 3, 4]:
+                raise ValueError(
+                    f"pol: {pol} can only be one of 0 (Intensity), 1 (Right Circular), 2 (Left Circular), "
+                    "3 (Horizontal Linear), 4 (Vertical Linear)"
+                )
+
+            if self.format == "fil":
+                if pol > 0:
+                    logging.warning(f"pol > 0 not tested for Filterbank files.")
+                    if self.your_header.npol == 0:
+                        logging.warning(
+                            f"Data contains only one polarisation. Setting pol to 0"
+                        )
+                        pol = 0
+                    else:
+                        logging.warning(
+                            f"pol: {pol}, Assuming IQUV polarisation data in Filterbank file"
+                        )
+        elif npoln == 4:
+            logger.warning(f"npoln is equal to 4. Returning all polarisations.")
+        else:
             raise ValueError(
-                f"pol: {pol} can only be one of 0 (Intensity), 1 (Right Circular), 2 (Left Circular), "
-                "3 (Horizontal Linear), 4 (Vertical Linear)"
+                f"npoln ({npoln}) can only be 1 (one polarisation) or 4 (all)."
             )
 
-        if self.format == "fil":
-            if pol > 0:
-                logging.warning(f"pol > 0 not tested for Filterbank files.")
-                if self.your_header.npol == 0:
-                    logging.warning(
-                        f"Data contains only one polarisation. Setting pol to 0"
-                    )
-                    pol = 0
-                else:
-                    logging.warning(
-                        f"pol: {pol}, Assuming IQUV polarisation data in Filterbank file"
-                    )
-        data = self.formatclass.get_data(self, nstart, nsamp, pol=pol)[:, 0, :]
+        data = self.formatclass.get_data(self, nstart, nsamp, pol=pol, npoln=npoln)
+
+        if data.shape[1] == 1:
+            data = data[:, 0, :]
 
         if (self.your_header.time_decimation_factor > 1) or (
             self.your_header.frequency_decimation_factor > 1
         ):
-            nt, nf = data.shape
-            data = data.reshape(
-                self.your_header.time_decimation_factor,
-                nt // self.your_header.time_decimation_factor,
-                nf // self.your_header.frequency_decimation_factor,
-                self.your_header.frequency_decimation_factor,
-            )
+            sh = data.shape
+            if len(sh) == 2:
+                nt, nf = sh
+                data = data.reshape(
+                    self.your_header.time_decimation_factor,
+                    nt // self.your_header.time_decimation_factor,
+                    nf // self.your_header.frequency_decimation_factor,
+                    self.your_header.frequency_decimation_factor,
+                )
+            elif len(sh) == 3:
+                nt, nifs, nf = sh
+                data = data.reshape(
+                    self.your_header.time_decimation_factor,
+                    nt // self.your_header.time_decimation_factor,
+                    nifs,
+                    nf // self.your_header.frequency_decimation_factor,
+                    self.your_header.frequency_decimation_factor,
+                )
+            else:
+                raise ValueError(
+                    f"data shape is {sh}. But data can only have either 2 (nt, nf) or 3 (nt, nifs, nf) "
+                    f"dimensions."
+                )
             data = data.astype(np.float32)
             data = data.mean(axis=0)
             data = data.mean(axis=-1)
@@ -361,6 +395,7 @@ class Header:
         self.native_nspectra = your.native_nspectra
         self.fch1 = your.fch1
         self.npol = your.nifs
+        self.poln_order = your.poln_order
         self.tstart = your.tstart
         from astropy.coordinates import SkyCoord
 

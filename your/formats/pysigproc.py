@@ -89,6 +89,12 @@ class SigprocFile(object):
 
             self.bw = self.nchans * self.foff
             self.cfreq = self.fch1 + self.bw / 2
+            if self.nifs == 1:
+                self.poln_order = "I"
+            elif self.nifs == 4:
+                self.poln_order = "IQUV"
+            else:
+                raise ValueError("Invalid number of ifs in Filterbank file.")
             if self.src_raj and self.src_dej:
                 self.ra_deg = ra2deg(self.src_raj)
                 self.dec_deg = dec2deg(self.src_dej)
@@ -275,7 +281,7 @@ class SigprocFile(object):
 
         return (self._mmdata.size() - self.hdrbytes) / self.bytes_per_spectrum
 
-    def get_data(self, nstart, nsamp, offset=0, pol=0):
+    def get_data(self, nstart, nsamp, offset=0, pol=0, npoln=1):
         """
         Return nsamp time slices starting at nstart.
 
@@ -284,10 +290,13 @@ class SigprocFile(object):
             nsamp (int): Number of spectra to read.
             offset (int): Can be used to offset reading from.
             pol (int): Which polarisation to read.
+            npoln (int): Number of polarisations to read.
 
         Returns:
             numpy.ndarray: data.
         """
+        assert npoln in [1, 4], "npoln can only be 1 or 4"
+
         bstart = int(nstart) * self.bytes_per_spectrum
         nbytes = int(nsamp) * self.bytes_per_spectrum
         b0 = self.hdrbytes + bstart + (offset * self.bytes_per_spectrum)
@@ -296,15 +305,19 @@ class SigprocFile(object):
         data = numpy.frombuffer(
             self._mmdata[int(b0) : int(b1)], dtype=self.dtype
         ).reshape((-1, self.nifs, self.nchans))
+
         if self.nifs == 1:
             return data
-        else:
+
+        if npoln == 1:
             if pol == 0:
                 return data[:, 0, :]
             elif pol == 1:
                 return (data[:, 0, :] + data[:, 3, :]) / 2
             else:
                 return (data[:, 0, :] - data[:, 3, :]) / 2
+        else:
+            return data
 
     def unpack(self, nstart, nsamp):
         """

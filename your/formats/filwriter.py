@@ -37,6 +37,7 @@ def sigproc_object_from_writer(your_writer):
     fil_obj.tsamp = your_writer.your_object.your_header.tsamp
 
     fil_obj.tstart = your_writer.tstart
+
     fil_obj.nifs = 1  # Only use Intensity values
 
     if (

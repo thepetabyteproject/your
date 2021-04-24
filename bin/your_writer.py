@@ -64,7 +64,7 @@ if __name__ == "__main__":
         "--outdir",
         type=str,
         help="Output directory for the file",
-        default=".",
+        default="./",
         required=False,
     )
     parser.add_argument(
@@ -143,6 +143,22 @@ if __name__ == "__main__":
         default=None,
     )
     parser.add_argument(
+        "-npol",
+        "--num_polarisation",
+        help="Number of output polarisations",
+        required=False,
+        type=int,
+        default=1,
+    )
+    parser.add_argument(
+        "-npsub",
+        "--nspectra_per_subint",
+        help="Number of spectra per subint (used only for writing psrfits)",
+        required=False,
+        type=int,
+        default=4032,
+    )
+    parser.add_argument(
         "--replacement_policy",
         type=str,
         choices=["mean", "median", "zero"],
@@ -210,10 +226,11 @@ if __name__ == "__main__":
         time_decimation_factor=values.time_decimation_factor,
         frequency_decimation_factor=values.frequency_decimation_factor,
         replacement_policy=values.replacement_policy,
+        npoln=values.num_polarisation,
     )
 
     if values.type == "fits":
-        w.to_fits()
+        w.to_fits(npsub=values.npsub)
     elif values.type == "fil":
         w.to_fil()
     else:

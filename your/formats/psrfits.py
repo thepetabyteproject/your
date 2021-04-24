@@ -189,7 +189,13 @@ class PsrfitsFile(object):
         return self.nchan
 
     def read_subint(
-        self, isub, apply_weights=True, apply_scales=True, apply_offsets=True, pol=0
+        self,
+        isub,
+        apply_weights=True,
+        apply_scales=True,
+        apply_offsets=True,
+        pol=0,
+        npoln=1,
     ):
         """
         Read a PSRFITS subint from a open pyfits file object.
@@ -200,6 +206,8 @@ class PsrfitsFile(object):
             apply_weights (bool): If True, apply weights. (Default: apply weights)
             apply_scales (bool): If True, apply scales. (Default: apply scales)
             apply_offsets (bool): If True, apply offsets. (Default: apply offsets)
+            pol (int): which polarization to chose
+            npoln (int): number of polarizations to return
 
         Returns:
             np.ndarray: Subint data with scales, weights, and offsets applied in float32 dtype with shape (nsamps,nchan).
@@ -208,7 +216,12 @@ class PsrfitsFile(object):
         sdata = self.fits["SUBINT"].data[isub]["DATA"]
         shp = sdata.squeeze().shape
 
-        if pol > 0:
+        assert npoln <= self.npoln, (
+            f"npoln ({npoln})  should be less than or equal to number of polarizations in the "
+            f"data ({self.npoln})"
+        )
+
+        if pol > 0 and npoln == 1:
             assert (
                 self.poln_order == "IQUV"
             ), "Polarisation order in the file should be IQUV with pol=1 or pol=2"
@@ -227,6 +240,11 @@ class PsrfitsFile(object):
                 data = unpack_2bit(sdata)
             else:
                 data = np.asarray(sdata)
+        elif npoln == 4:
+            data = sdata.squeeze()
+            data = data.reshape((self.nsamp_per_subint, self.npoln, self.nchan)).astype(
+                np.float32
+            )
         else:
             # Handle 4-poln GUPPI/PUPPI data
             if len(shp) == 3 and shp[1] == self.npoln and self.poln_order == "AABBCRCI":
@@ -254,6 +272,11 @@ class PsrfitsFile(object):
                     data = data + ((sdata[:, 0, :] - sdata[:, 1, :]) / 2).squeeze()
                 else:
                     raise ValueError(f"pol={pol} value not supported.")
+            elif len(shp) == 3 and shp[1] == self.npoln and self.poln_order == "AABB":
+                logger.warning("Polarization is AABB, summing AA and BB")
+                data = np.zeros((self.nsamp_per_subint, self.nchan), dtype=np.float32)
+                data += sdata[:, 0, :].squeeze()
+                data += sdata[:, 1, :].squeeze()
             elif len(shp) == 4 and shp[-1] == 2 and self.poln_order == "IQUV":
                 logger.warning(
                     "Data is packed as two uint8 arrays. Concatenating them to get uint16."
@@ -265,7 +288,9 @@ class PsrfitsFile(object):
                 data += np.left_shift(data2, 8) + data1
             else:
                 data = np.asarray(sdata)
-        data = data.reshape((self.nsamp_per_subint, self.nchan)).astype(np.float32)
+        data = data.reshape((self.nsamp_per_subint, npoln, self.nchan)).astype(
+            np.float32
+        )
         if apply_scales:
             data *= self.get_scales(isub)[: self.nchan]
         if apply_offsets:
@@ -313,7 +338,7 @@ class PsrfitsFile(object):
         """
         return self.fits["SUBINT"].data[isub]["DAT_OFFS"]
 
-    def get_data(self, nstart, nsamp, pol=0):
+    def get_data(self, nstart, nsamp, pol=0, npoln=1):
         """
         Return 2D array of data from PSRFITS files.
 
@@ -321,6 +346,7 @@ class PsrfitsFile(object):
             nstart (int): Starting sample
             nsamp (int): number of samples to read
             pol (int): which polarization to return
+            npoln (int): number of polarizations to return
 
         Returns:
             np.ndarray: Time-Frequency numpy array
@@ -390,7 +416,7 @@ class PsrfitsFile(object):
             )
             logger.debug(f"Reading subint {fsub} in file {self.filename}")
             try:
-                data.append(self.read_subint(fsub, pol=pol))
+                data.append(self.read_subint(fsub, pol=pol, npoln=npoln))
             except KeyError:
                 logger.warning(
                     f"Encountered KeyError, maybe mmap'd object was delected"
@@ -398,19 +424,22 @@ class PsrfitsFile(object):
                 logger.debug(f"Trying to open file {self.filename}")
                 self.fits = pyfits.open(self.filename, mode="readonly", memmap=True)
                 logger.debug(f"Reading subint {fsub} in file {self.filename}")
-                data.append(self.read_subint(fsub, pol=pol))
+                data.append(self.read_subint(fsub, pol=pol, npoln=npoln))
 
         logging.debug(f"Read all the necessary subints")
         if len(data) > 1:
             data = np.concatenate(data)
         else:
-            data = np.array(data).squeeze()
-        data = np.transpose(data)
+            data = np.array(data)[0, :, :, :]
+
+        # data shape is (nt, 1, nf) or (nt, nifs, nf)
+
+        # data = np.transpose(data)
         # Truncate data to desired interval
         if trunc > 0:
-            data = data[:, skip:-trunc]
+            data = data[skip:-trunc, :, :]
         elif trunc == 0:
-            data = data[:, skip:]
+            data = data[skip:, :, :]
         else:
             raise ValueError("Number of bins to truncate is negative: %d" % trunc)
         #         if not self.specinfo.need_flipband:
@@ -420,7 +449,8 @@ class PsrfitsFile(object):
         #             freqs = self.freqs[::-1]
         #         else:
         #             freqs = self.freqs
-        return np.expand_dims(data.T, axis=1)
+
+        return data  # np.expand_dims(data.T, axis=1)
 
 
 class SpectraInfo:
@@ -477,9 +507,9 @@ class SpectraInfo:
                 if ii == 0:
                     self.telescope = telescope
                 else:
-                    if telescope != self.telescope[0]:
+                    if telescope != self.telescope:
                         logger.warning(
-                            f"'TELESCOP' values don't match for files 0 ({self.telescope[0]}) and {ii}({telescope})!"
+                            f"'TELESCOP' values don't match for files 0 ({self.telescope}) and {ii}({telescope})!"
                         )
 
                 self.observer = primary["OBSERVER"]

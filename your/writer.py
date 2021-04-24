@@ -27,6 +27,7 @@ class Writer:
         nsamp (int): Number of samples to write
         c_min (int): Starting channel index (default: 0)
         c_max (int): End channel index (default: total number of frequencies)
+        npoln (int): Number of output polarisations (default: 1)
         outdir (str): Output directory for file
         outname (str): Name of the file to write to (without the file extension)
         progress (bool): Set to it to false to disable progress bars
@@ -49,6 +50,7 @@ class Writer:
         nsamp=None,
         c_min=None,
         c_max=None,
+        npoln=1,
         outdir=None,
         outname=None,
         flag_rfi=False,
@@ -72,6 +74,7 @@ class Writer:
 
         self.c_min = c_min
         self.c_max = c_max
+        self.npoln = npoln
 
         self.time_decimation_factor = time_decimation_factor
         self.frequency_decimation_factor = frequency_decimation_factor
@@ -164,6 +167,15 @@ class Writer:
             + self.nstart * self.your_object.your_header.tsamp / (60 * 60 * 24)
         )
 
+    @property
+    def poln_order(self):
+        if self.npoln == 1:
+            return "AA+BB"
+        elif self.npoln == 4:
+            return self.your_object.your_header.poln_order
+        else:
+            raise ValueError("npoln can only be 1 or 4.")
+
     def get_data_to_write(self, start_sample, nsamp):
         """
 
@@ -176,36 +188,61 @@ class Writer:
             nsamp (int): Number of samples to read
 
         """
-        data = self.your_object.get_data(start_sample, nsamp)
-        data = data[:, self.chan_min : self.chan_max]
+        data = self.your_object.get_data(start_sample, nsamp, npoln=self.npoln)
+
+        if self.npoln == 1:
+            data = np.expand_dims(data, 1)
+
+        # shape of data is (nt, npoln, nf)
+        data = data[:, :, self.chan_min : self.chan_max]
         if self.flag_rfi:
-            mask = sk_sg_filter(
-                data,
-                self.your_object,
-                self.sk_sig,
-                self.sg_fw,
-                self.sg_sig,
-            )
-
-            if self.replacement_policy == "mean":
-                fill_value = np.mean(data[:, ~mask])
-            elif self.replacement_policy == "median":
-                fill_value = np.median(data[:, ~mask])
-            else:
-                fill_value = 0
-
-            if self.your_object.your_header.nbits < 32:
-                fill_value = np.around(fill_value).astype(
-                    self.your_object.your_header.dtype
+            for i in range(data.shape[1]):
+                data_to_flag = data[:, i, :]
+                mask = sk_sg_filter(
+                    data_to_flag,
+                    self.your_object,
+                    self.sk_sig,
+                    self.sg_fw,
+                    self.sg_sig,
                 )
 
-            data[:, mask] = fill_value
+                if self.replacement_policy == "mean":
+                    fill_value = np.mean(data_to_flag[:, ~mask])
+                elif self.replacement_policy == "median":
+                    fill_value = np.median(data_to_flag[:, ~mask])
+                else:
+                    fill_value = 0
+
+                if self.your_object.your_header.nbits < 32:
+                    fill_value = np.around(fill_value).astype(
+                        self.your_object.your_header.dtype
+                    )
+
+                data[:, i, mask] = fill_value
 
         if self.zero_dm_subt:
-            logger.debug("Subtracting 0-DM time series from the data")
-            data = data - data.mean(1)[:, None]
+            if self.npoln > 1:
+                raise NotImplementedError(
+                    "0-DM subtraction is implemented only for 1 output pol."
+                )
+
+            logger.debug("Subtracting 0-DM time series from the data.")
+            min_value = np.iinfo(self.your_object.your_header.dtype).min
+            max_value = np.iinfo(self.your_object.your_header.dtype).max
+            nt, npoln, nf = data.shape
+            ts = data.mean(-1)
+            bp = data.mean(0).squeeze()
+
+            for channel in range(nf):
+                data[:, :, channel] = np.clip(
+                    data[:, :, channel].astype("float32") - ts + bp[channel],
+                    min_value,
+                    max_value,
+                )
 
         data = data.astype(self.your_object.your_header.dtype)
+
+        # shape of data is (nt, npoln, nf)
         self.data = data
 
     def to_fil(self, data=None):
@@ -217,6 +254,13 @@ class Writer:
 
         """
         self.outname = self.outdir + self.outname + ".fil"
+
+        if self.npoln == 4:
+            logger.warning(
+                f"npoln can only be 1 for output filterbanks. Setting npoln to 1."
+            )
+            self.npoln = 1
+
         with Progress() as progress:
             if not self.progress:
                 task = progress.add_task(
@@ -244,6 +288,7 @@ class Writer:
                     # read till there are spectra to read
                     while samples_left > 0:
                         self.get_data_to_write(start_sample, self.gulp)
+                        self.data = self.data.squeeze()
                         start_sample += self.gulp
                         samples_left -= self.gulp
                         # goto the end of the file and dump
@@ -296,9 +341,11 @@ class Writer:
             nstart=self.nstart,
             nsamp=self.nsamp,
             chan_freqs=self.chan_freqs,
+            npoln=self.npoln,
+            poln_order=self.poln_order,
         )
 
-        nifs = self.your_object.your_header.npol
+        nifs = self.npoln  # self.your_object.your_header.npol
 
         logger.info("Filling PSRFITS file with data")
 
@@ -339,13 +386,15 @@ class Writer:
                 data = self.data
                 st += nread
 
-                nvals = isub * npsub * nifs
+                nvals = isub * npsub  # * nifs
                 if data.shape[0] < nvals:
                     logger.debug(
-                        f"nspectra in this chunk ({data.shape[0]}) < nsubints * npsub * nifs ({nvals})"
+                        f"nspectra in this chunk ({data.shape[0]}) < nsubints * npsub ({nvals})"
                     )
                     logger.debug(f"Appending zeros at the end to fill the subint")
-                    pad_back = np.zeros((nvals - data.shape[0], data.shape[1]))
+                    pad_back = np.zeros(
+                        (nvals - data.shape[0], data.shape[1], data.shape[2])
+                    )
                     data = np.vstack((data, pad_back))
                 else:
                     pass
