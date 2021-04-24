@@ -5,22 +5,7 @@ and displays in a GUI.
 
 Shows time series above spectra and bandpass to the right.
 
-It also reports some basic statistics of the data
-
-Arguments:
-    -f: files to get data
-
-    -s/--start: Sample at which to start displaying data
-
-    -g/--gulp: Number of time samples to display
-
-    -e/--chan_std: show +/- 1 std around the bandpass for each channel
-
-    -d/--display: display size of GUI in [length, width]
-
-    -dm/--dm: dispersion measure to dedisperse roll the data
-
-    -subtract/--bandpass_subtract: subtract a polynomial bandpass fit
+It also reports some basic statistics of the data.
 
 Key Binds:
     Left Arrow: Move the previous gulp
