@@ -11,7 +11,7 @@ def bandpass_fitter(
 ) -> float:
     """
     Fits bandpasses by polyfitting the bandpass, looking for channels that
-    are far from this fit, exluding these channels and refitting the bandpass
+    are far from this fit, excluding these channels and refitting the bandpass
 
     Args:
         bandpass: the bandpass to fit
@@ -28,7 +28,7 @@ def bandpass_fitter(
     poly = np.poly1d(fit_values)  # get the values of the fitted bandpass
     diff = bandpass - poly(
         channels
-    )  # find the differnece betweeen fitted and real bandpass
+    )  # find the difference between fitted and real bandpass
     std_diff = stats.median_abs_deviation(diff, scale="normal")
     logging.info(f"Standard Deviation of fit: {std_diff:.4}")
     mask = np.abs(diff - np.median(diff)) < mask_sigma * std_diff

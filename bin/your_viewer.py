@@ -1,31 +1,35 @@
 #!/usr/bin/env python3
 """
-Takes from Dynamic Spectra from filterbank/fits files
+Takes Dynamic Spectra (Frequency-Time data) from filterbank/fits files,
 and displays in a GUI.
+
 Shows time series above spectra and bandpass to the right.
 
+It also reports some basic statistics of the data
+
 Arguments:
-    --files: files to get data
+    -f: files to get data
 
-    --start: first sample to show
+    -s/--start: Sample at which to start displaying data
 
-    --gulp: How many saples to show
+    -g/--gulp: Number of time samples to display
 
-    --chan_std: show 1 std for each channel
+    -e/--chan_std: show +/- 1 std around the bandpass for each channel
 
-    --display: display size of GUI
+    -d/--display: display size of GUI in [length, width]
 
-    --dm: dispersion measure to dedisperse to
+    -dm/--dm: dispersion measure to dedisperse roll the data
 
-Binds:
-    Left Arrow: Move the prevous gulp
+    -subtract/--bandpass_subtract: subtract a polynomial bandpass fit
+
+Key Binds:
+    Left Arrow: Move the previous gulp
 
     Right Arrow: Move the the next gulp
 """
 import argparse
 import logging
 import os
-import textwrap
 from tkinter import BOTH, TOP, Button, Frame, Menu, Tk, filedialog
 
 import matplotlib.gridspec as gridspec
@@ -398,12 +402,7 @@ if __name__ == "__main__":
         prog="your_viewer.py",
         description="Read psrfits/filterbank files and show the data",
         formatter_class=YourArgparseFormatter,
-        epilog=textwrap.dedent(
-            """
-            This script can be used to visualize the data (Frequency-Time, bandpass and time series).
-            It also reports some basic statistics of the data.
-            """
-        ),
+        epilog=__doc__,
     )
     parser.add_argument(
         "-f",
@@ -422,7 +421,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-e",
         "--chan_std",
-        help="Show 1 standard devation per channel in bandpass",
+        help="Show 1 standard deviation per channel in bandpass",
         required=False,
         default=False,
         action="store_true",
