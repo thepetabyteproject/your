@@ -54,6 +54,7 @@ plugins:
   - search
   - mkdocs-jupyter:
       include_source: True
+      execute: False
 
 markdown_extensions:
   - codehilite
@@ -66,3 +67,15 @@ markdown_extensions:
 google_analytics:
   - UA-167281386-1
   - auto
+
+extra:
+  version:
+    provider: mike
+  social:
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/devanshkv
+      name: Devansh Agarwal on Twitter
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/KshitijAgg13
+      name: Kshitij agarwal on Twitter
+

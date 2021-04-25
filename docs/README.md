@@ -10,5 +10,6 @@ Our documentation uses extended Markdown, as implemented by [MkDocs](http://mkdo
     - `python autogen.py`
     - `mkdocs serve`    # Starts a local webserver:  [localhost:8000](http://localhost:8000)
     - `mkdocs build`    # Builds a static site in `site/` directory
-    - `mkdocs gh-deploy` # To deploy the docs online
+    - `mike deploy {version} latest` # put value in {version} and make it the latest version
+    - `mike set-default --push latest` # To deploy the docs online
     
