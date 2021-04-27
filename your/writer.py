@@ -110,7 +110,16 @@ class Writer:
             p = np.sort(primes(self.nsamp))[::-1]
             if len(p) > 1:
                 cumprods = np.cumprod(p)
-                self.gulp = int(cumprods[len(cumprods) // 2])
+                sizes_mb = (
+                    cumprods
+                    * self.your_object.your_header.nchans
+                    * self.your_object.your_header.nbits
+                    / 8
+                    / 1024
+                    / 1024
+                )
+                index_closest_to_1gb = np.argmin(np.abs(sizes_mb - 1024))
+                self.gulp = int(cumprods[index_closest_to_1gb])
             else:
                 self.gulp = self.nsamp
 
