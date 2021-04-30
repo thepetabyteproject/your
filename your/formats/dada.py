@@ -22,10 +22,12 @@ class DadaManager:
         n_readers (int): Number of dada readers.
     """
 
-    def __init__(self, size, key=0xDADA, n_readers=1):
+    def __init__(self, size, key=hex(0xDADA), n_readers=1):
         self.size = size
         self.key = key
         self.n_readers = n_readers
+        # cast dictionary based on https://docs.python.org/3/library/struct.html#format-characters
+        self.cast_dict = {"uint8": "B", "uint16": "H", "int16": "h", "float32": "f"}
 
     def setup(self):
         """
@@ -44,6 +46,7 @@ class DadaManager:
         )
         self.writer = Writer()
         self.writer.connect(int(self.key, 16))
+        return self
 
     def dump_header(self, header):
         """
@@ -59,10 +62,12 @@ class DadaManager:
             data_input (numpy.ndarray): Numpy array of the data.
 
         """
-        page = self.writer.getNextPage()
-        data = np.asarray(page)
-        data.fill(0)
-        data[: len(data_input)] = data_input
+        if str(data_input.dtype) not in self.cast_dict:
+            raise TypeError("Unsupported data type: %s" % data_input.dtype)
+        page = self.writer.getNextPage().cast(self.cast_dict[str(data_input.dtype)])
+        data = np.asarray(page, dtype=data_input.dtype)
+        data[...] = data_input[...]
+        return self
 
     def mark_filled(self):
         """
@@ -83,3 +88,9 @@ class DadaManager:
         """
         self.writer.disconnect()
         os.system(f"dada_db -d -k {self.key} 2> /dev/null")
+
+    def __enter__(self):
+        return self.setup()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        return self.teardown()
