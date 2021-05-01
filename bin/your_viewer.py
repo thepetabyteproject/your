@@ -275,7 +275,7 @@ class Paint(Frame):
 
     def prev_gulp(self):
         """
-        Movies the images to the prevous gulp of data
+        Movies the images to the previous gulp of data
         """
         # check if new start samp is in the file
         if (self.start_samp - self.gulp_size) >= 0:
@@ -292,13 +292,11 @@ class Paint(Frame):
         self.im_bandpass.set_xdata(self.bandpass)
         if self.chan_std:
             self.fill_bp()
-        self.im_bandpass.axes.set_xlim(
-            np.min(self.bandpass) * 0.97, np.max(self.bandpass) * 1.03
-        )
+        self.im_bandpass.axes.relim()
+        self.im_bandpass.axes.autoscale(axis="x")
         self.im_time.set_ydata(np.mean(self.data, axis=0))
-        self.im_time.axes.set_ylim(
-            np.min(self.time_series) * 0.97, np.max(self.time_series) * 1.03
-        )
+        self.im_time.axes.relim()
+        self.im_time.axes.autoscale(axis="y")
         self.canvas.draw()
 
     def fill_bp(self):
@@ -319,9 +317,9 @@ class Paint(Frame):
 
     def read_data(self):
         """
-        Read data from the psr seach data file
+        Read data from the psr search data file
         Returns:
-        data -- a 2D array of frequency time plts
+        data -- a 2D array of frequency time plots
         """
         ts = self.start_samp * self.your_obj.your_header.tsamp
         te = (self.start_samp + self.gulp_size) * self.your_obj.your_header.tsamp
