@@ -7,8 +7,8 @@ from scipy import stats
 
 
 def bandpass_fitter(
-    bandpass: float, poly_order: int = 20, mask_sigma: float = 6
-) -> float:
+    bandpass: np.ndarray, poly_order: int = 20, mask_sigma: float = 6
+) -> np.ndarray:
     """
     Fits bandpasses by polyfitting the bandpass, looking for channels that
     are far from this fit, excluding these channels and refitting the bandpass
