@@ -270,6 +270,12 @@ class Writer:
             )
             self.npoln = 1
 
+        if self.your_object.your_header.nbits == 16:
+            logger.warning(
+                f"Data are being written with dtype uint16, if the original data were int16 appropriate scaling may "
+                f"be needed. "
+            )
+
         with Progress() as progress:
             if not self.progress:
                 task = progress.add_task(
