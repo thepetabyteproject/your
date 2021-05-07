@@ -88,7 +88,7 @@ class SigprocFile(object):
             )
 
             self.bw = self.nchans * self.foff
-            self.cfreq = self.fch1 + self.bw / 2
+            self.cfreq = self.fch1 + (self.bw / 2) - (self.foff / 2)
             if self.nifs == 1:
                 self.poln_order = "I"
             elif self.nifs == 4:
