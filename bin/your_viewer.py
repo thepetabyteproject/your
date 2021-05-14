@@ -97,7 +97,7 @@ class Paint(Frame):
         self.prev["command"] = self.prev_gulp
         self.prev.grid(row=0, column=2)
 
-        # move image foward to next gulp of data
+        # move image forward to next gulp of data
         self.next = Button(self)
         self.next["text"] = "Next Gulp"
         self.next["command"] = self.next_gulp
@@ -180,31 +180,37 @@ class Paint(Frame):
             max_delay = np.max(np.abs(self.dispersion_delays))
             if max_delay > self.gulp_size * self.your_obj.your_header.native_tsamp:
                 logging.warning(
-                    f"Maximum dispersion delay for DM ({self.dm}) = {max_delay:.2f}s is greater than "
-                    f"the input gulp size {self.gulp_size*self.your_obj.your_header.native_tsamp}s. Pulses may not be "
-                    f"dedispersed completely."
+                    f"Maximum dispersion delay for DM ({self.dm}) ="
+                    f" {max_delay:.2f}s is greater than the input gulp size "
+                    f"{self.gulp_size*self.your_obj.your_header.native_tsamp}"
+                    f"s. Pulses may not be dedispersed completely."
                 )
                 logging.warning(
-                    f"Use gulp size of {int(max_delay//self.your_obj.your_header.native_tsamp):0d} to "
-                    f"dedisperse completely."
+                    f"Use gulp size of "
+                    f"{int(max_delay//self.your_obj.your_header.native_tsamp):0d}"
+                    f" to dedisperse completely."
                 )
         self.read_data()
 
-        # create three plots, for ax1=time_series, ax2=dynamic spectra, ax4=bandpass
-        self.gs = gridspec.GridSpec(
+        # create three plots,
+        # for ax1=time_series, ax2=dynamic spectra, ax4=bandpass
+        gs = gridspec.GridSpec(
             2, 2, width_ratios=[4, 1], height_ratios=[1, 4], wspace=0.02, hspace=0.03
         )
-        ax1 = plt.subplot(self.gs[0, 0])
-        ax2 = plt.subplot(self.gs[1, 0])
-        ax3 = plt.subplot(self.gs[0, 1])
-        ax4 = plt.subplot(self.gs[1, 1])
+        ax1 = plt.subplot(gs[0, 0])
+        ax2 = plt.subplot(gs[1, 0])
+        ax3 = plt.subplot(gs[0, 1])
+        ax4 = plt.subplot(gs[1, 1])
         ax3.axis("off")
         ax1.set_xticks([])
         ax4.set_yticks([])
 
-        # get the min and max image values to that we can see the typical values well
-        self.vmax = min(np.max(self.data), np.median(self.data) + 5 * np.std(self.data))
-        self.vmin = max(np.min(self.data), np.median(self.data) - 5 * np.std(self.data))
+        # get the min and max image values so that
+        # we can see the typical values well
+        median = np.median(self.data)
+        std = np.std(self.data)
+        self.vmax = min(np.max(self.data), median + 4 * std)
+        self.vmin = max(np.min(self.data), median - 4 * std)
         self.im_ft = ax2.imshow(
             self.data, aspect="auto", vmin=self.vmin, vmax=self.vmax
         )
@@ -336,10 +342,11 @@ class Paint(Frame):
             bandpass = bandpass_fitter(np.median(self.data, axis=1))
             # fit data to median bandpass
             np.clip(bandpass, self.min, self.max, out=bandpass)
-            # make sure the fit is nummerically possable
+            # make sure the fit is numerically possable
             self.data = self.data - bandpass[:, None]
 
-            # attempt to return the correct data type, most values are close to zero
+            # attempt to return the correct data type,
+            # most values are close to zero
             # add get clipped, causeing dynamic range problems
             # diff = np.clip(self.data - bandpass[:, None], self.min, self.max)
             # self.data = diff #diff.astype(self.your_obj.your_header.dtype)
@@ -347,7 +354,8 @@ class Paint(Frame):
         self.bandpass = np.mean(self.data, axis=1)
         self.time_series = np.mean(self.data, axis=0)
         logging.info(
-            f"Displaying {self.gulp_size} samples from sample {self.start_samp} i.e {ts:.2f}-{te:.2f}s - gulp mean: "
+            f"Displaying {self.gulp_size} samples from sample "
+            f"{self.start_samp} i.e {ts:.2f}-{te:.2f}s - gulp mean: "
             f"{np.mean(self.data):.3f}, std: {np.std(self.data):.3f}"
         )
 
