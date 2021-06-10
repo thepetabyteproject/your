@@ -367,11 +367,15 @@ class Header:
         self.bw = your.bw
         self.center_freq = your.cfreq
         self.nbits = your.nbits
+        self.native_nbits = your.nbits
         self.format = your.format
 
-        if self.nbits <= 8:
+        if self.native_nbits < 8:
+            self.nbits = 8
+
+        if self.native_nbits <= 8:
             self.dtype = np.uint8
-        elif self.nbits == 16:
+        elif self.native_nbits == 16:
             if (
                 self.format == "fits"
                 and int(your.fits["SUBINT"].header["TDIM17"][1]) == 1
@@ -379,7 +383,7 @@ class Header:
                 self.dtype = np.int16
             else:
                 self.dtype = np.uint16
-        elif self.nbits == 32:
+        elif self.native_nbits == 32:
             if self.format == "fits":
                 self.dtype = np.int32
             else:

@@ -304,8 +304,6 @@ class Writer:
                     while samples_left > 0:
                         self.get_data_to_write(start_sample, self.gulp)
                         self.data = self.data.squeeze()
-                        start_sample += self.gulp
-                        samples_left -= self.gulp
                         # goto the end of the file and dump
                         f.seek(0, os.SEEK_END)
                         f.write(self.data.ravel())
@@ -313,6 +311,8 @@ class Writer:
                         logger.debug(
                             f"Wrote from spectra {start_sample}-{start_sample + self.gulp} to the filterbank"
                         )
+                        start_sample += self.gulp
+                        samples_left -= self.gulp
             else:
                 if data.dtype == self.your_object.your_header.dtype:
                     logger.debug(f"write data of shape {data.shape} to {self.outname}")
