@@ -79,6 +79,14 @@ def test_dmtime_snr_opt_snr(cand):
     assert pytest.approx(cand.optimize_dm()[0], rel=2) == 475
 
 
+def test_h5(cand):
+    cand.get_chunk()
+    cand.dedisperse()
+    cand.dmtime()
+    cand.save_h5()
+    assert os.path.isfile(str(cand.id) + ".h5")
+
+
 def test_decimate_on_dedispersed(cand):
     cand.get_chunk()
     cand.dedisperse()
