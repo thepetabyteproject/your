@@ -30,7 +30,7 @@ def bandpass_fitter(
         channels
     )  # find the difference between fitted and real bandpass
     std_diff = stats.median_abs_deviation(diff, scale="normal")
-    logging.info(f"Standard Deviation of fit: {std_diff:.4}")
+    logging.debug("Standard Deviation of fit: %f:.4f", std_diff)
     mask = np.abs(diff - np.median(diff)) < mask_sigma * std_diff
 
     fit_values_clean = np.polyfit(
@@ -38,9 +38,10 @@ def bandpass_fitter(
     )  # refit masking the outliers
     poly_clean = np.poly1d(fit_values_clean)
     best_fit_bandpass = poly_clean(channels)
-    logging.info(
-        f"chi^2: {stats.chisquare(bandpass, best_fit_bandpass, poly_order)[0]:.4}"
-    )
+    # Removed below, scipy's stricter test causes chisquare to fail
+    # logging.info(
+    #     f"chi^2: {stats.chisquare(bandpass, best_fit_bandpass, poly_order)[0]:.4}"
+    # )
     return best_fit_bandpass
 
 
@@ -144,14 +145,17 @@ def normalise(data):
     return data
 
 
-def smad_plotter(freq_time, sigma=5.0, clip=True):
+def smad_plotter(
+    freq_time: np.ndarray, sigma: float = 5.0, clip: bool = True
+) -> np.ndarray:
     """
     Spectral Median Absolute Deviation clipper
 
     Args:
         freq_time (np.ndarray): the frequency time data
         sigma (float): sigma at which to clip data
-        clip (bool): if true replaces clips the data else replaces it with zeroes
+        clip (bool): if true replaces clips the data else
+                     replaces it with zeroes
 
     Returns:
         np.ndarray: clipped/flagged data
@@ -160,7 +164,7 @@ def smad_plotter(freq_time, sigma=5.0, clip=True):
     sigs = 1.4826 * sigma * stats.median_abs_deviation(freq_time, axis=0)
     if clip:
         return np.clip(freq_time, a_min=medians - sigs, a_max=medians + sigs)
-    else:
-        for j, sig in enumerate(sigs):
-            freq_time[np.absolute(freq_time[:, j] - medians[j]) >= sig, j] = 0.0
-        return freq_time
+
+    for j, sig in enumerate(sigs):
+        freq_time[np.absolute(freq_time[:, j] - medians[j]) >= sig, j] = 0.0
+    return freq_time
