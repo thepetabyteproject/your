@@ -1,6 +1,7 @@
 # your
 
-  
+
+
 [![GitHub issues](https://img.shields.io/github/issues/thepetabyteproject/your?style=flat-square)](https://github.com/thepetabyteproject/your/issues)
 [![GitHub forks](https://img.shields.io/github/forks/thepetabyteproject/your?style=flat-square)](https://github.com/thepetabyteproject/your/network)
 [![GitHub stars](https://img.shields.io/github/stars/thepetabyteproject/your?style=flat-square)](https://github.com/thepetabyteproject/your/stargazers)
@@ -14,7 +15,6 @@
 [![codecov](https://codecov.io/gh/thepetabyteproject/your/branch/master/graph/badge.svg?style=flat-square)](https://codecov.io/gh/thepetabyteproject/your)
 ![Python package](https://github.com/thepetabyteproject/your/workflows/Python%20package/badge.svg?style=flat-square)
 [![status](https://joss.theoj.org/papers/798844ebd352f563de28bb75515da674/status.svg?style=flat-square)](https://joss.theoj.org/papers/798844ebd352f563de28bb75515da674)
-
 
 
 `your` stands for Your Unified Reader. This library can read data in [Sigproc Filterbank](http://sigproc.sourceforge.net), 
@@ -74,9 +74,6 @@ Here are some [tutorial notebooks](https://github.com/devanshkv/your/tree/master
 **Note**: 
     To run the tutorial notebooks you would need to install `jupyter`. 
 
-# Code Contributions
-We welcome all types of code contribution. Please have a look at our [guideline](CONTRIBUTING.md) and [code of conduct](CODE_OF_CONDUCT.md).
-
 # Citation
 If you use `Your`, please cite our [JOSS Paper](https://joss.theoj.org/papers/10.21105/joss.02750):
 
@@ -94,3 +91,14 @@ If you use `Your`, please cite our [JOSS Paper](https://joss.theoj.org/papers/10
   journal = {Journal of Open Source Software}
 }
 ```
+# Contributions
+
+## Code Contributions
+We welcome all types of code contribution. Please have a look at our [guideline](CONTRIBUTING.md) and [code of conduct](CODE_OF_CONDUCT.md).
+
+## Contributors
+<p align="center">
+<a href="https://github.com/thepetabyteproject/your/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=thepetabyteproject/your" />
+</a>
+</p>
