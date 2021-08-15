@@ -82,15 +82,18 @@ def read_and_combine_subint(lowband_obj, upband_obj, fsub, upchanskip, lowchansk
     """
     lowsub_data = lowband_obj.read_subint(
         fsub, apply_weights=False, apply_scales=False, apply_offsets=False
-    )
+    )[:, 0, :]
     lowsub_scales = lowband_obj.get_scales(fsub)[: lowband_obj.nchan]
     lowsub_offsets = lowband_obj.get_offsets(fsub)[: lowband_obj.nchan]
 
     upsub_data = upband_obj.read_subint(
         fsub, apply_weights=False, apply_scales=False, apply_offsets=False
-    )
+    )[:, 0, :]
     upsub_scales = upband_obj.get_scales(fsub)[: upband_obj.nchan]
     upsub_offsets = upband_obj.get_offsets(fsub)[: upband_obj.nchan]
+
+    logger.debug(f"Shape of lowband data is {lowsub_data.shape}.")
+    logger.debug(f"Shape of upband data is {upsub_data.shape}.")
 
     logger.debug(
         f"Read data, scales and offset of subint {fsub} from upper and lower band."
@@ -292,8 +295,8 @@ def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
     low_header = vars(lowband_obj.your_header)
     up_header = vars(upband_obj.your_header)
 
-    logger.debug(f'Header of lowband file is: {low_header}')
-    logger.debug(f'Header of upband file is: {up_header}')
+    logger.debug(f"Header of lowband file is: {low_header}")
+    logger.debug(f"Header of upband file is: {up_header}")
 
     for key in low_header.keys():
         if (
@@ -313,13 +316,14 @@ def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
                 )
             else:
                 continue
-        elif key == 'basename':
-            up_base = '.'.join(up_header['basename'].split('.')[:-2])
-            low_base = '.'.join(low_header['basename'].split('.')[:-2])
+        elif key == "basename":
+            up_base = ".".join(up_header["basename"].split(".")[:-2])
+            low_base = ".".join(low_header["basename"].split(".")[:-2])
             if up_base != low_base:
-                raise Warning(f"Basenames ({up_base, low_base}) are unequal! Please check the two files carefully.")
-            else:
-                continue
+                logger.warning(
+                    f"Basenames ({up_base, low_base}) are unequal! Please check the two files carefully."
+                )
+            continue
 
         if low_header[key] != up_header[key]:
             raise ValueError(f"Values of {key} are different in the two bands")
@@ -393,7 +397,7 @@ def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
             upband_obj.fileid += 1
 
             if lowband_obj.fileid == len(lowband_obj.filelist):
-                logger.warn(f"Not enough subints, returning data till last subint")
+                logger.warning(f"Not enough subints, returning data till last subint")
                 logger.debug(f"Setting file ID to that of last file")
                 lowband_obj.fileid -= 1
                 upband_obj.fileid -= 1
@@ -429,7 +433,7 @@ def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
                 lowband_obj, upband_obj, fsub, upchanskip, lowchanskip
             )
         except KeyError:
-            logger.warn(f"Encountered KeyError, maybe mmap'd object was delected")
+            logger.warning(f"Encountered KeyError, maybe mmap'd object was delected")
             logger.debug(
                 f"Trying to open files {lowband_obj.filename} and {upband_obj.filename}"
             )
