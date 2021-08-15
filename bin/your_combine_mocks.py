@@ -291,6 +291,10 @@ def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
 
     low_header = vars(lowband_obj.your_header)
     up_header = vars(upband_obj.your_header)
+
+    logger.debug(f'Header of lowband file is: {low_header}')
+    logger.debug(f'Header of upband file is: {up_header}')
+
     for key in low_header.keys():
         if (
             key == "filelist"
@@ -307,6 +311,13 @@ def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
                 raise ValueError(
                     f"Value of {key} in the two bands differ by more than 10% FWHM"
                 )
+            else:
+                continue
+        elif key == 'basename':
+            up_base = '.'.join(up_header['basename'].split('.')[:-2])
+            low_base = '.'.join(low_header['basename'].split('.')[:-2])
+            if up_base != low_base:
+                raise Warning(f"Basenames ({up_base, low_base}) are unequal! Please check the two files carefully.")
             else:
                 continue
 
