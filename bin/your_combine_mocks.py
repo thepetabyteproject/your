@@ -29,8 +29,11 @@ def calc_skipchan(lowband_obj, upband_obj):
     Calculate the number of frequency channels to
     skip from top of lower and bottom of upper
     frequency bands
-    :param lowband_obj: Your object for the lower frequency band
-    :param upband_obj: Your object for the upper frequency band
+
+    Args:
+        lowband_obj: Your object for the lower frequency band
+        upband_obj: Your object for the upper frequency band
+
     """
     assert lowband_obj.bw / lowband_obj.nchans == upband_obj.bw / upband_obj.nchans
     logger.debug(
@@ -65,12 +68,17 @@ def read_and_combine_subint(lowband_obj, upband_obj, fsub, upchanskip, lowchansk
     scales and offsets, rescale the scales and offsets
     according to mean ratio of the overlapping channels
     from the two bands, and returns combined data
-    :param lowband_obj: Your object for the lower frequency band
-    :param upband_obj: Your object for the upper frequency band
-    :fsub: subint to read
-    :upchanskip: Lower channels to skip from the upperband
-    :lowchanskip: Upper channels to skip from the lower band
-    :return data: Combined data for the input subint
+
+    Args:
+        lowband_obj: Your object for the lower frequency band
+        upband_obj: Your object for the upper frequency band
+        fsub: subint to read
+        upchanskip: Lower channels to skip from the upperband
+        lowchanskip: Upper channels to skip from the lower band
+
+    Returns:
+        data: Combined data for the input subint
+
     """
     lowsub_data = lowband_obj.read_subint(
         fsub, apply_weights=False, apply_scales=False, apply_offsets=False
@@ -144,11 +152,16 @@ def make_sigproc_obj(filfile, lowband_obj, nchan, fch1, foff):
     """
     Use Your class object of the lower band to make Sigproc
     class object with the relevant parameters
-    :param filfile: Name of the Filterbank file
-    :param lowband_obj: Your object for the lower frequency band
-    :param nchan: Number of channels in the combined data
-    :param fch1: Frequency of the first channel
-    :return fil_obj: Sigproc class object
+
+    Args:
+        filfile: Name of the Filterbank file
+        lowband_obj: Your object for the lower frequency band
+        nchan: Number of channels in the combined data
+        fch1: Frequency of the first channel
+
+    Returns:
+        fil_obj: Sigproc class object
+
     """
     logger.debug(f"Generating Sigproc object")
     fil_obj = SigprocFile()
@@ -202,12 +215,15 @@ def write_fil(data, lowband_obj, upband_obj, filename=None, outdir=None):
     """
     Write Filterbank file given the upper and lower band Your
     objects and combined data
-    :param lowband_obj: Your object for the lower frequency band
-    :param upband_obj: Your object for the upper frequency band
-    :param upband_obj: Your object for the upper frequency band
-    :param data: Combined data from two bands
-    :param filename: Output name of the Filterbank file
-    :param outdir: Output directory for the Filterbank file
+
+    Args:
+        lowband_obj: Your object for the lower frequency band
+        upband_obj: Your object for the upper frequency band
+        upband_obj: Your object for the upper frequency band
+        data: Combined data from two bands
+        filename: Output name of the Filterbank file
+        outdir: Output directory for the Filterbank file
+
     """
 
     original_dir, orig_lowband_basename = os.path.split(
@@ -252,12 +268,15 @@ def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
     """
     combines data from two subbands from Mock spectrometer
     and writes out a Filterbank file.
-    :param f1: List of files from one subband
-    :param f2: List of files from other subband
-    :param nstart: Starting sample
-    :param nsamp: number of samples to read
-    :param outdir: Output directory for Filterbank file
-    :param filfile: Name of the Filterbank file to write to
+
+    Args:
+        f1: List of files from one subband
+        f2: List of files from other subband
+        nstart: Starting sample
+        nsamp: number of samples to read
+        outdir: Output directory for Filterbank file
+        filfile: Name of the Filterbank file to write to
+
     """
     y1 = Your(f1)
     y2 = Your(f2)
@@ -600,6 +619,10 @@ if __name__ == "__main__":
                 format=logging_format,
                 handlers=[RichHandler(rich_tracebacks=True)],
             )
+
+    logging.info("Input Arguments:-")
+    for arg, value in sorted(vars(values).items()):
+        logging.info("%s: %r", arg, value)
 
     if values.all_files:
         all_files(
