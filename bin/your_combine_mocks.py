@@ -334,7 +334,7 @@ def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
     upchanskip, lowchanskip = calc_skipchan(lowband_obj, upband_obj)
 
     if nsamp == -1:
-        nsamp = lowband_obj.nspectra
+        nsamp = lowband_obj.your_header.nspectra
 
     # Calculate starting subint and ending subint
     startsub = int(nstart / lowband_obj.nsamp_per_subint)
