@@ -85,6 +85,7 @@ def test_h5(cand):
     cand.dmtime()
     cand.save_h5()
     assert os.path.isfile(str(cand.id) + ".h5")
+    os.remove(str(cand.id) + ".h5")
 
 
 def test_decimate_on_dedispersed(cand):
@@ -133,10 +134,8 @@ def test_decimate_on_dmt(cand):
     assert cand.dmt.shape == (256, 248)
     assert np.isclose(np.mean(cand.dmt), orig_mean, atol=1)
 
-    try:
+    with pytest.raises(AttributeError):
         cand.decimate(key="at", axis=0, pad=True, decimate_factor=4, mode="median")
-    except AttributeError:
-        pass
 
 
 def test_resize(cand):
@@ -152,10 +151,8 @@ def test_resize(cand):
     cand.resize("dmt", size=500, axis=0, anti_aliasing=True, mode="constant")
     assert cand.dmt.shape == (500, 100)
 
-    try:
+    with pytest.raises(AttributeError):
         cand.resize("at", size=200, axis=1, anti_aliasing=True, mode="constant")
-    except AttributeError:
-        pass
 
 
 def test_rfi_mask():
