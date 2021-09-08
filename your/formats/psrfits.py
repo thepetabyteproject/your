@@ -124,7 +124,7 @@ class PsrfitsFile(object):
 
         # Unifying properties with pysigproc
         self.npol = self.npoln
-        self.bw = self.header["OBSBW"]
+        self.bw = self.specinfo.BW
         self.cfreq = self.header["OBSFREQ"]
         self.fch1 = self.cfreq - self.bw / 2.0  # Verify
         self.foff = self.bw / self.nchan
