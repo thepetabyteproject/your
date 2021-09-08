@@ -126,7 +126,7 @@ class PsrfitsFile(object):
         self.npol = self.npoln
         self.bw = self.specinfo.BW
         self.cfreq = self.header["OBSFREQ"]
-        self.fch1 = self.cfreq - self.bw / 2.0  # Verify
+        self.fch1 = self.freqs[0]  # self.cfreq - self.bw / 2.0  # Verify
         self.foff = self.bw / self.nchan
         self.nchans = self.nchan
         self.tstart = self.specinfo.start_MJD[0]
@@ -766,12 +766,12 @@ class SpectraInfo:
         self.bytes_per_subint = self.bytes_per_spectra * self.spectra_per_subint
 
         # Flip the band?
-        if self.hi_freq < self.lo_freq:
-            tmp = self.hi_freq
-            self.hi_freq = self.lo_freq
-            self.lo_freq = tmp
-            self.df *= -1.0
-            self.need_flipband = True
+        # if self.hi_freq < self.lo_freq:
+        #    tmp = self.hi_freq
+        #    self.hi_freq = self.lo_freq
+        #    self.lo_freq = tmp
+        #    self.df *= -1.0
+        #    self.need_flipband = True
         # Compute the bandwidth
         self.BW = self.num_channels * self.df
         self.mjd = int(self.start_MJD[0])
