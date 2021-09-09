@@ -56,21 +56,21 @@ def test_Candidate():
     assert np.isclose(cand.dispersion_delay(), 0.6254989199749227, atol=1e-3)
 
 
-@pytest.mark.parametrize("cand", [cand_fil, cand_fits])
+@pytest.mark.parametrize("cand", ["cand_fil", "cand_fits"])
 def test_candidate_chunk(cand, request):
     cand = request.getfixturevalue(cand)
     cand.get_chunk()
     assert np.isclose(np.mean(cand.data), 128, atol=1)
 
 
-@pytest.mark.parametrize("cand", [cand_fil, cand_fits])
+@pytest.mark.parametrize("cand", ["cand_fil", "cand_fits"])
 def test_dedispersion_none(cand, request):
     cand = request.getfixturevalue(cand)
     cand.dedisperse()
     assert cand.dedispersed == None
 
 
-@pytest.mark.parametrize("cand", [cand_fil, cand_fits])
+@pytest.mark.parametrize("cand", ["cand_fil", "cand_fits"])
 def test_dedisperse(cand, request):
     cand = request.getfixturevalue(cand)
     cand.get_chunk()
@@ -79,19 +79,19 @@ def test_dedisperse(cand, request):
     assert np.isclose(np.max(cand.dedispersets()), 47527, atol=1)
 
 
-@pytest.mark.parametrize("cand", [cand_fil, cand_fits])
+@pytest.mark.parametrize("cand", ["cand_fil", "cand_fits"])
 def test_snr_none(cand, request):
     cand = request.getfixturevalue(cand)
     assert cand.get_snr() == None
 
 
-@pytest.mark.parametrize("cand", [cand_fil, cand_fits])
+@pytest.mark.parametrize("cand", ["cand_fil", "cand_fits"])
 def test_optimize_dm(cand, request):
     cand = request.getfixturevalue(cand)
     assert cand.optimize_dm() == None
 
 
-@pytest.mark.parametrize("cand", [cand_fil, cand_fits])
+@pytest.mark.parametrize("cand", ["cand_fil", "cand_fits"])
 def test_dmtime_snr_opt_snr(cand, request):
     cand = request.getfixturevalue(cand)
     cand.get_chunk()
@@ -107,7 +107,7 @@ def test_dmtime_snr_opt_snr(cand, request):
     assert pytest.approx(cand.optimize_dm()[0], rel=2) == 475
 
 
-@pytest.mark.parametrize("cand", [cand_fil, cand_fits])
+@pytest.mark.parametrize("cand", ["cand_fil", "cand_fits"])
 def test_h5(cand, request):
     cand = request.getfixturevalue(cand)
     cand.get_chunk()
@@ -118,7 +118,7 @@ def test_h5(cand, request):
     os.remove(str(cand.id) + ".h5")
 
 
-@pytest.mark.parametrize("cand", [cand_fil, cand_fits])
+@pytest.mark.parametrize("cand", ["cand_fil", "cand_fits"])
 def test_decimate_on_dedispersed(cand, request):
     cand = request.getfixturevalue(cand)
     cand.get_chunk()
@@ -151,7 +151,7 @@ def test_decimate_on_dedispersed(cand, request):
     assert (bp_orig - cand.dedispersed[0, :]).sum() == 0
 
 
-@pytest.mark.parametrize("cand", [cand_fil, cand_fits])
+@pytest.mark.parametrize("cand", ["cand_fil", "cand_fits"])
 def test_decimate_on_dmt(cand, request):
     cand = request.getfixturevalue(cand)
     cand.get_chunk()
@@ -172,7 +172,7 @@ def test_decimate_on_dmt(cand, request):
         cand.decimate(key="at", axis=0, pad=True, decimate_factor=4, mode="median")
 
 
-@pytest.mark.parametrize("cand", [cand_fil, cand_fits])
+@pytest.mark.parametrize("cand", ["cand_fil", "cand_fits"])
 def test_resize(cand, request):
     cand = request.getfixturevalue(cand)
     cand.get_chunk()
