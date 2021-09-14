@@ -54,3 +54,9 @@ def test_incorrect_sigmas(fil_file):
 
     with pytest.raises(ValueError):
         sk_sg_filter(data, your_object, 0, 15, 0)
+
+    with pytest.raises(ValueError):
+        sk_sg_filter(data, foff=1.0)
+
+    with pytest.raises(ValueError):
+        sk_sg_filter(data, tsamp=1.0)
