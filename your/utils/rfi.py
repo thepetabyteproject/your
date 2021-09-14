@@ -119,7 +119,9 @@ def calc_N(channel_bandwidth, tsamp):
 
 def sk_sg_filter(
     data,
-    your_object,
+    your_object=None,
+    foff=None,
+    tsamp=None,
     spectral_kurtosis_sigma=6,
     savgol_frequency_window=15,
     savgol_sigma=5,
@@ -131,6 +133,8 @@ def sk_sg_filter(
     Args:
         data (numpy.ndarray): 2D frequency time data
         your_object: Your object
+        foff (float): Channel bandwidth (MHz)
+        tsamp (float): Sampling interval (seconds)
         spectral_kurtosis_sigma (float): sigma value to apply cutoff on for SK filter
         savgol_frequency_window (float): frequency window for savgol filter(MHz)
         savgol_sigma (float): sigma value to apply cutoff on for savgol filter
@@ -140,6 +144,17 @@ def sk_sg_filter(
          numpy.ndarray: mask for channels
 
     """
+    if your_object:
+        if foff == None:
+            foff = your_object.your_header.foff
+        if tsamp == None:
+            tsamp = your_object.your_header.tsamp
+    else:
+        if not foff or not tsamp:
+            raise ValueError(
+                "foff and tsamp cannot be None while your_object is None"
+            )
+
     if (spectral_kurtosis_sigma == 0) and (savgol_sigma) == 0:
         raise ValueError(
             "Both savgol_sigma and spectral_kurtosis_sigma cannot be zero."
@@ -152,8 +167,8 @@ def sk_sg_filter(
         )
         sk_mask = sk_filter(
             data=data,
-            channel_bandwidth=your_object.your_header.foff,
-            tsamp=your_object.your_header.tsamp,
+            channel_bandwidth=foff,
+            tsamp=tsamp,
             sigma=spectral_kurtosis_sigma,
         )
         mask[sk_mask] = True
@@ -170,7 +185,7 @@ def sk_sg_filter(
         )
         sg_mask = savgol_filter(
             bandpass=bp,
-            channel_bandwidth=your_object.your_header.foff,
+            channel_bandwidth=foff,
             frequency_window=savgol_frequency_window,
             sigma=savgol_sigma,
         )
