@@ -151,9 +151,7 @@ def sk_sg_filter(
             tsamp = your_object.your_header.tsamp
     else:
         if not foff or not tsamp:
-            raise ValueError(
-                "foff and tsamp cannot be None while your_object is None"
-            )
+            raise ValueError("foff and tsamp cannot be None while your_object is None")
 
     if (spectral_kurtosis_sigma == 0) and (savgol_sigma) == 0:
         raise ValueError(
