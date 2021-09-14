@@ -120,11 +120,11 @@ def calc_N(channel_bandwidth, tsamp):
 def sk_sg_filter(
     data,
     your_object=None,
-    foff=None,
-    tsamp=None,
     spectral_kurtosis_sigma=6,
     savgol_frequency_window=15,
     savgol_sigma=5,
+    foff=None,
+    tsamp=None,
 ):
     """
 
@@ -133,12 +133,11 @@ def sk_sg_filter(
     Args:
         data (numpy.ndarray): 2D frequency time data
         your_object: Your object
-        foff (float): Channel bandwidth (MHz)
-        tsamp (float): Sampling interval (seconds)
         spectral_kurtosis_sigma (float): sigma value to apply cutoff on for SK filter
         savgol_frequency_window (float): frequency window for savgol filter(MHz)
         savgol_sigma (float): sigma value to apply cutoff on for savgol filter
-
+        foff (float): Channel bandwidth (MHz). If provided, will be used instead of `your_object`
+        tsamp (float): Sampling interval (seconds). If provided, will be used instead of `your_object`
 
     Returns:
          numpy.ndarray: mask for channels
