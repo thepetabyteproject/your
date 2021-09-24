@@ -1,12 +1,12 @@
 # your
 
 
-
+<div align="center">
+    
 [![GitHub issues](https://img.shields.io/github/issues/thepetabyteproject/your?style=flat-square)](https://github.com/thepetabyteproject/your/issues)
 [![GitHub forks](https://img.shields.io/github/forks/thepetabyteproject/your?style=flat-square)](https://github.com/thepetabyteproject/your/network)
 [![GitHub stars](https://img.shields.io/github/stars/thepetabyteproject/your?style=flat-square)](https://github.com/thepetabyteproject/your/stargazers)
 [![GitHub license](https://img.shields.io/github/license/thepetabyteproject/your?style=flat-square)](https://github.com/thepetabyteproject/your/blob/master/LICENSE)
-[![HitCount](http://hits.dwyl.com/devanshkv/your.svg)](http://hits.dwyl.com/devanshkv/your)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/your?style=flat-square)
 ![PyPI](https://img.shields.io/pypi/v/your?style=flat-square)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/your?style=flat-square)
@@ -15,18 +15,28 @@
 [![codecov](https://codecov.io/gh/thepetabyteproject/your/branch/master/graph/badge.svg?style=flat-square)](https://codecov.io/gh/thepetabyteproject/your)
 ![Python package](https://github.com/thepetabyteproject/your/workflows/Python%20package/badge.svg?style=flat-square)
 [![status](https://joss.theoj.org/papers/798844ebd352f563de28bb75515da674/status.svg?style=flat-square)](https://joss.theoj.org/papers/798844ebd352f563de28bb75515da674)
+    
+<!--
+    [![HitCount](http://hits.dwyl.com/devanshkv/your.svg)](http://hits.dwyl.com/devanshkv/your)
+-->
+
+</div>
 
 
 `your` stands for Your Unified Reader. This library can read data in [Sigproc Filterbank](http://sigproc.sourceforge.net), 
 [PSRFITS](https://www.atnf.csiro.au/research/pulsar/psrfits_definition/Psrfits.html), 
 and [PSRDADA](http://psrdada.sourceforge.net) formats in a unified way and can convert from one format to another. 
 
+<div align="center">
 
 | Format        | Read                     | Write               |
 | ------------- |:-------------:           | -----:              |
 | filterbank    | :white_check_mark:       | :white_check_mark:  |
 | psrfits       | :white_check_mark:       | :white_check_mark:  |
 | psrdada       | :x:                      | :white_check_mark:  |
+    
+</div>
+
 
 `your` implements a user-friendly interface to read and write in the data format of choice. It also generates unified 
 metadata corresponding to the input data file for a quick understanding of observation parameters and provides 
