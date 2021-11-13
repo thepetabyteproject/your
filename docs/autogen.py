@@ -6,6 +6,20 @@ import shutil
 from keras_autodoc import DocumentationGenerator
 from mdutils.mdutils import MdUtils
 
+
+def remove_html(filename):
+    """
+    Read file and delete matching html tags
+    """
+    with open(filename, "r") as f:
+        lines = f.readlines()
+    with open(filename, "w") as f:
+        for line in lines:
+            if ("<" in line) or (">" in line):
+                continue
+            f.write(line)
+
+
 pages = {
     "your.md": [
         "your.Your",
@@ -116,6 +130,8 @@ doc_generator.generate("./sources")
 shutil.copyfile("../README.md", "sources/index.md")
 shutil.copyfile("../CODE_OF_CONDUCT.md", "sources/CODE_OF_CONDUCT.md")
 shutil.copyfile("../CONTRIBUTING.md", "sources/CONTRIBUTING.md")
+
+remove_html("sources/index.md")
 
 # Make the dir for tutorials
 os.mkdir("sources/ipynb")

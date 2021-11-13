@@ -15,10 +15,6 @@
 [![codecov](https://codecov.io/gh/thepetabyteproject/your/branch/master/graph/badge.svg?style=flat-square)](https://codecov.io/gh/thepetabyteproject/your)
 ![Python package](https://github.com/thepetabyteproject/your/workflows/Python%20package/badge.svg?style=flat-square)
 [![status](https://joss.theoj.org/papers/798844ebd352f563de28bb75515da674/status.svg?style=flat-square)](https://joss.theoj.org/papers/798844ebd352f563de28bb75515da674)
-    
-<!--
-    [![HitCount](http://hits.dwyl.com/devanshkv/your.svg)](http://hits.dwyl.com/devanshkv/your)
--->
 
 </div>
 

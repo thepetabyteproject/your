@@ -54,7 +54,7 @@ plugins:
   - search
   - mkdocs-jupyter:
       include_source: True
-      execute: False
+      execute: True
 
 markdown_extensions:
   - codehilite
@@ -64,11 +64,10 @@ markdown_extensions:
       emoji_generator: !!python/name:materialx.emoji.to_svg
   - admonition
 
-google_analytics:
-  - UA-167281386-1
-  - auto
-
 extra:
+  analytics:
+    provider: google
+    property: UA-167281386-1
   version:
     provider: mike
   social:
