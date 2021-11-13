@@ -214,6 +214,7 @@ if __name__ == "__main__":
         progress=~values.no_progress,
         c_min=values.channel_start,
         c_max=c_max,
+        highest_frequency_first=True,
         savgol_sigma=values.savgol_sigma,
         spectral_kurtosis_sigma=values.spectral_kurtosis_sigma,
         savgol_frequency_window=values.savgol_frequency_window,

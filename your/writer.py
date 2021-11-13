@@ -28,6 +28,7 @@ class Writer:
         c_min (int): Starting channel index (default: 0)
         c_max (int): End channel index (default: total number of frequencies)
         npoln (int): Number of output polarisations (default: 1)
+        highest_frequency_first (bool): The output should have highest frequency first (default: False)
         outdir (str): Output directory for file
         outname (str): Name of the file to write to (without the file extension)
         progress (bool): Set to it to false to disable progress bars
@@ -51,6 +52,7 @@ class Writer:
         c_min=None,
         c_max=None,
         npoln=1,
+        highest_frequency_first=False,
         outdir=None,
         outname=None,
         flag_rfi=False,
@@ -75,6 +77,7 @@ class Writer:
         self.c_min = c_min
         self.c_max = c_max
         self.npoln = npoln
+        self.highest_frequency_first = highest_frequency_first
 
         self.time_decimation_factor = time_decimation_factor
         self.frequency_decimation_factor = frequency_decimation_factor
@@ -163,7 +166,10 @@ class Writer:
 
     @property
     def chan_freqs(self):
-        return self.your_object.chan_freqs[self.chan_min : self.chan_max]
+        chan_freqs = self.your_object.chan_freqs[self.chan_min : self.chan_max]
+        if self.highest_frequency_first and chan_freqs[0] < chan_freqs[-1]:
+            chan_freqs = chan_freqs[::-1]
+        return chan_freqs
 
     @property
     def nchans(self):
@@ -175,6 +181,13 @@ class Writer:
             self.your_object.your_header.tstart
             + self.nstart * self.your_object.your_header.tsamp / (60 * 60 * 24)
         )
+
+    @property
+    def foff(self):
+        if self.highest_frequency_first and self.your_object.your_header.foff > 0:
+            return -self.your_object.your_header.foff
+        else:
+            return self.your_object.your_header.foff
 
     @property
     def poln_order(self):
@@ -252,6 +265,8 @@ class Writer:
         data = data.astype(self.your_object.your_header.dtype)
 
         # shape of data is (nt, npoln, nf)
+        if self.highest_frequency_first and self.your_object.your_header.foff > 0:
+            data = data[:, :, ::-1]
         self.data = data
 
     def to_fil(self, data=None):
@@ -438,7 +453,7 @@ class Writer:
 
         """
         header = dict()
-        header["BW"] = str(self.nchans * self.your_object.your_header.foff)
+        header["BW"] = str(self.nchans * self.foff)
         header["FREQ"] = str((self.chan_freqs[0] + self.chan_freqs[-1]) / 2)
         tstart = Time(self.tstart, format="mjd")
         header["MJD_START"] = str(self.tstart)
