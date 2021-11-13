@@ -29,7 +29,7 @@ def sigproc_object_from_writer(your_writer):
     fil_obj.data_type = 0
 
     fil_obj.nchans = your_writer.nchans
-    fil_obj.foff = your_writer.your_object.your_header.foff
+    fil_obj.foff = your_writer.foff
     fil_obj.fch1 = your_writer.chan_freqs[0]
     fil_obj.nbeams = 1
     fil_obj.ibeam = 0

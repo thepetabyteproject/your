@@ -151,6 +151,13 @@ if __name__ == "__main__":
         default=1,
     )
     parser.add_argument(
+        "--highest_frequency_first",
+        help="Write highest frequency first",
+        required=False,
+        action="store_true",
+        default=False,
+    )
+    parser.add_argument(
         "-npsub",
         "--nspectra_per_subint",
         help="Number of spectra per subint (used only for writing psrfits)",
@@ -227,6 +234,7 @@ if __name__ == "__main__":
         frequency_decimation_factor=values.frequency_decimation_factor,
         replacement_policy=values.replacement_policy,
         npoln=values.num_polarisation,
+        highest_frequency_first=values.highest_frequency_first,
     )
 
     if values.type == "fits":
