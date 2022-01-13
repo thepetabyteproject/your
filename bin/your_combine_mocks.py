@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Combines the two frequency bands for data 
+Combines the two frequency bands for data
 from the Mock Spectrometer
 
 Original C code: https://github.com/demorest/psrfits_utils/blob/master/combine_mocks.c
@@ -14,9 +14,9 @@ from datetime import datetime
 
 import astropy.io.fits as pyfits
 import numpy as np
+from astropy.coordinates import SkyCoord
 from rich.logging import RichHandler
 from rich.progress import track
-
 from your import Your
 from your.formats.pysigproc import SigprocFile
 from your.utils.misc import YourArgparseFormatter
@@ -37,13 +37,15 @@ def calc_skipchan(lowband_obj, upband_obj):
     """
     assert lowband_obj.bw / lowband_obj.nchans == upband_obj.bw / upband_obj.nchans
     logger.debug(
-        f"Calculating number of frequency channels to skip in upper and lower band."
+        "Calculating number of frequency channels to skip in upper and lower band."
     )
-    df = lowband_obj.bw / lowband_obj.nchans
+    chan_bandwidth = lowband_obj.bw / lowband_obj.nchans
     upperfreqoflower = lowband_obj.chan_freqs.max()
     lowerfreqofupper = upband_obj.chan_freqs.min()
-    nextfromlower = upperfreqoflower + np.abs(df)
-    numchandiff = int(np.round((nextfromlower - lowerfreqofupper) / np.abs(df)))
+    nextfromlower = upperfreqoflower + np.abs(chan_bandwidth)
+    numchandiff = int(
+        np.round((nextfromlower - lowerfreqofupper) / np.abs(chan_bandwidth))
+    )
     chanskip = numchandiff if numchandiff > 0 else 0
     (upchanskip, lowchanskip) = (
         (chanskip // 2, chanskip // 2 + 1)
@@ -55,14 +57,22 @@ def calc_skipchan(lowband_obj, upband_obj):
         upchanskip += 1
         lowchanskip -= 1
 
-    logger.debug(f"Number of frequency channels to skip in upper band are {upchanskip}")
     logger.debug(
-        f"Number of frequency channels to skip in lower band are {lowchanskip}"
+        "Number of frequency channels to skip in upper band are %i", upchanskip
+    )
+    logger.debug(
+        "Number of frequency channels to skip in lower band are %s", lowchanskip
     )
     return upchanskip, lowchanskip
 
 
-def read_and_combine_subint(lowband_obj, upband_obj, fsub, upchanskip, lowchanskip):
+def read_and_combine_subint(
+    lowband_obj,
+    upband_obj,
+    fsub,
+    upchanskip,
+    lowchanskip,
+):
     """
     Reads data for a subint for both bands, applies
     scales and offsets, rescale the scales and offsets
@@ -75,7 +85,6 @@ def read_and_combine_subint(lowband_obj, upband_obj, fsub, upchanskip, lowchansk
         fsub: subint to read
         upchanskip: Lower channels to skip from the upperband
         lowchanskip: Upper channels to skip from the lower band
-
     Returns:
         data: Combined data for the input subint
 
@@ -92,11 +101,11 @@ def read_and_combine_subint(lowband_obj, upband_obj, fsub, upchanskip, lowchansk
     upsub_scales = upband_obj.get_scales(fsub)[: upband_obj.nchan]
     upsub_offsets = upband_obj.get_offsets(fsub)[: upband_obj.nchan]
 
-    logger.debug(f"Shape of lowband data is {lowsub_data.shape}.")
-    logger.debug(f"Shape of upband data is {upsub_data.shape}.")
+    logger.debug("Shape of lowband data is %s.", (lowsub_data.shape,))
+    logger.debug("Shape of upband data is %s.", (upsub_data.shape,))
 
     logger.debug(
-        f"Read data, scales and offset of subint {fsub} from upper and lower band."
+        "Read data, scales and offset of subint %i from upper and lower band.", fsub
     )
 
     if any(lowsub_offsets[lowchanskip:]) and any(upsub_offsets[:upchanskip]):
@@ -109,46 +118,56 @@ def read_and_combine_subint(lowband_obj, upband_obj, fsub, upchanskip, lowchansk
         upsub_scales[:upchanskip]
     )
 
-    logger.debug(f"Applying scales, offset and weights to lower band data.")
+    logger.debug("Applying scales, offset and weights to lower band data.")
     lowsub_data *= lowsub_scales
     lowsub_data += lowsub_offsets
     lowsub_data *= lowband_obj.get_weights(fsub)[: lowband_obj.nchan]
 
     logger.debug(
-        f"Applying scales, offset and weights to upper band data, and rescaling scales and offsets."
+        """Applying scales, offset and weights to upper band data,
+        and rescaling scales and offsets."""
     )
     upsub_data *= upsub_scales * scalefactor
     upsub_data += upsub_offsets * offsetfactor
     upsub_data *= upband_obj.get_weights(fsub)[: upband_obj.nchan]
 
-    logger.debug(f"Combining data from relevant channels from upper and lower bands")
-    # Note freq are not exactly same in the two subbands. Assuming fch1 and channel_bandwidth from lower band.
+    if lowband_obj.nbits == 16:
+        flatten_to = 2 ** 15
+        scale = np.sqrt(2 ** 16)
+        dtype = np.uint16
+        max_value = 2 ** 16 - 1
+    elif lowband_obj.nbits == 8:
+        flatten_to = 2 ** 7
+        scale = np.sqrt(2 ** 8)
+        dtype = np.uint8
+        max_value = 2 ** 8 - 1
+    else:
+        logging.warning("Not tested, unpredictable results!")
+        flatten_to = 2 ** (lowband_obj.nbits - 1)
+        scale = np.sqrt(2 ** lowband_obj.nbits)
+        dtype = np.uint8
+        max_value = 2 ** lowband_obj.nbits - 1
+
+    logger.debug("Combining data from relevant channels from upper and lower bands")
+    # Note freq are not exactly same in the two subbands.
+    # Assuming fch1 and channel_bandwidth from lower band.
     # The exact freq in upperband will vary
-    data = np.flip(
-        np.concatenate(
-            (lowsub_data[:, :-lowchanskip], upsub_data[:, upchanskip:]), axis=1
+    data = np.concatenate(
+        (
+            upsub_data[:, :-upchanskip],
+            lowsub_data[:, lowchanskip:],
         ),
         axis=1,
     )
 
-    if lowband_obj.nbits == 16:
-        data -= np.mean(data)
-        data /= np.std(data)
-        data *= np.sqrt(2 ** 16)
-        data += 2 ** 15
-        data = np.round(data)
-        data = np.clip(data, 0, 2 ** 16 - 1)
-        return data.astype("uint16")
-    elif lowband_obj.nbits == 8:
-        data -= np.mean(data)
-        data /= np.std(data)
-        data *= np.sqrt(2 ** 8)
-        data += 2 ** 7
-        data = np.round(data)
-        data = np.clip(data, 0, 2 ** 8 - 1)
-        return data.astype("uint8")
-    else:
-        return data
+    data -= np.mean(data)
+    data /= np.std(data)
+    data *= scale
+    data += flatten_to
+
+    np.around(data, out=data)
+    np.clip(data, 0, max_value, out=data)
+    return data.astype(dtype)
 
 
 def make_sigproc_obj(filfile, lowband_obj, nchan, fch1, foff):
@@ -166,10 +185,10 @@ def make_sigproc_obj(filfile, lowband_obj, nchan, fch1, foff):
         fil_obj: Sigproc class object
 
     """
-    logger.debug(f"Generating Sigproc object")
+    logger.debug("Generating Sigproc object")
     fil_obj = SigprocFile()
 
-    logger.debug(f"Setting attributes of Sigproc object from Your object.")
+    logger.debug("Setting attributes of Sigproc object from Your object.")
     fil_obj.rawdatafile = filfile
     fil_obj.source_name = lowband_obj.your_header.source_name
 
@@ -192,9 +211,9 @@ def make_sigproc_obj(filfile, lowband_obj, nchan, fch1, foff):
     fil_obj.nbits = lowband_obj.your_header.nbits
     fil_obj.tsamp = lowband_obj.your_header.tsamp
     fil_obj.tstart = lowband_obj.your_header.tstart
-    fil_obj.nifs = 1  # always write single pol should use "lowband_obj.your_header.npol" if needed otherwise
-
-    from astropy.coordinates import SkyCoord
+    # always write single pol should use "lowband_obj.your_header.npol"
+    # if needed otherwise
+    fil_obj.nifs = 1
 
     loc = SkyCoord(
         lowband_obj.your_header.ra_deg, lowband_obj.your_header.dec_deg, unit="deg"
@@ -241,10 +260,10 @@ def write_fil(data, lowband_obj, upband_obj, filename=None, outdir=None):
     filfile = outdir + "/" + filename
 
     # Add checks for an existing fil file
-    logger.info(f"Trying to write data to filterbank file: {filfile}")
+    logger.info("Trying to write data to filterbank file: %s", filfile)
     try:
         if os.stat(filfile).st_size > 8192:  # check and replace with the size of header
-            logger.info(f"Writing {data.shape[0]} spectra to file: {filfile}")
+            logger.info("Writing %i spectra to file: %s", data.shape[0], filfile)
             SigprocFile.append_spectra(data, filfile)
 
         else:
@@ -253,7 +272,7 @@ def write_fil(data, lowband_obj, upband_obj, filename=None, outdir=None):
             foff = lowband_obj.foff if lowband_obj.foff < 0 else -1 * lowband_obj.foff
             fil_obj = make_sigproc_obj(filfile, lowband_obj, nchan, fch1, foff)
             fil_obj.write_header(filfile)
-            logger.info(f"Writing {data.shape[0]} spectra to file: {filfile}")
+            logger.info("Writing %i spectra to file: %s", data.shape[0], filfile)
             fil_obj.append_spectra(data, filfile)
 
     except FileNotFoundError:
@@ -262,51 +281,55 @@ def write_fil(data, lowband_obj, upband_obj, filename=None, outdir=None):
         foff = lowband_obj.foff if lowband_obj.foff < 0 else -1 * lowband_obj.foff
         fil_obj = make_sigproc_obj(filfile, lowband_obj, nchan, fch1, foff)
         fil_obj.write_header(filfile)
-        logger.info(f"Writing {data.shape[0]} spectra to file: {filfile}")
+        logger.info("Writing %i spectra to file: %s", data.shape[0], filfile)
         fil_obj.append_spectra(data, filfile)
-    logger.info(f"Successfully written data to Filterbank file: {filfile}")
+    logger.info("Successfully written data to Filterbank file: %s", filfile)
 
 
-def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
+def combine(
+    file1,
+    file2,
+    nstart=0,
+    nsamp=100,
+    outdir=None,
+    filfile=None,
+):
     """
     combines data from two subbands from Mock spectrometer
     and writes out a Filterbank file.
 
     Args:
-        f1: List of files from one subband
-        f2: List of files from other subband
+        file1: List of files from one subband
+        file2: List of files from other subband
         nstart: Starting sample
         nsamp: number of samples to read
         outdir: Output directory for Filterbank file
         filfile: Name of the Filterbank file to write to
 
     """
-    y1 = Your(f1)
-    y2 = Your(f2)
+    your1 = Your(file1)
+    your2 = Your(file2)
     (lowband_obj, upband_obj) = (
-        (y1, y2) if y1.chan_freqs.max() < y2.chan_freqs.max() else (y2, y1)
+        (your1, your2)
+        if your1.chan_freqs.max() < your2.chan_freqs.max()
+        else (your2, your1)
     )
-    del y1
-    del y2
+    del your1
+    del your2
 
-    if lowband_obj.foff < 0 or upband_obj.foff < 0:
-        raise AttributeError("Negative channel_bandwidth in Mock fits not supported.")
+    # if lowband_obj.foff < 0 or upband_obj.foff < 0:
+    #     raise AttributeError("Negative channel_bandwidth in Mock fits not supported.")
 
     low_header = vars(lowband_obj.your_header)
     up_header = vars(upband_obj.your_header)
 
-    logger.debug(f"Header of lowband file is: {low_header}")
-    logger.debug(f"Header of upband file is: {up_header}")
+    logger.debug("Header of lowband file is: %s", low_header)
+    logger.debug("Header of upband file is: %s", up_header)
 
     for key in low_header.keys():
-        if (
-            key == "filelist"
-            or key == "filename"
-            or key == "center_freq"
-            or key == "fch1"
-        ):
+        if key in ("filelist", "filename", "center_freq", "fch1"):
             continue
-        elif key == "ra_deg" or key == "dec_deg" or key == "gl" or key == "gb":
+        if key in ("ra_deg", "dec_deg", "gl", "gb"):
             hpbw = (
                 57.3 * 3 * 10 ** 8 / (low_header["center_freq"] * 10 ** 6 * 200)
             )  # deg
@@ -314,14 +337,16 @@ def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
                 raise ValueError(
                     f"Value of {key} in the two bands differ by more than 10% FWHM"
                 )
-            else:
-                continue
-        elif key == "basename":
+            continue
+        if key == "basename":
             up_base = ".".join(up_header["basename"].split(".")[:-2])
             low_base = ".".join(low_header["basename"].split(".")[:-2])
             if up_base != low_base:
                 logger.warning(
-                    f"Basenames ({up_base, low_base}) are unequal! Please check the two files carefully."
+                    """Basenames (%s, %s) are unequal!
+                    Please check the two files carefully.""",
+                    up_base,
+                    low_base,
                 )
             continue
 
@@ -329,7 +354,7 @@ def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
             raise ValueError(f"Values of {key} are different in the two bands")
 
     if len(low_header["filelist"]) != len(up_header["filelist"]):
-        raise ValueError(f"Number of files are different in the two bands.")
+        raise ValueError("Number of files are different in the two bands.")
 
     upchanskip, lowchanskip = calc_skipchan(lowband_obj, upband_obj)
 
@@ -351,7 +376,9 @@ def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
         upband_obj.fileid = startfileid
 
         logger.debug(
-            f"Updating fileid of lower and upper band to {lowband_obj.fileid} and {upband_obj.fileid}"
+            "Updating fileid of lower and upper band to %s and %s",
+            lowband_obj.fileid,
+            upband_obj.fileid,
         )
 
         lowband_obj.fits.close()
@@ -364,12 +391,16 @@ def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
 
         lowband_obj.filename = lowband_obj.filelist[lowband_obj.fileid]
         logger.debug(
-            f"Loweband file id is {lowband_obj.fileid}, Reading file: {lowband_obj.filename}"
+            "Loweband file id is %s, Reading file: %s",
+            lowband_obj.fileid,
+            lowband_obj.filename,
         )
 
         upband_obj.filename = upband_obj.filelist[upband_obj.fileid]
         logger.debug(
-            f"Upperband file id is {upband_obj.fileid}, Reading file: {upband_obj.filename}"
+            "Upperband file id is %s, Reading file: %s",
+            upband_obj.fileid,
+            upband_obj.filename,
         )
 
         lowband_obj.fits = pyfits.open(
@@ -378,14 +409,14 @@ def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
         upband_obj.fits = pyfits.open(upband_obj.filename, mode="readonly", memmap=True)
 
     # Read data
-    logger.debug(f"Startsub {startsub}, endsub {endsub}")
-    for isub in track(range(startsub, endsub + 1), description=f"Subint"):
-        logger.debug(f"isub is {isub}")
-        logger.debug(f"lowband file id is {lowband_obj.fileid}")
-        logger.debug(f"upperband file id is {upband_obj.fileid}")
+    logger.debug("Startsub %i, endsub %i", startsub, endsub)
+    for isub in track(range(startsub, endsub + 1), description="Subint"):
+        logger.debug("isub is %i", isub)
+        logger.debug("lowband file id is %s", lowband_obj.fileid)
+        logger.debug("upperband file id is %s", upband_obj.fileid)
 
         if isub > cumsum_num_subint[lowband_obj.fileid] - 1:
-            logger.debug(f"isub lies in a later file")
+            logger.debug("isub lies in a later file")
             lowband_obj.fits.close()
             upband_obj.fits.close()
 
@@ -397,19 +428,19 @@ def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
             upband_obj.fileid += 1
 
             if lowband_obj.fileid == len(lowband_obj.filelist):
-                logger.warning(f"Not enough subints, returning data till last subint")
-                logger.debug(f"Setting file ID to that of last file")
+                logger.warning("Not enough subints, returning data till last subint")
+                logger.debug("Setting file ID to that of last file")
                 lowband_obj.fileid -= 1
                 upband_obj.fileid -= 1
                 break
-            logger.debug(f"Updating lowerband file ID to: {lowband_obj.fileid}")
-            logger.debug(f"Updating upperband file ID to: {upband_obj.fileid}")
+            logger.debug("Updating lowerband file ID to: %s", lowband_obj.fileid)
+            logger.debug("Updating upperband file ID to: %s", upband_obj.fileid)
 
             lowband_obj.filename = lowband_obj.filelist[lowband_obj.fileid]
-            logger.debug(f"Reading lowband file: {lowband_obj.filename}")
+            logger.debug("Reading lowband file: %s", lowband_obj.filename)
 
             upband_obj.filename = upband_obj.filelist[upband_obj.fileid]
-            logger.debug(f"Reading upperband file: {upband_obj.filename}")
+            logger.debug("Reading upperband file: %s", upband_obj.filename)
 
             lowband_obj.fits = pyfits.open(
                 lowband_obj.filename, mode="readonly", memmap=True
@@ -418,24 +449,33 @@ def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
                 upband_obj.filename, mode="readonly", memmap=True
             )
 
-        logger.debug(f"Using: {lowband_obj.fits} and {upband_obj.fits}")
+        logger.debug("Using: %s and %s", lowband_obj.fits, upband_obj.fits)
         fsub = int(
             (isub - np.concatenate([np.array([0]), cumsum_num_subint]))[
                 lowband_obj.fileid
             ]
         )
         logger.debug(
-            f"Reading subint {fsub} in file {lowband_obj.filename} and {upband_obj.filename}"
+            "Reading subint %i in file %s and %s",
+            fsub,
+            lowband_obj.filename,
+            upband_obj.filename,
         )
 
         try:
             data = read_and_combine_subint(
-                lowband_obj, upband_obj, fsub, upchanskip, lowchanskip
+                lowband_obj,
+                upband_obj,
+                fsub,
+                upchanskip,
+                lowchanskip,
             )
         except KeyError:
-            logger.warning(f"Encountered KeyError, maybe mmap'd object was delected")
+            logger.warning("Encountered KeyError, maybe mmap'd object was deleted")
             logger.debug(
-                f"Trying to open files {lowband_obj.filename} and {upband_obj.filename}"
+                "Trying to open files %s and %s",
+                lowband_obj.filename,
+                upband_obj.filename,
             )
 
             lowband_obj.fits = pyfits.open(
@@ -446,11 +486,18 @@ def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
             )
 
             logger.debug(
-                f"Reading subint {fsub} in files {lowband_obj.filename} and {upband_obj.filename}"
+                "Reading subint %i in files %s and %s",
+                fsub,
+                lowband_obj.filename,
+                upband_obj.filename,
             )
 
             data = read_and_combine_subint(
-                lowband_obj, upband_obj, fsub, upchanskip, lowchanskip
+                lowband_obj,
+                upband_obj,
+                fsub,
+                upchanskip,
+                lowchanskip,
             )
 
         if skip != 0 and isub == startsub:
@@ -460,11 +507,12 @@ def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
             if trunc > 0:
                 data = data[:-trunc, :]
             else:
-                raise ValueError("Number of bins to truncate is negative: %d" % trunc)
+                raise ValueError(f"Number of bins to truncate is negative: {trunc}")
 
         if data.shape[1] == 958:
             logger.debug(
-                f"Final number of frequency channels is {data.shape[1]}, padding the data to make 960 channels."
+                "Final number of frequency channels is %i, padding to 960 channels.",
+                data.shape[1],
             )
             data = np.pad(
                 data,
@@ -473,20 +521,24 @@ def combine(f1, f2, nstart=0, nsamp=100, outdir=None, filfile=None):
                 constant_values=np.mean(data[:, -1]),
             )
 
-        logger.info(f"Writing data from subint {fsub} to filterbank")
+        logger.info("Writing data from subint %i to filterbank", fsub)
         write_fil(data, lowband_obj, upband_obj, outdir=outdir, filename=filfile)
-        logger.debug(f"Successfully written data from subint {fsub} to filterbank")
+        logger.debug("Successfully written data from subint %i to filterbank", fsub)
 
-    logging.debug(f"Read all the necessary subints")
+    logging.debug("Read all the necessary subints")
 
 
-def all_files(direct, nstart, nsamp, outdir):
+def all_files(direct, outdir):
+    """
+    Looks at a Directory for like .fits
+    files to combine
+    """
     names = {}
     direct = os.path.join(direct, "")
     outdir = os.path.join(outdir, "")
     logger.debug("Looking for file pairs.")
-    for af in glob.glob(direct + "*.fits"):
-        base_name = os.path.basename(af)
+    for a_fits in glob.glob(direct + "*.fits"):
+        base_name = os.path.basename(a_fits)
         split = base_name.split(".")
         file_one = (
             direct
@@ -528,11 +580,11 @@ def all_files(direct, nstart, nsamp, outdir):
             + ".fil"
         )
         names[out_file] = [file_one, file_two]
-    logger.info(f"Found {len(names.keys())} file pairs, combing.")
-    for out in names:
+    logger.info("Found %i file pairs, combing.", len(names.keys()))
+    for out, files in names.items():
         combine(
-            glob.glob(names[out][0]),
-            glob.glob(names[out][1]),
+            glob.glob(files[0]),
+            glob.glob(files[1]),
             nstart=values.nstart,
             nsamp=values.nsamp,
             outdir=outdir,
@@ -543,7 +595,8 @@ def all_files(direct, nstart, nsamp, outdir):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         prog="your_combine_mocks.py",
-        description="Combine two bands generated by mock spectrometer (at Arecibo Telescope) to a single filterbank file.",
+        description="""Combine two bands generated by mock spectrometer
+        (at Arecibo Telescope) to a single filterbank file.""",
         formatter_class=YourArgparseFormatter,
     )
     parser.add_argument("-v", "--verbose", help="Be verbose", action="store_true")
@@ -601,7 +654,7 @@ if __name__ == "__main__":
     )
     values = parser.parse_args()
 
-    logging_format = (
+    LOGGING_FORMAT = (
         "%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s"
     )
     log_filename = (
@@ -615,23 +668,23 @@ if __name__ == "__main__":
             logging.basicConfig(
                 filename=log_filename,
                 level=logging.DEBUG,
-                format=logging_format,
+                format=LOGGING_FORMAT,
             )
         else:
             logging.basicConfig(
-                filename=log_filename, level=logging.INFO, format=logging_format
+                filename=log_filename, level=logging.INFO, format=LOGGING_FORMAT
             )
     else:
         if values.verbose:
             logging.basicConfig(
                 level=logging.DEBUG,
-                format=logging_format,
+                format=LOGGING_FORMAT,
                 handlers=[RichHandler(rich_tracebacks=True)],
             )
         else:
             logging.basicConfig(
                 level=logging.INFO,
-                format=logging_format,
+                format=LOGGING_FORMAT,
                 handlers=[RichHandler(rich_tracebacks=True)],
             )
 
@@ -642,13 +695,13 @@ if __name__ == "__main__":
     if values.all_files:
         all_files(
             values.all_files,
-            nstart=values.nstart,
-            nsamp=values.nsamp,
             outdir=values.outdir,
         )
     elif not (values.first_band and values.second_band):
         print(
-            "The following arguments are required: -f1/--first_band, -f2/--second_band OR -a/--all_files"
+            """The following arguments are required:
+            -f1/--first_band, -f2/--second_band
+            OR -a/--all_files"""
         )
     else:
         combine(
