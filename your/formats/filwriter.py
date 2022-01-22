@@ -26,7 +26,7 @@ def sigproc_object_from_writer(your_writer):
     fil_obj.barycentric = 0  # by default the data isn't barycentered
     fil_obj.pulsarcentric = 0
     fil_obj.telescope_id = 6  # use only GBT for now
-    fil_obj.data_type = 0
+    fil_obj.data_type = 1  # data_type = 1 for filterbank, data_type = 2 for time files
 
     fil_obj.nchans = your_writer.nchans
     fil_obj.foff = your_writer.foff
@@ -87,7 +87,7 @@ def make_sigproc_object(
     barycentric: int = 0,
     pulsarcentric: int = 0,
     telescope_id: int = 6,
-    data_type: int = 0,
+    data_type: int = 1,
     az_start: float = -1,
     za_start: float = -1,
 ):
