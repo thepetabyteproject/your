@@ -43,7 +43,7 @@ def gpu_dedisperse(cand, device=0):
                 ii, (jj + disp_time) % cand_data_in.shape[1]
             ]
 
-    threadsperblock = (128, 128)
+    threadsperblock = (64, 64)
     blockspergrid_x = math.ceil(cand_data_in.shape[0] / threadsperblock[0])
     blockspergrid_y = math.ceil(cand_data_in.shape[1] / threadsperblock[1])
 
@@ -105,7 +105,7 @@ def gpu_dmt(cand, device=0):
                 cand_data_in[ii, (jj + disp_time) % cand_data_in.shape[1]],
             )
 
-    threadsperblock = (32, 16, 16)
+    threadsperblock = (16, 8, 8)
     blockspergrid_x = math.ceil(cand_data_in.shape[0] / threadsperblock[0])
     blockspergrid_y = math.ceil(cand_data_in.shape[1] / threadsperblock[1])
     blockspergrid_z = math.ceil(dm_list.shape[0] / threadsperblock[2])
@@ -220,7 +220,7 @@ def gpu_dedisp_and_dmt_crop(cand, device=0):
                 cand_data_in[ii, (jj + disp_time) % cand_data_in.shape[1]],
             )
 
-    threadsperblock_2d = (128, 128)
+    threadsperblock_2d = (64, 64)
     blockspergrid_x_2d_in = math.ceil(cand_data_in.shape[0] / threadsperblock_2d[0])
     blockspergrid_y_2d_in = math.ceil(cand_data_in.shape[1] / threadsperblock_2d[1])
 
@@ -280,7 +280,7 @@ def gpu_dedisp_and_dmt_crop(cand, device=0):
                 cand_data_in[ii, (jj + all_delays[ii, kk]) % cand_data_in.shape[1]],
             )
 
-    threadsperblock_3d = (1, 128, 128)
+    threadsperblock_3d = (1, 64, 64)
     blockspergrid_x = math.ceil(cand_data_in.shape[0] / threadsperblock_3d[0])
     blockspergrid_y = math.ceil(cand_data_in.shape[1] / threadsperblock_3d[1])
     blockspergrid_z = math.ceil(dm_list.shape[0] / threadsperblock_3d[2])
