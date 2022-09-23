@@ -137,6 +137,14 @@ if __name__ == "__main__":
         default=-1,
     )
     parser.add_argument(
+        "-no_scrunching",
+        "--no_scrunching",
+        help="Disable adaptive scrunching in heimdall",
+        required=False,
+        action="store_true",
+        default=False,
+    )
+    parser.add_argument(
         "--no_progress",
         help="Do not show the tqdm bar",
         action="store_false",
@@ -253,6 +261,7 @@ if __name__ == "__main__":
         nsamps_gulp=nsamps_gulp,
         gpu_id=values.gpu_id,
         output_dir=values.output_dir,
+        no_scrunching=values.no_scrunching,
         zap_chans=bad_chans,
         rfi_no_broad=values.rfi_no_broad,
         rfi_no_narrow=values.rfi_no_narrow,
