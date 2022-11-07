@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-
+"""
+CLI to run Heimdall on fits or fils using Your.
+"""
 import argparse
 import json
 import logging
@@ -106,6 +108,14 @@ if __name__ == "__main__":
         default=False,
     )
     parser.add_argument(
+        "-boxcar_max",
+        "--boxcar_max",
+        help="maximum boxcar width in seconds",
+        required=False,
+        type=float,
+        default=50e-3,
+    )
+    parser.add_argument(
         "-mask",
         "--mask",
         help="File containing channel numbers to flag",
@@ -155,12 +165,13 @@ if __name__ == "__main__":
     values = parser.parse_args()
 
     if values.output_dir is None:
-        values.output_dir = "{0}/{1}".format(
-            os.getcwd(), (".").join(os.path.basename(values.files[0]).split(".")[:-1])
+        values.output_dir = (
+            f"{os.getcwd()}/"
+            + f"{('.').join(os.path.basename(values.files[0]).split('.')[:-1])}"
         )
         os.makedirs(values.output_dir, exist_ok=True)
 
-    logging_format = (
+    LOGGING_FORMAT = (
         "%(asctime)s - %(funcName)s -%(name)s - %(levelname)s - %(message)s"
     )
 
@@ -175,23 +186,23 @@ if __name__ == "__main__":
             logging.basicConfig(
                 filename=log_filename,
                 level=logging.DEBUG,
-                format=logging_format,
+                format=LOGGING_FORMAT,
             )
         else:
             logging.basicConfig(
-                filename=log_filename, level=logging.INFO, format=logging_format
+                filename=log_filename, level=logging.INFO, format=LOGGING_FORMAT
             )
     else:
         if values.verbose:
             logging.basicConfig(
                 level=logging.DEBUG,
-                format=logging_format,
+                format=LOGGING_FORMAT,
                 handlers=[RichHandler(rich_tracebacks=True)],
             )
         else:
             logging.basicConfig(
                 level=logging.INFO,
-                format=logging_format,
+                format=LOGGING_FORMAT,
                 handlers=[RichHandler(rich_tracebacks=True)],
             )
 
@@ -202,14 +213,14 @@ if __name__ == "__main__":
     your_object = Your(file=values.files)
     max_delay = your_object.dispersion_delay(dms=np.max(values.dm))
     dispersion_delay_samples = np.ceil(max_delay / your_object.your_header.tsamp)
-    logging.info(f"Max Dispersion delay = {max_delay} s")
-    logging.info(f"Max Dispersion delay = {dispersion_delay_samples} samples")
+    logging.info("Max Dispersion delay = %f s", max_delay)
+    logging.info("Max Dispersion delay = %i samples", dispersion_delay_samples)
 
-    if your_object.your_header.nspectra < 2 ** 18:
+    if your_object.your_header.nspectra < 2**18:
         nsamps_gulp = your_object.your_header.nspectra
     else:
         nsamps_gulp = int(
-            np.max([(2 ** np.ceil(np.log2(dispersion_delay_samples))), 2 ** 18])
+            np.max([(2 ** np.ceil(np.log2(dispersion_delay_samples))), 2**18])
         )
 
     if values.channel_end > 0:
@@ -231,7 +242,7 @@ if __name__ == "__main__":
     your_dada_writer.setup_dada()  # need to run the set up inorder to get the dada key
 
     if values.mask:
-        logging.info(f"Reading RFI mask from {values.mask}")
+        logging.info("Reading RFI mask from %s", values.mask)
         mask = np.loadtxt(values.mask)
         if len(mask.shape) == 1:
             bad_chans = list(mask)
@@ -245,19 +256,19 @@ if __name__ == "__main__":
         bad_chans = None
 
     if values.verbose <= 1:
-        heimdall_verbosity = "v"
+        HEIMDALL_VERBOSITY = "v"
     elif values.verbose == 2:
-        heimdall_verbosity = "V"
+        HEIMDALL_VERBOSITY = "V"
     elif values.verbose == 3:
-        heimdall_verbosity = "g"
+        HEIMDALL_VERBOSITY = "g"
     else:
-        heimdall_verbosity = "G"
+        HEIMDALL_VERBOSITY = "G"
 
     HM = HeimdallManager(
         dm=values.dm,
         dada_key=your_dada_writer.dada_key,
-        boxcar_max=int(50e-3 / your_object.your_header.tsamp),
-        verbosity=heimdall_verbosity,
+        boxcar_max=int(values.boxcar_max / your_object.your_header.tsamp),
+        verbosity=HEIMDALL_VERBOSITY,
         nsamps_gulp=nsamps_gulp,
         gpu_id=values.gpu_id,
         output_dir=values.output_dir,
@@ -274,6 +285,7 @@ if __name__ == "__main__":
         + your_object.your_header.basename
         + "_heimdall_inputs.json",
         "w",
+        encoding="utf-8",
     ) as fp:
         json.dump(HM.__dict__, fp, cls=MyEncoder, indent=4)
 
