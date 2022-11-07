@@ -343,7 +343,7 @@ class SigprocFile(object):
         )
         unpacked = numpy.empty((nsamp, self.nifs, self.nchans), dtype=numpy.float32)
         for i in range(fac):
-            mask = 2 ** (self.nbits * i) * (2 ** self.nbits - 1)
+            mask = 2 ** (self.nbits * i) * (2**self.nbits - 1)
             unpacked[..., i::fac] = (d & mask) / 2 ** (i * self.nbits)
         return unpacked
 

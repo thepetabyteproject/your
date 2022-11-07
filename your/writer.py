@@ -480,7 +480,7 @@ class Writer:
         from your.formats.dada import DadaManager
 
         if dada_key is None:
-            self.dada_key = hex(np.random.randint(0, 16 ** 4))
+            self.dada_key = hex(np.random.randint(0, 16**4))
 
         if data_step is not None:
             self.data_step = data_step

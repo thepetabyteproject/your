@@ -63,11 +63,11 @@ def spectral_kurtosis(data, N=1, d=None):
     zero_mask = data == 0
     data = np.ma.array(data.astype(float), mask=zero_mask)
     S1 = data.sum(0)
-    S2 = (data ** 2).sum(0)
+    S2 = (data**2).sum(0)
     M = data.shape[0]
     if d is None:
         d = (np.nanmean(data.ravel()) / np.nanstd(data)) ** 2
-    return ((M * d * N) + 1) * ((M * S2 / (S1 ** 2)) - 1) / (M - 1)
+    return ((M * d * N) + 1) * ((M * S2 / (S1**2)) - 1) / (M - 1)
 
 
 def sk_filter(data, channel_bandwidth, tsamp, N=None, d=None, sigma=5):
@@ -113,7 +113,7 @@ def calc_N(channel_bandwidth, tsamp):
 
     """
 
-    tn = np.abs(1 / (channel_bandwidth * 10 ** 6))
+    tn = np.abs(1 / (channel_bandwidth * 10**6))
     return np.round(tsamp / tn)
 
 
