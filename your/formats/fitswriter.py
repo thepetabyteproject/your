@@ -104,7 +104,7 @@ class ObsInfo(object):
         D = mjd - mjd0  # Days since MJD0
         D0 = int(mjd) - mjd0  # Days between MJD0 and prev 0h
         T = D / 36525.0  # Number of centuries since MJD0
-        gmst = gfac0 + gfac1 * D0 + gfac2 * H + gfac3 * T ** 2.0
+        gmst = gfac0 + gfac1 * D0 + gfac2 * H + gfac3 * T**2.0
         lst = ((gmst + longitude / 15.0) % 24.0) * 3600.0
         return lst
 

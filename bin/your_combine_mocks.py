@@ -132,21 +132,21 @@ def read_and_combine_subint(
     upsub_data *= upband_obj.get_weights(fsub)[: upband_obj.nchan]
 
     if lowband_obj.nbits == 16:
-        flatten_to = 2 ** 15
-        scale = np.sqrt(2 ** 16)
+        flatten_to = 2**15
+        scale = np.sqrt(2**16)
         dtype = np.uint16
-        max_value = 2 ** 16 - 1
+        max_value = 2**16 - 1
     elif lowband_obj.nbits == 8:
-        flatten_to = 2 ** 7
-        scale = np.sqrt(2 ** 8)
+        flatten_to = 2**7
+        scale = np.sqrt(2**8)
         dtype = np.uint8
-        max_value = 2 ** 8 - 1
+        max_value = 2**8 - 1
     else:
         logging.warning("Not tested, unpredictable results!")
         flatten_to = 2 ** (lowband_obj.nbits - 1)
-        scale = np.sqrt(2 ** lowband_obj.nbits)
+        scale = np.sqrt(2**lowband_obj.nbits)
         dtype = np.uint8
-        max_value = 2 ** lowband_obj.nbits - 1
+        max_value = 2**lowband_obj.nbits - 1
 
     logger.debug("Combining data from relevant channels from upper and lower bands")
     # Note freq are not exactly same in the two subbands.
@@ -331,7 +331,7 @@ def combine(
             continue
         if key in ("ra_deg", "dec_deg", "gl", "gb"):
             hpbw = (
-                57.3 * 3 * 10 ** 8 / (low_header["center_freq"] * 10 ** 6 * 200)
+                57.3 * 3 * 10**8 / (low_header["center_freq"] * 10**6 * 200)
             )  # deg
             if np.abs(low_header[key] - up_header[key]) > 0.1 * hpbw:
                 raise ValueError(

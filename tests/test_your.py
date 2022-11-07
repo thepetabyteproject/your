@@ -72,7 +72,7 @@ def test_your_header(fits_file):
 
 def test_bandpass(y):
     assert pytest.approx(y.bandpass().mean(), rel=3) == 128
-    assert pytest.approx(y.bandpass(nspectra=2 ** 20).mean(), rel=3) == 128
+    assert pytest.approx(y.bandpass(nspectra=2**20).mean(), rel=3) == 128
     assert pytest.approx(y.bandpass(nspectra=512).mean(), rel=3) == 128
 
 
