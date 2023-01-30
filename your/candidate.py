@@ -196,7 +196,7 @@ class Candidate(Your):
             if self.width > 2 and nsamp_read // (self.width // 2) < self.min_samp:
                 nsamp_read = self.min_samp * self.width // 2
                 nstart_read = nstart - (nsamp_read - nsamp) // 2
-            if nsamp_read < self.min_samp:
+            elif nsamp_read < self.min_samp:
                 nsamp_read = self.min_samp
                 nstart_read = nstart - (nsamp_read - nsamp) // 2
             else:
