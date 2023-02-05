@@ -364,7 +364,7 @@ class Candidate(Your):
                 )
             return ts
 
-    def dmtime(self, dmsteps=256, target="CPU"):
+    def dmtime(self, dmsteps=256, target='CPU', range_dm=0):
         """
         Generates DM-time array of the candidate by dedispersing at adjacent DM values. Saves the data in `self.dmt`.
 
@@ -376,14 +376,16 @@ class Candidate(Your):
             target (str): 'CPU' to run the code on the CPU or 'GPU' to run it on a GPU.
 
         """
-        if target == "CPU":
-            range_dm = self.dm
+        if target == 'CPU':
+            if range_dm==0:
+                #if range_dm isn't specified, then set to dm
+                range_dm = self.dm
             dm_list = self.dm + np.linspace(-range_dm, range_dm, dmsteps)
             self.dmt = np.zeros((dmsteps, self.data.shape[0]), dtype=np.float32)
             for ii, dm in enumerate(dm_list):
                 self.dmt[ii, :] = self.dedispersets(dms=dm)
         elif target == "GPU":
-            gpu_dmt(self, device=self.device)
+            gpu_dmt(self, device=self.device, range_dm=range_dm)
         return self
 
     def get_snr(self, time_series=None):

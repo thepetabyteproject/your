@@ -64,7 +64,7 @@ def gpu_dedisperse(cand, device=0):
     return cand
 
 
-def gpu_dmt(cand, device=0):
+def gpu_dmt(cand,device=0,range_dm=0):
     """
 
     GPU DM-Time bow-tie (by rolling the array)
@@ -79,7 +79,10 @@ def gpu_dmt(cand, device=0):
     """
     cuda.select_device(device)
     chan_freqs = cuda.to_device(np.array(cand.chan_freqs, dtype=np.float32))
-    dm_list = cuda.to_device(np.linspace(0, 2 * cand.dm, 256, dtype=np.float32))
+    if range_dm ==0:
+        dm_list = cuda.to_device(np.linspace(0, 2 * cand.dm, 256, dtype=np.float32))
+    else:
+        dm_list = cuda.to_device(np.linspace(cand.dm-range_dm, cand.dm+range_dm, 256, dtype=np.float32))
     dmt_return = cuda.to_device(np.zeros((256, cand.data.shape[0]), dtype=np.float32))
     cand_data_in = cuda.to_device(np.array(cand.data.T, dtype=cand.data.dtype))
 
