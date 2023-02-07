@@ -253,7 +253,7 @@ def gpu_dedisp_and_dmt_crop(cand, device=0):
 
     logger.debug("cand.dedisersed set!")
 
-    disp_time = np.zeros(shape=(cand_data_in.shape[0], 256), dtype=np.int)
+    disp_time = np.zeros(shape=(cand_data_in.shape[0], 256), dtype=np.int32)
     for idx, dms in enumerate(np.linspace(0, 2 * cand.dm, 256)):
         disp_time[:, idx] = np.round(
             -1

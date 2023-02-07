@@ -90,7 +90,7 @@ def cand2h5(cand_val):
     ) = cand_val
     if os.path.exists(str(kill_mask_path)):
         logger.info(f"Using mask {kill_mask_path}")
-        kill_chans = np.loadtxt(kill_mask_path, dtype=np.int)
+        kill_chans = np.loadtxt(kill_mask_path, dtype=np.int32)
     else:
         logger.debug("No Kill Mask")
 
