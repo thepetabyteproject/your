@@ -100,7 +100,6 @@ class HeimdallManager:
         fswap=None,
         min_tscrunch_width=None,
     ):
-
         self.k = dada_key
         self.f = filename
         self.verbosity = verbosity

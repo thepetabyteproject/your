@@ -42,7 +42,6 @@ class Paint(Frame):
 
     # Define settings upon initialization. Here you can specify
     def __init__(self, master=None, dm=0):
-
         # parameters that you want to send through the Frame class.
         Frame.__init__(self, master)
 
