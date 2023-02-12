@@ -66,7 +66,6 @@ class Writer:
         frequency_decimation_factor=1,
         replacement_policy="mean",
     ):
-
         self.your_object = your_object
         self.nstart = nstart
         if nsamp is None:
