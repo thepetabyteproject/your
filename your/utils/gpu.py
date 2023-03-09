@@ -32,13 +32,13 @@ def gpu_dedisperse(cand, device=0):
     def gpu_dedisp(cand_data_in, chan_freqs, dm, cand_data_out, tsamp):
         ii, jj = cuda.grid(2)
         if ii < cand_data_in.shape[0] and jj < cand_data_in.shape[1]:
-            disp_time = int(
+            disp_time = int(round(
                 -4148808.0
                 * dm
                 * (1 / (chan_freqs[0]) ** 2 - 1 / (chan_freqs[ii]) ** 2)
                 / 1000
                 / tsamp
-            )
+            ))
             cand_data_out[ii, jj] = cand_data_in[
                 ii, (jj + disp_time) % cand_data_in.shape[1]
             ]
@@ -91,14 +91,14 @@ def gpu_dmt(cand, device=0):
             and jj < cand_data_in.shape[1]
             and kk < dms.shape[0]
         ):
-            disp_time = int(
+            disp_time = int(round(
                 -1
                 * 4148808.0
                 * dms[kk]
                 * (1 / (chan_freqs[0]) ** 2 - 1 / (chan_freqs[ii]) ** 2)
                 / 1000
                 / tsamp
-            )
+            ))
             cuda.atomic.add(
                 cand_data_out,
                 (kk, jj),
@@ -204,13 +204,13 @@ def gpu_dedisp_and_dmt_crop(cand, device=0):
     ):
         ii, jj = cuda.grid(2)
         if ii < cand_data_in.shape[0] and jj < cand_data_in.shape[1]:
-            disp_time = int(
+            disp_time = int(round(
                 -4148808.0
                 * dm
                 * (1 / (chan_freqs[0]) ** 2 - 1 / (chan_freqs[ii]) ** 2)
                 / 1000
                 / tsamp
-            )
+            ))
             cuda.atomic.add(
                 cand_data_out,
                 (
@@ -276,7 +276,7 @@ def gpu_dedisp_and_dmt_crop(cand, device=0):
         ):
             cuda.atomic.add(
                 cand_data_out,
-                (kk, int(jj / time_decimation_factor)),
+              )  (kk, int(jj / time_decimation_factor)),
                 cand_data_in[ii, (jj + all_delays[ii, kk]) % cand_data_in.shape[1]],
             )
 
