@@ -276,7 +276,7 @@ def gpu_dedisp_and_dmt_crop(cand, device=0):
         ):
             cuda.atomic.add(
                 cand_data_out,
-              )  (kk, int(jj / time_decimation_factor)),
+                (kk, int(jj / time_decimation_factor)),
                 cand_data_in[ii, (jj + all_delays[ii, kk]) % cand_data_in.shape[1]],
             )
 
