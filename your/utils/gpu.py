@@ -33,11 +33,13 @@ def gpu_dedisperse(cand, device=0):
         ii, jj = cuda.grid(2)
         if ii < cand_data_in.shape[0] and jj < cand_data_in.shape[1]:
             disp_time = int(
-                -4148808.0
-                * dm
-                * (1 / (chan_freqs[0]) ** 2 - 1 / (chan_freqs[ii]) ** 2)
-                / 1000
-                / tsamp
+                round(
+                    -4148808.0
+                    * dm
+                    * (1 / (chan_freqs[0]) ** 2 - 1 / (chan_freqs[ii]) ** 2)
+                    / 1000
+                    / tsamp
+                )
             )
             cand_data_out[ii, jj] = cand_data_in[
                 ii, (jj + disp_time) % cand_data_in.shape[1]
@@ -92,12 +94,14 @@ def gpu_dmt(cand, device=0):
             and kk < dms.shape[0]
         ):
             disp_time = int(
-                -1
-                * 4148808.0
-                * dms[kk]
-                * (1 / (chan_freqs[0]) ** 2 - 1 / (chan_freqs[ii]) ** 2)
-                / 1000
-                / tsamp
+                round(
+                    -1
+                    * 4148808.0
+                    * dms[kk]
+                    * (1 / (chan_freqs[0]) ** 2 - 1 / (chan_freqs[ii]) ** 2)
+                    / 1000
+                    / tsamp
+                )
             )
             cuda.atomic.add(
                 cand_data_out,
@@ -205,11 +209,13 @@ def gpu_dedisp_and_dmt_crop(cand, device=0):
         ii, jj = cuda.grid(2)
         if ii < cand_data_in.shape[0] and jj < cand_data_in.shape[1]:
             disp_time = int(
-                -4148808.0
-                * dm
-                * (1 / (chan_freqs[0]) ** 2 - 1 / (chan_freqs[ii]) ** 2)
-                / 1000
-                / tsamp
+                round(
+                    -4148808.0
+                    * dm
+                    * (1 / (chan_freqs[0]) ** 2 - 1 / (chan_freqs[ii]) ** 2)
+                    / 1000
+                    / tsamp
+                )
             )
             cuda.atomic.add(
                 cand_data_out,
