@@ -238,7 +238,7 @@ if __name__ == "__main__":
     )
 
     if values.type == "fits":
-        w.to_fits(npsub=values.npsub)
+        w.to_fits(npsub=values.nspectra_per_subint)
     elif values.type == "fil":
         w.to_fil()
     else:
