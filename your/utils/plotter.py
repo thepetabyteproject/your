@@ -20,6 +20,7 @@ def plot_h5(
     detrend_ft=True,
     publication=False,
     mad_filter=False,
+    dpi=300,
     outdir=None,
 ):
     """
@@ -31,6 +32,7 @@ def plot_h5(
         save (bool): Save the file as a png
         detrend_ft (bool): detrend the frequency time plot
         publication (bool): make publication quality plot
+        dpi (int): DPI of output png (default: 300)
         outdir (str): Path to the save the files into.
 
     Returns:
@@ -122,7 +124,7 @@ def plot_h5(
                 filename = outdir + os.path.basename(h5_file)[:-3] + ".png"
             else:
                 filename = h5_file[:-3] + ".png"
-            plt.savefig(filename, bbox_inches="tight", dpi=300)
+            plt.savefig(filename, bbox_inches="tight", dpi=dpi)
         else:
             plt.close()
 

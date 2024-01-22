@@ -19,7 +19,7 @@ os.environ["HDF5_USE_FILE_LOCKING"] = "FALSE"
 matplotlib.use("Agg")
 
 
-def mapper(save, detrend_ft, publication, mad_filter, out_dir, h5_file):
+def mapper(save, detrend_ft, publication, mad_filter, dpi, out_dir, h5_file):
     # maps the variables so the function will be imap friendly
     plot_h5(
         h5_file=h5_file,
@@ -27,6 +27,7 @@ def mapper(save, detrend_ft, publication, mad_filter, out_dir, h5_file):
         detrend_ft=detrend_ft,
         publication=publication,
         mad_filter=mad_filter,
+        dpi=dpi,
         outdir=out_dir,
     )
 
@@ -64,6 +65,13 @@ if __name__ == "__main__":
         help="Directory to save pngs (default: h5 dir)",
         type=str,
         default=None,
+        required=False,
+    )
+    parser.add_argument(
+        "--dpi",
+        help="DPI of resulting PNG file (default: 300)",
+        type=int,
+        default=300,
         required=False,
     )
     parser.add_argument(
@@ -129,6 +137,7 @@ if __name__ == "__main__":
             values.no_detrend_ft,
             values.publish,
             values.mad_filter,
+            values.dpi,
             values.out_dir,
         )
 
