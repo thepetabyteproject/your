@@ -4,7 +4,7 @@
 Collect PSRFITS information, emulating behaviour of PRESTO.
 Read PSRFITS data.
 
-Original Source: https://github.com/scottransom/presto/blob/master/python/presto/psrfits.py 
+Original Source: https://github.com/scottransom/presto/blob/master/python/presto/psrfits.py
 """
 import logging
 import os
