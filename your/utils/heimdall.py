@@ -42,8 +42,7 @@ def generate_dm_list(
     while dm_list[-1] < dm_end:
         k = c + tol**2 * a**2 * dm_list[-1] ** 2
         dm = (
-            b * dm_list[-1]
-            + math.sqrt(-(a**2) * b * dm_list[-1] ** 2 + (a**2 + b) * k)
+            b * dm_list[-1] + math.sqrt(-(a**2) * b * dm_list[-1] ** 2 + (a**2 + b) * k)
         ) / (a**2 + b)
         dm_list.append(dm)
     return dm_list

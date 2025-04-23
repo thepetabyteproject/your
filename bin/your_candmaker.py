@@ -9,9 +9,9 @@ from rich.logging import RichHandler
 
 from your.utils.math import normalise
 
-os.environ[
-    "OPENBLAS_NUM_THREADS"
-] = "1"  # stop numpy multithreading regardless of the backend
+os.environ["OPENBLAS_NUM_THREADS"] = (
+    "1"  # stop numpy multithreading regardless of the backend
+)
 os.environ["MKL_NUM_THREADS"] = "1"
 os.environ["HDF5_USE_FILE_LOCKING"] = "FALSE"
 

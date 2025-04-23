@@ -330,9 +330,7 @@ def combine(
         if key in ("filelist", "filename", "center_freq", "fch1"):
             continue
         if key in ("ra_deg", "dec_deg", "gl", "gb"):
-            hpbw = (
-                57.3 * 3 * 10**8 / (low_header["center_freq"] * 10**6 * 200)
-            )  # deg
+            hpbw = 57.3 * 3 * 10**8 / (low_header["center_freq"] * 10**6 * 200)  # deg
             if np.abs(low_header[key] - up_header[key]) > 0.1 * hpbw:
                 raise ValueError(
                     f"Value of {key} in the two bands differ by more than 10% FWHM"

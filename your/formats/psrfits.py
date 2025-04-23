@@ -4,7 +4,7 @@
 Collect PSRFITS information, emulating behaviour of PRESTO.
 Read PSRFITS data.
 
-Original Source: https://github.com/scottransom/presto/blob/master/python/presto/psrfits.py 
+Original Source: https://github.com/scottransom/presto/blob/master/python/presto/psrfits.py
 """
 import logging
 import os
@@ -124,7 +124,10 @@ class PsrfitsFile(object):
 
         # Unifying properties with pysigproc
         self.npol = self.npoln
-        self.bw = self.specinfo.BW
+        # Earlier versions of SpectraInfo returned a float64 here,
+        # later versions float32
+        # a np.float64 is needed to log the json dump in fitewriter.py
+        self.bw = np.float64(self.specinfo.BW)
         self.cfreq = self.header["OBSFREQ"]
         self.fch1 = self.freqs[0]  # self.cfreq - self.bw / 2.0  # Verify
         self.foff = self.bw / self.nchan
@@ -176,6 +179,8 @@ class PsrfitsFile(object):
              float: Native channel bandwidth
 
         """
+        with open("psrfits_native_foff.txt", "w") as file:
+            file.write(f"{self.bw} {type(self.bw)=}")
         return self.bw / self.nchan
 
     def native_nchans(self):
