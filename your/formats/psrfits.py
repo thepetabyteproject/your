@@ -179,8 +179,6 @@ class PsrfitsFile(object):
              float: Native channel bandwidth
 
         """
-        with open("psrfits_native_foff.txt", "w") as file:
-            file.write(f"{self.bw} {type(self.bw)=}")
         return self.bw / self.nchan
 
     def native_nchans(self):
