@@ -22,7 +22,7 @@ jobs:
           pip install -r requirements.txt
       - name: Install it
         run: |
-          python setup.py install
+          pip install .
       - name: Black Check
         run: |
           pip install black
