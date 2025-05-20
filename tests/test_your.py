@@ -126,5 +126,44 @@ def test_repr(fil_file):
     assert repr(y) == f"Using <class 'str'>:\n{fil_file}"
 
 
+def test_your_context_manager_psrfits(fits_file):
+    with Your(fits_file) as y:
+        # Perform some action to ensure file is opened and processed
+        _ = y.your_header.source_name
+    # Check if the file is closed
+    # For astropy.io.fits, the actual file object is often in _file attribute of HDUList
+    assert y.formatclass.fits._file.closed, "PSRFITS file was not closed by context manager"
+
+
+def test_your_context_manager_filterbank(fil_file):
+    with Your(fil_file) as y:
+        # Perform some action to ensure file is opened and processed
+        _ = y.your_header.source_name
+    # Check if the sigproc file object is closed
+    assert y.formatclass.fp.closed, "Filterbank file object (fp) was not closed by context manager"
+    # Check if the mmap object is closed
+    # For mmap objects, attempting to use them after closing raises a ValueError.
+    # Or, if there's a .closed attribute (Python 3.2+ for mmap)
+    if hasattr(y.formatclass._mmdata, 'closed'):
+        assert y.formatclass._mmdata.closed, "Filterbank mmap object (_mmdata) was not closed by context manager"
+    else:
+        # Fallback for older Python versions or if .closed is not reliably set:
+        # Try to access a property that would fail on a closed mmap object
+        try:
+            # Attempting to access a closed mmap object should raise a ValueError
+            _ = y.formatclass._mmdata.size()
+            # If it doesn't raise ValueError, and .closed is not available,
+            # it's hard to be certain. However, the close_files method does call _mmdata.close().
+            # This path indicates either mmap is not closed or .closed attribute is missing.
+            # Given the implementation, we expect ValueError if closed and .closed is missing.
+            assert False, "Filterbank mmap object should be closed or .closed attribute should exist and be True."
+        except ValueError:
+            # This is the expected behavior if the mmap object is closed and .closed is not available
+            pass
+        except Exception as e:
+            # Any other exception is unexpected
+            assert False, f"Unexpected error when checking closed status of mmap: {e}"
+
+
 def test_dispersion_delay(y):
     assert pytest.approx(y.dispersion_delay(1), rel=1e-3) == 0.0013160529703817566
