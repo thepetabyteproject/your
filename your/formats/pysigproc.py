@@ -402,26 +402,3 @@ class SigprocFile(object):
         with open(filename, "ab") as f:
             f.seek(0, os.SEEK_END)
             f.write(spectra.flatten().astype(spectra.dtype))
-
-    def close_files(self):
-        logger.debug("Closing Sigproc file and unmapping memory.")
-        if hasattr(self, '_mmdata') and self._mmdata is not None:
-            try:
-                self._mmdata.close()
-                logger.debug("Successfully unmapped memory.")
-            except Exception as e:
-                logger.warning(f"Could not unmap memory: {e}")
-        else:
-            logger.debug("Memory map object not found or already None.")
-
-        if hasattr(self, 'fp') and self.fp is not None:
-            try:
-                if not self.fp.closed:
-                    self.fp.close()
-                    logger.debug("Successfully closed Sigproc file.")
-                else:
-                    logger.debug("Sigproc file already closed.")
-            except Exception as e:
-                logger.warning(f"Could not close Sigproc file: {e}")
-        else:
-            logger.debug("Sigproc file object not found or already None.")

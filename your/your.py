@@ -23,13 +23,7 @@ class Your(PsrfitsFile, SigprocFile):
 
     Examples:
         your_object = your.Your("/path/to/filterbank.fil")
-        your_object = your.Your(["puppi_58763_B1919+21_0292_0001.fits","puppi_58763_B1919+21_0292_0002.fits"])
-
-        # Using Your as a context manager (recommended for proper file closing)
-        with Your("/path/to/filterbank.fil") as y_obj:
-            # Perform operations with y_obj
-            data = y_obj.get_data(nstart=0, nsamp=10)
-        # File is automatically closed when exiting the 'with' block
+        your_object = your.Your(["puppi_58763_B1919+21_0292_0001.fits","puppi_58763_B1919+21_0292_0002.fits"]
 
     Attributes:
         your_header: instance of the Header class
@@ -82,14 +76,6 @@ class Your(PsrfitsFile, SigprocFile):
             )
             self.source_name = "TEMP"
         self.your_header = Header(self)
-
-    def __enter__(self):
-        # no need to do anything here
-        return self
-
-    def __exit__(self, exc_type, exc_value, exc_traceback):
-        # we implement .close_files() in all format classes
-        return self.formatclass.close_files()
 
     @property
     def chan_freqs(self):

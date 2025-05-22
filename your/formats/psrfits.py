@@ -457,17 +457,6 @@ class PsrfitsFile(object):
 
         return data  # np.expand_dims(data.T, axis=1)
 
-    def close_files(self):
-        logger.debug("Closing PSRFITS file.")
-        if hasattr(self, 'fits') and self.fits is not None:
-            try:
-                self.fits.close()
-                logger.debug("Successfully closed PSRFITS file.")
-            except Exception as e:
-                logger.warning(f"Could not close PSRFITS file: {e}")
-        else:
-            logger.debug("PSRFITS file object not found or already None.")
-
 
 class SpectraInfo:
     """

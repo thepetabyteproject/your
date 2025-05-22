@@ -70,30 +70,6 @@ python setup.py install
     To use the `psrdada` format, you would need to install [psrdada-python](https://github.com/TRASAL/psrdada-python). [`your_heimdall.py`](https://thepetabyteproject.github.io/your/bin/your_heimdall/) requires [Heimdall](https://sourceforge.net/projects/heimdall-astro/) and [psrdada-python](https://github.com/TRASAL/psrdada-python). 
     To run the tests you would need to install `pytest`. 
 
-### Using the Context Manager
-
-It is recommended to use the `Your` object as a context manager to ensure that files are properly closed after use. This can be done using a `with` statement:
-
-```python
-import your
-
-# For a single filterbank file
-with your.Your("your_file.fil") as y_obj:
-    header = y_obj.your_header
-    print(f"Source: {header.source_name}")
-    data = y_obj.get_data(nstart=0, nsamp=100)
-    # y_obj.formatclass.fp and y_obj.formatclass._mmdata will be closed automatically
-
-# For a single PSRFITS file
-with your.Your("your_file.fits") as y_obj:
-    print(f"Center frequency: {y_obj.your_header.center_freq}")
-    # y_obj.formatclass.fits will be closed automatically
-
-# For a list of PSRFITS files
-with your.Your(["file1.fits", "file2.fits"]) as y_obj:
-    print(f"Total native spectra: {y_obj.your_header.native_nspectra}")
-    # All PSRFITS files in y_obj.formatclass.fits (and its list) will be handled by the close_files method
-```
 
 # Documentation
 Have a look at our [docs](https://thepetabyteproject.github.io/your/) for the documentation.
