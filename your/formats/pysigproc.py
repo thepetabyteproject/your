@@ -402,3 +402,38 @@ class SigprocFile(object):
         with open(filename, "ab") as f:
             f.seek(0, os.SEEK_END)
             f.write(spectra.flatten().astype(spectra.dtype))
+
+    def close_files(self):
+        logger.debug("Closing Sigproc file and unmapping memory.")
+        closed_something = False
+        if hasattr(self, '_mmdata') and self._mmdata is not None:
+            try:
+                # Check if mmap has a 'closed' attribute (Python 3.2+)
+                if hasattr(self._mmdata, 'closed') and self._mmdata.closed:
+                    logger.debug("Sigproc mmap object already closed.")
+                else:
+                    self._mmdata.close()
+                    logger.debug("Successfully unmapped memory.")
+                    closed_something = True
+            except ValueError: # mmap can raise ValueError if accessed after close without a .closed attr
+                logger.debug("Sigproc mmap object already closed (ValueError on access).")
+            except Exception as e:
+                logger.warning(f"Could not unmap memory: {e}")
+        else:
+            logger.debug("Memory map object not found or already None.")
+
+        if hasattr(self, 'fp') and self.fp is not None:
+            try:
+                if not self.fp.closed:
+                    self.fp.close()
+                    logger.debug("Successfully closed Sigproc file.")
+                    closed_something = True
+                else:
+                    logger.debug("Sigproc file object already closed.")
+            except Exception as e:
+                logger.warning(f"Could not close Sigproc file: {e}")
+        else:
+            logger.debug("Sigproc file object not found or already None.")
+        # The __exit__ method of a context manager should return True if it handled an exception,
+        # False or None otherwise. Since this is just for cleanup, returning None is fine.
+        return None

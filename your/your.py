@@ -77,6 +77,16 @@ class Your(PsrfitsFile, SigprocFile):
             self.source_name = "TEMP"
         self.your_header = Header(self)
 
+    def __enter__(self):
+        # no need to do anything here
+        return self
+
+    def __exit__(self, exc_type, exc_value, exc_traceback):
+        # we implement .close_files() in all format classes
+        if hasattr(self, 'formatclass') and self.formatclass is not None:
+            return self.formatclass.close_files()
+        return None # Or handle as appropriate if formatclass might not exist
+
     @property
     def chan_freqs(self):
         """

@@ -457,6 +457,31 @@ class PsrfitsFile(object):
 
         return data  # np.expand_dims(data.T, axis=1)
 
+    def close_files(self):
+        logger.debug("Closing PSRFITS file.")
+        if hasattr(self, 'fits') and self.fits is not None:
+            try:
+                # Check if the file is already closed via its internal _file object
+                if hasattr(self.fits, '_file') and self.fits._file is not None and not self.fits._file.closed:
+                    self.fits.close()
+                    logger.debug("Successfully closed PSRFITS file.")
+                elif not hasattr(self.fits, '_file') or self.fits._file is None:
+                     # If _file attribute doesn't exist or is None, but fits object exists,
+                     # attempt to close directly if it has a close method.
+                     # This is a fallback, as astropy HDUList usually has _file.
+                     if callable(getattr(self.fits, 'close', None)):
+                        self.fits.close()
+                        logger.debug("Successfully closed PSRFITS file (direct close).")
+                     else:
+                        logger.debug("PSRFITS file object does not appear to be open or closable in the expected way.")
+                else:
+                    logger.debug("PSRFITS file already closed or not valid for closing.")
+            except Exception as e:
+                logger.warning(f"Could not close PSRFITS file: {e}")
+        else:
+            logger.debug("PSRFITS file object not found or already None.")
+        return None # Explicitly return None
+
 
 class SpectraInfo:
     """
