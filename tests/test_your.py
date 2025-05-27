@@ -129,32 +129,52 @@ def test_repr(fil_file):
 # Ensure 'datadir' fixture is available or adapt path to test files.
 # The existing conftest.py should provide 'datadir'.
 
+
 def test_your_context_manager_psrfits(datadir):
-    fits_file = os.path.join(datadir, "28.fits") # Using 28.fits as per earlier successful test addition
+    fits_file = os.path.join(
+        datadir, "28.fits"
+    )  # Using 28.fits as per earlier successful test addition
     assert os.path.exists(fits_file), f"Test file not found: {fits_file}"
     with your.Your(fits_file) as y:
-        _ = y.your_header.source_name # Perform some action
+        _ = y.your_header.source_name  # Perform some action
     # Check if the astropy FITS file object is closed
-    assert hasattr(y, 'formatclass') and hasattr(y.formatclass, 'fits'), "formatclass or fits attribute missing"
+    assert hasattr(y, "formatclass") and hasattr(y.formatclass, "fits"), (
+        "formatclass or fits attribute missing"
+    )
     assert y.formatclass.fits is not None, "fits object is None"
     # astropy's HDUList has a _file attribute which is the actual file object
-    assert hasattr(y.formatclass.fits, '_file') and y.formatclass.fits._file is not None, "_file attribute missing or None"
-    assert y.formatclass.fits._file.closed, "PSRFITS file was not closed by context manager"
+    assert (
+        hasattr(y.formatclass.fits, "_file") and y.formatclass.fits._file is not None
+    ), "_file attribute missing or None"
+    assert y.formatclass.fits._file.closed, (
+        "PSRFITS file was not closed by context manager"
+    )
+
 
 def test_your_context_manager_filterbank(datadir):
-    fil_file = os.path.join(datadir, "28.fil") # Using 28.fil as per earlier successful test addition
+    fil_file = os.path.join(
+        datadir, "28.fil"
+    )  # Using 28.fil as per earlier successful test addition
     assert os.path.exists(fil_file), f"Test file not found: {fil_file}"
     with your.Your(fil_file) as y:
-        _ = y.your_header.source_name # Perform some action
+        _ = y.your_header.source_name  # Perform some action
     # Check if the sigproc file object is closed
-    assert hasattr(y, 'formatclass') and hasattr(y.formatclass, 'fp'), "formatclass or fp attribute missing"
+    assert hasattr(y, "formatclass") and hasattr(y.formatclass, "fp"), (
+        "formatclass or fp attribute missing"
+    )
     assert y.formatclass.fp is not None, "fp object is None"
-    assert y.formatclass.fp.closed, "Filterbank file object (fp) was not closed by context manager"
+    assert y.formatclass.fp.closed, (
+        "Filterbank file object (fp) was not closed by context manager"
+    )
 
     # Check if the mmap object is closed
-    assert hasattr(y.formatclass, '_mmdata') and y.formatclass._mmdata is not None, "_mmdata attribute missing or None"
-    if hasattr(y.formatclass._mmdata, 'closed'): # Python 3.2+
-        assert y.formatclass._mmdata.closed, "Filterbank mmap object (_mmdata) was not closed by context manager (using .closed)"
+    assert hasattr(y.formatclass, "_mmdata") and y.formatclass._mmdata is not None, (
+        "_mmdata attribute missing or None"
+    )
+    if hasattr(y.formatclass._mmdata, "closed"):  # Python 3.2+
+        assert y.formatclass._mmdata.closed, (
+            "Filterbank mmap object (_mmdata) was not closed by context manager (using .closed)"
+        )
     else:
         # Fallback for older Python: try to access a property that would fail on a closed mmap
         with pytest.raises(ValueError, match="mmap closed|cannot access closed mmap"):

@@ -121,7 +121,7 @@ class HeimdallManager:
         self.min_tscrunch_width = min_tscrunch_width
 
         if (self.k is None) and (self.f is None):
-            raise IOError(f"Need either a dada key or a filterbank file to run")
+            raise IOError("Need either a dada key or a filterbank file to run")
 
     def run(self):
         """
@@ -145,9 +145,9 @@ class HeimdallManager:
                     if value in ["V", "v", "g", "G"]:
                         cmd += str(f" -{value} ")
                     else:
-                        logging.warning(f"Allowed verbosity is v,V,g,G")
-                        logging.warning(f"Using v for now!")
-                        cmd += f" -v "
+                        logging.warning("Allowed verbosity is v,V,g,G")
+                        logging.warning("Using v for now!")
+                        cmd += " -v "
                 elif (
                     attribute == "no_scrunching"
                     or attribute == "rfi_no_narrow"

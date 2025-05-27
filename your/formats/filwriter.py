@@ -17,7 +17,7 @@ def sigproc_object_from_writer(your_writer):
         sigproc object
 
     """
-    logger.debug(f"Generating Sigproc object")
+    logger.debug("Generating Sigproc object")
     fil_obj = SigprocFile()
     fil_obj.rawdatafile = your_writer.outname
     fil_obj.source_name = your_writer.your_object.your_header.source_name
@@ -120,7 +120,7 @@ def make_sigproc_object(
         sigproc object
 
     """
-    logger.debug(f"Generating Sigproc object")
+    logger.debug("Generating Sigproc object")
 
     fil_obj = SigprocFile()
     fil_obj.rawdatafile = rawdatafile

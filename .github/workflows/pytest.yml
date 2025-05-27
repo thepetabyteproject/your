@@ -23,10 +23,10 @@ jobs:
       - name: Install it
         run: |
           pip install .
-      - name: Black Check
+      - name: ruff format Check
         run: |
-          pip install black
-          black . --check
+          pip install ruff
+          ruff format . --check
       - name: Run pytest and Generate coverage report
         run: |
           pip install pytest pytest-cov

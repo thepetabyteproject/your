@@ -317,7 +317,7 @@ if __name__ == "__main__":
 
             gpu_id_cycler = cycle(range(len(values.gpu_id)))
     else:
-        logger.info(f"Using CPUs only")
+        logger.info("Using CPUs only")
 
     cand_pars = pd.read_csv(values.cand_param_file)
     # Randomly shuffle the candidates, this is so that the high DM candidates are spread through out

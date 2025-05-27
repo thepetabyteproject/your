@@ -72,7 +72,7 @@ class Your(PsrfitsFile, SigprocFile):
         self.formatclass.__init__(self, self.your_file)
         if not self.source_name:
             logger.info(
-                f"Source name not present in the file. Setting source name to TEMP"
+                "Source name not present in the file. Setting source name to TEMP"
             )
             self.source_name = "TEMP"
         self.your_header = Header(self)
@@ -83,9 +83,9 @@ class Your(PsrfitsFile, SigprocFile):
 
     def __exit__(self, exc_type, exc_value, exc_traceback):
         # we implement .close_files() in all format classes
-        if hasattr(self, 'formatclass') and self.formatclass is not None:
+        if hasattr(self, "formatclass") and self.formatclass is not None:
             return self.formatclass.close_files()
-        return None # Or handle as appropriate if formatclass might not exist
+        return None  # Or handle as appropriate if formatclass might not exist
 
     @property
     def chan_freqs(self):
@@ -153,12 +153,12 @@ class Your(PsrfitsFile, SigprocFile):
                 ns = nspectra
             else:
                 logger.info(
-                    f"nspectra > number of spectra in file, generating bandpass using all available spectra."
+                    "nspectra > number of spectra in file, generating bandpass using all available spectra."
                 )
                 ns = self.your_header.native_nspectra
         else:
             logger.warning(
-                f"This will read all the data in the RAM. Might be slow as well."
+                "This will read all the data in the RAM. Might be slow as well."
             )
             ns = self.your_header.native_nspectra
 
@@ -245,10 +245,10 @@ class Your(PsrfitsFile, SigprocFile):
 
             if self.format == "fil":
                 if pol > 0:
-                    logging.warning(f"pol > 0 not tested for Filterbank files.")
+                    logging.warning("pol > 0 not tested for Filterbank files.")
                     if self.your_header.npol == 0:
                         logging.warning(
-                            f"Data contains only one polarisation. Setting pol to 0"
+                            "Data contains only one polarisation. Setting pol to 0"
                         )
                         pol = 0
                     else:
@@ -256,7 +256,7 @@ class Your(PsrfitsFile, SigprocFile):
                             f"pol: {pol}, Assuming IQUV polarisation data in Filterbank file"
                         )
         elif npoln == 4:
-            logger.warning(f"npoln is equal to 4. Returning all polarisations.")
+            logger.warning("npoln is equal to 4. Returning all polarisations.")
         else:
             raise ValueError(
                 f"npoln ({npoln}) can only be 1 (one polarisation) or 4 (all)."

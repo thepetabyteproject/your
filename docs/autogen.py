@@ -142,7 +142,7 @@ for nb in glob.glob("../examples/*ipynb"):
 # make the dir for bin files and run argmark
 os.mkdir("sources/bin")
 
-os.system(f"cd sources/bin; argmark -f ../../../bin/*py; cd ../")
+os.system("cd sources/bin; argmark -f ../../../bin/*py; cd ../")
 
 # From the bin/*.md files make a table
 

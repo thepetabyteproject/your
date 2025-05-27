@@ -12,6 +12,7 @@ Key Binds:
 
     Right Arrow: Move the the next gulp
 """
+
 import argparse
 import logging
 import os
@@ -181,12 +182,12 @@ class Paint(Frame):
                 logging.warning(
                     f"Maximum dispersion delay for DM ({self.dm}) ="
                     f" {max_delay:.2f}s is greater than the input gulp size "
-                    f"{self.gulp_size*self.your_obj.your_header.native_tsamp}"
+                    f"{self.gulp_size * self.your_obj.your_header.native_tsamp}"
                     f"s. Pulses may not be dedispersed completely."
                 )
                 logging.warning(
                     f"Use gulp size of "
-                    f"{int(max_delay//self.your_obj.your_header.native_tsamp):0d}"
+                    f"{int(max_delay // self.your_obj.your_header.native_tsamp):0d}"
                     f" to dedisperse completely."
                 )
         self.read_data()

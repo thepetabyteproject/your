@@ -225,7 +225,7 @@ class SigprocFile(object):
                         f"incorrect header values."
                     )
                     self.hdrbytes += n
-                    logging.warning(f"Skipping next 4 bytes of data.")
+                    logging.warning("Skipping next 4 bytes of data.")
                     self.fp.read(4)
             except AttributeError:
                 logging.warning(
@@ -406,23 +406,25 @@ class SigprocFile(object):
     def close_files(self):
         logger.debug("Closing Sigproc file and unmapping memory.")
         closed_something = False
-        if hasattr(self, '_mmdata') and self._mmdata is not None:
+        if hasattr(self, "_mmdata") and self._mmdata is not None:
             try:
                 # Check if mmap has a 'closed' attribute (Python 3.2+)
-                if hasattr(self._mmdata, 'closed') and self._mmdata.closed:
+                if hasattr(self._mmdata, "closed") and self._mmdata.closed:
                     logger.debug("Sigproc mmap object already closed.")
                 else:
                     self._mmdata.close()
                     logger.debug("Successfully unmapped memory.")
                     closed_something = True
-            except ValueError: # mmap can raise ValueError if accessed after close without a .closed attr
-                logger.debug("Sigproc mmap object already closed (ValueError on access).")
+            except ValueError:  # mmap can raise ValueError if accessed after close without a .closed attr
+                logger.debug(
+                    "Sigproc mmap object already closed (ValueError on access)."
+                )
             except Exception as e:
                 logger.warning(f"Could not unmap memory: {e}")
         else:
             logger.debug("Memory map object not found or already None.")
 
-        if hasattr(self, 'fp') and self.fp is not None:
+        if hasattr(self, "fp") and self.fp is not None:
             try:
                 if not self.fp.closed:
                     self.fp.close()
