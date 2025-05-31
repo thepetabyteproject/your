@@ -1,0 +1,29 @@
+[tool.ruff]
+# Default line length, same as Black
+line-length = 88
+# Target Python version (optional, ruff usually infers this.
+# However, setup.py lists 3.10-3.13. Let's pick the lowest common denominator for now)
+target-version = "py310"
+
+[tool.ruff.lint]
+# Enable Pyflakes (F), pycodestyle error (E) and warning (W) rules, and isort (I).
+select = ["E", "F", "I", "W"]
+
+# Exclude common virtual environment folders and build artifacts.
+# `your` itself is the main package, so no need to exclude parts of it yet unless specific issues arise.
+exclude = [
+    ".git",
+    ".venv",
+    "venv",
+    "__pycache__",
+    "build",
+    "dist",
+    ".eggs",
+    "*.egg-info",
+]
+
+[tool.ruff.format]
+# This enables ruff's formatter. It's black-compatible by default.
+# No extra config needed for black compatibility.
+# To opt-in to experimental features:
+# preview = true

@@ -147,7 +147,7 @@ def gpu_dedisp_and_dmt_crop(cand, device=0):
         time_decimation_factor = cand.width // 2
 
     if cand.data.shape[1] < 256:
-        raise IndexError(f"GPU candmaker will not work if nchans < 256.")
+        raise IndexError("GPU candmaker will not work if nchans < 256.")
 
     frequency_decimation_factor = math.floor(cand.data.shape[1] // 256)
 

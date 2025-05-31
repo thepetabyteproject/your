@@ -9,8 +9,7 @@ from collections import OrderedDict
 
 import numpy
 
-from your.utils.astro import dec2deg
-from your.utils.astro import ra2deg
+from your.utils.astro import dec2deg, ra2deg
 
 
 class SigprocFile(object):
@@ -225,7 +224,7 @@ class SigprocFile(object):
                         f"incorrect header values."
                     )
                     self.hdrbytes += n
-                    logging.warning(f"Skipping next 4 bytes of data.")
+                    logging.warning("Skipping next 4 bytes of data.")
                     self.fp.read(4)
             except AttributeError:
                 logging.warning(
