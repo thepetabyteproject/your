@@ -424,9 +424,7 @@ class PsrfitsFile(object):
             try:
                 data.append(self.read_subint(fsub, pol=pol, npoln=npoln))
             except KeyError:
-                logger.warning(
-                    "Encountered KeyError, maybe mmap'd object was delected"
-                )
+                logger.warning("Encountered KeyError, maybe mmap'd object was delected")
                 logger.debug(f"Trying to open file {self.filename}")
                 self.fits = pyfits.open(self.filename, mode="readonly", memmap=True)
                 logger.debug(f"Reading subint {fsub} in file {self.filename}")
