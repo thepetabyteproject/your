@@ -6,6 +6,7 @@ Read PSRFITS data.
 
 Original Source: https://github.com/scottransom/presto/blob/master/python/presto/psrfits.py
 """
+
 import logging
 import os
 import os.path
@@ -25,7 +26,7 @@ SECPERDAY = float("86400.0")
 date_obs_re = re.compile(
     r"^(?P<year>[0-9]{4})-(?P<month>[0-9]{2})-(?P<day>[0-9]{2})T(?P<hour>[0-9]{2}):"
     r"(?P<min>[0-9]{2}):(?P<sec>[0-9]{2}"
-    "(?:\.[0-9]+)?)$"
+    r"(?:\.[0-9]+)?)$"
 )
 
 
@@ -225,9 +226,9 @@ class PsrfitsFile(object):
         )
 
         if pol > 0 and npoln == 1:
-            assert (
-                self.poln_order == "IQUV"
-            ), "Polarisation order in the file should be IQUV with pol=1 or pol=2"
+            assert self.poln_order == "IQUV", (
+                "Polarisation order in the file should be IQUV with pol=1 or pol=2"
+            )
 
         if self.nbits < 8:  # Unpack the bytes data
             if len(shp) == 2:
@@ -366,7 +367,7 @@ class PsrfitsFile(object):
         totsubints = int(np.sum(self.specinfo.num_subint))
 
         if endsub > totsubints - 1:
-            logger.warning(f"Not enough subints, returning data till last subint")
+            logger.warning("Not enough subints, returning data till last subint")
             endsub = totsubints - 1
             trunc = 0
         else:
@@ -398,16 +399,16 @@ class PsrfitsFile(object):
             logger.debug(f"file id is {self.fileid}")
 
             if isub > cumsum_num_subint[self.fileid] - 1:
-                logger.debug(f"isub lies in a later file")
+                logger.debug("isub lies in a later file")
                 self.fits.close()
                 del self.fits["SUBINT"]
                 logger.debug("Delted mmap'ed object")
                 self.fileid += 1
                 if self.fileid == len(self.filelist):
                     logger.warning(
-                        f"Not enough subints, returning data till last subint"
+                        "Not enough subints, returning data till last subint"
                     )
-                    logger.debug(f"Setting file ID to that of last file")
+                    logger.debug("Setting file ID to that of last file")
                     self.fileid -= 1
                     break
                 logger.debug(f"Updating file ID to: {self.fileid}")
@@ -423,15 +424,13 @@ class PsrfitsFile(object):
             try:
                 data.append(self.read_subint(fsub, pol=pol, npoln=npoln))
             except KeyError:
-                logger.warning(
-                    f"Encountered KeyError, maybe mmap'd object was delected"
-                )
+                logger.warning("Encountered KeyError, maybe mmap'd object was delected")
                 logger.debug(f"Trying to open file {self.filename}")
                 self.fits = pyfits.open(self.filename, mode="readonly", memmap=True)
                 logger.debug(f"Reading subint {fsub} in file {self.filename}")
                 data.append(self.read_subint(fsub, pol=pol, npoln=npoln))
 
-        logging.debug(f"Read all the necessary subints")
+        logging.debug("Read all the necessary subints")
         if len(data) > 1:
             data = np.concatenate(data)
         else:

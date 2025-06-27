@@ -327,7 +327,7 @@ class Candidate(Your):
             elif target == "GPU":
                 gpu_dedisperse(self, device=self.device)
         else:
-            logger.warning(f"No data in self.data, run self.get_chunk() first")
+            logger.warning("No data in self.data, run self.get_chunk() first")
             self.dedispersed = None
         return self
 

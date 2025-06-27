@@ -91,7 +91,7 @@ class Writer:
 
         if self.replacement_policy not in ["mean", "median", "zero"]:
             raise ValueError(
-                f"replacement_policy can only be 'mean', 'median' or 'zero'."
+                "replacement_policy can only be 'mean', 'median' or 'zero'."
             )
 
         self.outdir = outdir
@@ -280,14 +280,14 @@ class Writer:
 
         if self.npoln == 4:
             logger.warning(
-                f"npoln can only be 1 for output filterbanks. Setting npoln to 1."
+                "npoln can only be 1 for output filterbanks. Setting npoln to 1."
             )
             self.npoln = 1
 
         if self.your_object.your_header.nbits == 16:
             logger.warning(
-                f"Data are being written with dtype uint16, if the original data were int16 appropriate scaling may "
-                f"be needed. "
+                "Data are being written with dtype uint16, if the original data were int16 appropriate scaling may "
+                "be needed. "
             )
 
         with Progress() as progress:
@@ -339,7 +339,7 @@ class Writer:
                         "The dtype of the input data does not match with the dtype of the your_object"
                     )
 
-        logging.debug(f"Wrote all the necessary spectra")
+        logging.debug("Wrote all the necessary spectra")
 
     def to_fits(self, npsub=-1):
         """
@@ -420,7 +420,7 @@ class Writer:
                     logger.debug(
                         f"nspectra in this chunk ({data.shape[0]}) < nsubints * npsub ({nvals})"
                     )
-                    logger.debug(f"Appending zeros at the end to fill the subint")
+                    logger.debug("Appending zeros at the end to fill the subint")
                     pad_back = np.zeros(
                         (nvals - data.shape[0], data.shape[1], data.shape[2])
                     )

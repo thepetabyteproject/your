@@ -2,6 +2,7 @@
 """
 Generate bandpass of data
 """
+
 import argparse
 
 from your import Your

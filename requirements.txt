@@ -8,3 +8,4 @@ astropy>=4.0
 pandas>=1.0.3
 rich>=8.0
 setuptools
+ruff

@@ -5,11 +5,11 @@ import numpy as np
 from your.utils.math import closest_number
 
 logger = logging.getLogger(__name__)
-from skimage.transform import resize
-
 import argparse
 import json
 import os
+
+from skimage.transform import resize
 
 
 def _decimate(data, decimate_factor, axis, pad=False, **kwargs):

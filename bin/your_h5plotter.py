@@ -127,7 +127,7 @@ if __name__ == "__main__":
         df = pd.read_csv(values.results_csv)
         h5_files = list(df["candidate"][df["label"] == 1])
     else:
-        raise ValueError(f"Need either --files or --results_csv argument.")
+        raise ValueError("Need either --files or --results_csv argument.")
 
     with Pool(processes=values.nproc) as p:
         max_ = len(h5_files)

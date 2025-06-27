@@ -15,8 +15,9 @@ os.environ["OPENBLAS_NUM_THREADS"] = (
 os.environ["MKL_NUM_THREADS"] = "1"
 os.environ["HDF5_USE_FILE_LOCKING"] = "FALSE"
 
-from multiprocessing import Pool
+import textwrap
 from datetime import datetime
+from multiprocessing import Pool
 
 import numpy as np
 import pandas as pd
@@ -24,7 +25,6 @@ import pandas as pd
 from your.candidate import Candidate, crop
 from your.utils.gpu import gpu_dedisp_and_dmt_crop
 from your.utils.misc import YourArgparseFormatter
-import textwrap
 
 logger = logging.getLogger()
 
@@ -317,7 +317,7 @@ if __name__ == "__main__":
 
             gpu_id_cycler = cycle(range(len(values.gpu_id)))
     else:
-        logger.info(f"Using CPUs only")
+        logger.info("Using CPUs only")
 
     cand_pars = pd.read_csv(values.cand_param_file)
     # Randomly shuffle the candidates, this is so that the high DM candidates are spread through out
