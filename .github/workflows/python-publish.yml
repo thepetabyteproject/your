@@ -52,6 +52,8 @@ jobs:
       uses: pypa/gh-action-pypi-publish@release/v1
 
   publish-to-testpypi:
+  # Only thepetabyteproject can publish to TestPyPI, so skip for others, otherwise other CI tests are stopped.
+    if: github.repository_owner == 'thepetabyteproject'  
     name: Publish your TestPyPI
     needs:
     - build
