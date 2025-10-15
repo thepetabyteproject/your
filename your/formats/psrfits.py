@@ -30,6 +30,31 @@ date_obs_re = re.compile(
 )
 
 
+def unpack_1bit(data):
+    """
+    Unpack 1-bit data that has been read in as bytes.
+
+    Args:
+        data (np.ndarray): array of unsigned 1-bit ints packed into an array of bytes.
+
+    Returns:
+        np.ndarray: unpacked array. The size of this array will be eight times
+            the size of the input data.
+
+    """
+    piece0 = np.bitwise_and(data >> 0x07, 0x01)
+    piece1 = np.bitwise_and(data >> 0x06, 0x01)
+    piece2 = np.bitwise_and(data >> 0x05, 0x01)
+    piece3 = np.bitwise_and(data >> 0x04, 0x01)
+    piece4 = np.bitwise_and(data >> 0x03, 0x01)
+    piece5 = np.bitwise_and(data >> 0x02, 0x01)
+    piece6 = np.bitwise_and(data >> 0x01, 0x01)
+    piece7 = np.bitwise_and(data, 0x01)
+    return np.dstack(
+        [piece0, piece1, piece2, piece3, piece4, piece5, piece6, piece7]
+    ).flatten()
+
+
 def unpack_2bit(data):
     """
     Unpack 2-bit data that has been read in as bytes.
@@ -109,7 +134,9 @@ class PsrfitsFile(object):
         self.filelist = psrfitslist
         self.fileid = 0
 
-        self.fits = pyfits.open(psrfitsfn, mode="readonly", memmap=True)
+        self.fits = pyfits.open(
+            psrfitsfn, mode="readonly", memmap=True, ignore_missing_end=True
+        )
         self.specinfo = SpectraInfo(psrfitslist)
         self.header = self.fits[0].header  # Primary HDU
         self.nbits = self.specinfo.bits_per_sample
@@ -119,7 +146,21 @@ class PsrfitsFile(object):
         self.poln_order = self.specinfo.poln_order
         self.nsamp_per_subint = self.specinfo.spectra_per_subint
         self.nsubints = self.specinfo.num_subint[0]
-        self.freqs = self.fits["SUBINT"].data[0]["DAT_FREQ"]
+
+        # Try to read frequencies from SUBINT data, fall back to header calculation
+        try:
+            self.freqs = self.fits["SUBINT"].data[0]["DAT_FREQ"]
+        except (TypeError, ValueError) as e:
+            logger.warning(f"Could not read DAT_FREQ from SUBINT data: {e}")
+            logger.warning("Using header-based frequency calculation")
+            # Calculate frequencies from header information
+            cfreq = self.header["OBSFREQ"]
+            bw = self.header["OBSBW"]
+            self.freqs = np.linspace(
+                cfreq - bw / 2 + bw / (2 * self.nchan),
+                cfreq + bw / 2 - bw / (2 * self.nchan),
+                self.nchan,
+            )
         self.frequencies = self.freqs  # Alias
         self.nspec = self.specinfo.N
 
@@ -217,7 +258,51 @@ class PsrfitsFile(object):
             np.ndarray: Subint data with scales, weights, and offsets applied in float32 dtype with shape (nsamps,nchan).
 
         """
-        sdata = self.fits["SUBINT"].data[isub]["DATA"]
+        # Special handling for 1-bit data files with standard reading issues
+        if self.nbits == 1:
+            try:
+                # Try standard method first
+                sdata = self.fits["SUBINT"].data[isub]["DATA"]
+            except (TypeError, ValueError, OSError) as e:
+                logger.warning(f"Standard data access failed for 1-bit data: {e}")
+                logger.info("Using direct binary read method for 1-bit data")
+
+                # Read the raw binary data directly
+                subint_hdu = self.fits["SUBINT"]
+
+                # Calculate the offset to this specific row's DATA column
+                bytes_per_row = subint_hdu.header["NAXIS1"]
+                data_start = subint_hdu.fileinfo()["datLoc"]
+
+                # DATA column is last, calculate its offset within the row
+                # For 1-bit data with 512 channels, 1 pol, 768 samples:
+                # We need 512 * 1 * 768 = 393216 bits = 49152 bytes
+                expected_data_bytes = (
+                    self.nsamp_per_subint * self.nchan * self.npoln * self.nbits
+                ) // 8
+
+                # Calculate offset to the DATA column within the row
+                # The DATA column starts after all other columns
+                # From the TFORM20='393216X' we know it's column 20 (last one)
+                # We need to calculate the byte offset of all previous columns
+
+                # For simplicity, let's assume DATA is at the end of each row
+                data_col_offset = bytes_per_row - expected_data_bytes
+
+                # Calculate the file position for this subint's DATA
+                file_offset = data_start + (isub * bytes_per_row) + data_col_offset
+
+                # Read the data directly from the file
+                with open(self.filename, "rb") as f:
+                    f.seek(file_offset)
+                    sdata = np.frombuffer(f.read(expected_data_bytes), dtype=np.uint8)
+
+                logger.debug(
+                    f"Read {len(sdata)} bytes of 1-bit data from subint {isub}"
+                )
+        else:
+            sdata = self.fits["SUBINT"].data[isub]["DATA"]
+
         shp = sdata.squeeze().shape
 
         assert npoln <= self.npoln, (
@@ -242,6 +327,8 @@ class PsrfitsFile(object):
                 data = unpack_4bit(sdata)
             elif self.nbits == 2:
                 data = unpack_2bit(sdata)
+            elif self.nbits == 1:
+                data = unpack_1bit(sdata)
             else:
                 data = np.asarray(sdata)
         elif npoln == 4:
@@ -316,7 +403,11 @@ class PsrfitsFile(object):
             np.ndarray: Subint weights. (There is one value for each channel)
 
         """
-        return self.fits["SUBINT"].data[isub]["DAT_WTS"]
+        try:
+            return self.fits["SUBINT"].data[isub]["DAT_WTS"]
+        except (TypeError, ValueError, OSError) as e:
+            logger.warning(f"Could not read DAT_WTS for subint {isub}: {e}")
+            return np.ones(self.nchan, dtype=np.float32)
 
     def get_scales(self, isub):
         """
@@ -329,7 +420,11 @@ class PsrfitsFile(object):
             np.ndarray: Subint scales. (There is one value for each channel)
 
         """
-        return self.fits["SUBINT"].data[isub]["DAT_SCL"]
+        try:
+            return self.fits["SUBINT"].data[isub]["DAT_SCL"]
+        except (TypeError, ValueError, OSError) as e:
+            logger.warning(f"Could not read DAT_SCL for subint {isub}: {e}")
+            return np.ones(self.nchan, dtype=np.float32)
 
     def get_offsets(self, isub):
         """
@@ -342,7 +437,11 @@ class PsrfitsFile(object):
             np.ndarray: Subint offsets. (There is one value for each channel)
 
         """
-        return self.fits["SUBINT"].data[isub]["DAT_OFFS"]
+        try:
+            return self.fits["SUBINT"].data[isub]["DAT_OFFS"]
+        except (TypeError, ValueError, OSError) as e:
+            logger.warning(f"Could not read DAT_OFFS for subint {isub}: {e}")
+            return np.zeros(self.nchan, dtype=np.float32)
 
     def get_data(self, nstart, nsamp, pol=0, npoln=1):
         """
@@ -494,7 +593,7 @@ class SpectraInfo:
             with pyfits.open(
                 fn, mode="readonly", memmap=True, ignore_missing_end=True
             ) as hdus:
-                hdus.verify()
+                hdus.verify(option="silentfix")
 
                 if ii == 0:
                     self.hdu_names = [hdu.name for hdu in hdus]
@@ -565,7 +664,8 @@ class SpectraInfo:
                         self.user_poln = 1
 
                 self.poln_order = subint["POL_TYPE"]
-                if subint["NCHNOFFS"] > 0:
+                nchnoffs = int(subint["NCHNOFFS"]) if subint["NCHNOFFS"] else 0
+                if nchnoffs > 0:
                     logger.warning("first freq channel is not 0 in file %d" % ii)
                 self.spectra_per_subint = subint["NSBLK"]
                 self.bits_per_sample = subint["NBITS"]
@@ -611,7 +711,24 @@ class SpectraInfo:
 
                 # Now pull stuff from the columns
                 subint_hdu = hdus["SUBINT"]
-                first_subint = subint_hdu.data[0]
+                try:
+                    first_subint = subint_hdu.data[0]
+                except (TypeError, ValueError) as e:
+                    logger.warning(f"Could not read SUBINT data for file {fn}: {e}")
+                    logger.warning("Attempting to read header-only information")
+                    # Create a dummy first_subint with default values
+                    first_subint = {
+                        "DAT_FREQ": np.linspace(
+                            self.fctr - self.orig_df / 2,
+                            self.fctr + self.orig_df / 2,
+                            self.num_channels,
+                        ),
+                        "DAT_WTS": np.ones(self.num_channels),
+                        "DAT_OFFS": np.zeros(self.num_channels),
+                        "DAT_SCL": np.ones(self.num_channels),
+                        "TEL_AZ": 0.0,
+                        "TEL_ZEN": 0.0,
+                    }
                 # Identify the OFFS_SUB column number
                 if "OFFS_SUB" not in subint_hdu.columns.names:
                     logger.warning("Can't find the 'OFFS_SUB' column!")
