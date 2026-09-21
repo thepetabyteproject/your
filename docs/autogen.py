@@ -65,6 +65,8 @@ pages = {
         "your.formats.pysigproc.SigprocFile.unpack",
         "your.formats.pysigproc.SigprocFile.write_header",
         "your.formats.pysigproc.SigprocFile.append_spectra",
+        "your.formats.pysigproc.SigprocFile.allocate_file",
+        "your.formats.pysigproc.SigprocFile.write_spectra_at",
     ],
     "formats/psrfits.md": [
         "your.formats.psrfits.PsrfitsFile",

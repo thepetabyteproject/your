@@ -73,6 +73,10 @@ class SigprocFile(object):
         # init all items to None
         for k in list(self._type.keys()):
             setattr(self, k, None)
+        # Set by read_header when reading, by write_header when writing.
+        self.hdrbytes = None
+        # Set by allocate_file: the number of spectra the file is sized for.
+        self.nspectra_alloc = None
         if copy_hdr is not None:
             for k in list(self._type.keys()):
                 setattr(self, k, getattr(copy_hdr, k))
@@ -193,21 +197,21 @@ class SigprocFile(object):
         if fp is not None:
             self.fp = fp
         self.hdrbytes = 0
-        (s, n) = self.get_string(self.fp)
+        s, n = self.get_string(self.fp)
         logging.debug(f"Reading {s} from the Filterbank file header.")
         if s != b"HEADER_START":
             self.hdrbytes = 0
             return None
         self.hdrbytes += n
         while True:
-            (s, n) = self.get_string(self.fp)
+            s, n = self.get_string(self.fp)
             logging.debug(f"Reading parameter {s, n} from the Filterbank file header.")
             try:
                 s = s.decode()
                 self.hdrbytes += n
                 if s in self._type and n > 0:
                     if self._type[s] == "string":
-                        (v, n) = self.get_string(self.fp)
+                        v, n = self.get_string(self.fp)
                         self.hdrbytes += n
                         setattr(self, s, v)
                     else:
@@ -381,12 +385,24 @@ class SigprocFile(object):
         """
         Write the filterbank header
 
+        Note:
+            This opens the file in `"wb"` mode, which truncates it. Never call
+            it on a file another process is writing data to.
+
+            The size of the header just written is recorded in
+            :attr:`hdrbytes`, so that positional writes
+            (:meth:`write_spectra_at`) know where the data starts. Until this
+            is called (or :meth:`read_header`), `hdrbytes` is not set.
+
         Args:
             filename (str): name of the filterbank file
 
         """
         with open(filename, "wb") as f:
             self.filterbank_header(fout=f)
+        # hdrbytes is otherwise only set by read_header. Take it from the file
+        # size now, while the file is nothing but a header.
+        self.hdrbytes = os.path.getsize(filename)
         return None
 
     @staticmethod
@@ -401,3 +417,217 @@ class SigprocFile(object):
         with open(filename, "ab") as f:
             f.seek(0, os.SEEK_END)
             f.write(spectra.flatten().astype(spectra.dtype))
+
+    def _spectrum_nbytes(self):
+        """
+        Bytes on disk per spectrum, as an int, for addressing samples.
+
+        Unlike :attr:`bytes_per_spectrum`, which is a float, this refuses a
+        geometry it cannot address rather than returning a fraction.
+
+        Returns:
+            int: bytes per spectrum.
+
+        Raises:
+            ValueError: if any of `nchans`, `nbits` or `nifs` is unset, or if
+                one spectrum is not a whole number of bytes.
+
+        """
+        for name in ("nchans", "nbits", "nifs"):
+            if getattr(self, name) is None:
+                raise ValueError(f"{name} is not set, cannot address samples.")
+
+        # Guard 1: a spectrum must be a whole number of bytes, else sample n
+        # does not start on a byte boundary and cannot be written on its own.
+        bits = int(self.nbits) * int(self.nchans) * int(self.nifs)
+        if bits % 8:
+            raise ValueError(
+                f"{self.nchans} channels x {self.nifs} IFs at {self.nbits} "
+                f"bits is {bits / 8} bytes per spectrum, not a whole number. "
+                "Packed data with this geometry cannot be written positionally."
+            )
+        return bits // 8
+
+    def _byte_geometry(self):
+        """
+        The geometry needed to address a spectrum by its sample number.
+
+        Returns:
+            tuple: `(hdrbytes, bytes_per_spectrum)`, both ints.
+
+        Raises:
+            ValueError: if the header size is unknown, or the geometry cannot
+                address samples (see :meth:`_spectrum_nbytes`).
+
+        """
+        if self.hdrbytes is None:
+            raise ValueError(
+                "hdrbytes is not set, so the start of the data is unknown. It "
+                "is set by read_header() and by write_header(); for a file "
+                "written elsewhere, set it to the size of the header in bytes."
+            )
+        return int(self.hdrbytes), self._spectrum_nbytes()
+
+    def allocate_file(self, filename, nspectra):
+        """
+        Write the header and size the file for `nspectra` spectra of data.
+
+        This is the coordinator's half of a parallel write: it is the only
+        step that truncates, so it must happen once, before any worker opens
+        the file. Afterwards every byte of data has an address, and workers
+        can fill non-overlapping sample ranges with :meth:`write_spectra_at`
+        in any order. On ext4 the file is sparse until written, so this costs
+        nothing and allocates nothing.
+
+        Sizing the file up front also makes a short final gulp a non-issue:
+        the file is already the right length whatever the last worker writes.
+
+        Note:
+            A worker that dies part way through leaves a hole of zeros that
+            looks like data. Check that every worker exited zero before
+            treating the file as complete.
+
+        Args:
+            filename (str): name of the filterbank file
+            nspectra (int): number of spectra the finished file will hold
+
+        Returns:
+            int: size of the header in bytes (also stored as `hdrbytes`)
+
+        Raises:
+            ValueError: if `nspectra` is negative, or the geometry cannot
+                address samples (see :meth:`_byte_geometry`).
+
+        """
+        nspectra = int(nspectra)
+        if nspectra < 0:
+            raise ValueError(f"nspectra must be >= 0, got {nspectra}")
+        # Check the geometry before write_header, which truncates: a file this
+        # cannot address is better left uncreated than left empty.
+        bps = self._spectrum_nbytes()
+
+        self.write_header(filename)
+        hdrbytes = self.hdrbytes
+
+        with open(filename, "r+b") as f:
+            f.truncate(hdrbytes + nspectra * bps)
+
+        self.nspectra_alloc = nspectra
+        logging.debug(
+            f"Allocated {filename}: {hdrbytes} byte header + {nspectra} "
+            f"spectra x {bps} bytes."
+        )
+        return hdrbytes
+
+    def write_spectra_at(
+        self, spectra, filename, start_sample, nspectra=None, sync=False
+    ):
+        """
+        Write spectra so that their first row is sample `start_sample`.
+
+        Unlike :meth:`append_spectra`, which opens the file in `"ab"` mode and
+        so lands every write at the end of the file whatever the seek, this
+        addresses the data by sample number. Non-overlapping ranges can
+        therefore be written concurrently, by any number of threads or
+        processes, in any order: the write is a single `os.pwrite` against an
+        fd private to this call, which POSIX makes atomic with respect to
+        other writers of other ranges. Overlapping ranges are the caller's
+        problem; nothing here detects them.
+
+        The file must already exist with its header written, normally by
+        :meth:`allocate_file`. It is opened `"r+b"` and never truncated. A
+        write past the end extends the file, leaving a hole of zeros in
+        between.
+
+        Note:
+            Written as is: `spectra` must already have the file's on-disk
+            dtype, since nothing here casts it. The size check below will
+            catch the common mistakes, but not, say, `int8` for `uint8`.
+
+        Args:
+            spectra (numpy.ndarray): data to write, shaped `(nsamples,
+                nchans)`, or `(nsamples, nifs, nchans)` when `nifs > 1`.
+            filename (str): name of the filterbank file
+            start_sample (int): sample number of the first row of `spectra`
+            nspectra (int): total number of spectra the file will hold, used
+                to bound the write. Defaults to `nspectra_alloc`, set by
+                :meth:`allocate_file`. If neither is known the upper bound is
+                not checked and the file is extended as needed.
+            sync (bool): fsync the file before returning. A worker that writes
+                many gulps wants this off, and one fsync before it exits.
+
+        Returns:
+            None
+
+        Raises:
+            ValueError: if the geometry cannot address samples, if `spectra`
+                does not match the file's shape or dtype, or if the write
+                falls outside the file.
+            FileNotFoundError: if `filename` does not exist. Write the header
+                first; this function will not create the file, because doing
+                so would hide a worker pointed at the wrong path.
+
+        """
+        hdrbytes, bps = self._byte_geometry()
+        start_sample = int(start_sample)
+
+        spectra = numpy.ascontiguousarray(spectra)  # guard 3
+        if spectra.ndim < 2:
+            raise ValueError(
+                f"spectra must have a sample axis and a channel axis, got "
+                f"shape {spectra.shape}."
+            )
+        nsamples = spectra.shape[0]
+
+        # Guard 2: the channel axis must match the file. For nbits >= 8 the
+        # last axis is channels; for packed data it is channels/(8/nbits),
+        # which the byte count below covers.
+        if self.nbits >= 8 and spectra.shape[-1] != self.nchans:
+            raise ValueError(
+                f"spectra has {spectra.shape[-1]} channels, the file has "
+                f"{self.nchans}."
+            )
+        if spectra.ndim == 3 and spectra.shape[1] != self.nifs:
+            raise ValueError(
+                f"spectra has {spectra.shape[1]} IFs, the file has {self.nifs}."
+            )
+        if spectra.nbytes != nsamples * bps:
+            raise ValueError(
+                f"{nsamples} spectra of dtype {spectra.dtype} and shape "
+                f"{spectra.shape} are {spectra.nbytes} bytes, but the file "
+                f"holds {bps} bytes per spectrum ({nsamples * bps} in total). "
+                "Cast the data to the file's dtype before writing."
+            )
+
+        # Guard 4: stay inside the file.
+        if start_sample < 0:
+            raise ValueError(f"start_sample must be >= 0, got {start_sample}")
+        if nspectra is None:
+            nspectra = self.nspectra_alloc
+        if nspectra is not None and start_sample + nsamples > int(nspectra):
+            raise ValueError(
+                f"Writing {nsamples} spectra at sample {start_sample} runs to "
+                f"{start_sample + nsamples}, past the {int(nspectra)} spectra "
+                "this file holds."
+            )
+
+        offset = hdrbytes + start_sample * bps
+        # "r+b", i.e. O_RDWR: never O_APPEND, under which Linux ignores the
+        # offset given to pwrite and puts the data at the end of the file.
+        fd = os.open(filename, os.O_RDWR)
+        try:
+            view = memoryview(spectra.data).cast("B")
+            while len(view):
+                written = os.pwrite(fd, view, offset)
+                if written == 0:
+                    raise OSError(f"Wrote 0 of {len(view)} bytes to {filename}")
+                view = view[written:]
+                offset += written
+            if sync:
+                os.fsync(fd)
+        finally:
+            os.close(fd)
+        logging.debug(
+            f"Wrote samples {start_sample}-{start_sample + nsamples} to {filename}."
+        )
+        return None
