@@ -325,3 +325,192 @@ def test_write_spectra_at_partial_write(tmp_path, monkeypatch):
     monkeypatch.setattr(os, "pwrite", lambda fd, buf, offset: 0)
     with pytest.raises(OSError):
         fil_obj.write_spectra_at(data, out, 0)
+
+
+def test_check_work_division_accepts_round_robin():
+    gulp, ngulps, nworkers = 16, 16, 4
+    nspectra = gulp * ngulps
+    ranges = [
+        (g * gulp, gulp)
+        for k in range(nworkers)
+        for g in range(k, ngulps, nworkers)  # round robin, as the workers do
+    ]
+    SigprocFile.check_work_division(ranges, nspectra)
+
+    # a short last gulp, and a worker with nothing to do, are both fine
+    SigprocFile.check_work_division([(0, 16), (16, 4), (20, 0)], 20)
+    SigprocFile.check_work_division([], 0)
+
+
+def test_check_work_division_catches_overlap():
+    with pytest.raises(ValueError, match="overlap"):
+        SigprocFile.check_work_division([(0, 16), (8, 16), (24, 8)], 32)
+
+    # the same gulp handed to two workers
+    with pytest.raises(ValueError, match="overlap"):
+        SigprocFile.check_work_division([(0, 16), (16, 16), (16, 16)], 32)
+
+
+def test_check_work_division_catches_gaps():
+    with pytest.raises(ValueError, match="gap"):
+        SigprocFile.check_work_division([(0, 16), (32, 16)], 48)
+
+    # a missing tail is a gap too
+    with pytest.raises(ValueError, match="gap"):
+        SigprocFile.check_work_division([(0, 16), (16, 16)], 48)
+
+
+def test_check_work_division_catches_bad_ranges():
+    with pytest.raises(ValueError, match="past"):
+        SigprocFile.check_work_division([(0, 16), (16, 32)], 32)
+    with pytest.raises(ValueError):
+        SigprocFile.check_work_division([(-1, 16)], 16)
+    with pytest.raises(ValueError):
+        SigprocFile.check_work_division([(0, -16)], 16)
+    with pytest.raises(ValueError):
+        SigprocFile.check_work_division([(0, 16)], -1)
+
+
+def _needs_holes(tmp_path):
+    if not SigprocFile._holes_are_reported(str(tmp_path)):
+        pytest.skip("filesystem does not report holes")
+
+
+def _write_gulps(fil_obj, out, data, gulp, skip=()):
+    for g in range(len(data) // gulp):
+        if g in skip:
+            continue  # this worker died
+        j = g * gulp
+        fil_obj.write_spectra_at(data[j : j + gulp], out, j)
+
+
+def test_find_holes_on_a_complete_file(tmp_path):
+    _needs_holes(tmp_path)
+    nchans, gulp, ngulps = 4096, 32, 8
+    nspectra = gulp * ngulps
+    fil_obj = _fil_object(nchans=nchans)
+    out = str(tmp_path / "complete.fil")
+    fil_obj.allocate_file(out, nspectra)
+    _write_gulps(fil_obj, out, _fake_data(nspectra, nchans), gulp)
+
+    assert fil_obj.find_holes(out) == []
+    fil_obj.verify_complete(out)
+    fil_obj.verify_complete(out, nspectra=nspectra)  # told, not remembered
+
+
+def test_find_holes_finds_a_dead_worker(tmp_path):
+    """The file is the right length; only the hole shows the missing gulp."""
+    _needs_holes(tmp_path)
+    nchans, gulp, ngulps = 4096, 32, 8
+    nspectra = gulp * ngulps
+    fil_obj = _fil_object(nchans=nchans)
+    out = str(tmp_path / "dead_worker.fil")
+    hdrbytes = fil_obj.allocate_file(out, nspectra)
+    _write_gulps(fil_obj, out, _fake_data(nspectra, nchans), gulp, skip={3})
+
+    assert os.path.getsize(out) == hdrbytes + nspectra * nchans  # length is no help
+
+    holes = fil_obj.find_holes(out)
+    assert len(holes) == 1
+    start, nsamples = holes[0]
+    # rounded outwards to whole blocks, so it covers the gulp and no more
+    # than a spectrum either side
+    assert start <= 3 * gulp and start + nsamples >= 4 * gulp
+    assert nsamples <= gulp + 2
+
+    with pytest.raises(ValueError, match="never written"):
+        fil_obj.verify_complete(out)
+
+
+def test_find_holes_finds_several(tmp_path):
+    _needs_holes(tmp_path)
+    nchans, gulp, ngulps = 4096, 32, 8
+    nspectra = gulp * ngulps
+    fil_obj = _fil_object(nchans=nchans)
+    out = str(tmp_path / "two_dead.fil")
+    fil_obj.allocate_file(out, nspectra)
+    _write_gulps(fil_obj, out, _fake_data(nspectra, nchans), gulp, skip={1, 5})
+
+    holes = fil_obj.find_holes(out)
+    assert len(holes) == 2
+    assert holes[0][0] <= gulp and holes[1][0] <= 5 * gulp
+
+
+def test_verify_complete_checks_length(tmp_path):
+    _needs_holes(tmp_path)
+    nchans, nspectra = 4096, 64
+    fil_obj = _fil_object(nchans=nchans)
+    out = str(tmp_path / "short.fil")
+    hdrbytes = fil_obj.allocate_file(out, nspectra)
+    _write_gulps(fil_obj, out, _fake_data(nspectra, nchans), nspectra)
+
+    with open(out, "r+b") as f:  # something truncated it after the fact
+        f.truncate(hdrbytes + (nspectra - 8) * nchans)
+    with pytest.raises(ValueError, match="bytes, expected"):
+        fil_obj.verify_complete(out)
+
+    # and the missing tail is reported as a hole, not silently skipped
+    assert fil_obj.find_holes(out, nspectra=nspectra) == [(nspectra - 8, 8)]
+
+
+def test_verify_complete_needs_nspectra(tmp_path):
+    _needs_holes(tmp_path)
+    out = str(tmp_path / "unknown_length.fil")
+    _fil_object().allocate_file(out, 64)
+    reader = SigprocFile(out)  # knows the geometry, not the intended length
+    with pytest.raises(ValueError, match="nspectra is not known"):
+        reader.verify_complete(out)
+
+
+def test_find_holes_refuses_when_it_cannot_tell(tmp_path, monkeypatch):
+    """No hole support must fail closed, not report a complete file."""
+    nchans, nspectra = 4096, 64
+    fil_obj = _fil_object(nchans=nchans)
+    out = str(tmp_path / "no_support.fil")
+    fil_obj.allocate_file(out, nspectra)
+
+    monkeypatch.setattr(
+        SigprocFile, "_holes_are_reported", staticmethod(lambda d: False)
+    )
+    with pytest.raises(OSError, match="does not report holes"):
+        fil_obj.find_holes(out)
+    with pytest.raises(OSError):
+        fil_obj.verify_complete(out)
+
+
+def test_holes_are_reported_probe_handles_failure(tmp_path):
+    assert SigprocFile._holes_are_reported(str(tmp_path / "does-not-exist")) is False
+
+
+def test_find_holes_falls_back_to_file_length(tmp_path):
+    _needs_holes(tmp_path)
+    nchans, gulp, ngulps = 4096, 32, 8
+    nspectra = gulp * ngulps
+    fil_obj = _fil_object(nchans=nchans)
+    out = str(tmp_path / "from_length.fil")
+    fil_obj.allocate_file(out, nspectra)
+    _write_gulps(fil_obj, out, _fake_data(nspectra, nchans), gulp, skip={6})
+
+    reader = SigprocFile(out)  # nspectra_alloc is not set on a fresh reader
+    holes = reader.find_holes(out)
+    assert len(holes) == 1 and holes[0][0] <= 6 * gulp
+
+
+def test_find_holes_trailing_hole_and_short_file(tmp_path):
+    """A hole that reaches EOF, in a file that was then truncated."""
+    _needs_holes(tmp_path)
+    nchans, gulp, ngulps = 4096, 32, 8
+    nspectra = gulp * ngulps
+    fil_obj = _fil_object(nchans=nchans)
+    out = str(tmp_path / "trailing.fil")
+    hdrbytes = fil_obj.allocate_file(out, nspectra)
+    # the last two workers never ran, so the hole runs to the end of the file
+    _write_gulps(fil_obj, out, _fake_data(nspectra, nchans), gulp, skip={6, 7})
+    with open(out, "r+b") as f:  # and then something truncated it
+        f.truncate(hdrbytes + (nspectra - 8) * nchans)
+
+    holes = fil_obj.find_holes(out, nspectra=nspectra)
+    assert len(holes) == 1  # the hole and the missing tail are one range
+    start, nsamples = holes[0]
+    assert start <= 6 * gulp
+    assert start + nsamples == nspectra
