@@ -5,6 +5,7 @@ import mmap
 import os
 import struct
 import sys
+import tempfile
 from collections import OrderedDict
 
 import numpy
@@ -73,6 +74,10 @@ class SigprocFile(object):
         # init all items to None
         for k in list(self._type.keys()):
             setattr(self, k, None)
+        # Set by read_header when reading, by write_header when writing.
+        self.hdrbytes = None
+        # Set by allocate_file: the number of spectra the file is sized for.
+        self.nspectra_alloc = None
         if copy_hdr is not None:
             for k in list(self._type.keys()):
                 setattr(self, k, getattr(copy_hdr, k))
@@ -193,21 +198,21 @@ class SigprocFile(object):
         if fp is not None:
             self.fp = fp
         self.hdrbytes = 0
-        (s, n) = self.get_string(self.fp)
+        s, n = self.get_string(self.fp)
         logging.debug(f"Reading {s} from the Filterbank file header.")
         if s != b"HEADER_START":
             self.hdrbytes = 0
             return None
         self.hdrbytes += n
         while True:
-            (s, n) = self.get_string(self.fp)
+            s, n = self.get_string(self.fp)
             logging.debug(f"Reading parameter {s, n} from the Filterbank file header.")
             try:
                 s = s.decode()
                 self.hdrbytes += n
                 if s in self._type and n > 0:
                     if self._type[s] == "string":
-                        (v, n) = self.get_string(self.fp)
+                        v, n = self.get_string(self.fp)
                         self.hdrbytes += n
                         setattr(self, s, v)
                     else:
@@ -381,12 +386,24 @@ class SigprocFile(object):
         """
         Write the filterbank header
 
+        Note:
+            This opens the file in `"wb"` mode, which truncates it. Never call
+            it on a file another process is writing data to.
+
+            The size of the header just written is recorded in
+            :attr:`hdrbytes`, so that positional writes
+            (:meth:`write_spectra_at`) know where the data starts. Until this
+            is called (or :meth:`read_header`), `hdrbytes` is not set.
+
         Args:
             filename (str): name of the filterbank file
 
         """
         with open(filename, "wb") as f:
             self.filterbank_header(fout=f)
+        # hdrbytes is otherwise only set by read_header. Take it from the file
+        # size now, while the file is nothing but a header.
+        self.hdrbytes = os.path.getsize(filename)
         return None
 
     @staticmethod
@@ -401,3 +418,458 @@ class SigprocFile(object):
         with open(filename, "ab") as f:
             f.seek(0, os.SEEK_END)
             f.write(spectra.flatten().astype(spectra.dtype))
+
+    def _spectrum_nbytes(self):
+        """
+        Bytes on disk per spectrum, as an int, for addressing samples.
+
+        Unlike :attr:`bytes_per_spectrum`, which is a float, this refuses a
+        geometry it cannot address rather than returning a fraction.
+
+        Returns:
+            int: bytes per spectrum.
+
+        Raises:
+            ValueError: if any of `nchans`, `nbits` or `nifs` is unset, or if
+                one spectrum is not a whole number of bytes.
+
+        """
+        for name in ("nchans", "nbits", "nifs"):
+            if getattr(self, name) is None:
+                raise ValueError(f"{name} is not set, cannot address samples.")
+
+        # Guard 1: a spectrum must be a whole number of bytes, else sample n
+        # does not start on a byte boundary and cannot be written on its own.
+        bits = int(self.nbits) * int(self.nchans) * int(self.nifs)
+        if bits % 8:
+            raise ValueError(
+                f"{self.nchans} channels x {self.nifs} IFs at {self.nbits} "
+                f"bits is {bits / 8} bytes per spectrum, not a whole number. "
+                "Packed data with this geometry cannot be written positionally."
+            )
+        return bits // 8
+
+    def _byte_geometry(self):
+        """
+        The geometry needed to address a spectrum by its sample number.
+
+        Returns:
+            tuple: `(hdrbytes, bytes_per_spectrum)`, both ints.
+
+        Raises:
+            ValueError: if the header size is unknown, or the geometry cannot
+                address samples (see :meth:`_spectrum_nbytes`).
+
+        """
+        if self.hdrbytes is None:
+            raise ValueError(
+                "hdrbytes is not set, so the start of the data is unknown. It "
+                "is set by read_header() and by write_header(); for a file "
+                "written elsewhere, set it to the size of the header in bytes."
+            )
+        return int(self.hdrbytes), self._spectrum_nbytes()
+
+    def allocate_file(self, filename, nspectra):
+        """
+        Write the header and size the file for `nspectra` spectra of data.
+
+        This is the coordinator's half of a parallel write: it is the only
+        step that truncates, so it must happen once, before any worker opens
+        the file. Afterwards every byte of data has an address, and workers
+        can fill non-overlapping sample ranges with :meth:`write_spectra_at`
+        in any order. On ext4 the file is sparse until written, so this costs
+        nothing and allocates nothing.
+
+        Sizing the file up front also makes a short final gulp a non-issue:
+        the file is already the right length whatever the last worker writes.
+
+        Note:
+            A worker that dies part way through leaves a hole of zeros that
+            looks like data. Check that every worker exited zero before
+            treating the file as complete.
+
+        Args:
+            filename (str): name of the filterbank file
+            nspectra (int): number of spectra the finished file will hold
+
+        Returns:
+            int: size of the header in bytes (also stored as `hdrbytes`)
+
+        Raises:
+            ValueError: if `nspectra` is negative, or the geometry cannot
+                address samples (see :meth:`_byte_geometry`).
+
+        """
+        nspectra = int(nspectra)
+        if nspectra < 0:
+            raise ValueError(f"nspectra must be >= 0, got {nspectra}")
+        # Check the geometry before write_header, which truncates: a file this
+        # cannot address is better left uncreated than left empty.
+        bps = self._spectrum_nbytes()
+
+        self.write_header(filename)
+        hdrbytes = self.hdrbytes
+
+        with open(filename, "r+b") as f:
+            f.truncate(hdrbytes + nspectra * bps)
+
+        self.nspectra_alloc = nspectra
+        logging.debug(
+            f"Allocated {filename}: {hdrbytes} byte header + {nspectra} "
+            f"spectra x {bps} bytes."
+        )
+        return hdrbytes
+
+    @staticmethod
+    def check_work_division(ranges, nspectra):
+        """
+        Check that the work division covers every sample exactly once.
+
+        Nothing inside :meth:`write_spectra_at` can see this: a call is given
+        one range and has no knowledge of the others. The check belongs here,
+        at the coordinator, where the division is decided -- and before any
+        worker starts, which is the last moment an overlap or a gap is free to
+        fix. It is arithmetic on the range list; it does not touch the file.
+
+        Args:
+            ranges: iterable of `(start_sample, nsamples)`, one per unit of
+                work, in any order. Empty ranges are ignored, so a worker with
+                nothing to do can be left in.
+            nspectra (int): number of spectra the finished file will hold.
+
+        Returns:
+            None
+
+        Raises:
+            ValueError: if any range is negative, or if the ranges overlap,
+                leave a gap, or run past `nspectra`. The message names the
+                offending sample ranges.
+
+        """
+        nspectra = int(nspectra)
+        if nspectra < 0:
+            raise ValueError(f"nspectra must be >= 0, got {nspectra}")
+
+        work = []
+        for start, nsamples in ranges:
+            start, nsamples = int(start), int(nsamples)
+            if start < 0 or nsamples < 0:
+                raise ValueError(
+                    f"({start}, {nsamples}) is not a valid range: both the "
+                    "start sample and the length must be >= 0."
+                )
+            if nsamples:
+                work.append((start, nsamples))
+        work.sort()
+
+        overlaps, gaps, end = [], [], 0
+        for start, nsamples in work:
+            if start < end:
+                overlaps.append((start, min(end, start + nsamples) - start))
+            elif start > end:
+                gaps.append((end, start - end))
+            end = max(end, start + nsamples)
+        if end < nspectra:
+            gaps.append((end, nspectra - end))
+
+        problems = []
+        if overlaps:
+            problems.append(f"{len(overlaps)} overlap(s): {overlaps[:4]}")
+        if gaps:
+            problems.append(f"{len(gaps)} gap(s): {gaps[:4]}")
+        if end > nspectra:
+            problems.append(f"work runs to sample {end}, past {nspectra}")
+        if problems:
+            raise ValueError(
+                "The work division does not cover samples 0-"
+                f"{nspectra} exactly once. " + "; ".join(problems)
+            )
+        logging.debug(
+            f"Work division checked: {len(work)} ranges tile {nspectra} spectra."
+        )
+        return None
+
+    def write_spectra_at(
+        self, spectra, filename, start_sample, nspectra=None, sync=False
+    ):
+        """
+        Write spectra so that their first row is sample `start_sample`.
+
+        Unlike :meth:`append_spectra`, which opens the file in `"ab"` mode and
+        so lands every write at the end of the file whatever the seek, this
+        addresses the data by sample number. Non-overlapping ranges can
+        therefore be written concurrently, by any number of threads or
+        processes, in any order: the write is a single `os.pwrite` against an
+        fd private to this call, which POSIX makes atomic with respect to
+        other writers of other ranges. Overlapping ranges are the caller's
+        problem; nothing here detects them.
+
+        The file must already exist with its header written, normally by
+        :meth:`allocate_file`. It is opened `"r+b"` and never truncated. A
+        write past the end extends the file, leaving a hole of zeros in
+        between.
+
+        Note:
+            Written as is: `spectra` must already have the file's on-disk
+            dtype, since nothing here casts it. The size check below will
+            catch the common mistakes, but not, say, `int8` for `uint8`.
+
+        Args:
+            spectra (numpy.ndarray): data to write, shaped `(nsamples,
+                nchans)`, or `(nsamples, nifs, nchans)` when `nifs > 1`.
+            filename (str): name of the filterbank file
+            start_sample (int): sample number of the first row of `spectra`
+            nspectra (int): total number of spectra the file will hold, used
+                to bound the write. Defaults to `nspectra_alloc`, set by
+                :meth:`allocate_file`. If neither is known the upper bound is
+                not checked and the file is extended as needed.
+            sync (bool): fsync the file before returning. A worker that writes
+                many gulps wants this off, and one fsync before it exits.
+
+        Returns:
+            None
+
+        Raises:
+            ValueError: if the geometry cannot address samples, if `spectra`
+                does not match the file's shape or dtype, or if the write
+                falls outside the file.
+            FileNotFoundError: if `filename` does not exist. Write the header
+                first; this function will not create the file, because doing
+                so would hide a worker pointed at the wrong path.
+
+        """
+        hdrbytes, bps = self._byte_geometry()
+        start_sample = int(start_sample)
+
+        spectra = numpy.ascontiguousarray(spectra)  # guard 3
+        if spectra.ndim < 2:
+            raise ValueError(
+                f"spectra must have a sample axis and a channel axis, got "
+                f"shape {spectra.shape}."
+            )
+        nsamples = spectra.shape[0]
+
+        # Guard 2: the channel axis must match the file. For nbits >= 8 the
+        # last axis is channels; for packed data it is channels/(8/nbits),
+        # which the byte count below covers.
+        if self.nbits >= 8 and spectra.shape[-1] != self.nchans:
+            raise ValueError(
+                f"spectra has {spectra.shape[-1]} channels, the file has {self.nchans}."
+            )
+        if spectra.ndim == 3 and spectra.shape[1] != self.nifs:
+            raise ValueError(
+                f"spectra has {spectra.shape[1]} IFs, the file has {self.nifs}."
+            )
+        if spectra.nbytes != nsamples * bps:
+            raise ValueError(
+                f"{nsamples} spectra of dtype {spectra.dtype} and shape "
+                f"{spectra.shape} are {spectra.nbytes} bytes, but the file "
+                f"holds {bps} bytes per spectrum ({nsamples * bps} in total). "
+                "Cast the data to the file's dtype before writing."
+            )
+
+        # Guard 4: stay inside the file.
+        if start_sample < 0:
+            raise ValueError(f"start_sample must be >= 0, got {start_sample}")
+        if nspectra is None:
+            nspectra = self.nspectra_alloc
+        if nspectra is not None and start_sample + nsamples > int(nspectra):
+            raise ValueError(
+                f"Writing {nsamples} spectra at sample {start_sample} runs to "
+                f"{start_sample + nsamples}, past the {int(nspectra)} spectra "
+                "this file holds."
+            )
+
+        offset = hdrbytes + start_sample * bps
+        # "r+b", i.e. O_RDWR: never O_APPEND, under which Linux ignores the
+        # offset given to pwrite and puts the data at the end of the file.
+        fd = os.open(filename, os.O_RDWR)
+        try:
+            view = memoryview(spectra.data).cast("B")
+            while len(view):
+                written = os.pwrite(fd, view, offset)
+                if written == 0:
+                    raise OSError(f"Wrote 0 of {len(view)} bytes to {filename}")
+                view = view[written:]
+                offset += written
+            if sync:
+                os.fsync(fd)
+        finally:
+            os.close(fd)
+        logging.debug(
+            f"Wrote samples {start_sample}-{start_sample + nsamples} to {filename}."
+        )
+        return None
+
+    @staticmethod
+    def _holes_are_reported(directory):
+        """
+        Does this filesystem report unwritten extents as holes?
+
+        A filesystem that does not know about holes answers `SEEK_HOLE` with
+        the end of the file, which reads as "no holes found", which reads as
+        "the file is complete". That false pass is worse than no check, so
+        :meth:`find_holes` asks this first and refuses rather than guesses.
+        ext4 reports holes; NFS does not, before v4.2.
+
+        Args:
+            directory (str): where to put the probe file. Must be on the same
+                filesystem as the file about to be scanned.
+
+        Returns:
+            bool: True if a known hole was reported as one.
+
+        """
+        try:
+            with tempfile.NamedTemporaryFile(dir=directory) as probe:
+                fd = probe.fileno()
+                os.ftruncate(fd, 1 << 20)
+                # Allocate the last block only; everything before it is a hole.
+                os.pwrite(fd, b"\0", (1 << 20) - 1)
+                os.fsync(fd)
+                return os.lseek(fd, 0, os.SEEK_HOLE) == 0
+        except OSError as error:
+            logging.debug(f"Could not probe {directory} for holes: {error}")
+            return False
+
+    def find_holes(self, filename, nspectra=None):
+        """
+        Find the samples of a preallocated file that were never written.
+
+        :meth:`allocate_file` sizes the file with `truncate`, so it is sparse:
+        a range no worker ever wrote is an unallocated extent, not zeros on
+        disk. `SEEK_HOLE` enumerates those in a couple of syscalls per hole,
+        without reading a byte -- which is the point, since a worker that dies
+        mid-range leaves a file of exactly the right length whose missing
+        samples no length check and no checksum can see.
+
+        Note:
+            Run this after the workers have finished and before anything else
+            rewrites the file; a hole that gets written over stops being one.
+
+            Holes are found to filesystem-block precision, so a gap of one
+            spectrum may or may not be visible, while a gap of a whole gulp
+            always is. It reports what was never *written*, not what was
+            written *wrongly*: a worker that wrote nonsense passes.
+
+        Args:
+            filename (str): name of the filterbank file
+            nspectra (int): number of spectra the file should hold. Defaults
+                to `nspectra_alloc`, then to the file's own length.
+
+        Returns:
+            list: `(start_sample, nsamples)` of each unwritten range, in
+            sample order. Empty if every sample was written.
+
+        Raises:
+            OSError: if the filesystem cannot report holes, so that a file
+                this check cannot vouch for is never reported as complete.
+
+        """
+        hdrbytes, bps = self._byte_geometry()
+        on_disk = os.path.getsize(filename)
+        if nspectra is None:
+            nspectra = self.nspectra_alloc
+        if nspectra is None:
+            nspectra = (on_disk - hdrbytes) // bps
+        nspectra = int(nspectra)
+        size = hdrbytes + nspectra * bps
+
+        directory = os.path.dirname(os.path.abspath(filename))
+        if not self._holes_are_reported(directory):
+            raise OSError(
+                f"{directory} does not report holes, or could not be probed, "
+                f"so an unwritten range in {filename} is indistinguishable "
+                "from a written one. Check the workers' exit codes instead. "
+                "Run with debug logging to see which of the two it was."
+            )
+
+        byte_holes = []
+        fd = os.open(filename, os.O_RDONLY)
+        try:
+            position = hdrbytes
+            while position < min(size, on_disk):
+                hole = os.lseek(fd, position, os.SEEK_HOLE)
+                if hole >= min(size, on_disk):
+                    break
+                try:
+                    data = os.lseek(fd, hole, os.SEEK_DATA)
+                except OSError:
+                    data = on_disk  # the hole runs to the end of the file
+                byte_holes.append((hole, min(data, size)))
+                position = data
+        finally:
+            os.close(fd)
+        # A file shorter than it should be is missing its tail, not holed.
+        if on_disk < size:
+            byte_holes.append((max(on_disk, hdrbytes), size))
+
+        holes = []
+        for first_byte, last_byte in byte_holes:
+            # Round outwards: a spectrum that only partly overlaps a hole was
+            # not written whole, so it is missing too.
+            first = max(0, (first_byte - hdrbytes) // bps)
+            last = min(nspectra, -((hdrbytes - last_byte) // bps))
+            # Rounding outwards can make two holes meet, when a block of
+            # written data between them is shorter than one spectrum.
+            if holes and first <= holes[-1][0] + holes[-1][1]:
+                start, nsamples = holes[-1]
+                holes[-1] = (start, max(start + nsamples, last) - start)
+            else:
+                holes.append((first, last - first))
+        return holes
+
+    def verify_complete(self, filename, nspectra=None):
+        """
+        Check that a finished file is the right length and has no holes.
+
+        The two halves catch different failures. The length catches a file
+        that was never preallocated, or was truncated after the fact. The hole
+        scan catches a worker that died inside its range -- which leaves the
+        length correct, and is the reason the length assertion alone is not
+        enough once :meth:`allocate_file` is in use.
+
+        Args:
+            filename (str): name of the filterbank file
+            nspectra (int): number of spectra the file should hold. Defaults
+                to `nspectra_alloc`.
+
+        Returns:
+            None
+
+        Raises:
+            ValueError: if the file is the wrong length, or if any sample was
+                never written. The message names the missing sample ranges.
+            OSError: if the filesystem cannot report holes (see
+                :meth:`find_holes`).
+
+        """
+        hdrbytes, bps = self._byte_geometry()
+        if nspectra is None:
+            nspectra = self.nspectra_alloc
+        if nspectra is None:
+            raise ValueError(
+                "nspectra is not known, so there is nothing to check the file "
+                "against. Pass it, or use the object that called "
+                "allocate_file()."
+            )
+        nspectra = int(nspectra)
+
+        expected = hdrbytes + nspectra * bps
+        on_disk = os.path.getsize(filename)
+        if on_disk != expected:
+            raise ValueError(
+                f"{filename} is {on_disk} bytes, expected {expected} "
+                f"({hdrbytes} byte header + {nspectra} x {bps})."
+            )
+
+        holes = self.find_holes(filename, nspectra=nspectra)
+        if holes:
+            missing = sum(nsamples for _, nsamples in holes)
+            raise ValueError(
+                f"{filename} is the right length but {missing} spectra were "
+                f"never written, in {len(holes)} range(s): {holes[:4]}. Treat "
+                "it as a failed file, not a partial one."
+            )
+        logging.debug(f"{filename} is complete: {nspectra} spectra, no holes.")
+        return None
