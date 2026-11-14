@@ -1,0 +1,89 @@
+name: GPU Simulator
+
+# Optional, non-required check. The hosted runners have no GPU, so the numba
+# CUDA tests in tests/test_utils_gpu.py are skipped in the Python package
+# workflow. This runs them on a simulated NVIDIA H100
+# (https://github.com/pantheongpu/pantheonsim). A simulator cannot reproduce
+# hardware-specific behavior or timing, so it complements real-GPU testing and
+# does not replace it.
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - "your/utils/gpu.py"
+      - "your/candidate.py"
+      - "tests/test_utils_gpu.py"
+      - "requirements.txt"
+      - ".github/workflows/gpu-sim.yml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  gpu-tests:
+    name: GPU tests (CUDA 13.0 and simulated H100)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          persist-credentials: false
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Set up the simulated GPU and CUDA toolkit
+        uses: pantheongpu/setup-pantheonsim@656f502ef4782d94d34d8ddd368e333960609639 # v0.1.8
+        with:
+          gpu: nvidia/h100
+          cuda-toolkit: "13.0"
+
+      # numba-cuda finds libNVVM in the toolkit through CUDA_HOME. numpy is
+      # kept below 2.5 because numba-cuda still uses np.row_stack.
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install numba-cuda "numpy<2.5"
+          pip install pytest
+      - name: Install it
+        run: |
+          pip install .
+
+      - name: Check that the simulated GPU is visible
+        env:
+          CUDA_HOME: /usr/local/cuda-13.0
+        run: |
+          vgpu run python -c "from numba import cuda; assert cuda.is_available(); print(cuda.get_current_device().name)"
+
+      # Each test runs in its own process: the package calls cuda.close() at
+      # the end of every GPU function, and a later test in the same process
+      # then fails with CUDA_ERROR_CONTEXT_IS_DESTROYED (this also happens on
+      # a real RTX 3060). A skipped test counts as a failure, so that a
+      # missing device cannot give a green run.
+      - name: GPU tests
+        env:
+          CUDA_HOME: /usr/local/cuda-13.0
+        run: |
+          for t in test_gpu_dedisperse test_gpu_dmt test_gpu_dedisp_dmt_crop; do
+            vgpu run python -m pytest -v -rs "tests/test_utils_gpu.py::$t" \
+              --junitxml="junit-$t.xml"
+            python - "junit-$t.xml" <<'PY'
+          import sys
+          import xml.etree.ElementTree as ET
+
+          suite = ET.parse(sys.argv[1]).getroot()
+          suite = suite if suite.tag == "testsuite" else suite[0]
+          ran = int(suite.get("tests")) - int(suite.get("skipped"))
+          assert ran == 1, f"expected 1 test to run, got {dict(suite.attrib)}"
+          PY
+          done
